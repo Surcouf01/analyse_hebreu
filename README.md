@@ -58,6 +58,7 @@ Analyse d'un mot isolé (avec nikkud, sans teamim) :
 python analyse_hebreu.py --word "בָּרָא"           # verbe « créer » (qatal qal)
 python analyse_hebreu.py --word "בְּרֵאשִׁית"        # ב préfixe + nom « commencement »
 python analyse_hebreu.py --word "וַיֹּאמֶר"         # waw + wayyiqtol « il dit »
+python analyse_hebreu.py --word "אֶעֱשֶׂה"          # cohortif (1re personne volitive)
 python analyse_hebreu.py --word --file mots.txt     # un mot par ligne
 python analyse_hebreu.py --word "בָּרָא" --format json
 ```
@@ -67,6 +68,21 @@ et renvoie les analyses morphologiques distinctes trouvées (lemme, partie du
 discours, genre/nombre/personne/état, binyan, temps verbal, suffixe), avec le
 nombre d'occurrences et un verset exemple. Les préfixes prépositionnels/
 conjonctifs (ב כ ל מ ו ה ש et leurs combinaisons) sont détachés automatiquement.
+Le **cohortif** (1re personne, préfixe א + voyelle longue) est reconnu.
+
+Analyse d'une phrase hébreu libre (sans référence de verset) :
+```bash
+python analyse_hebreu.py --phrase "וַיֹּאמֶר אֱלֹהִים יְהִי אוֹר"
+python analyse_hebreu.py --phrase "לֹא יִהְיֶה לְךָ"   # négation + jussif potentiel
+python analyse_hebreu.py --phrase --file phrases.txt  # une phrase par ligne
+python analyse_hebreu.py --phrase "בְּרֵאשִׁית בָּרָא" --format json
+```
+
+Le mode `--phrase` découpe la phrase par espaces, analyse chaque token comme un
+mot isolé, puis ajoute des **règles contextuelles** : waw conjonctif, négation
+gouvernant un verbe, **jussif potentiel** (yiqtol 3e pers court sous לֹא/אַל),
+article défini déterminant le nom suivant, état construit (סְמִיכוּת) entre deux
+noms consécutifs, marqueur d'objet direct אֵת.
 
 Formats de sortie :
 - `text` (défaut) : arbre hiérarchique phrase → clause → syntagme → mot,
@@ -125,15 +141,16 @@ print(format_text(analyse))
 ## Structure du projet
 
 ```
-analyse_hebreu.py        # CLI (mode verset et mode mot)
+analyse_hebreu.py        # CLI (mode verset, mot, phrase)
 bhsa_grammar/
-  __init__.py            # API publique (load_corpus, analyze_verse*, analyze_word, format_*)
+  __init__.py            # API publique (load_corpus, analyze_*, format_*)
   loader.py              # localisation + chargement de la base BHSA (Text-Fabric)
   reference.py           # résolution de référence (alias FR/EN/Latin/Hébreu) -> nœud verset
   morph_fr.py            # dictionnaires de traduction des codes BHSA en français
-  rules.py               # moteur de règles grammaticales (mot, syntagme, clause)
+  rules.py               # moteur de règles grammaticales (mot, syntagme, clause) + cohortif + qere/ketiv
   word_analyzer.py       # analyse d'un mot isolé (normalisation, préfixes, recherche)
-  report.py              # formatage text / json / summary (verset et mot)
+  phrase_analyzer.py     # analyse d'une phrase libre (segmentation + règles contextuelles + jussif)
+  report.py             # formatage text / json / summary (verset, mot, phrase)
 ```
 
 ## Règles grammaticales détectées
@@ -153,12 +170,26 @@ marqueur d'objet direct אֵת.
 participiale, infinitive, X-initial…) et relation (principale, coordonnée,
 relative, complétive…), waw initial de coordination, topicalisation.
 
+## Règles grammaticales détectées (extension)
+
+Outre les règles de base (voir ci-dessus), les modes `--word` et `--phrase`
+détectent :
+
+- **Cohortif** : yiqtol de 1re personne marqué par le préfixe א + voyelle longue
+  (« faisons… », « que je… »).
+- **Jussif potentiel** (mode phrase) : yiqtol 3e personne court sous négation
+  (לֹא / אַל) — forme volitive négative (« qu'il ne fasse pas »).
+- **Qere/Ketiv** : quand la forme écrite (ketiv) diffère de la forme lue (qere),
+  le programme signale les deux traditions.
+- **Règles contextuelles** (mode phrase) : waw conjonctif, négation + verbe,
+  article défini + nom, état construit entre deux noms, marqueur d'objet אֵת.
+
 ## Limites
 
 L'analyse repose sur l'annotation morphosyntaxique de la BHSA ; les « règles »
 décrites sont des interprétations pédagogiques des features de la base, non une
-analyse exégétique exhaustive. Les cas rares (araméen, formes defectives,
-qere/ketiv) peuvent nécessiter un complément manuel.
+analyse exégétique exhaustive. Les cas rares (araméen, formes defectives) peu-
+vent nécessiter un complément manuel.
 
 Pour le mode `--word` : la recherche porte sur les formes effectivement
 attestées dans la Bible. Un mot qui n'existe pas tel quel dans le texte (forme
@@ -167,3 +198,8 @@ préfixes prépositionnels comme des mots séparés, donc le détachement automa
 retrouve le radical ; mais en cas d'homographie (ex. בָּרָא = substantif araméen
 « fils » ou verbe hébreu « il créa »), toutes les analyses possibles sont
 renvoyées, à charge de l'utilisateur de choisir selon le contexte.
+
+Pour le mode `--phrase` : la segmentation par espaces suppose que l'utilisateur
+sépare les mots. L'analyse est indicative (pas de parsing syntaxique complet) ;
+le jussif est marqué « potentiel » car il est morphologiquement ambigu avec le
+yiqtol simple sans contexte large.
