@@ -109,3 +109,37 @@ def word_to_text(word_analysis):
 
 def word_to_json(word_analysis, indent=2, ensure_ascii=False):
     return json.dumps(word_analysis, indent=indent, ensure_ascii=ensure_ascii)
+
+
+def phrase_to_text(phrase_analysis):
+    """Formate le résultat de ``analyze_phrase`` en texte lisible."""
+    lines = []
+    lines.append(f"=== Phrase analysée : {phrase_analysis['input']} ===")
+    lines.append("")
+    lines.append("-- Règles contextuelles --")
+    if not phrase_analysis["context_rules"]:
+        lines.append("  (aucune règle contextuelle détectée)")
+    for r in phrase_analysis["context_rules"]:
+        lines.append(f"  • {r}")
+    lines.append("")
+    lines.append("-- Analyse token par token --")
+    for i, tok in enumerate(phrase_analysis["tokens"], 1):
+        lines.append(f"")
+        lines.append(f"  [{i}] {tok['text']}")
+        for r in tok["rules"]:
+            lines.append(f"      ↳ {r}")
+        # Détail des lectures possibles si ambigu et trouvé
+        wa = tok["word_analysis"]
+        if wa["found"] and len(wa["matches"]) > 1:
+            lines.append(f"      Lectures possibles :")
+            for m in wa["matches"][:3]:
+                lex = m.get("lex") or ""
+                lines.append(
+                    f"        - {m['text'].strip()} (lemme {lex}, {m['count']} occ.) : "
+                    f"{m['rules'][0] if m['rules'] else ''}"
+                )
+    return "\n".join(lines)
+
+
+def phrase_to_json(phrase_analysis, indent=2, ensure_ascii=False):
+    return json.dumps(phrase_analysis, indent=indent, ensure_ascii=ensure_ascii)
