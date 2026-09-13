@@ -44,6 +44,7 @@ répertoire de travail courant ou depuis `/workspace`.
 
 ### En ligne de commande
 
+Analyse d'un verset complet :
 ```bash
 python analyse_hebreu.py "Genèse 1:1"
 python analyse_hebreu.py "Gen 1:1" --no-words        # sans détail mot à mot
@@ -51,6 +52,21 @@ python analyse_hebreu.py "Genesis 1:1" --format json # sortie JSON
 python analyse_hebreu.py "Psaume 23:1" --format summary
 python analyse_hebreu.py --list-books                # livres disponibles
 ```
+
+Analyse d'un mot isolé (avec nikkud, sans teamim) :
+```bash
+python analyse_hebreu.py --word "בָּרָא"           # verbe « créer » (qatal qal)
+python analyse_hebreu.py --word "בְּרֵאשִׁית"        # ב préfixe + nom « commencement »
+python analyse_hebreu.py --word "וַיֹּאמֶר"         # waw + wayyiqtol « il dit »
+python analyse_hebreu.py --word --file mots.txt     # un mot par ligne
+python analyse_hebreu.py --word "בָּרָא" --format json
+```
+
+Le mode `--word` cherche le mot dans toutes les occurrences de la Bible hébraïque
+et renvoie les analyses morphologiques distinctes trouvées (lemme, partie du
+discours, genre/nombre/personne/état, binyan, temps verbal, suffixe), avec le
+nombre d'occurrences et un verset exemple. Les préfixes prépositionnels/
+conjonctifs (ב כ ל מ ו ה ש et leurs combinaisons) sont détachés automatiquement.
 
 Formats de sortie :
 - `text` (défaut) : arbre hiérarchique phrase → clause → syntagme → mot,
@@ -109,14 +125,15 @@ print(format_text(analyse))
 ## Structure du projet
 
 ```
-analyse_hebreu.py        # CLI
+analyse_hebreu.py        # CLI (mode verset et mode mot)
 bhsa_grammar/
-  __init__.py            # API publique (load_corpus, analyze_verse_by_reference, format_*)
+  __init__.py            # API publique (load_corpus, analyze_verse*, analyze_word, format_*)
   loader.py              # localisation + chargement de la base BHSA (Text-Fabric)
   reference.py           # résolution de référence (alias FR/EN/Latin/Hébreu) -> nœud verset
   morph_fr.py            # dictionnaires de traduction des codes BHSA en français
   rules.py               # moteur de règles grammaticales (mot, syntagme, clause)
-  report.py              # formatage text / json / summary
+  word_analyzer.py       # analyse d'un mot isolé (normalisation, préfixes, recherche)
+  report.py              # formatage text / json / summary (verset et mot)
 ```
 
 ## Règles grammaticales détectées
@@ -142,3 +159,11 @@ L'analyse repose sur l'annotation morphosyntaxique de la BHSA ; les « règles �
 décrites sont des interprétations pédagogiques des features de la base, non une
 analyse exégétique exhaustive. Les cas rares (araméen, formes defectives,
 qere/ketiv) peuvent nécessiter un complément manuel.
+
+Pour le mode `--word` : la recherche porte sur les formes effectivement
+attestées dans la Bible. Un mot qui n'existe pas tel quel dans le texte (forme
+inédite, variante orthographique) ne sera pas trouvé. La base BHSA stocke les
+préfixes prépositionnels comme des mots séparés, donc le détachement automatique
+retrouve le radical ; mais en cas d'homographie (ex. בָּרָא = substantif araméen
+« fils » ou verbe hébreu « il créa »), toutes les analyses possibles sont
+renvoyées, à charge de l'utilisateur de choisir selon le contexte.
