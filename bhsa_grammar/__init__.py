@@ -13,7 +13,8 @@ from .reference import parse_reference, find_verse, book_list
 from .rules import analyze_verse
 from .report import to_text, to_json, to_summary
 from .word_analyzer import analyze_word, search_word
-from .report import word_to_text, word_to_json
+from .phrase_analyzer import analyze_phrase
+from .report import word_to_text, word_to_json, phrase_to_text, phrase_to_json
 
 __all__ = [
     "load_corpus",
@@ -25,12 +26,15 @@ __all__ = [
     "analyze_verse_by_reference",
     "analyze_word",
     "search_word",
+    "analyze_phrase",
     "normalize_word",
     "format_text",
     "format_json",
     "format_summary",
     "format_word",
     "format_word_json",
+    "format_phrase",
+    "format_phrase_json",
 ]
 
 __version__ = "1.0.0"
@@ -76,3 +80,11 @@ def format_word(word_analysis):
 
 def format_word_json(word_analysis, indent=2):
     return word_to_json(word_analysis, indent=indent)
+
+
+def format_phrase(phrase_analysis):
+    return phrase_to_text(phrase_analysis)
+
+
+def format_phrase_json(phrase_analysis, indent=2):
+    return phrase_to_json(phrase_analysis, indent=indent)
