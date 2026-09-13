@@ -23,11 +23,14 @@ from bhsa_grammar import (
     load_corpus,
     analyze_verse_by_reference,
     analyze_word,
+    analyze_phrase,
     format_text,
     format_json,
     format_summary,
     format_word,
     format_word_json,
+    format_phrase,
+    format_phrase_json,
     book_list,
     DataNotFoundError,
 )
@@ -51,8 +54,13 @@ def build_parser():
         help="Analyse un mot hébreu isolé (argument = le mot, ou fichier via --file).",
     )
     p.add_argument(
+        "--phrase",
+        action="store_true",
+        help="Analyse une phrase hébreu libre (argument = la phrase, ou fichier via --file).",
+    )
+    p.add_argument(
         "--file",
-        help="Fichier contenant un mot (ou une liste, une par ligne) à analyser en mode --word.",
+        help="Fichier contenant un mot/ligne (--word) ou une phrase/ligne (--phrase).",
     )
     p.add_argument(
         "--format",
@@ -117,6 +125,33 @@ def main(argv=None):
             else:
                 print(format_word(analysis))
         return 0 if any_found else 1
+
+    # Mode analyse de phrase libre
+    if args.phrase:
+        F, L = api.F, api.L
+        phrases = []
+        if args.file:
+            try:
+                with open(args.file, encoding="utf-8") as fh:
+                    phrases = [p.strip() for p in fh if p.strip()]
+            except OSError as exc:
+                print(f"Erreur de lecture du fichier : {exc}", file=sys.stderr)
+                return 1
+        elif args.reference:
+            phrases = [args.reference]
+        else:
+            print("Erreur : en mode --phrase, fournissez une phrase (argument) ou --file FICHIER.", file=sys.stderr)
+            return 1
+
+        for i, p in enumerate(phrases):
+            if len(phrases) > 1:
+                print(f"\n{'='*20} Phrase {i+1}/{len(phrases)} {'='*20}")
+            analysis = analyze_phrase(F, L, p)
+            if args.format == "json":
+                print(format_phrase_json(analysis))
+            else:
+                print(format_phrase(analysis))
+        return 0
 
     # Mode analyse de verset
     if not args.reference:
