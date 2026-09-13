@@ -25,6 +25,33 @@ def _clean(val):
     return val
 
 
+def _detect_volitive(ps, pfm, nme, cons):
+    """Détecte le mode volitif (cohortif / jussif) d'un yiqtol.
+
+    La BHSA code cohortif et jussif comme « impf ». La distinction se fait par :
+      - cohortif : 1re personne + préfixe א (pfm '>') + voyelle longue,
+        souvent marqué par un ה final (nme contient 'H' ou la forme finit par ה).
+      - jussif : 3e personne, forme courte (nme absent, sans suffixe long).
+    Renvoie 'cohortif', 'jussif' ou None.
+    """
+    if ps == "p1":
+        # Cohortif : préfixe א. On est prudent : sans voyelle longue on reste yiqtol.
+        if pfm == ">":
+            # Cohortif si la forme a une finale allongée (ה, ou nme long).
+            if nme and ("H" in nme or len(nme) >= 1):
+                return "cohortif"
+            # Sans marque explicite, on signale le potentiel cohortif uniquement
+            # si la consonne finale est ה (voyelle longue parahque).
+            if cons and cons.endswith("H"):
+                return "cohortif"
+    # NB : le jussif (3e personne) ne se distingue morphologiquement du yiqtol
+    # que par la forme courte, ce qui est ambigu sans contexte (négation לֹא/אַל,
+    # particule לוּ). On évite donc de sur-détecter et on laisse l'utilisateur
+    # trancher ; la règle n'est émise qu'en mode « phrase libre » où un marqueur
+    # négatif précède (voir phrase_analyzer).
+    return None
+
+
 # --------------------------------------------------------------------------- #
 # Règles au niveau du MOT
 # --------------------------------------------------------------------------- #
@@ -74,10 +101,31 @@ def word_rules(F, L, w):
                 "souvent passé narratif ou parfait de constatation."
             )
         if vt == "impf":
-            rules.append(
+            # Détecter le mode volitif : cohortif (1re pers) ou jussif (3e pers
+            # court). La BHSA code tout en « impf » ; la distinction vient de la
+            # morphologie (préfixe א + voyelle longue pour le cohortif ; forme
+            # courte pour le jussif).
+            pfm = _clean(_fv(F, "pfm", w))
+            nme = _clean(_fv(F, "nme", w))
+            volitive = _detect_volitive(ps, pfm, nme, cons)
+            base_desc = (
                 "Yiqtol (imperfectif) : action inaccomplie, volitif, futur, "
                 "habituel ou modal selon le contexte."
             )
+            if volitive == "cohortif":
+                rules.append(
+                    "Yiqtol de cohortif (1re personne) : injonction à la 1re "
+                    "personne (« faisons… », « que je… »), marqué par le préfixe "
+                    "א + voyelle longue (ה final)."
+                )
+            elif volitive == "jussif":
+                rules.append(
+                    "Yiqtol de jussif (3e personne courte) : ordre/permission "
+                    "à la 3e personne (« qu'il fasse… »), forme courte sans "
+                    "suffixe long."
+                )
+            else:
+                rules.append(base_desc)
         if vt == "impv":
             rules.append("Impératif : ordre/injonction (2e personne).")
         if vt == "infq":
@@ -133,6 +181,18 @@ def word_rules(F, L, w):
     # l'article ה avec le ה interrogatif)
     if sp == "inrg" or pdp == "inrg":
         rules.append("Particule interrogative (ה) : transforme l'énoncé en question.")
+
+    # Qere / Ketiv : la forme écrite (ketiv) diffère de la forme lue (qere).
+    qere = _clean(_fv(F, "qere", w))
+    qere_utf8 = _clean(_fv(F, "qere_utf8", w))
+    if qere and qere not in ("absent", "n/a"):
+        rules.append(
+            "Qere/Ketiv : ketiv (écrit) « {} » lu comme qere « {} » "
+            "(tradition de lecture).".format(
+                F.g_word_utf8.v(w).strip(),
+                (qere_utf8 or qere).strip(),
+            )
+        )
 
     return rules
 
