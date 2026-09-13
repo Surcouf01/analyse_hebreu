@@ -12,6 +12,8 @@ from .loader import load_corpus, DataNotFoundError
 from .reference import parse_reference, find_verse, book_list
 from .rules import analyze_verse
 from .report import to_text, to_json, to_summary
+from .word_analyzer import analyze_word, search_word
+from .report import word_to_text, word_to_json
 
 __all__ = [
     "load_corpus",
@@ -21,9 +23,14 @@ __all__ = [
     "book_list",
     "analyze_verse",
     "analyze_verse_by_reference",
+    "analyze_word",
+    "search_word",
+    "normalize_word",
     "format_text",
     "format_json",
     "format_summary",
+    "format_word",
+    "format_word_json",
 ]
 
 __version__ = "1.0.0"
@@ -55,3 +62,17 @@ def format_json(analysis, indent=2):
 
 def format_summary(analysis):
     return to_summary(analysis)
+
+
+def normalize_word(form):
+    """Normalise un mot hébreu (retire les teamim, NFC) hors chargement de base."""
+    from .word_analyzer import _normalize
+    return _normalize(form)
+
+
+def format_word(word_analysis):
+    return word_to_text(word_analysis)
+
+
+def format_word_json(word_analysis, indent=2):
+    return word_to_json(word_analysis, indent=indent)
