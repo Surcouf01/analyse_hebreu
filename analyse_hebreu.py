@@ -22,9 +22,12 @@ import sys
 from bhsa_grammar import (
     load_corpus,
     analyze_verse_by_reference,
+    analyze_word,
     format_text,
     format_json,
     format_summary,
+    format_word,
+    format_word_json,
     book_list,
     DataNotFoundError,
 )
@@ -39,7 +42,17 @@ def build_parser():
     p.add_argument(
         "reference",
         nargs="?",
-        help='Référence du verset, ex. "Genèse 1:1", "Gen 1:1", "Genesis 1:1".',
+        help='Référence du verset, ex. "Genèse 1:1", "Gen 1:1", "Genesis 1:1".\n'
+             "Ou, avec --word, un mot hébreu à analyser (avec nikkud, sans teamim).",
+    )
+    p.add_argument(
+        "--word",
+        action="store_true",
+        help="Analyse un mot hébreu isolé (argument = le mot, ou fichier via --file).",
+    )
+    p.add_argument(
+        "--file",
+        help="Fichier contenant un mot (ou une liste, une par ligne) à analyser en mode --word.",
     )
     p.add_argument(
         "--format",
@@ -75,8 +88,39 @@ def main(argv=None):
             print(f"  - {b}")
         return 0
 
+    # Mode analyse de mot isolé
+    if args.word:
+        F, L = api.F, api.L
+        words = []
+        if args.file:
+            try:
+                with open(args.file, encoding="utf-8") as fh:
+                    words = [w.strip() for w in fh if w.strip()]
+            except OSError as exc:
+                print(f"Erreur de lecture du fichier : {exc}", file=sys.stderr)
+                return 1
+        elif args.reference:
+            words = [args.reference]
+        else:
+            print("Erreur : en mode --word, fournissez un mot (argument) ou --file FICHIER.", file=sys.stderr)
+            return 1
+
+        any_found = False
+        for i, w in enumerate(words):
+            if len(words) > 1:
+                print(f"\n{'='*20} Mot {i+1}/{len(words)} : {w} {'='*20}")
+            analysis = analyze_word(F, L, w)
+            if analysis["found"]:
+                any_found = True
+            if args.format == "json":
+                print(format_word_json(analysis))
+            else:
+                print(format_word(analysis))
+        return 0 if any_found else 1
+
+    # Mode analyse de verset
     if not args.reference:
-        print("Erreur : une référence de verset est requise.", file=sys.stderr)
+        print("Erreur : une référence de verset (ou --word MOT) est requise.", file=sys.stderr)
         return 1
 
     try:
