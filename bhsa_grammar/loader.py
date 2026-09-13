@@ -25,9 +25,10 @@ class DataNotFoundError(RuntimeError):
 
 # Features requises pour l'analyse grammaticale.
 FEATURES = (
-    "g_word_utf8 g_cons g_lex_utf8 lex lex_utf8 sp ls vt vs gn nu ps st pdp "
-    "prs prs_gn prs_nu prs_ps pfm nme vbe vbs uvf function typ det rela kind "
-    "domain pargr gloss language book chapter verse otype oslots otext"
+    "g_word_utf8 g_cons g_cons_utf8 g_lex_utf8 lex lex_utf8 sp ls vt vs gn nu ps "
+    "st pdp prs prs_gn prs_nu prs_ps pfm nme vbe vbs uvf function typ det rela "
+    "kind domain pargr gloss language qere qere_utf8 qere_trailer_utf8 "
+    "book chapter verse otype oslots otext"
 ).split()
 
 
