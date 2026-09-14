@@ -76,18 +76,37 @@ VERB_TENSE = {
 }
 
 # --- Binyan / stem (vs) ---
+# Codes effectivement présents dans la base BHSA (version c) : qal, nif, piel,
+# pual, hit, hif, hof (les 7 binyanim hébreux) + formes rares/araméennes.
 STEM = {
-    "qal": "qal",
+    # 7 binyanim de base (hébreu)
+    "qal": "qal (paal)",
     "nif": "nifal",
     "piel": "piel",
     "pual": "pual",
     "hit": "hitpael",
     "hif": "hifil",
     "hof": "hofal",
-    "his": "hithpaal/histaphel",
+    # binyanim rares / dérivés (hébreu)
+    "hsht": "hithpalpel (hsht)",
+    "nit": "nithpaal (nit, rare)",
+    "shaf": "shafel (rare)",
+    "poal": "poal (rare)",
+    "poel": "poel (rare)",
+    "htpa": "hithpaal (htpa, rare)",
+    "htpe": "hithpeal (htpe, rare)",
+    "htpo": "hithpoal (htpo, rare)",
+    "hotp": "hithpolel (hotp, rare)",
+    # binyanim araméens
     "peal": "peal (araméen)",
     "pael": "pael (araméen)",
-    "hitpeel": "hitpeel (araméen)",
+    "peil": "peil (araméen passif)",
+    "afel": "afel (araméen)",
+    "haf": "haphel (haf, araméen)",
+    "etpa": "ethpaal (araméen)",
+    "etpe": "ethpeal (araméen)",
+    "tif": "ithpaal (tif, araméen)",
+    "pasq": "pasq (araméen, rare)",
     "NA": "—",
     "unknown": "—",
 }

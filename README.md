@@ -157,9 +157,10 @@ bhsa_grammar/
 
 **Niveau mot** — partie du discours (article, substantif, nom propre, verbe,
 préposition, pronom, négation, interrogatif), genre/nombre/personne, état
-(absolu/construit/emphatique), binyan (qal, nifal, piel, hifil…), temps verbal
-(qatal, yiqtol, wayyiqtol, impératif, infinitif, participe), suffixe pronominal
-(personne/genre/nombre), waw conjonctif, article défini.
+(absolu/construit/emphatique), binyan (les 7 de base : qal/paal, nifal, piel,
+pual, hitpael, hifil, hofal ; plus les rares hsht, nit, shaf, poal, poel, htpa,
+htpe, htpo, hotp), temps verbal (qatal, yiqtol, wayyiqtol, impératif, infinitif,
+participe), suffixe pronominal (personne/genre/nombre), waw conjonctif, article défini.
 
 **Niveau syntagme** — type (nominal, prépositionnel, verbal…) et fonction
 (sujet, objet, prédicat, complément, circonstance de temps, frontalisé…),
