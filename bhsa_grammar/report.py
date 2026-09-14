@@ -32,7 +32,8 @@ def to_text(analysis, verbose_words=True):
                 if verbose_words:
                     for word in phrase["words"]:
                         lex = f"  ({word['lex']})" if word["lex"] else ""
-                        lines.append(f"            ‣ {word['text'].strip()}{lex}")
+                        gloss = f"  « {word['gloss']} »" if word.get("gloss") else ""
+                        lines.append(f"            ‣ {word['text'].strip()}{lex}{gloss}")
                         for r in word["rules"]:
                             lines.append(f"              ↳ {r}")
             lines.append("")
@@ -85,9 +86,13 @@ def word_to_text(word_analysis):
         if ref and ref[0]:
             book, ch, vs = ref
             lines.append(f"  Forme en base : {m['text'].strip()}  (lemme : {m['lex']})")
+            if m.get("gloss"):
+                lines.append(f"  Traduction (gloss) : {m['gloss']}")
             lines.append(f"  Exemple : {book} {ch}:{vs}")
         else:
             lines.append(f"  Forme en base : {m['text'].strip()}  (lemme : {m['lex']})")
+            if m.get("gloss"):
+                lines.append(f"  Traduction (gloss) : {m['gloss']}")
         # Features clés
         f_ = m["features"]
         bits = []
@@ -134,8 +139,10 @@ def phrase_to_text(phrase_analysis):
             lines.append(f"      Lectures possibles :")
             for m in wa["matches"][:3]:
                 lex = m.get("lex") or ""
+                gloss = m.get("gloss") or ""
+                gloss_str = f" « {gloss} »" if gloss else ""
                 lines.append(
-                    f"        - {m['text'].strip()} (lemme {lex}, {m['count']} occ.) : "
+                    f"        - {m['text'].strip()} (lemme {lex}, {m['count']} occ.){gloss_str} : "
                     f"{m['rules'][0] if m['rules'] else ''}"
                 )
     return "\n".join(lines)

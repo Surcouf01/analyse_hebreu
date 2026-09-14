@@ -378,6 +378,7 @@ def analyze_verse(F, L, T, verse):
                     word = {
                         "text": F.g_word_utf8.v(w),
                         "lex": _clean(_fv(F, "lex_utf8", w)) or "",
+                        "gloss": _clean(_fv(F, "gloss", w)) or "",
                         "rules": word_rules(F, L, w),
                     }
                     phrase["words"].append(word)

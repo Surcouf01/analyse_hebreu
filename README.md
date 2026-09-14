@@ -184,6 +184,20 @@ détectent :
   le programme signale les deux traditions.
 - **Règles contextuelles** (mode phrase) : waw conjonctif, négation + verbe,
   article défini + nom, état construit entre deux noms, marqueur d'objet אֵת.
+- **Traduction des mots (gloss)** : chaque mot hébreu est accompagné de sa
+  traduction courte en anglais (feature `gloss` de la BHSA). En mode verset,
+  elle s'affiche sous la forme `« see »` après le lemme ; en mode mot, une
+  ligne `Traduction (gloss) : create` est ajoutée ; en mode phrase, elle
+  apparaît dans les lectures possibles.
+
+## Noms de livres
+
+La base BHSA utilise des noms de livres en latin (ex. `Judices`, `Numeri`,
+`Reges_I`, `Jesaia`, `Psalmi`). Le programme accepte indifféremment les
+noms français (`Juges`, `Nombres`, `1 Rois`), anglais (`Judges`, `Numbers`,
+`Kings_I`) ou latins (`Judices`, `Numeri`, `Reges_I`), ainsi que les
+abreviations (`Jg`, `Nb`, `1R`) et les noms hébreux (`שופטים`). Tous sont
+automatiquement normalisés vers le nom BHSA attendu.
 
 ## Limites
 

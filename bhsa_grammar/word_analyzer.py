@@ -136,6 +136,7 @@ def word_features(F, w):
     return {
         "text": F.g_word_utf8.v(w),
         "lex": g("lex_utf8"),
+        "gloss": g("gloss"),
         "sp": g("sp"),
         "pdp": g("pdp"),
         "ls": g("ls"),
@@ -213,6 +214,7 @@ def analyze_word(F, L, form, limit=20):
                 "prefix": pfx,
                 "text": F.g_word_utf8.v(w),
                 "lex": desc["features"].get("lex"),
+                "gloss": desc["features"].get("gloss"),
                 "features": desc["features"],
                 "rules": desc["rules"],
                 "count": 0,

@@ -7,6 +7,7 @@ Accepte les formes usuelles : "Genèse 1:1", "Genèse 1.1", "Genesis 1:1",
 import re
 
 # Alias de livres : français, abrégés français, anglais, latin, hébreu.
+# Toutes les cibles sont les noms BHSA réels (forme latine, cf. base ETCBC).
 _BOOK_ALIASES = {
     # Genesis
     "genese": "Genesis", "genèse": "Genesis", "genese": "Genesis",
@@ -19,92 +20,122 @@ _BOOK_ALIASES = {
     "levitique": "Leviticus", "lévitique": "Leviticus", "lev": "Leviticus",
     "lv": "Leviticus", "leviticus": "Leviticus", "wayyiqra": "Leviticus",
     "ויקרא": "Leviticus",
-    # Numbers
-    "nombres": "Numbers", "nb": "Numbers", "num": "Numbers",
-    "numbers": "Numbers", "bemidbar": "Numbers", "במדבר": "Numbers",
-    # Deuteronomy
-    "deuteronomique": "Deuteronomy", "deutéronome": "Deuteronomy",
-    "deuteronome": "Deuteronomy", "dt": "Deuteronomy", "de": "Deuteronomy",
-    "deut": "Deuteronomy", "deuteronomy": "Deuteronomy", "devarim": "Deuteronomy",
-    "דברים": "Deuteronomy",
-    # Joshua
-    "josue": "Joshua", "josué": "Joshua", "jos": "Joshua", "joshua": "Joshua",
-    "yehoshua": "Joshua", "יהושע": "Joshua",
-    # Judges
-    "juges": "Judges", "jg": "Judges", "judg": "Judges", "judges": "Judges",
-    "shofetim": "Judges", "שופטים": "Judges",
-    # Samuel
+    # Numbers -> Numeri
+    "nombres": "Numeri", "nb": "Numeri", "num": "Numeri",
+    "numbers": "Numeri", "numeri": "Numeri", "bemidbar": "Numeri",
+    "במדבר": "Numeri",
+    # Deuteronomy -> Deuteronomium
+    "deuteronomique": "Deuteronomium", "deutéronome": "Deuteronomium",
+    "deuteronome": "Deuteronomium", "dt": "Deuteronomium", "de": "Deuteronomium",
+    "deut": "Deuteronomium", "deuteronomy": "Deuteronomium",
+    "deuteronomium": "Deuteronomium", "devarim": "Deuteronomium",
+    "דברים": "Deuteronomium",
+    # Joshua -> Josua
+    "josue": "Josua", "josué": "Josua", "jos": "Josua", "joshua": "Josua",
+    "josua": "Josua", "yehoshua": "Josua", "יהושע": "Josua",
+    # Judges -> Judices
+    "juges": "Judices", "jg": "Judices", "judg": "Judices",
+    "judges": "Judices", "judices": "Judices", "shofetim": "Judices",
+    "שופטים": "Judices",
+    # Samuel (déjà correct)
     "samuel": "Samuel_I", "1 samuel": "Samuel_I", "1sam": "Samuel_I",
     "1s": "Samuel_I", "i samuel": "Samuel_I", "1 s": "Samuel_I",
+    "samuel_i": "Samuel_I",
     "2 samuel": "Samuel_II", "2sam": "Samuel_II", "2s": "Samuel_II",
-    "ii samuel": "Samuel_II", "2 s": "Samuel_II",
-    # Kings
-    "1 rois": "Kings_I", "1roi": "Kings_I", "1k": "Kings_I", "1r": "Kings_I",
-    "i rois": "Kings_I", "1 k": "Kings_I", "kings_i": "Kings_I",
-    "2 rois": "Kings_II", "2roi": "Kings_II", "2k": "Kings_II", "2r": "Kings_II",
-    "ii rois": "Kings_II", "2 k": "Kings_II", "kings_ii": "Kings_II",
-    # Isaiah
-    "esaie": "Isaiah", "ésaïe": "Isaiah", "es": "Isaiah", "isa": "Isaiah",
-    "isaiah": "Isaiah", "yeshayahu": "Isaiah", "ישעיה": "Isaiah",
-    # Jeremiah
-    "jeremie": "Jeremiah", "jérémie": "Jeremiah", "jer": "Jeremiah",
-    "jeremiah": "Jeremiah", "yirmiyahu": "Jeremiah", "ירמיה": "Jeremiah",
-    # Ezekiel
-    "ezechiel": "Ezekiel", "ézéchiel": "Ezekiel", "ez": "Ezekiel",
-    "ezek": "Ezekiel", "ezekiel": "Ezekiel", "yechezkel": "Ezekiel",
-    "יחזקאל": "Ezekiel",
-    # Psalms
-    "psaumes": "Psalms", "psaume": "Psalms", "ps": "Psalms", "psalm": "Psalms",
-    "psalms": "Psalms", "tehillim": "Psalms", "תהילים": "Psalms",
-    # Proverbs
-    "proverbes": "Proverbs", "prov": "Proverbs", "pr": "Proverbs",
-    "proverbs": "Proverbs", "mishle": "Proverbs", "משלי": "Proverbs",
-    # Job
-    "job": "Job", "iyov": "Job", "איוב": "Job",
-    # Song
-    "cantique": "Song_of_Songs", "cant": "Song_of_Songs", "cantique_des_cantiques": "Song_of_Songs",
-    "song": "Song_of_Songs", "song_of_songs": "Song_of_Songs",
-    # Ruth
+    "ii samuel": "Samuel_II", "2 s": "Samuel_II", "samuel_ii": "Samuel_II",
+    # Kings -> Reges
+    "1 rois": "Reges_I", "1roi": "Reges_I", "1k": "Reges_I", "1r": "Reges_I",
+    "i rois": "Reges_I", "1 k": "Reges_I", "kings_i": "Reges_I",
+    "reges_i": "Reges_I",
+    "2 rois": "Reges_II", "2roi": "Reges_II", "2k": "Reges_II", "2r": "Reges_II",
+    "ii rois": "Reges_II", "2 k": "Reges_II", "kings_ii": "Reges_II",
+    "reges_ii": "Reges_II",
+    # Isaiah -> Jesaia
+    "esaie": "Jesaia", "ésaïe": "Jesaia", "es": "Jesaia", "isa": "Jesaia",
+    "isaiah": "Jesaia", "jesaia": "Jesaia", "yeshayahu": "Jesaia",
+    "ישעיה": "Jesaia",
+    # Jeremiah -> Jeremia
+    "jeremie": "Jeremia", "jérémie": "Jeremia", "jer": "Jeremia",
+    "jeremiah": "Jeremia", "jeremia": "Jeremia", "yirmiyahu": "Jeremia",
+    "ירמיה": "Jeremia",
+    # Ezekiel -> Ezechiel (déjà correct)
+    "ezechiel": "Ezechiel", "ézéchiel": "Ezechiel", "ez": "Ezechiel",
+    "ezek": "Ezechiel", "ezekiel": "Ezechiel", "yechezkel": "Ezechiel",
+    "יחזקאל": "Ezechiel",
+    # Psalms -> Psalmi
+    "psaumes": "Psalmi", "psaume": "Psalmi", "ps": "Psalmi",
+    "psalm": "Psalmi", "psalms": "Psalmi", "psalmi": "Psalmi",
+    "tehillim": "Psalmi", "תהילים": "Psalmi",
+    # Proverbs -> Proverbia
+    "proverbes": "Proverbia", "prov": "Proverbia", "pr": "Proverbia",
+    "proverbs": "Proverbia", "proverbia": "Proverbia", "mishle": "Proverbia",
+    "משלי": "Proverbia",
+    # Job -> Iob
+    "job": "Iob", "iyov": "Iob", "iob": "Iob", "איוב": "Iob",
+    # Song of Songs -> Canticum
+    "cantique": "Canticum", "cant": "Canticum",
+    "cantique_des_cantiques": "Canticum", "song": "Canticum",
+    "song_of_songs": "Canticum", "canticum": "Canticum", "shir_hashirim": "Canticum",
+    "שיר השירים": "Canticum", "שיר_השירים": "Canticum",
+    # Ruth (déjà correct)
     "ruth": "Ruth", "rut": "Ruth", "רות": "Ruth",
-    # Lamentations
-    "lamentations": "Lamentations", "lam": "Lamentations",
-    "lamentations": "Lamentations", "eikha": "Lamentations", "איכה": "Lamentations",
-    # Ecclesiastes
+    # Lamentations -> Threni
+    "lamentations": "Threni", "lam": "Threni", "threni": "Threni",
+    "eikha": "Threni", "איכה": "Threni",
+    # Ecclesiastes (déjà correct)
     "ecclesiaste": "Ecclesiastes", "ecclésiaste": "Ecclesiastes",
     "eccl": "Ecclesiastes", "qo": "Ecclesiastes", "qohelet": "Ecclesiastes",
     "ecclesiastes": "Ecclesiastes", "קהלת": "Ecclesiastes",
-    # Esther
+    # Esther (déjà correct)
     "esther": "Esther", "est": "Esther", "es": "Esther", "אסתר": "Esther",
-    # Daniel
+    # Daniel (déjà correct)
     "daniel": "Daniel", "da": "Daniel", "dan": "Daniel", "דניאל": "Daniel",
-    # Ezra / Nehemiah
-    "esdras": "Ezra", "ezr": "Ezra", "ezra": "Ezra", "עזרא": "Ezra",
-    "nehemie": "Nehemiah", "néhémie": "Nehemiah", "ne": "Nehemiah",
-    "neh": "Nehemiah", "nehemiah": "Nehemiah", "נחמיה": "Nehemiah",
-    # Chronicles
-    "1 chroniques": "Chronicles_I", "1chr": "Chronicles_I", "1ch": "Chronicles_I",
-    "1chroniques": "Chronicles_I", "i chroniques": "Chronicles_I",
-    "2 chroniques": "Chronicles_II", "2chr": "Chronicles_II", "2ch": "Chronicles_II",
-    "2chroniques": "Chronicles_II", "ii chroniques": "Chronicles_II",
+    # Ezra -> Esra
+    "esdras": "Esra", "ezr": "Esra", "ezra": "Esra", "esra": "Esra",
+    "עזרא": "Esra",
+    # Nehemiah -> Nehemia
+    "nehemie": "Nehemia", "néhémie": "Nehemia", "ne": "Nehemia",
+    "neh": "Nehemia", "nehemiah": "Nehemia", "nehemia": "Nehemia",
+    "נחמיה": "Nehemia",
+    # Chronicles -> Chronica
+    "1 chroniques": "Chronica_I", "1chr": "Chronica_I", "1ch": "Chronica_I",
+    "1chroniques": "Chronica_I", "i chroniques": "Chronica_I",
+    "chronicles_i": "Chronica_I", "chronica_i": "Chronica_I",
+    "2 chroniques": "Chronica_II", "2chr": "Chronica_II", "2ch": "Chronica_II",
+    "2chroniques": "Chronica_II", "ii chroniques": "Chronica_II",
+    "chronicles_ii": "Chronica_II", "chronica_ii": "Chronica_II",
     # Minor prophets
     "oshee": "Hosea", "osee": "Hosea", "os": "Hosea", "ho": "Hosea",
     "hosea": "Hosea", "hoshéa": "Hosea", "הושע": "Hosea",
-    "joel": "Joel", "jo": "Joel", "jl": "Joel", "joël": "Joel", "יואל": "Joel",
+    "joel": "Joel", "jo": "Joel", "jl": "Joel", "joël": "Joel",
+    "יואל": "Joel",
     "amos": "Amos", "am": "Amos", "עמוס": "Amos",
-    "abdias": "Obadiah", "ob": "Obadiah", "obad": "Obadiah", "obadiah": "Obadiah",
-    "jonas": "Jonah", "jon": "Jonah", "jonah": "Jonah", "יונה": "Jonah",
-    "michee": "Micah", "michée": "Micah", "mi": "Micah", "micah": "Micah",
-    "mic": "Micah", "מיכה": "Micah",
+    # Obadiah -> Obadia
+    "abdias": "Obadia", "ob": "Obadia", "obad": "Obadia",
+    "obadiah": "Obadia", "obadia": "Obadia", "עובדיה": "Obadia",
+    # Jonah -> Jona
+    "jonas": "Jona", "jon": "Jona", "jonah": "Jona", "jona": "Jona",
+    "יונה": "Jona",
+    # Micah -> Micha
+    "michee": "Micha", "michée": "Micha", "mi": "Micha", "micah": "Micha",
+    "mic": "Micha", "micha": "Micha", "מיכה": "Micha",
+    # Nahum (déjà correct)
     "nahum": "Nahum", "na": "Nahum", "nah": "Nahum", "נחום": "Nahum",
-    "habacuc": "Habakkuk", "hab": "Habakkuk", "habakkuk": "Habakkuk",
-    "חבקוק": "Habakkuk",
-    "sophonie": "Zephaniah", "soph": "Zephaniah", "zep": "Zephaniah",
-    "zephaniah": "Zephaniah", "צפניה": "Zephaniah",
+    # Habakkuk -> Habakuk
+    "habacuc": "Habakuk", "hab": "Habakuk", "habakkuk": "Habakuk",
+    "habakuk": "Habakuk", "חבקוק": "Habakuk",
+    # Zephaniah -> Zephania (déjà correct)
+    "sophonie": "Zephania", "soph": "Zephania", "zep": "Zephania",
+    "zephaniah": "Zephania", "zephania": "Zephania", "צפניה": "Zephania",
+    # Haggai (déjà correct)
     "aggée": "Haggai", "aggee": "Haggai", "ag": "Haggai", "hag": "Haggai",
     "haggai": "Haggai", "חגי": "Haggai",
-    "zacharie": "Zechariah", "zc": "Zechariah", "zech": "Zechariah",
-    "zechariah": "Zechariah", "זכריה": "Zechariah",
-    "malachie": "Malachi", "mal": "Malachi", "malachi": "Malachi", "מלאכי": "Malachi",
+    # Zechariah -> Sacharia
+    "zacharie": "Sacharia", "zc": "Sacharia", "zech": "Sacharia",
+    "zechariah": "Sacharia", "sacharia": "Sacharia", "זכריה": "Sacharia",
+    # Malachi -> Maleachi
+    "malachie": "Maleachi", "mal": "Maleachi", "malachi": "Maleachi",
+    "maleachi": "Maleachi", "מלאכי": "Maleachi",
 }
 
 _REF_RE = re.compile(
