@@ -185,10 +185,14 @@ détectent :
 - **Règles contextuelles** (mode phrase) : waw conjonctif, négation + verbe,
   article défini + nom, état construit entre deux noms, marqueur d'objet אֵת.
 - **Traduction des mots (gloss)** : chaque mot hébreu est accompagné de sa
-  traduction courte en anglais (feature `gloss` de la BHSA). En mode verset,
-  elle s'affiche sous la forme `« see »` après le lemme ; en mode mot, une
-  ligne `Traduction (gloss) : create` est ajoutée ; en mode phrase, elle
-  apparaît dans les lectures possibles.
+  traduction courte. Le programme privilégie la **traduction française**,
+  issue du lexique Strong hébreu-français de Bible Strong (base interlinéaire
+  STEP, CC BY 4.0), alignée sur les lemmes BHSA par les consonnes du lemme
+  (~8 000 lemmes couverts, ≈98 % des occurrences). Les lemmes non couverts
+  retombent sur le gloss anglais de la BHSA. En mode verset, la traduction
+  s'affiche sous la forme `« Dieu »` après le lemme ; en mode mot, des lignes
+  `Traduction (fr)` / `Traduction (en)` ; en mode phrase, dans les lectures
+  possibles.
 
 ## Noms de livres
 

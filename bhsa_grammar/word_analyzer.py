@@ -14,8 +14,8 @@ donne les règles grammaticales possibles pour cette forme).
 """
 
 import unicodedata
-
 from . import morph_fr as M
+from . import lex_fr as FR
 
 
 def _strip_teamim(s):
@@ -136,7 +136,9 @@ def word_features(F, w):
     return {
         "text": F.g_word_utf8.v(w),
         "lex": g("lex_utf8"),
+        "lex_id": g("lex"),
         "gloss": g("gloss"),
+        "gloss_fr": FR.best_gloss(g("lex"), g("gloss")),
         "sp": g("sp"),
         "pdp": g("pdp"),
         "ls": g("ls"),
@@ -215,6 +217,7 @@ def analyze_word(F, L, form, limit=20):
                 "text": F.g_word_utf8.v(w),
                 "lex": desc["features"].get("lex"),
                 "gloss": desc["features"].get("gloss"),
+                "gloss_fr": desc["features"].get("gloss_fr"),
                 "features": desc["features"],
                 "rules": desc["rules"],
                 "count": 0,

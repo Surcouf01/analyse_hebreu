@@ -7,6 +7,7 @@ morphologiques et syntaxiques de la base BHSA.
 """
 
 from . import morph_fr as M
+from . import lex_fr as FR
 
 
 def _fv(F, name, node):
@@ -375,10 +376,13 @@ def analyze_verse(F, L, T, verse):
                     "words": [],
                 }
                 for w in L.d(p, "word"):
+                    lex_id = _clean(_fv(F, "lex", w)) or ""
+                    en_gloss = _clean(_fv(F, "gloss", w)) or ""
                     word = {
                         "text": F.g_word_utf8.v(w),
                         "lex": _clean(_fv(F, "lex_utf8", w)) or "",
-                        "gloss": _clean(_fv(F, "gloss", w)) or "",
+                        "gloss": en_gloss,
+                        "gloss_fr": FR.best_gloss(lex_id, en_gloss),
                         "rules": word_rules(F, L, w),
                     }
                     phrase["words"].append(word)
