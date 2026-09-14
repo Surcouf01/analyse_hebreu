@@ -32,6 +32,7 @@ from bhsa_grammar import (
     format_phrase,
     format_phrase_json,
     book_list,
+    book_list_fr,
     DataNotFoundError,
 )
 
@@ -91,9 +92,9 @@ def main(argv=None):
         return 2
 
     if args.list_books:
-        print("Livres disponibles :")
-        for b in book_list(api.F):
-            print(f"  - {b}")
+        print("Livres disponibles (nom français — nom BHSA) :")
+        for bhsa, fr in book_list_fr(api.F):
+            print(f"  - {fr}  ({bhsa})")
         return 0
 
     # Mode analyse de mot isolé

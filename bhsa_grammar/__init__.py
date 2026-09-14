@@ -9,7 +9,7 @@ Usage rapide :
 """
 
 from .loader import load_corpus, DataNotFoundError
-from .reference import parse_reference, find_verse, book_list
+from .reference import parse_reference, find_verse, book_list, book_list_fr, book_french
 from .rules import analyze_verse
 from .report import to_text, to_json, to_summary
 from .word_analyzer import analyze_word, search_word
@@ -22,6 +22,8 @@ __all__ = [
     "parse_reference",
     "find_verse",
     "book_list",
+    "book_list_fr",
+    "book_french",
     "analyze_verse",
     "analyze_verse_by_reference",
     "analyze_word",

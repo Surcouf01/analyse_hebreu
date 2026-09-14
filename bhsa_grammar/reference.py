@@ -190,6 +190,38 @@ def find_verse(F, L, book, chapter, verse):
     return None
 
 
+# Nom français usuel associé à chaque nom BHSA (forme latine).
+_BOOK_FR = {
+    "Genesis": "Genèse", "Exodus": "Exode", "Leviticus": "Lévitique",
+    "Numeri": "Nombres", "Deuteronomium": "Deutéronome",
+    "Josua": "Josué", "Judices": "Juges",
+    "Samuel_I": "1 Samuel", "Samuel_II": "2 Samuel",
+    "Reges_I": "1 Rois", "Reges_II": "2 Rois",
+    "Jesaia": "Ésaïe", "Jeremia": "Jérémie", "Ezechiel": "Ézéchiel",
+    "Hosea": "Osée", "Joel": "Joël", "Amos": "Amos", "Obadia": "Abdias",
+    "Jona": "Jonas", "Micha": "Michée", "Nahum": "Nahum",
+    "Habakuk": "Habacuc", "Zephania": "Sophonie", "Haggai": "Aggée",
+    "Sacharia": "Zacharie", "Maleachi": "Malachie",
+    "Psalmi": "Psaumes", "Iob": "Job", "Proverbia": "Proverbes",
+    "Ruth": "Ruth", "Canticum": "Cantique des Cantiques",
+    "Ecclesiastes": "Ecclésiaste", "Threni": "Lamentations",
+    "Esther": "Esther", "Daniel": "Daniel", "Esra": "Esdras",
+    "Nehemia": "Néhémie",
+    "Chronica_I": "1 Chroniques", "Chronica_II": "2 Chroniques",
+}
+
+
+def book_french(bhsa_name):
+    """Renvoie le nom français usuel d'un livre BHSA, ou le nom BHSA lui-même."""
+    return _BOOK_FR.get(bhsa_name, bhsa_name)
+
+
 def book_list(F):
     """Renvoie la liste des noms de livres disponibles dans la base."""
     return sorted({F.book.v(b) for b in F.otype.s("book")})
+
+
+def book_list_fr(F):
+    """Renvoie une liste ordonnée de (nom BHSA, nom français) pour chaque livre."""
+    names = sorted({F.book.v(b) for b in F.otype.s("book")})
+    return [(n, book_french(n)) for n in names]
