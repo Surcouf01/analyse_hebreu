@@ -162,6 +162,13 @@ pual, hitpael, hifil, hofal ; plus les rares hsht, nit, shaf, poal, poel, htpa,
 htpe, htpo, hotp), temps verbal (qatal, yiqtol, wayyiqtol, impératif, infinitif,
 participe), suffixe pronominal (personne/genre/nombre), waw conjonctif, article défini.
 
+**Diagnostics de binyan** — pour chaque verbe conjugué, des règles heuristiques
+(`[binyan] ...`) expliquent comment on reconnaît le binyan et pourquoi ce n'est
+pas un autre : marqueur de stem consonantique (`vbs` : H=hifil/hofal, HT=hitpael,
+N=nifal, absent=qal/piel/pual, C=shafel…), préformative visible (ה, נ, ת), et
+disambiguïsation par le schéma vocalique (hifil vs hofal : hireq/segol vs
+shureq/qamats ; qal vs piel vs pual : qamats vs hireq vs shureq).
+
 **Niveau syntagme** — type (nominal, prépositionnel, verbal…) et fonction
 (sujet, objet, prédicat, complément, circonstance de temps, frontalisé…),
 détermination (défini/indéterminé), chaîne d'état construit (סְמִיכוּת),

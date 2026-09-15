@@ -8,6 +8,7 @@ morphologiques et syntaxiques de la base BHSA.
 
 from . import morph_fr as M
 from . import lex_fr as FR
+from . import binyan_diag as BD
 
 
 def _fv(F, name, node):
@@ -91,6 +92,9 @@ def word_rules(F, L, w):
         rules.append(
             f"Verbe : binyan {stem}, {tense}, {person}, {gender}, {number}."
         )
+        # Diagnostics heuristiques du binyan (comment on le reconnaît).
+        for r in BD.binyan_diagnostics(F, w):
+            rules.append(r)
         if vt == "wayq":
             rules.append(
                 "Wayyiqtol : forme narrative séquentielle (waw + yiqtol), "
