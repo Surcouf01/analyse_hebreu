@@ -95,6 +95,8 @@ def _font(prop_family, prop_size):
 # Configurables via gui.properties (famille + taille en points).
 HEBREW_FONT = _font("font.input.family", "font.input.size")
 HEBREW_FONT_MONO = _font("font.output.family", "font.output.size")
+# Police du clavier virtuel : reprend la police/ taille de sortie (output).
+KEYBOARD_FONT = HEBREW_FONT_MONO
 
 
 # --- Clavier hébreu virtuel ------------------------------------------------
@@ -112,17 +114,21 @@ _NIKKUD = {
     "qamats_qatan": "\u05C7",  # ַ (qamats qatan / qamats hatuf)
 }
 
+# Libellés des touches de voyelles : glyphes Unicode purs. Les marques
+# combinantes (nikkud/dagesh) sont portées par un cercle pointillé (U+25CC ◌),
+# convention standard pour afficher un signe diacritique isolé.
+_CARRIER = "\u25CC"
 NIKKUD_LABELS = {
-    "qamats": "\u05B8 qamats",
-    "patach": "\u05B7 patach",
-    "segol": "\u05B6 segol",
-    "tsere": "\u05B5 tsere",
-    "hireq": "\u05B4 hireq",
-    "holem": "\u05B9 holem",
-    "qubuts": "\u05BB qubuts",
-    "sheva": "\u05B0 sheva",
-    "dagesh": "\u05BC dagesh",
-    "qamats_qatan": "\u05C7 q.qatan",
+    "qamats": _CARRIER + "\u05B8",
+    "patach": _CARRIER + "\u05B7",
+    "segol": _CARRIER + "\u05B6",
+    "tsere": _CARRIER + "\u05B5",
+    "hireq": _CARRIER + "\u05B4",
+    "holem": _CARRIER + "\u05B9",
+    "qubuts": _CARRIER + "\u05BB",
+    "sheva": _CARRIER + "\u05B0",
+    "dagesh": _CARRIER + "\u05BC",
+    "qamats_qatan": _CARRIER + "\u05C7",
 }
 
 
@@ -155,6 +161,10 @@ class HebrewKeyboard(ttk.Frame):
         # target_getter() renvoie le widget Entry/Text actuellement ciblé.
         self._get_target = target_getter
 
+        # Style de touche utilisant la police de sortie (configurable).
+        self._style = ttk.Style(self)
+        self._style.configure("HebKey.TButton", font=KEYBOARD_FONT)
+
         # Rangées de consonnes (disposition clavier hébreu standard).
         for row in _HEBREW_ROWS:
             row_frame = ttk.Frame(self)
@@ -172,11 +182,11 @@ class HebrewKeyboard(ttk.Frame):
         ctrl = ttk.Frame(self)
         ctrl.pack(fill="x", pady=(2, 0))
         self._make_key(ctrl, " ", "Espace", width=14)
-        self._make_key(ctrl, "\u05C3", "sof pasuq \u05C3", width=10)
+        self._make_key(ctrl, "\u05C3", _CARRIER + "\u05C3", width=10)
         self._make_key(ctrl, None, "\u232B Retour", width=12, action="backspace")
 
     def _make_key(self, parent, char, label, width=4, action=None):
-        btn = ttk.Button(parent, text=label, width=width,
+        btn = ttk.Button(parent, text=label, width=width, style="HebKey.TButton",
                          command=lambda c=char, a=action: self._press(c, a))
         btn.pack(side="left", padx=1, pady=1)
         return btn
