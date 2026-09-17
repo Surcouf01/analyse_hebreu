@@ -46,6 +46,13 @@ from bhsa_grammar import (
 )
 
 
+# Langues de traduction disponibles, avec leur libellé.
+TRANSLATIONS = (
+    ("fr", "Louis Segond 1910 (fr)"),
+    ("en", "King James Version 1611 (en)"),
+)
+
+
 def _load_properties():
     """Charge les tailles de police depuis gui.properties (à côté du script).
 
@@ -187,7 +194,7 @@ class AnalyseurGUI:
     def __init__(self, root):
         self.root = root
         self.api = None
-        self.translation = None  # index de traduction (Louis Segond 1910)
+        self.translations = {}  # {lang: index} traductions chargées
         self._work_queue = queue.Queue()
         self._target_widget = None  # widget actuellement ciblé par le clavier
 
@@ -263,6 +270,16 @@ class AnalyseurGUI:
         self.verse_no_words = tk.BooleanVar(value=False)
         ttk.Checkbutton(opts, text="Masquer le détail mot à mot",
                         variable=self.verse_no_words).pack(side="left", padx=(16, 0))
+
+        # Choix des traductions affichées.
+        trads = ttk.Frame(tab)
+        trads.pack(fill="x", padx=8, pady=(4, 0))
+        ttk.Label(trads, text="Traductions :").pack(side="left", padx=(0, 4))
+        self.verse_trans = {}
+        for lang, label in TRANSLATIONS:
+            var = tk.BooleanVar(value=True)
+            ttk.Checkbutton(trads, text=label, variable=var).pack(side="left", padx=4)
+            self.verse_trans[lang] = var
 
         self.btn_verse = ttk.Button(tab, text="Analyser le verset",
                                    command=self._run_verse)
@@ -393,15 +410,14 @@ class AnalyseurGUI:
             except Exception as exc:  # noqa: BLE001
                 self._work_queue.put(("error", repr(exc)))
 
-            # Chargement de la traduction (Louis Segond 1910, domaine public).
-            # Non bloquant : son absence ne prive que de la traduction, pas du
-            # reste de l'analyse.
-            try:
-                self.translation = load_translation()
-            except TranslationNotFoundError:
-                self.translation = None
-            except Exception:  # noqa: BLE001
-                self.translation = None
+            # Chargement des traductions (domaine public). Non bloquant :
+            # leur absence ne prive que de la traduction, pas du reste de
+            # l'analyse.
+            for lang, _label in TRANSLATIONS:
+                try:
+                    self.translations[lang] = load_translation(language=lang)
+                except (TranslationNotFoundError, Exception):  # noqa: BLE001
+                    self.translations[lang] = None
 
         threading.Thread(target=worker, daemon=True).start()
 
@@ -495,6 +511,39 @@ class AnalyseurGUI:
             for btn in (self.btn_verse, self.btn_word, self.btn_phrase):
                 btn.state(["!disabled"])
 
+    def _build_translation_header(self, analysis, fr, chap, verse, trans_enabled=None):
+        """Construit l'en-tête de traduction(s) pour le verset analysé.
+
+        ``trans_enabled`` est un dict {lang: bool} lu dans le thread principal.
+        """
+        b_book = analysis["reference"][0]
+        b_ch = analysis["reference"][1]
+        b_vs = analysis["reference"][2]
+        if trans_enabled is None:
+            trans_enabled = {lang: var.get()
+                            for lang, var in self.verse_trans.items()}
+        blocks = []
+        labels = {"fr": "Louis Segond 1910 (fr)", "en": "King James Version 1611 (en)"}
+        for lang, _label in TRANSLATIONS:
+            if not trans_enabled.get(lang):
+                continue
+            idx = self.translations.get(lang)
+            title = labels.get(lang, lang)
+            if idx is None:
+                continue
+            trans = get_translation(idx, b_book, b_ch, b_vs)
+            if trans:
+                blocks.append(f"Traduction ({title}) — {fr} {chap}:{verse}\n{trans}")
+            else:
+                blocks.append(
+                    f"Traduction ({title}) — {fr} {chap}:{verse}\n"
+                    "(verset absent de la traduction : numérotation différente "
+                    "de la BHSA)"
+                )
+        if blocks:
+            return "\n\n".join(blocks) + "\n\n"
+        return ""
+
     def _run_verse(self):
         if self.api is None:
             return
@@ -512,6 +561,9 @@ class AnalyseurGUI:
         reference = f"{fr} {chap}:{verse}"
         fmt = self.verse_format.get()
         no_words = self.verse_no_words.get()
+        # Lecture des choix de traduction dans le thread principal (Tkinter
+        # interdit l'accès aux variables Tk depuis un autre thread).
+        trans_enabled = {lang: var.get() for lang, var in self.verse_trans.items()}
         out = self.tab_verse._output
         self._disable_buttons()
         self.status.configure(text=f"Analyse : {reference}…")
@@ -519,13 +571,6 @@ class AnalyseurGUI:
         def worker():
             try:
                 analysis = analyze_verse_by_reference(self.api, reference)
-                # Traduction française (Louis Segond 1910) si disponible.
-                trans = None
-                if self.translation is not None:
-                    b_book = analysis["reference"][0]
-                    b_ch = analysis["reference"][1]
-                    b_vs = analysis["reference"][2]
-                    trans = get_translation(self.translation, b_book, b_ch, b_vs)
                 if fmt == "json":
                     result = format_json(analysis)
                 elif fmt == "summary":
@@ -538,20 +583,8 @@ class AnalyseurGUI:
                     result = "\n".join(lines)
                 else:
                     result = format_text(analysis, verbose_words=not no_words)
-                # Préfixe : traduction française affichée en tête.
-                if trans:
-                    header = (
-                        f"Traduction (Louis Segond 1910) — {fr} {chap}:{verse}\n"
-                        f"{trans}\n\n"
-                    )
-                elif self.translation is not None:
-                    header = (
-                        f"Traduction (Louis Segond 1910) — {fr} {chap}:{verse}\n"
-                        "(verset absent de la traduction : numérotation Segond "
-                        "différente de la BHSA)\n\n"
-                    )
-                else:
-                    header = ""
+                header = self._build_translation_header(
+                    analysis, fr, chap, verse, trans_enabled)
                 self._work_queue.put(("verse_done", header + result))
             except ValueError as exc:
                 self._work_queue.put(("verse_done", f"Erreur : {exc}"))

@@ -84,6 +84,12 @@ def build_parser():
              "du verset analysé, avant l'analyse grammaticale.",
     )
     p.add_argument(
+        "--translation-en",
+        action="store_true",
+        help="Affiche aussi la traduction anglaise (King James Version 1611, "
+             "domaine public) du verset analysé.",
+    )
+    p.add_argument(
         "--list-books",
         action="store_true",
         help="Liste les livres disponibles et quitte.",
@@ -174,23 +180,25 @@ def main(argv=None):
         print(f"Erreur : {exc}", file=sys.stderr)
         return 1
 
-    if args.translation and args.format != "json":
+    b_book, b_ch, b_vs = analysis["reference"]
+    def _print_translation(lang, title, enabled):
+        if not enabled or args.format == "json":
+            return
         try:
-            trans_idx = load_translation()
+            idx = load_translation(language=lang)
         except TranslationNotFoundError:
-            trans_idx = None
-        if trans_idx is not None:
-            b_book, b_ch, b_vs = analysis["reference"]
-            trans = get_translation(trans_idx, b_book, b_ch, b_vs)
-            if trans:
-                print(f"Traduction (Louis Segond 1910) — {b_book} {b_ch}:{b_vs}")
-                print(trans)
-                print()
-            else:
-                print(f"Traduction (Louis Segond 1910) — {b_book} {b_ch}:{b_vs}")
-                print("(verset absent de la traduction : numérotation Segond "
-                      "différente de la BHSA)")
-                print()
+            return
+        trans = get_translation(idx, b_book, b_ch, b_vs)
+        print(f"Traduction ({title}) — {b_book} {b_ch}:{b_vs}")
+        if trans:
+            print(trans)
+        else:
+            print("(verset absent de la traduction : numérotation différente "
+                  "de la BHSA)")
+        print()
+
+    _print_translation("fr", "Louis Segond 1910", args.translation)
+    _print_translation("en", "King James Version 1611", args.translation_en)
 
     if args.format == "json":
         print(format_json(analysis))

@@ -18,10 +18,15 @@ Le module accepte aussi le format JSON Louis Segond 1910 (structure
 ``Testaments → Books → Chapters → Verses``) tel que distribué par
 juliend2/data-bible (domaine public).
 
+Une seconde traduction (anglaise) est supportée : la **King James Version**
+(1611, domaine public), stockée au même format texte plat dans
+``data/kjv_1611.txt``.
+
 Localisation du fichier (priorité) :
-  1. variable d'environnement ``TRANSLATION_DATA`` ;
-  2. ``data/louis_segond_1910.txt`` à côté du paquet ;
-  3. ``data/louis_segond_1910.json`` à côté du paquet.
+  - traduction française : variable d'env ``TRANSLATION_DATA`` puis
+    ``data/louis_segond_1910.txt`` (ou ``.json``) à côté du paquet ;
+  - traduction anglaise : variable d'env ``TRANSLATION_EN_DATA`` puis
+    ``data/kjv_1611.txt`` à côté du paquet.
 """
 
 import json
@@ -34,16 +39,21 @@ class TranslationNotFoundError(RuntimeError):
     """Levée quand aucun fichier de traduction n'est trouvé."""
 
 
-def _candidate_paths():
+def _candidate_paths(language="fr"):
     paths = []
-    env = os.environ.get("TRANSLATION_DATA")
+    if language == "fr":
+        env = os.environ.get("TRANSLATION_DATA")
+        names = ("louis_segond_1910.txt", "louis_segond_1910.json")
+    else:
+        env = os.environ.get("TRANSLATION_EN_DATA")
+        names = ("kjv_1611.txt",)
     if env:
         paths.append(env)
     here = os.path.dirname(os.path.abspath(__file__))
     data_dir = os.path.join(os.path.dirname(here), "data")
-    for name in ("louis_segond_1910.txt", "louis_segond_1910.json"):
+    for name in names:
         paths.append(os.path.join(data_dir, name))
-    paths.append(os.path.join(here, "data", name))
+        paths.append(os.path.join(here, "data", name))
     return paths
 
 
@@ -81,16 +91,17 @@ def _parse_json(path):
     return index
 
 
-def load_translation(path=None):
+def load_translation(path=None, language="fr"):
     """Charge et renvoie un index {(book_bhsa): {chap: {verse: texte}}}.
 
-    Si ``path`` est None, cherche automatiquement un fichier de traduction.
+    Si ``path`` est None, cherche automatiquement un fichier de traduction
+    pour la langue demandée (``"fr"`` = Louis Segond 1910, ``"en"`` = KJV).
     Lève ``TranslationNotFoundError`` si rien n'est trouvé.
     """
     if path:
         candidates = [path]
     else:
-        candidates = _candidate_paths()
+        candidates = _candidate_paths(language=language)
 
     for cand in candidates:
         if not cand or not os.path.isfile(cand):
@@ -99,9 +110,11 @@ def load_translation(path=None):
             return _parse_json(cand)
         return _parse_flat(cand)
 
+    name = "louis_segond_1910.txt (fr)" if language == "fr" else "kjv_1611.txt (en)"
+    var = "TRANSLATION_DATA" if language == "fr" else "TRANSLATION_EN_DATA"
     raise TranslationNotFoundError(
-        "Aucun fichier de traduction trouvé. Placez data/louis_segond_1910.txt "
-        "(ou .json) à côté du paquet, ou définissez TRANSLATION_DATA."
+        f"Aucun fichier de traduction trouvé ({name}). Placez data/{name} "
+        f"à côté du paquet, ou définissez la variable d'environnement {var}."
     )
 
 
