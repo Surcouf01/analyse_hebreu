@@ -45,7 +45,7 @@ from bhsa_grammar import (
 # Police affichant l'hébreu (points-voyelles + daguesh) sur la plupart des
 # systèmes. Tkinter retombe sur une police équivalente si elle est absente.
 HEBREW_FONT = ("DejaVu Sans", 14)
-HEBREW_FONT_MONO = ("DejaVu Sans Mono", 12)
+HEBREW_FONT_MONO = ("DejaVu Sans Mono", 20)
 
 
 # --- Clavier hébreu virtuel ------------------------------------------------
