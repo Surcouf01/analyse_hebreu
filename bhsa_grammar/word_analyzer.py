@@ -179,7 +179,7 @@ def describe_word(F, L, w):
     }
 
 
-def analyze_word(F, L, form, limit=20):
+def analyze_word(F, L, form, limit=1000):
     """Analyse un mot isolé et renvoie une structure décrivant les analyses.
 
     Renvoie :
