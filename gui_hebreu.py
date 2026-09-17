@@ -97,6 +97,11 @@ HEBREW_FONT = _font("font.input.family", "font.input.size")
 HEBREW_FONT_MONO = _font("font.output.family", "font.output.size")
 # Police du clavier virtuel : reprend la police/ taille de sortie (output).
 KEYBOARD_FONT = HEBREW_FONT_MONO
+# Police des touches de voyelles (nikkud/dagesh/ratafim) : 5 points plus
+# petite que celle des consonnes, afin que la rangée de voyelles tienne sur
+# une largeur d'écran ordinaire.
+_v_fam, _v_size = KEYBOARD_FONT
+KEYBOARD_FONT_VOWELS = (_v_fam, max(6, _v_size - 5))
 
 
 # --- Clavier hébreu virtuel ------------------------------------------------
@@ -175,6 +180,9 @@ class HebrewKeyboard(ttk.Frame):
         self._style = ttk.Style(self)
         self._style.configure("HebKey.TButton", font=KEYBOARD_FONT,
                               padding=(2, 10))
+        # Style des touches de voyelles : police plus petite (5 points de moins).
+        self._style.configure("HebKeyVowel.TButton", font=KEYBOARD_FONT_VOWELS,
+                              padding=(2, 10))
 
         # Rangées de consonnes (disposition clavier hébreu standard).
         for row in _HEBREW_ROWS:
@@ -187,17 +195,20 @@ class HebrewKeyboard(ttk.Frame):
         nik_frame = ttk.Frame(self)
         nik_frame.pack(fill="x", pady=(4, 2))
         for key, label in NIKKUD_LABELS.items():
-            self._make_key(nik_frame, _NIKKUD[key], label)
+            self._make_key(nik_frame, _NIKKUD[key], label,
+                           style="HebKeyVowel.TButton")
 
         # Rangée de contrôles.
         ctrl = ttk.Frame(self)
         ctrl.pack(fill="x", pady=(2, 0))
         self._make_key(ctrl, " ", "Espace", width=14)
-        self._make_key(ctrl, "\u05C3", _CARRIER + "\u05C3", width=10)
+        self._make_key(ctrl, "\u05C3", _CARRIER + "\u05C3", width=10,
+                       style="HebKeyVowel.TButton")
         self._make_key(ctrl, None, "\u232B Retour", width=12, action="backspace")
 
-    def _make_key(self, parent, char, label, width=4, action=None):
-        btn = ttk.Button(parent, text=label, width=width, style="HebKey.TButton",
+    def _make_key(self, parent, char, label, width=4, action=None,
+                  style="HebKey.TButton"):
+        btn = ttk.Button(parent, text=label, width=width, style=style,
                          command=lambda c=char, a=action: self._press(c, a))
         btn.pack(side="left", padx=1, pady=1)
         return btn
@@ -234,8 +245,8 @@ class AnalyseurGUI:
         self._target_widget = None  # widget actuellement ciblé par le clavier
 
         root.title("Analyseur grammatical de l'hébreu biblique")
-        root.geometry("1080x1000")
-        root.minsize(920, 760)
+        root.geometry("1200x1000")
+        root.minsize(1000, 760)
 
         self._build_widgets()
         self._start_loading()
@@ -400,7 +411,7 @@ class AnalyseurGUI:
         frame = ttk.LabelFrame(parent, text="Résultat")
         frame.pack(fill="both", expand=True, padx=8, pady=(0, 8))
         self.output_text = tk.Text(frame, font=HEBREW_FONT_MONO, wrap="none",
-                                   height=10)
+                                   height=10, width=60)
         self.output_text.grid(row=0, column=0, sticky="nsew")
         yscroll = ttk.Scrollbar(frame, orient="vertical",
                                command=self.output_text.yview)
