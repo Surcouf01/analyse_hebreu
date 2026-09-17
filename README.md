@@ -74,6 +74,24 @@ La base BHSA est chargée en arrière-plan au démarrage ; les boutons restent
 inactifs jusqu'à la fin du chargement. Les analyses s'exécutent dans des
 threads séparés afin de ne pas figer la fenêtre.
 
+#### Personnalisation de l'affichage
+
+Les polices (saisie de l'hébreu et zone de résultat) sont paramétrables via
+le fichier **`gui.properties`**, placé à côté de `gui_hebreu.py`. Les tailles
+sont exprimées en points : modifier les valeurs et relancer `gui_hebreu.py`
+ Suffit ; aucun changement de code n'est nécessaire.
+
+```properties
+font.input.family  = DejaVu Sans
+font.input.size     = 14
+font.output.family  = DejaVu Sans Mono
+font.output.size    = 20
+```
+
+La zone de résultat dispose d'un **ascenseur vertical et horizontal** : les
+longues lignes ne sont pas coupées (`wrap=none`) et peuvent être défiler
+latéralement si elles dépassent du cadre.
+
 ### En ligne de commande
 
 Analyse d'un verset complet :
@@ -175,6 +193,7 @@ print(format_text(analyse))
 ```
 analyse_hebreu.py        # CLI (mode verset, mot, phrase)
 gui_hebreu.py           # interface graphique Tkinter (mêmes fonctions que le CLI)
+gui.properties         # polices/tailles d'affichage du GUI (points)
 bhsa_grammar/
   __init__.py            # API publique (load_corpus, analyze_*, format_*)
   loader.py              # localisation + chargement de la base BHSA (Text-Fabric)

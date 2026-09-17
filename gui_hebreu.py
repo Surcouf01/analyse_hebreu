@@ -20,6 +20,7 @@ Lancement :
 La base BHSA est chargée en arrière-plan au démarrage (cf. ``bhsa_grammar``).
 """
 
+import os
 import queue
 import threading
 import tkinter as tk
@@ -42,10 +43,48 @@ from bhsa_grammar import (
 )
 
 
-# Police affichant l'hébreu (points-voyelles + daguesh) sur la plupart des
-# systèmes. Tkinter retombe sur une police équivalente si elle est absente.
-HEBREW_FONT = ("DejaVu Sans", 14)
-HEBREW_FONT_MONO = ("DejaVu Sans Mono", 20)
+def _load_properties():
+    """Charge les tailles de police depuis gui.properties (à côté du script).
+
+    En cas d'absence ou d'erreur, retombe sur les valeurs par défaut.
+    """
+    defaults = {
+        "font.input.family": "DejaVu Sans",
+        "font.input.size": "14",
+        "font.output.family": "DejaVu Sans Mono",
+        "font.output.size": "20",
+    }
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        "gui.properties")
+    try:
+        with open(path, encoding="utf-8") as fh:
+            for raw in fh:
+                line = raw.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                key, _, value = line.partition("=")
+                defaults[key.strip()] = value.strip()
+    except OSError:
+        pass
+    return defaults
+
+
+_PROPS = _load_properties()
+
+
+def _font(prop_family, prop_size):
+    try:
+        size = int(_PROPS[prop_size])
+    except (ValueError, KeyError):
+        size = 14
+    family = _PROPS.get(prop_family, "DejaVu Sans")
+    return (family, size)
+
+
+# Polices : saisie de l'hébreu (Mot/Phrase) et zone de résultat.
+# Configurables via gui.properties (famille + taille en points).
+HEBREW_FONT = _font("font.input.family", "font.input.size")
+HEBREW_FONT_MONO = _font("font.output.family", "font.output.size")
 
 
 # --- Clavier hébreu virtuel ------------------------------------------------
