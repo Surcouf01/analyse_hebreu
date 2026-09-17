@@ -112,6 +112,10 @@ _NIKKUD = {
     "sheva": "\u05B0",       # ְ
     "dagesh": "\u05BC",     # ּ
     "qamats_qatan": "\u05C7",  # ַ (qamats qatan / qamats hatuf)
+    # Ratafim (hateph) : voyelles ultracourtes.
+    "hateph_segol": "\u05B1",   # ֱ
+    "hateph_patach": "\u05B2",  # ֲ
+    "hateph_qamats": "\u05B3",  # ֳ
 }
 
 # Libellés des touches de voyelles : glyphes Unicode purs. Les marques
@@ -129,6 +133,10 @@ NIKKUD_LABELS = {
     "sheva": _CARRIER + "\u05B0",
     "dagesh": _CARRIER + "\u05BC",
     "qamats_qatan": _CARRIER + "\u05C7",
+    # Ratafim (hateph) : voyelles ultracourtes.
+    "hateph_segol": _CARRIER + "\u05B1",
+    "hateph_patach": _CARRIER + "\u05B2",
+    "hateph_qamats": _CARRIER + "\u05B3",
 }
 
 
