@@ -63,6 +63,8 @@ L'interface comporte trois onglets :
   **bornées aux limites réelles** de la base BHSA (on ne peut pas
   sélectionner un chapitre ou un verset inexistant). Formats disponibles :
   texte, synthèse, JSON ; option « masquer le détail mot à mot ».
+  La **traduction française (Louis Segond 1910, domaine public)** du verset
+  est affichée en tête du résultat si elle est disponible.
 - **Mot** : analyse d'un mot hébreu isolé, saisi à l'aide d'un **clavier
   hébreu virtuel** (consonnes + points-voyelles/nikkud + daguesh, en UTF-8).
   Un clavier physique en hébreu reste utilisable : la saisie se fait toujours
@@ -92,6 +94,24 @@ La zone de résultat dispose d'un **ascenseur vertical et horizontal** : les
 longues lignes ne sont pas coupées (`wrap=none`) et peuvent être défiler
 latéralement si elles dépassent du cadre.
 
+#### Traduction française (Louis Segond 1910)
+
+L'onglet **Verset** affiche, en tête du résultat, la traduction française du
+verset analysé, tirée de la **Bible Louis Segond 1910** (domaine public). Le
+fichier de traduction est fourni avec le projet : `data/louis_segond_1910.txt`
+(un verset par ligne, indexé par nom BHSA / chapitre / verset).
+
+Le chargement est automatique si le fichier est présent ; s'il est absent,
+l'analyse grammaticale fonctionne normalement (sans traduction). On peut
+forcer un autre chemin via la variable d'environnement `TRANSLATION_DATA`.
+
+> **Note sur la numérotation** : la numérotation des versets en Segond 1910
+> diffère parfois de celle de la base BHSA (hébraïque). Par exemple
+> *1 Rois 22* s'arrête à 22:53 en Segond mais à 22:54 dans la BHSA. Dans ce
+cas, le programme affiche un message indiquant que le verset est absent de
+> la traduction.
+
+
 ### En ligne de commande
 
 Analyse d'un verset complet :
@@ -99,6 +119,7 @@ Analyse d'un verset complet :
 python analyse_hebreu.py "Genèse 1:1"
 python analyse_hebreu.py "Gen 1:1" --no-words        # sans détail mot à mot
 python analyse_hebreu.py "Genesis 1:1" --format json # sortie JSON
+python analyse_hebreu.py "Genèse 1:1" --translation # + traduction Louis Segond
 python analyse_hebreu.py "Psaume 23:1" --format summary
 python analyse_hebreu.py --list-books                # livres disponibles
 ```
@@ -194,6 +215,8 @@ print(format_text(analyse))
 analyse_hebreu.py        # CLI (mode verset, mot, phrase)
 gui_hebreu.py           # interface graphique Tkinter (mêmes fonctions que le CLI)
 gui.properties         # polices/tailles d'affichage du GUI (points)
+data/
+  louis_segond_1910.txt  # traduction française Louis Segond 1910 (domaine public)
 bhsa_grammar/
   __init__.py            # API publique (load_corpus, analyze_*, format_*)
   loader.py              # localisation + chargement de la base BHSA (Text-Fabric)

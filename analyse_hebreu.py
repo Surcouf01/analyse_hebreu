@@ -34,6 +34,9 @@ from bhsa_grammar import (
     book_list,
     book_list_fr,
     DataNotFoundError,
+    load_translation,
+    get_translation,
+    TranslationNotFoundError,
 )
 
 
@@ -73,6 +76,12 @@ def build_parser():
         "--no-words",
         action="store_true",
         help="En format text, masque le détail mot à mot.",
+    )
+    p.add_argument(
+        "--translation",
+        action="store_true",
+        help="Affiche la traduction française (Louis Segond 1910, domaine public) "
+             "du verset analysé, avant l'analyse grammaticale.",
     )
     p.add_argument(
         "--list-books",
@@ -164,6 +173,24 @@ def main(argv=None):
     except ValueError as exc:
         print(f"Erreur : {exc}", file=sys.stderr)
         return 1
+
+    if args.translation and args.format != "json":
+        try:
+            trans_idx = load_translation()
+        except TranslationNotFoundError:
+            trans_idx = None
+        if trans_idx is not None:
+            b_book, b_ch, b_vs = analysis["reference"]
+            trans = get_translation(trans_idx, b_book, b_ch, b_vs)
+            if trans:
+                print(f"Traduction (Louis Segond 1910) — {b_book} {b_ch}:{b_vs}")
+                print(trans)
+                print()
+            else:
+                print(f"Traduction (Louis Segond 1910) — {b_book} {b_ch}:{b_vs}")
+                print("(verset absent de la traduction : numérotation Segond "
+                      "différente de la BHSA)")
+                print()
 
     if args.format == "json":
         print(format_json(analysis))

@@ -40,6 +40,9 @@ from bhsa_grammar import (
     format_phrase_json,
     book_french,
     DataNotFoundError,
+    load_translation,
+    get_translation,
+    TranslationNotFoundError,
 )
 
 
@@ -184,6 +187,7 @@ class AnalyseurGUI:
     def __init__(self, root):
         self.root = root
         self.api = None
+        self.translation = None  # index de traduction (Louis Segond 1910)
         self._work_queue = queue.Queue()
         self._target_widget = None  # widget actuellement ciblé par le clavier
 
@@ -389,6 +393,16 @@ class AnalyseurGUI:
             except Exception as exc:  # noqa: BLE001
                 self._work_queue.put(("error", repr(exc)))
 
+            # Chargement de la traduction (Louis Segond 1910, domaine public).
+            # Non bloquant : son absence ne prive que de la traduction, pas du
+            # reste de l'analyse.
+            try:
+                self.translation = load_translation()
+            except TranslationNotFoundError:
+                self.translation = None
+            except Exception:  # noqa: BLE001
+                self.translation = None
+
         threading.Thread(target=worker, daemon=True).start()
 
     def _on_corpus_loaded(self, api):
@@ -505,6 +519,13 @@ class AnalyseurGUI:
         def worker():
             try:
                 analysis = analyze_verse_by_reference(self.api, reference)
+                # Traduction française (Louis Segond 1910) si disponible.
+                trans = None
+                if self.translation is not None:
+                    b_book = analysis["reference"][0]
+                    b_ch = analysis["reference"][1]
+                    b_vs = analysis["reference"][2]
+                    trans = get_translation(self.translation, b_book, b_ch, b_vs)
                 if fmt == "json":
                     result = format_json(analysis)
                 elif fmt == "summary":
@@ -517,7 +538,21 @@ class AnalyseurGUI:
                     result = "\n".join(lines)
                 else:
                     result = format_text(analysis, verbose_words=not no_words)
-                self._work_queue.put(("verse_done", result))
+                # Préfixe : traduction française affichée en tête.
+                if trans:
+                    header = (
+                        f"Traduction (Louis Segond 1910) — {fr} {chap}:{verse}\n"
+                        f"{trans}\n\n"
+                    )
+                elif self.translation is not None:
+                    header = (
+                        f"Traduction (Louis Segond 1910) — {fr} {chap}:{verse}\n"
+                        "(verset absent de la traduction : numérotation Segond "
+                        "différente de la BHSA)\n\n"
+                    )
+                else:
+                    header = ""
+                self._work_queue.put(("verse_done", header + result))
             except ValueError as exc:
                 self._work_queue.put(("verse_done", f"Erreur : {exc}"))
 
