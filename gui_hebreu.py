@@ -231,8 +231,8 @@ class AnalyseurGUI:
         self._target_widget = None  # widget actuellement ciblé par le clavier
 
         root.title("Analyseur grammatical de l'hébreu biblique")
-        root.geometry("980x720")
-        root.minsize(820, 600)
+        root.geometry("1080x1000")
+        root.minsize(920, 760)
 
         self._build_widgets()
         self._start_loading()
@@ -396,7 +396,8 @@ class AnalyseurGUI:
     def _build_output(self, parent):
         frame = ttk.LabelFrame(parent, text="Résultat")
         frame.pack(fill="both", expand=True, padx=8, pady=(0, 8))
-        self.output_text = tk.Text(frame, font=HEBREW_FONT_MONO, wrap="none")
+        self.output_text = tk.Text(frame, font=HEBREW_FONT_MONO, wrap="none",
+                                   height=10)
         self.output_text.grid(row=0, column=0, sticky="nsew")
         yscroll = ttk.Scrollbar(frame, orient="vertical",
                                command=self.output_text.yview)
