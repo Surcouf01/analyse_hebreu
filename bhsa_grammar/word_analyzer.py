@@ -29,13 +29,22 @@ def _normalize(s):
 
 
 def _strip_nikkud(s):
-    """Retire le nikkud (points-voyelles U+05B0..U+05BC, U+05C7) et les teamim."""
+    """Retire le nikkud (points-voyelles U+05B0..U+05BC, U+05C7), les teamim
+    et le point de shin/sin (U+05C1/U+05C2).
+
+    Le point de shin/sin n'est pas une voyelle : il distingue שׁ (shin) de
+    שׂ (sin). La base BHSA le conserve dans g_cons_utf8, mais un utilisateur
+    saisissant ש (sans point) doit quand même retrouver les formes avec shin
+    ou sin. On le retire donc de la forme consonantique de fallback ; la
+    recherche exacte (g_word_utf8) conserve le point.
+    """
     return "".join(
         c
         for c in s
         if not (
             0x05B0 <= ord(c) <= 0x05BC
             or ord(c) == 0x05C7
+            or ord(c) in (0x05C1, 0x05C2)
             or 0x0591 <= ord(c) <= 0x05AF
         )
     )
@@ -110,7 +119,7 @@ def search_word(F, form, limit=20):
         for w in F.otype.s("word"):
             gword = _normalize(F.g_word_utf8.v(w))
             idx["word"].setdefault(gword, []).append(w)
-            gcons = F.g_cons_utf8.v(w)
+            gcons = _strip_nikkud(_normalize(F.g_cons_utf8.v(w)))
             if gcons:
                 idx["cons"].setdefault(gcons, []).append(w)
         F._hebrew_word_index = idx

@@ -117,6 +117,9 @@ _NIKKUD = {
     "sheva": "\u05B0",       # ְ
     "dagesh": "\u05BC",     # ּ
     "qamats_qatan": "\u05C7",  # ַ (qamats qatan / qamats hatuf)
+    # Points de shin/sin (distinguent שׁ shin de שׂ sin).
+    "shin_dot": "\u05C1",   # שׁ (shin)
+    "sin_dot": "\u05C2",   # שׂ (sin)
     # Ratafim (hateph) : voyelles ultracourtes.
     "hateph_segol": "\u05B1",   # ֱ
     "hateph_patach": "\u05B2",  # ֲ
@@ -138,6 +141,9 @@ NIKKUD_LABELS = {
     "sheva": _CARRIER + "\u05B0",
     "dagesh": _CARRIER + "\u05BC",
     "qamats_qatan": _CARRIER + "\u05C7",
+    # Points de shin/sin.
+    "shin_dot": "\u05E9\u05C1",
+    "sin_dot": "\u05E9\u05C2",
     # Ratafim (hateph) : voyelles ultracourtes.
     "hateph_segol": _CARRIER + "\u05B1",
     "hateph_patach": _CARRIER + "\u05B2",
