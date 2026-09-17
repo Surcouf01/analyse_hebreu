@@ -304,11 +304,18 @@ class AnalyseurGUI:
     def _build_output(self, parent):
         frame = ttk.LabelFrame(parent, text="Résultat")
         frame.pack(fill="both", expand=True, padx=8, pady=(0, 8))
-        self.output_text = tk.Text(frame, font=HEBREW_FONT_MONO, wrap="word")
-        self.output_text.pack(side="left", fill="both", expand=True)
-        scroll = ttk.Scrollbar(frame, command=self.output_text.yview)
-        scroll.pack(side="right", fill="y")
-        self.output_text.configure(yscrollcommand=scroll.set)
+        self.output_text = tk.Text(frame, font=HEBREW_FONT_MONO, wrap="none")
+        self.output_text.grid(row=0, column=0, sticky="nsew")
+        yscroll = ttk.Scrollbar(frame, orient="vertical",
+                               command=self.output_text.yview)
+        yscroll.grid(row=0, column=1, sticky="ns")
+        xscroll = ttk.Scrollbar(frame, orient="horizontal",
+                               command=self.output_text.xview)
+        xscroll.grid(row=1, column=0, sticky="ew")
+        self.output_text.configure(yscrollcommand=yscroll.set,
+                                   xscrollcommand=xscroll.set)
+        frame.columnconfigure(0, weight=1)
+        frame.rowconfigure(0, weight=1)
         self.output_text.configure(state="disabled")
         # Associer la zone de résultat partagée (une par onglet).
         parent._output = self.output_text
