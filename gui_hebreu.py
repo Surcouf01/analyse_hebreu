@@ -126,37 +126,51 @@ NIKKUD_LABELS = {
 }
 
 
+# Disposition du clavier hébreu standard (Israel), par rangée.
+# Chaque rangée correspond à une rangée physique d'un vrai clavier.
+_HEBREW_ROWS = (
+    # Rangée 1 (chiffres omises) : ;  /  '  ק ר א ט ו ן ם פ
+    (";", "/", "'", "\u05E7", "\u05E8", "\u05D0", "\u05D8", "\u05D5",
+     "\u05DF", "\u05DD", "\u05E4"),
+    # Rangée 2 : ש ד ג כ ע י ח ל ך ף
+    ("\u05E9", "\u05D3", "\u05D2", "\u05DB", "\u05E2", "\u05D9", "\u05D7",
+     "\u05DC", "\u05DA", "\u05E3"),
+    # Rangée 3 : ז ס ב ה נ מ צ ת ץ
+    ("\u05D6", "\u05E1", "\u05D1", "\u05D4", "\u05E0", "\u05DE",
+     "\u05E6", "\u05EA", "\u05E5"),
+)
+
+
 class HebrewKeyboard(ttk.Frame):
     """Clavier hébreu virtuel qui insère des caractères UTF-8 dans le widget
-    texte ciblé (Entry ou Text)."""
+    texte ciblé (Entry ou Text).
+
+    La disposition des consonnes reproduit celle d'un vrai clavier hébreu
+    (3 rangées), suivie d'une rangée de points-voyelles (nikkud) et dagesh,
+    puis d'une rangée de contrôles (espace, sof pasuq, retour).
+    """
 
     def __init__(self, master, target_getter):
         super().__init__(master)
         # target_getter() renvoie le widget Entry/Text actuellement ciblé.
         self._get_target = target_getter
 
-        consonants = [
-            "\u05D0", "\u05D1", "\u05D2", "\u05D3", "\u05D4", "\u05D5",
-            "\u05D6", "\u05D7", "\u05D8", "\u05D9", "\u05DB", "\u05DA",
-            "\u05DC", "\u05DE", "\u05DD", "\u05E0", "\u05DF", "\u05E1",
-            "\u05E2", "\u05E4", "\u05E3", "\u05E6", "\u05E5", "\u05E7",
-            "\u05E8", "\u05E9", "\u05EA",
-        ]
-        # Row of consonants
-        cons_frame = ttk.Frame(self)
-        cons_frame.pack(fill="x", pady=(0, 4))
-        for ch in consonants:
-            self._make_key(cons_frame, ch, ch)
+        # Rangées de consonnes (disposition clavier hébreu standard).
+        for row in _HEBREW_ROWS:
+            row_frame = ttk.Frame(self)
+            row_frame.pack(fill="x", pady=(0, 2))
+            for ch in row:
+                self._make_key(row_frame, ch, ch)
 
-        # Row of vowel points (nikkud) + dagesh
+        # Rangée de points-voyelles (nikkud) + dagesh.
         nik_frame = ttk.Frame(self)
-        nik_frame.pack(fill="x")
+        nik_frame.pack(fill="x", pady=(4, 2))
         for key, label in NIKKUD_LABELS.items():
             self._make_key(nik_frame, _NIKKUD[key], label)
 
-        # Control row
+        # Rangée de contrôles.
         ctrl = ttk.Frame(self)
-        ctrl.pack(fill="x", pady=(4, 0))
+        ctrl.pack(fill="x", pady=(2, 0))
         self._make_key(ctrl, " ", "Espace", width=14)
         self._make_key(ctrl, "\u05C3", "sof pasuq \u05C3", width=10)
         self._make_key(ctrl, None, "\u232B Retour", width=12, action="backspace")
