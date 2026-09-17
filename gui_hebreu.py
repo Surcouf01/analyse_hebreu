@@ -170,8 +170,11 @@ class HebrewKeyboard(ttk.Frame):
         self._get_target = target_getter
 
         # Style de touche utilisant la police de sortie (configurable).
+        # Padding vertical accru pour que les diacritiques hauts (ex. hateph
+        # qamats U+05B3) portés par le cercle ◌ ne soient pas tronqués.
         self._style = ttk.Style(self)
-        self._style.configure("HebKey.TButton", font=KEYBOARD_FONT)
+        self._style.configure("HebKey.TButton", font=KEYBOARD_FONT,
+                              padding=(2, 10))
 
         # Rangées de consonnes (disposition clavier hébreu standard).
         for row in _HEBREW_ROWS:
