@@ -42,6 +42,38 @@ répertoire de travail courant ou depuis `/workspace`.
 
 ## Utilisation
 
+### En interface graphique
+
+Une fenêtre graphique (Tkinter) reprend chacune des fonctions du CLI. Elle se
+lance par :
+
+```bash
+python gui_hebreu.py
+```
+
+Pré-requis : `tkinter` (inclus dans la plupart des distributions Python ; sur
+Debian/Ubuntu : `sudo apt install python3-tk`).
+
+L'interface comporte trois onglets :
+
+- **Verset** : sélection du livre, du chapitre puis du verset au moyen de
+  listes déroulantes liées. Les livres sont présentés **dans l'ordre
+  canonique de la Bible hébraïque** (Torah en tête : Genèse, Exode, Lévitique,
+  Nombres, Deutéronome, …). Les listes de chapitres et de versets sont
+  **bornées aux limites réelles** de la base BHSA (on ne peut pas
+  sélectionner un chapitre ou un verset inexistant). Formats disponibles :
+  texte, synthèse, JSON ; option « masquer le détail mot à mot ».
+- **Mot** : analyse d'un mot hébreu isolé, saisi à l'aide d'un **clavier
+  hébreu virtuel** (consonnes + points-voyelles/nikkud + daguesh, en UTF-8).
+  Un clavier physique en hébreu reste utilisable : la saisie se fait toujours
+  en UTF-8. Formats : texte ou JSON.
+- **Phrase** : analyse d'une phrase hébreu libre, saisie via le même clavier
+  hébreu virtuel (UTF-8). Formats : texte ou JSON.
+
+La base BHSA est chargée en arrière-plan au démarrage ; les boutons restent
+inactifs jusqu'à la fin du chargement. Les analyses s'exécutent dans des
+threads séparés afin de ne pas figer la fenêtre.
+
 ### En ligne de commande
 
 Analyse d'un verset complet :
@@ -142,6 +174,7 @@ print(format_text(analyse))
 
 ```
 analyse_hebreu.py        # CLI (mode verset, mot, phrase)
+gui_hebreu.py           # interface graphique Tkinter (mêmes fonctions que le CLI)
 bhsa_grammar/
   __init__.py            # API publique (load_corpus, analyze_*, format_*)
   loader.py              # localisation + chargement de la base BHSA (Text-Fabric)
