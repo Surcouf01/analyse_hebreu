@@ -104,6 +104,36 @@ _v_fam, _v_size = KEYBOARD_FONT
 KEYBOARD_FONT_VOWELS = (_v_fam, max(6, _v_size - 5))
 
 
+# Marque de droite-à-gauche (RLM, U+200F) : force le moteur bidi de Tk à
+# traiter une ligne en RTL quand elle contient de l'hébreu. Sans cela, une
+# ligne hébraïque placée après une ligne LTR peut hériter de la direction
+# gauche-à-droite et afficher les mots dans le mauvais ordre.
+_RLM = "\u200F"
+
+
+def _has_hebrew(line):
+    """Vrai si la ligne contient au moins un caractère hébreu (lettres,
+    diacritiques ou ponctuation, bloc U+0590..U+05FF)."""
+    return any(0x0590 <= ord(c) <= 0x05FF for c in line)
+
+
+def _rtlize(text):
+    """Préfixe chaque ligne contenant de l'hébreu avec une marque RLM.
+
+    N'affecte que l'affichage du GUI (zone de résultat) ; la sortie CLI
+    (terminal) n'est pas modifiée car le terminal gère lui-même le bidi.
+    """
+    if not text:
+        return text
+    out_lines = []
+    for line in text.split("\n"):
+        if _has_hebrew(line):
+            out_lines.append(_RLM + line)
+        else:
+            out_lines.append(line)
+    return "\n".join(out_lines)
+
+
 # --- Clavier hébreu virtuel ------------------------------------------------
 # Points-voyelles (nikkud) et daguesh — marques combinantes UTF-8.
 _NIKKUD = {
@@ -552,7 +582,7 @@ class AnalyseurGUI:
     def _set_output(self, widget, text):
         widget.configure(state="normal")
         widget.delete("1.0", "end")
-        widget.insert("1.0", text)
+        widget.insert("1.0", _rtlize(text))
         widget.configure(state="disabled")
 
     def _disable_buttons(self):
