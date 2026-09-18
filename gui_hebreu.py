@@ -104,11 +104,19 @@ _v_fam, _v_size = KEYBOARD_FONT
 KEYBOARD_FONT_VOWELS = (_v_fam, max(6, _v_size - 5))
 
 
-# Marque de droite-à-gauche (RLM, U+200F) : force le moteur bidi de Tk à
-# traiter une ligne en RTL quand elle contient de l'hébreu. Sans cela, une
-# ligne hébraïque placée après une ligne LTR peut hériter de la direction
-# gauche-à-droite et afficher les mots dans le mauvais ordre.
+# Marques de contrôle bidi pour forcer le rendu droite-à-gauche des lignes
+# hébraïques dans la zone de résultat du GUI. Tk n'applique pas toujours
+# l'algorithme bidi (UAX #9) correctement, surtout pour une ligne hébraïque
+# placée après une ligne LTR : les mots peuvent s'afficher dans l'ordre
+# logique (gauche-à-droite) au lieu de l'ordre visuel RTL.
+#
+# - RLM (U+200F) : marque locale, force la position courante en RTL.
+# - RLE (U+202B) ... PDF (U+202C) : embedding RTL explicite sur toute la
+#   portée ; utilisé pour les lignes purement hébraïques (qui commencent par
+#   un caractère hébreu), afin de forcer toute la ligne en RTL.
 _RLM = "\u200F"
+_RLE = "\u202B"
+_PDF = "\u202C"
 
 
 def _has_hebrew(line):
@@ -117,8 +125,24 @@ def _has_hebrew(line):
     return any(0x0590 <= ord(c) <= 0x05FF for c in line)
 
 
+def _starts_with_hebrew(line):
+    """Vrai si le premier caractère significatif de la ligne est hébreu
+    (ligne purement hébraïque, sans préfixe LTR)."""
+    for c in line:
+        if c.isspace():
+            continue
+        return 0x0590 <= ord(c) <= 0x05FF
+    return False
+
+
 def _rtlize(text):
-    """Préfixe chaque ligne contenant de l'hébreu avec une marque RLM.
+    """Marque les lignes contenant de l'hébreu pour le rendu RTL du GUI.
+
+    - Les lignes purement hébraïques (commençant par un caractère hébreu) sont
+      enveloppées dans un embedding RTL explicite (RLE ... PDF), ce qui
+      force tout le segment en RTL.
+    - Les lignes mixtes (préfixe LTR puis hébreu) reçoivent un RLM en début,
+    suffisant à orienter le segment hébreu sans inverser le préfixe LTR.
 
     N'affecte que l'affichage du GUI (zone de résultat) ; la sortie CLI
     (terminal) n'est pas modifiée car le terminal gère lui-même le bidi.
@@ -127,10 +151,12 @@ def _rtlize(text):
         return text
     out_lines = []
     for line in text.split("\n"):
-        if _has_hebrew(line):
-            out_lines.append(_RLM + line)
-        else:
+        if not _has_hebrew(line):
             out_lines.append(line)
+        elif _starts_with_hebrew(line):
+            out_lines.append(_RLE + line + _PDF)
+        else:
+            out_lines.append(_RLM + line)
     return "\n".join(out_lines)
 
 
