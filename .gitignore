@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Text-Fabric cache
+.tf/
+
+# Environnement
+.venv/
+venv/
+.env

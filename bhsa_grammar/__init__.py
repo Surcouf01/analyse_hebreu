@@ -16,6 +16,12 @@ from .report import to_text, to_json, to_summary
 from .word_analyzer import analyze_word, search_word
 from .phrase_analyzer import analyze_phrase
 from .report import word_to_text, word_to_json, phrase_to_text, phrase_to_json
+from .translation import (
+    load_translation,
+    get_translation,
+    has_book as translation_has_book,
+    TranslationNotFoundError,
+)
 
 __all__ = [
     "load_corpus",
@@ -39,6 +45,10 @@ __all__ = [
     "format_word_json",
     "format_phrase",
     "format_phrase_json",
+    "load_translation",
+    "get_translation",
+    "translation_has_book",
+    "TranslationNotFoundError",
 ]
 
 __version__ = "1.0.0"
