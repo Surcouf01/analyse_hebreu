@@ -61,7 +61,7 @@ def _load_properties():
     defaults = {
         "font.input.family": "DejaVu Sans",
         "font.input.size": "14",
-        "font.output.family": "DejaVu Sans Mono",
+        "font.output.family": "DejaVu Sans",
         "font.output.size": "20",
     }
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
