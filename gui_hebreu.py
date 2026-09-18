@@ -23,6 +23,7 @@ La base BHSA est chargée en arrière-plan au démarrage (cf. ``bhsa_grammar``).
 import os
 import queue
 import threading
+import unicodedata
 import tkinter as tk
 from tkinter import ttk, messagebox
 
@@ -104,48 +105,53 @@ _v_fam, _v_size = KEYBOARD_FONT
 KEYBOARD_FONT_VOWELS = (_v_fam, max(6, _v_size - 5))
 
 
-# Marques de contrôle bidi pour forcer le rendu droite-à-gauche des lignes
-# hébraïques dans la zone de résultat du GUI. Tk n'applique pas toujours
-# l'algorithme bidi (UAX #9) correctement, surtout pour une ligne hébraïque
-# placée après une ligne LTR : les mots peuvent s'afficher dans l'ordre
-# logique (gauche-à-droite) au lieu de l'ordre visuel RTL.
-#
-# - RLM (U+200F) : marque locale, force la position courante en RTL.
-# - RLE (U+202B) ... PDF (U+202C) : embedding RTL explicite sur toute la
-#   portée ; utilisé pour les lignes purement hébraïques (qui commencent par
-#   un caractère hébreu), afin de forcer toute la ligne en RTL.
-_RLM = "\u200F"
-_RLE = "\u202B"
-_PDF = "\u202C"
+# Tk n'embarque pas de moteur bidi (UAX #9) fiable, en particulier sous
+# Linux/X11 : les caractères de contrôle bidi (RLM/RLE/PDF) ne sont pas
+# toujours honorés et une ligne hébraïque placée après une ligne LTR peut
+# s'afficher dans l'ordre logique (gauche-à-droite). On règle le problème en
+# réordonnant soi-même le texte en ordre visuel RTL *au niveau des graphèmes*
+# (cluster consonne + marques combinantes), de sorte que le nikkud reste
+# attaché à sa consonne de base. Cette approche ne dépend d'aucun moteur
+# bidi côté Tk.
+
+
+def _graphemes(s):
+    """Découpe une chaîne en graphèmes : un caractère de base suivi de ses
+    marques combinantes (classe de combinaison != 0)."""
+    out = []
+    cur = None
+    for c in s:
+        if cur is not None and unicodedata.combining(c) != 0:
+            cur += c
+        else:
+            if cur is not None:
+                out.append(cur)
+            cur = c
+    if cur is not None:
+        out.append(cur)
+    return out
+
+
+def _base_is_hebrew(grapheme):
+    """Vrai si le caractère de base du graphème est dans le bloc hébreu
+    (U+0590..U+05FF)."""
+    return 0x0590 <= ord(grapheme[0]) <= 0x05FF
 
 
 def _has_hebrew(line):
-    """Vrai si la ligne contient au moins un caractère hébreu (lettres,
-    diacritiques ou ponctuation, bloc U+0590..U+05FF)."""
-    return any(0x0590 <= ord(c) <= 0x05FF for c in line)
-
-
-def _starts_with_hebrew(line):
-    """Vrai si le premier caractère significatif de la ligne est hébreu
-    (ligne purement hébraïque, sans préfixe LTR)."""
-    for c in line:
-        if c.isspace():
-            continue
-        return 0x0590 <= ord(c) <= 0x05FF
-    return False
+    """Vrai si la ligne contient au moins un graphème hébreu."""
+    return any(_base_is_hebrew(g) for g in _graphemes(line))
 
 
 def _rtlize(text):
-    """Marque les lignes contenant de l'hébreu pour le rendu RTL du GUI.
+    """Réordonne les segments hébraîns de chaque ligne en ordre visuel RTL.
 
-    - Les lignes purement hébraïques (commençant par un caractère hébreu) sont
-      enveloppées dans un embedding RTL explicite (RLE ... PDF), ce qui
-      force tout le segment en RTL.
-    - Les lignes mixtes (préfixe LTR puis hébreu) reçoivent un RLM en début,
-    suffisant à orienter le segment hébreu sans inverser le préfixe LTR.
+    La ligne est découpée en séquences contiguës de graphèmes partageant la
+    même direction (hébreu ou non). Chaque séquence hébraïque est inversée à
+    l'échelle du graphème ; les séquences LTR sont laissées en l'état. Les
+    espaces restent attachés à la séquence courante.
 
-    N'affecte que l'affichage du GUI (zone de résultat) ; la sortie CLI
-    (terminal) n'est pas modifiée car le terminal gère lui-même le bidi.
+    N'affecte que l'affichage du GUI ; la sortie CLI n'est pas modifiée.
     """
     if not text:
         return text
@@ -153,10 +159,40 @@ def _rtlize(text):
     for line in text.split("\n"):
         if not _has_hebrew(line):
             out_lines.append(line)
-        elif _starts_with_hebrew(line):
-            out_lines.append(_RLE + line + _PDF)
-        else:
-            out_lines.append(_RLM + line)
+            continue
+        # Découpage en séquences de direction homogène.
+        segs = []
+        cur = []
+        cur_heb = None
+        for g in _graphemes(line):
+            is_space = g.isspace()
+            if not cur:
+                cur = [g]
+                cur_heb = None if is_space else _base_is_hebrew(g)
+                continue
+            if cur_heb is None and not is_space:
+                cur_heb = _base_is_hebrew(g)
+                cur.append(g)
+                continue
+            if is_space:
+                cur.append(g)
+                continue
+            if _base_is_hebrew(g) == cur_heb:
+                cur.append(g)
+            else:
+                segs.append((cur_heb, "".join(cur)))
+                cur = [g]
+                cur_heb = _base_is_hebrew(g)
+        if cur:
+            segs.append((cur_heb, "".join(cur)))
+        # Inversion des séquences hébraïques à l'échelle du graphème.
+        rebuilt = []
+        for is_heb, seg in segs:
+            if is_heb:
+                rebuilt.append("".join(reversed(_graphemes(seg))))
+            else:
+                rebuilt.append(seg)
+        out_lines.append("".join(rebuilt))
     return "\n".join(out_lines)
 
 
