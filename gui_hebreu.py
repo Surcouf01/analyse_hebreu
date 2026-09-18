@@ -62,7 +62,7 @@ def _load_properties():
         "font.input.family": "DejaVu Sans",
         "font.input.size": "14",
         "font.output.family": "DejaVu Sans",
-        "font.output.size": "20",
+        "font.output.size": "24",
     }
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                         "gui.properties")
@@ -416,8 +416,8 @@ class AnalyseurGUI:
     def _build_output(self, parent):
         frame = ttk.LabelFrame(parent, text="Résultat")
         frame.pack(fill="both", expand=True, padx=8, pady=(0, 8))
-        self.output_text = tk.Text(frame, font=HEBREW_FONT_MONO, wrap="none",
-                                   height=10, width=60)
+        self.output_text = tk.Text(frame, font=HEBREW_FONT_MONO, wrap="word",
+                                   height=10, width=40)
         self.output_text.grid(row=0, column=0, sticky="nsew")
         yscroll = ttk.Scrollbar(frame, orient="vertical",
                                command=self.output_text.yview)
