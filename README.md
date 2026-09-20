@@ -198,6 +198,17 @@ identifiable/parsable par le GUI :
 `###BINYAN|<code>|<nom fr>|<nom hébreu>|<attesté>###`, de même que l'en-tête
 de verbe `###VERB|...###` et la catégorie de verbe faible `###WEAK|...###`.
 
+La traduction du verbe par binyan (français + anglais) vient du lexique
+`bhsa_grammar/binyan_senses_fr_en.json` : sens anglais extraits du **BDB**
+(Brown-Driver-Briggs, domaine public) par `scripts/extract_binyan_senses.py`,
+traductions françaises enrichies progressivement. La curation FR s'appuie
+sur les occurrences réelles de chaque racine mises en regard de la **Bible
+du Rabbinat 1899** (domaine public), récupérée via l'API Sefaria
+(`bhsa_grammar/sefaria_client.py` ; rapport de curation :
+`scripts/enrich_binyan_senses_fr.py`). Sefaria ne fournit pas de lexique
+hébreu→français : les versets français servent de contexte d'occurrence,
+la traduction des sens reste une curation manuelle.
+
 Formats de sortie :
 - `text` (défaut) : arbre hiérarchique phrase → clause → syntagme → mot,
   chaque niveau suivi de ses règles (↳).
@@ -272,9 +283,14 @@ bhsa_grammar/
   binyan_diag.py         # diagnostics heuristiques du binyan d'une forme conjuguée
   binyan_gen.py          # conjugaison dans les 7 binyanim (mode --binyanim) + verbes faibles
   binyan_templates.json  # gabarits vocaliques extraits de la BHSA (par catégorie de verbe)
+  binyan_senses_fr_en.json  # sens par (racine, binyan) — BDB (EN, domaine public) + curation FR
+  sefaria_client.py     # client de l'API Sefaria (Bible du Rabbinat 1899 [fr], domaine public)
   report.py             # formatage text / json / summary (verset, mot, phrase)
 scripts/
   extract_binyan_templates.py  # régénère binyan_templates.json depuis la BHSA
+  extract_binyan_senses.py     # extrait les sens par binyan du lexique BDB (CSV)
+  enrich_binyan_senses_fr.py   # rapport de curation FR : occurrences BHSA × versets
+                               # Rabbinat 1899 (Sefaria) pour les racines sans FR
 tests/
   test_binyanim.py       # non-régression du mode binyanim (formes vs BHSA)
 ```

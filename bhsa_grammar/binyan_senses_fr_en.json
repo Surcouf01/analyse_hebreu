@@ -541,7 +541,7 @@
   },
   "אמן": {
     "qal": [
-      "",
+      "soigner (comme nourrice), nourrir, porter",
       "support; nourish"
     ]
   },
@@ -933,11 +933,11 @@
   },
   "בחר": {
     "qal": [
-      "",
+      "choisir, élire, préférer",
       "divine choice; man's choice"
     ],
     "pual": [
-      "",
+      "être élu, être choisi",
       "chosen, selected"
     ]
   },
@@ -949,11 +949,11 @@
   },
   "בטח": {
     "qal": [
-      "",
+      "se confier, avoir confiance",
       "trust; trust in"
     ],
     "hif": [
-      "",
+      "faire confiance, mettre en sécurité, donner confiance",
       "cause to trust, make secure"
     ]
   },
@@ -965,29 +965,29 @@
   },
   "בין": {
     "qal": [
-      "",
+      "comprendre, discerner, percevoir",
       "perceive; eyes"
     ],
     "nif": [
-      "",
+      "être discernant, comprendre, être sage",
       "he attentively considereth him"
     ],
     "hif": [
-      "",
+      "faire comprendre, donner l'intelligence",
       "understand"
     ],
     "hit": [
-      "",
+      "se montrer intelligent, réfléchir, examiner",
       "get understanding, understand; shew oneself to have understanding"
     ]
   },
   "בכה": {
     "qal": [
-      "",
-      "weep; laugh"
+      "pleurer, verser des larmes",
+      "weep, lament"
     ],
     "piel": [
-      "",
+      "pleurer, lamenter",
       "lament; bewail"
     ]
   },
@@ -1083,23 +1083,23 @@
   },
   "בער": {
     "qal": [
-      "",
+      "brûler, s'enflammer",
       "burn; begin to burn, be kindled"
     ],
     "piel": [
-      "",
+      "allumer, embraser",
       "kindle; light"
     ],
     "pual": [
-      "",
+      "être allumé, brûler (passif)",
       "burn"
     ],
     "hif": [
-      "",
+      "enflammer, incendier, allumer",
       "kindle; burn up"
     ],
     "nif": [
-      "",
+      "être insensé, être stupide",
       "brutish, stupid; dull-hearted"
     ]
   },
@@ -1319,23 +1319,23 @@
   },
   "גאל": {
     "qal": [
-      "",
-      "kinsman; the avenger of blood"
+      "racheter, délivrer, agir comme parent-rédempteur",
+      "redeem, act as kinsman-redeemer"
     ],
     "nif": [
-      "",
+      "se racheter, être racheté",
       "redeem oneself; be redeemed"
     ],
     "piel": [
-      "",
+      "profaner, souiller",
       "pollute, desecrate"
     ],
     "hif": [
-      "",
-      "Pi`el; I have polluted"
+      "profaner, souiller",
+      "pollute, profane"
     ],
     "hit": [
-      "",
+      "se souiller, se profaner",
       "defile himself"
     ]
   },
@@ -1385,23 +1385,23 @@
   },
   "גדל": {
     "qal": [
-      "",
+      "grandir, devenir grand",
       "grow up; become great"
     ],
     "piel": [
-      "",
+      "agrandir, élever, faire grandir",
       "cause to grow; bring up children"
     ],
     "pual": [
-      "",
+      "être élevé, avoir grandi",
       "brought up"
     ],
     "hif": [
-      "",
+      "rendre grand, glorifier, traiter avec grandeur",
       "make great; lifted high"
     ],
     "hit": [
-      "",
+      "s'agrandir, s'enorgueillir",
       "I will magnify myself; magnify oneself against"
     ]
   },
@@ -1467,7 +1467,7 @@
   },
   "גור": {
     "qal": [
-      "",
+      "séjourner, demeurer (comme étranger)",
       "abide; dwell"
     ]
   },
@@ -2173,19 +2173,19 @@
   },
   "הלל": {
     "qal": [
-      "",
-      "when it; his lamp, shone upon my head"
+      "vanter, se glorifier",
+      "boast, glory"
     ],
     "hif": [
-      "",
+      "briller, rayonner",
       "flash forth light; sun"
     ],
     "piel": [
-      "",
+      "louer, vanter, célébrer",
       "praise; and those praising"
     ],
     "pual": [
-      "",
+      "être loué, être célébré",
       "be praised; praised, commended"
     ]
   },
@@ -2227,11 +2227,11 @@
   },
   "הרג": {
     "qal": [
-      "",
+      "tuer, mettre à mort",
       "kill, slay; the slain"
     ],
     "pual": [
-      "",
+      "être tué, être massacré",
       "be slain"
     ]
   },
@@ -2261,11 +2261,11 @@
   },
   "זבח": {
     "qal": [
-      "",
+      "sacrifier, immoler",
       "slaughter for sacrifice; sacrificers of mankind"
     ],
     "piel": [
-      "",
+      "sacrifier (intensif), immoler",
       "sacrifice"
     ]
   },
@@ -2875,27 +2875,27 @@
   },
   "חלל": {
     "qal": [
-      "",
+      "percer, blesser, déchirer",
       "my heart is pierced; within me"
     ],
     "pual": [
-      "",
+      "être meurtri, être blessé",
       "it is my piercing, my wound; my sickness"
     ],
     "piel": [
-      "",
-      "—âlalu"
+      "profaner, souiller, violer",
+      "profane, defile, violate"
     ],
     "hif": [
-      "",
+      "commencer, être le premier à",
       "untie, loosen, open; tie"
     ],
     "nif": [
-      "",
+      "se profaner, se souiller",
       "pollute, defile oneself; sexually"
     ],
     "hof": [
-      "",
+      "être commencé",
       "then it was begun; cease a little from anointing"
     ]
   },
@@ -3041,7 +3041,7 @@
   },
   "חנה": {
     "qal": [
-      "",
+      "camper, dresser (le camp), séjourner",
       "decline; encamp"
     ]
   },
@@ -3605,23 +3605,23 @@
   },
   "טמא": {
     "qal": [
-      "",
+      "être impur, se souiller",
       "be; become unclean"
     ],
     "nif": [
-      "",
+      "se souiller, être souillé",
       "defile oneself, be defiled; be regarded as unclean"
     ],
     "piel": [
-      "",
+      "souiller, rendre impur, profaner",
       "defile; sacred places"
     ],
     "pual": [
-      "",
+      "être souillé",
       "myself is not polluted"
     ],
     "hit": [
-      "",
+      "se rendre impur, se souiller",
       "defile oneself"
     ]
   },
@@ -3803,19 +3803,19 @@
   },
   "ידה": {
     "hif": [
-      "",
+      "rendre grâce, louer, remercier",
       "throw; give thanks, laud, praise"
     ],
     "qal": [
-      "",
+      "jeter, lancer (des flèches)",
       "shoot"
     ],
     "piel": [
-      "",
+      "abattre, jeter à terre",
       "on me; Infinitive; cast down"
     ],
     "hit": [
-      "",
+      "confesser, louer, rendre grâce",
       "confess; give thanks"
     ]
   },
@@ -3859,11 +3859,11 @@
   },
   "יטב": {
     "qal": [
-      "",
-      "be glad, joyful; be well placed"
+      "être heureux, être content, plaire",
+      "be good, be glad, please"
     ],
     "hif": [
-      "",
+      "faire du bien à, traiter favorablement, rendre heureux",
       "make glad, rejoice; do good to, deal well"
     ]
   },
@@ -4355,11 +4355,11 @@
   },
   "יתר": {
     "nif": [
-      "",
+      "rester, demeurer, être de reste",
       "be left over, remain over; Perfect; be left over, remain (over)"
     ],
     "hif": [
-      "",
+      "laisser (un reste), épargner",
       "leave over, leave; leave a remnant"
     ]
   },
@@ -4597,19 +4597,19 @@
   },
   "כסה": {
     "qal": [
-      "",
+      "couvrir, dissimuler, pardonner",
       "conceal; covered"
     ],
     "nif": [
-      "",
+      "être couvert",
       "covered"
     ],
     "piel": [
-      "",
+      "couvrir, vêtir, envelopper",
       "cover, clothe; cover, conceal"
     ],
     "hit": [
-      "",
+      "se couvrir, s'envelopper",
       "cover, clothe oneself"
     ]
   },
@@ -4683,11 +4683,11 @@
   },
   "כפר": {
     "piel": [
-      "",
+      "faire expiation, purifier, apaiser",
       "cover over, pacify, propitiate; pacify"
     ],
     "pual": [
-      "",
+      "être purifié, être expié",
       "be covered over, atoned for; this"
     ]
   },
@@ -4909,11 +4909,11 @@
   },
   "לחם": {
     "qal": [
-      "",
+      "combattre, faire la guerre",
       "do battle with those battling with me; doing battle against me"
     ],
     "nif": [
-      "",
+      "combattre, être en guerre, entrer en lutte",
       "engage in battle; wage war"
     ]
   },
@@ -4955,11 +4955,11 @@
   },
   "לכד": {
     "qal": [
-      "",
+      "capturer, s'emparer de, prendre",
       "capture, seize; catching"
     ],
     "nif": [
-      "",
+      "être pris, être capturé",
       "be captured"
     ]
   },
@@ -5287,23 +5287,23 @@
   },
   "מלט": {
     "qal": [
-      "",
-      "rescue; have scanty hair"
+      "délivrer, sauver",
+      "rescue, deliver"
     ],
     "nif": [
-      "",
+      "s'échapper, fuir, avoir la vie sauve",
       "slip away; past"
     ],
     "piel": [
-      "",
+      "sauver, délivrer, mettre à l'abri",
       "lay; let escape"
     ],
     "hif": [
-      "",
+      "délivrer, sauver, protéger",
       "give birth to"
     ],
     "hit": [
-      "",
+      "s'échapper, se sauver, se dégager",
       "slip forth, escape; leap forth"
     ]
   },
@@ -5659,11 +5659,11 @@
   },
   "נבא": {
     "nif": [
-      "",
+      "prophétiser, être inspiré",
       "prophesy; unto"
     ],
     "hit": [
-      "",
+      "prophétiser (sous l'inspiration), agir en prophète",
       "Prophesy; mad"
     ]
   },
@@ -5735,23 +5735,23 @@
   },
   "נגע": {
     "qal": [
-      "",
+      "toucher",
       "touch; touching"
     ],
     "nif": [
-      "",
+      "être frappé, être vaincu, être mis en déroute",
       "be stricken, defeated"
     ],
     "piel": [
-      "",
+      "frapper, affliger, atteindre",
       "strike"
     ],
     "pual": [
-      "",
+      "être atteint",
       "be sticken"
     ],
     "hif": [
-      "",
+      "faire toucher, atteindre, approcher",
       "cause to touch; reach, approach, arrive; cause to touch, apply"
     ]
   },
@@ -5949,7 +5949,7 @@
   },
   "נוח": {
     "qal": [
-      "",
+      "se reposer, s'arrêter, demeurer",
       "rest, settle down and remain; Aram hath settled down upon Ephraim"
     ]
   },
@@ -5967,11 +5967,11 @@
   },
   "נוס": {
     "qal": [
-      "",
+      "fuir, s'enfuir",
       "flee; flee for their life"
     ],
     "hif": [
-      "",
+      "faire fuir, mettre en fuite",
       "in order to take flight before"
     ]
   },
@@ -6153,19 +6153,19 @@
   },
   "נכה": {
     "qal": [
-      "",
-      "laesit, nocuit, repugnavit; laesit, vulneravit"
+      "frapper, blesser, frapper à mort",
+      "smite, strike, hit, beat"
     ],
     "nif": [
-      "",
+      "être frappé, être atteint (mortellement)",
       "and die"
     ],
     "pual": [
-      "",
+      "être abattu, être frappé",
       "be smitten down"
     ],
     "hof": [
-      "",
+      "être frappé, être battu",
       "smite; strike"
     ]
   },
@@ -6243,15 +6243,15 @@
   },
   "נסע": {
     "qal": [
-      "",
+      "lever (le camp), partir, voyager",
       "pull out; up"
     ],
     "nif": [
-      "",
+      "être arraché, être enlevé",
       "set out; and"
     ],
     "hif": [
-      "",
+      "faire partir, faire décamper, emmener",
       "cause to set out, lead out; cause to spring up"
     ]
   },
@@ -6679,23 +6679,23 @@
   },
   "סבב": {
     "qal": [
-      "",
+      "tourner, contourner",
       "turn; turn about"
     ],
     "nif": [
-      "",
+      "s'attrouper autour, se rassembler autour",
       "turn oneself; close round"
     ],
     "piel": [
-      "",
+      "entourer, cerner",
       "encompass, surround; encompass"
     ],
     "hif": [
-      "",
+      "faire tourner, dévier, faire le tour de",
       "turn; cause to turn: turn"
     ],
     "hof": [
-      "",
+      "être enchâssé, être encerclé",
       "be turned; turned"
     ]
   },
@@ -7973,23 +7973,23 @@
   },
   "פנה": {
     "qal": [
-      "",
+      "se tourner, se détourner",
       "turn; turn away"
     ],
     "piel": [
-      "",
+      "vider, déblayer",
       "make clear; empty"
     ],
     "hif": [
-      "",
+      "faire tourner, détourner",
       "turn; make a turn, shew"
     ],
     "hof": [
-      "",
+      "être tourné, être disposé face à",
       "which is faced northward"
     ],
     "nif": [
-      "",
+      "se tourner, être tourné vers",
       "face; face (= surface)"
     ]
   },
@@ -8225,19 +8225,19 @@
   },
   "פתח": {
     "qal": [
-      "",
+      "ouvrir",
       "pass; open"
     ],
     "nif": [
-      "",
+      "s'ouvrir, être ouvert",
       "be opend; be let loose"
     ],
     "piel": [
-      "",
+      "délier, libérer, desserrer",
       "loose; free"
     ],
     "hit": [
-      "",
+      "se dégager, se défaire de ses liens",
       "the fetters of thy neck"
     ]
   },
@@ -8307,7 +8307,7 @@
   },
   "צוה": {
     "pual": [
-      "",
+      "être ordonné, être prescrit",
       "be commanded"
     ]
   },
@@ -8597,25 +8597,25 @@
   },
   "קבץ": {
     "qal": [
-      "",
+      "rassembler, amasser, recueillir",
       "gather, collect; one gathering"
     ],
     "nif": [
-      "",
+      "s'assembler, se rassembler",
       "unto; be gathered"
     ]
   },
   "קבר": {
     "qal": [
-      "",
+      "enterrer, ensevelir",
       "pass; bury"
     ],
     "nif": [
-      "",
+      "être enterré, être enseveli",
       "be buried"
     ],
     "piel": [
-      "",
+      "ensevelir, inhumer",
       "bury"
     ]
   },
@@ -8733,24 +8733,24 @@
   },
   "קטר": {
     "piel": [
-      "",
+      "faire fumer (les sacrifices), brûler de l'encens",
       "make sacrifices smoke; incense"
     ],
     "pual": [
-      "",
+      "être parfumé, exhaler un parfum",
       "fumigated with myrrh"
     ],
     "hif": [
-      "",
+      "faire fumer, offrir (l'encens)",
       "make sacrifices smoke; cause incense to smoke, offer incense"
     ],
     "hof": [
-      "",
+      "être consumé, être fait fumer",
       "be made to smoke"
     ],
     "qal": [
-      "",
-      "enclosed courts; small"
+      "faire fumer l'encens, brûler de l'encens",
+      "burn incense (rare)"
     ]
   },
   "קיא": {
@@ -9187,15 +9187,15 @@
   },
   "רדף": {
     "qal": [
-      "",
+      "poursuivre, courir après",
       "pursue; follow me"
     ],
     "nif": [
-      "",
+      "être poursuivi",
       "upon our neck; we are pursued"
     ],
     "hif": [
-      "",
+      "poursuivre, cerner, harceler",
       "they chased him; surrounded"
     ]
   },
@@ -9263,11 +9263,11 @@
   },
   "רוץ": {
     "qal": [
-      "",
+      "courir",
       "run; on"
     ],
     "hif": [
-      "",
+      "faire courir, courir au-devant de, empresser",
       "out-runners; run to meet"
     ]
   },
@@ -9479,15 +9479,15 @@
   },
   "רעה": {
     "hif": [
-      "",
+      "faire paître, mener paître",
       "pasture, tend; pascere"
     ],
     "qal": [
-      "",
+      "paître, faire paître, être berger",
       "cherish faithfulness; feed seocurely"
     ],
     "hit": [
-      "",
+      "se lier d'amitié, être compagnon",
       "shall be each other's companions; be companions"
     ]
   },
@@ -9503,15 +9503,15 @@
   },
   "רעע": {
     "qal": [
-      "",
+      "déplaire, être affligé",
       "be displeasing; be sad"
     ],
     "nif": [
-      "",
+      "souffrir, être maltraité",
       "suffer hurt: Imperfect"
     ],
     "hif": [
-      "",
+      "faire du mal, nuire à",
       "do an injury, hurt; bring evil upon"
     ]
   },
