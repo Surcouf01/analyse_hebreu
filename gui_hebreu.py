@@ -269,6 +269,10 @@ class BinyanimNotebook(ttk.Frame):
         self.body.grid(row=1, column=0, sticky="nsew")
         self.rowconfigure(1, weight=1)
         self.columnconfigure(0, weight=1)
+        # L'onglet sélectionné doit s'étendre sur toute la largeur/hauteur
+        # du corps (sinon la zone de texte garde sa largeur demandée).
+        self.body.rowconfigure(0, weight=1)
+        self.body.columnconfigure(0, weight=1)
         self._selected = None
 
     def _tab_id(self):
