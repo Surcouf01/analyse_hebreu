@@ -355,7 +355,13 @@ def clause_rules(F, L, c):
 
 def analyze_verse(F, L, T, verse):
     """Renvoie un dictionnaire structuré décrivant l'analyse du verset."""
+    # On utilise le nom de livre BHSA (latin, ex. « Reges_I ») cohérent avec
+    # F.book.v / book_list / find_verse, plutôt que le nom anglais renvoyé
+    # par T.sectionFromNode (« 1_Kings »).
     section = T.sectionFromNode(verse)
+    book_node = L.u(verse, "book")
+    book_name = F.book.v(book_node[0]) if book_node else section[0]
+    section = (book_name, section[1], section[2])
     text = T.text(verse)
     result = {
         "reference": section,

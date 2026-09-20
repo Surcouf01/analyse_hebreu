@@ -140,8 +140,8 @@ _BOOK_ALIASES = {
 
 _REF_RE = re.compile(
     r"""^\s*
-    (?P<book>[^0-9]+?)         # nom du livre (y compris "1 ")
-    \s*
+    (?P<book>.*?)              # nom du livre (peut commencer par "1"/"2"/"I"/"II")
+    \s+
     (?P<chapter>\d+)
     \s*[:\.,]\s*
     (?P<verse>\d+)
