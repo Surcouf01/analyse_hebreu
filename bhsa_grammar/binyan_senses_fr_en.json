@@ -2397,16 +2397,16 @@
   },
   "זנה": {
     "qal": [
-      "",
-      "be; act as a harlot"
+      "se prostituer, commettre l'idolâtrie",
+      "commit fornication, play the harlot"
     ],
     "pual": [
       "",
       "fornication was not done"
     ],
     "hif": [
-      "",
-      "cause to commit fornication; commit fornication"
+      "entraîner à l'idolâtrie",
+      "cause to commit fornication"
     ]
   },
   "זנח": {
@@ -3523,20 +3523,24 @@
   },
   "טהר": {
     "qal": [
-      "",
-      "be clean; be clean ceremonially"
+      "être pur, être rituellement pur",
+      "be clean, be pure"
     ],
     "piel": [
-      "",
-      "cleanse, purify; physically"
+      "purifier, déclarer pur",
+      "purify, cleanse"
     ],
     "pual": [
-      "",
-      "he hath not been cleansed; a land not cleansed"
+      "être purifié",
+      "be purified"
     ],
     "hit": [
-      "",
-      "purify oneself; present oneself for purification"
+      "se purifier",
+      "purify oneself"
+    ],
+    "hif": [
+      "purifier, rendre pur",
+      "purify"
     ]
   },
   "טוב": {

@@ -204,10 +204,26 @@ La traduction du verbe par binyan (français + anglais) vient du lexique
 traductions françaises enrichies progressivement. La curation FR s'appuie
 sur les occurrences réelles de chaque racine mises en regard de la **Bible
 du Rabbinat 1899** (domaine public), récupérée via l'API Sefaria
-(`bhsa_grammar/sefaria_client.py` ; rapport de curation :
-`scripts/enrich_binyan_senses_fr.py`). Sefaria ne fournit pas de lexique
+(`bhsa_grammar/sefaria_client.py`). Sefaria ne fournit pas de lexique
 hébreu→français : les versets français servent de contexte d'occurrence,
 la traduction des sens reste une curation manuelle.
+
+Workflow d'enrichissement (procédure incrémentale) :
+
+```bash
+# 1. Rapport de curation : pour les N racines sans FR les plus fréquentes,
+#    sens BDB anglais + versets français d'occurrence, par binyan
+#    (indicateur de progression : [i/n] racine (translit) — binyan).
+python scripts/enrich_binyan_senses_fr.py --limit 40 --report rapport.txt
+
+# 2. Traduction manuelle : rédiger un fichier de curation JSON
+#    {racine: {binyan: [fr, en]}} — cf. docstring de merge_binyan_senses_fr.
+
+# 3. Fusion dans le lexique (jamais d'écrasement du FR existant).
+python scripts/merge_binyan_senses_fr.py curation.json            # applique
+python scripts/merge_binyan_senses_fr.py curation.json --dry-run  # simule
+python scripts/merge_binyan_senses_fr.py curation.json --check   # valide
+```
 
 Formats de sortie :
 - `text` (défaut) : arbre hiérarchique phrase → clause → syntagme → mot,
@@ -291,6 +307,8 @@ scripts/
   extract_binyan_senses.py     # extrait les sens par binyan du lexique BDB (CSV)
   enrich_binyan_senses_fr.py   # rapport de curation FR : occurrences BHSA × versets
                                # Rabbinat 1899 (Sefaria) pour les racines sans FR
+  merge_binyan_senses_fr.py    # fusionne une curation JSON dans le lexique
+                               # (sans écraser le FR existant)
 tests/
   test_binyanim.py       # non-régression du mode binyanim (formes vs BHSA)
 ```
