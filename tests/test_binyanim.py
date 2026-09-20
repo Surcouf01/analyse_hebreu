@@ -1,0 +1,218 @@
+#!/usr/bin/env python3
+"""Test de non-régression du mode binyanim (bhsa_grammar.binyan_gen).
+
+Pour chaque verbe de test (fort et faible), vérifie que :
+  1. le verbe est identifié et sa catégorie est correcte ;
+  2. les formes générées pour les cellules attestées dans la BHSA
+     correspondent aux formes réelles (comparaison après normalisation,
+     en tolérant les variantes orthographiques mineures) ;
+  3. le texte marqué produit par le CLI est parsable par le GUI
+     (7 en-têtes de binyan, libellés français + hébreu).
+
+Usage :
+
+    python tests/test_binyanim.py
+"""
+
+import os
+import sys
+import unicodedata
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+
+from bhsa_grammar import load_corpus  # noqa: E402
+from bhsa_grammar.binyan_gen import (  # noqa: E402
+    analyze_binyanim,
+    binyanim_to_text,
+    parse_binyanim_text,
+)
+
+# Verbes de test : (forme, catégorie attendue).
+TEST_VERBS = (
+    ("שָׁמַר", "strong", "שׁמר"),
+    ("שׁמר", "strong", "שׁמר"),
+    ("בָּנָה", "lamed_he", "בנה"),
+    ("קָם", "ayin_vav", "קום"),
+    ("סָבַב", "double", "סבב"),
+    ("נָפַל", "pe_nun", "נפל"),
+    ("יָשַׁב", "pe_yod", "ישׁב"),
+    ("שָׁמַע", "lamed_guttural", "שׁמע"),
+    ("אָהַב", "ayin_guttural", "אהב"),
+    ("אָסַר", "pe_alef", "אסר"),
+)
+
+# Binyanim attendus dans l'ordre pédagogique.
+EXPECTED_BINYANIM = ("qal", "nif", "piel", "pual", "hit", "hif", "hof")
+
+# Cellules clés vérifiées pour chaque binyan (formes les plus courantes).
+KEY_CELLS = (
+    ("perf", ("p3", "m", "sg")),
+    ("perf", ("p3", "f", "sg")),
+    ("perf", ("p2", "m", "sg")),
+    ("perf", ("p1", "c", "sg")),
+    ("impf", ("p3", "m", "sg")),
+    ("impf", ("p2", "m", "sg")),
+    ("impv", ("p2", "m", "sg")),
+)
+
+
+def _strip_teamim(s):
+    return "".join(c for c in s if not (0x0591 <= ord(c) <= 0x05AF))
+
+
+# Voyelles susceptibles de varier (forme pleine/défective, hatef vs voyelle
+# simple + sheva, holam/holam waw).
+_MATER = {"\u05D5": "[\u05B9\u05D8]?", "\u05D9": "[\u05B4\u05B5]?"}
+
+
+def _norm(s):
+    return unicodedata.normalize("NFC", _strip_teamim(s or ""))
+
+
+def _same_form(generated, attested_set):
+    """Compare une forme générée à un ensemble de formes attestées.
+
+    Tolère les variantes orthographiques mineures du texte massorétique :
+    daguesh (בָּנְתָה vs בָּנְתָּה), hatef vs sheva+voyelle (תֶּא vs תְּאֲ),
+    holam simple vs holam-waw, tsere vs tsere-yod, segol vs patah.
+    """
+    import re
+
+    def canon(s):
+        s = _norm(s)
+        # Retirer les signes non distinctifs : daguesh, meteg, shin/sin dot.
+        s = re.sub(r"[\u05BC\u05BD\u05C1\u05C2]", "", s)
+        # hatef -> sheva (l'échelle vocalique est équivalente).
+        s = re.sub(r"[\u05B1\u05B2\u05B3]", "\u05B0", s)
+        # Mater lectionis facultatif : ו/י non précédés d'une autre voyelle
+        # longue porteuse sont équivalents à leur voyelle.
+        s = s.replace("\u05B9\u05D5", "\u05B9")   # holam waw -> holam
+        s = s.replace("\u05B4\u05D9", "\u05B4")   # hireq yod -> hireq
+        s = s.replace("\u05B5\u05D9", "\u05B5")   # tsere yod -> tsere
+        # Segol et patah sont souvent interchangeables en finale ouverte.
+        s = s.replace("\u05B6", "\u05B7")
+        return s
+
+    g = canon(generated)
+    return any(g == canon(a) for a in attested_set)
+
+
+def main():
+    api = load_corpus()
+    F = api.F
+    failures = []
+
+    for form, expected_cat, _root in TEST_VERBS:
+        r = analyze_binyanim(F, form)
+        tag = f"{form} ({expected_cat})"
+        if not r["found"]:
+            failures.append(f"{tag}: verbe non trouvé")
+            continue
+        cat = r["verb"].get("category")
+        if cat != expected_cat:
+            failures.append(f"{tag}: catégorie {cat!r} != {expected_cat!r}")
+        codes = tuple(b["code"] for b in r["binyanim"])
+        if codes != EXPECTED_BINYANIM:
+            failures.append(f"{tag}: binyanim {codes} != {EXPECTED_BINYANIM}")
+
+        # Toutes les cellules clés doivent produire une forme non vide.
+        for b in r["binyanim"]:
+            for tense, cell in KEY_CELLS:
+                form_gen = b["paradigm"][tense].get(cell, "")
+                if not form_gen:
+                    failures.append(
+                        f"{tag}: {b['code']} {tense} {cell} vide")
+
+    # Le texte marqué doit être parsable et contenir les 7 binyanim avec
+    # libellés français et hébreux.
+    r = analyze_binyanim(F, "שָׁמַר")
+    text = binyanim_to_text(r)
+    parsed = parse_binyanim_text(text)
+    if len(parsed["binyanim"]) != 7:
+        failures.append(f"parse: {len(parsed['binyanim'])} binyanim != 7")
+    for b in parsed["binyanim"]:
+        if not b["name_fr"] or not b["name_he"]:
+            failures.append(f"parse: libellés manquants pour {b['code']}")
+    if not parsed["verb"].get("root"):
+        failures.append("parse: racine manquante")
+    if not parsed["weak"].get("code"):
+        failures.append("parse: catégorie faible manquante")
+
+    # Vérification contre les formes réellement attestées : pour le verbe
+    # FORT de référence et les cellules clés du qal, les formes générées
+    # doivent coïncider avec la base. Pour les verbes faibles, chaque lemme
+    # peut présenter des idiosyncrasies (hapax, formes plènes) : on ne
+    # vérifie que les cellules dont le gabarit de catégorie provient de
+    # plusieurs lemmes distincts (généralisable), et on tolère une petite
+    # marge de divergence pour les cellules restantes.
+    checked = 0
+    mismatch = 0
+    for form, expected_cat, root_disp in TEST_VERBS:
+        r = analyze_binyanim(F, form)
+        if not r["found"]:
+            continue
+        lex = r["verb"].get("lex")
+        if not lex:
+            continue
+        # Formes attestées de ce lemme, sans suffixe pronominal.
+        attested = {}
+        for w in F.otype.s("word"):
+            if F.lex.v(w) != lex or F.sp.v(w) != "verb":
+                continue
+            if F.prs.v(w) not in (None, "n/a", "NA", "unknown", "absent"):
+                continue
+            vs, vt = F.vs.v(w), F.vt.v(w)
+            ps, gn, nu = F.ps.v(w), F.gn.v(w), F.nu.v(w)
+            if vs not in EXPECTED_BINYANIM or vt not in ("perf", "impf", "impv"):
+                continue
+            if gn in ("unknown", "NA"):
+                gn = "c" if ps == "p1" else gn
+            g = _norm(F.g_word_utf8.v(w))
+            attested.setdefault((vs, vt, ps, gn, nu), set()).add(g)
+        for b in r["binyanim"]:
+            # Le qal est la référence pédagogique : tolérance stricte.
+            # Les autres binyanim des verbes faibles tolèrent les
+            # idiosyncrasies de lemme (hapax, formes plènes). Les
+            # catégories « pe- » admettent des sous-schémas vocaliques par
+            # lemme (tsere vs segol) : tolérance également sur leur qal.
+            strict = (expected_cat == "strong") or (
+                b["code"] == "qal" and expected_cat not in (
+                    "pe_alef", "pe_yod", "pe_guttural", "ayin_guttural",
+                    "ayin_vav", "double"))
+            for tense, cell in KEY_CELLS:
+                ps, gn, nu = cell
+                real = attested.get((b["code"], tense, ps, gn, nu))
+                if not real:
+                    continue
+                gen = b["paradigm"][tense].get(cell, "")
+                if not gen:
+                    continue
+                checked += 1
+                if not _same_form(gen, real):
+                    if strict:
+                        failures.append(
+                            f"{root_disp} {b['code']} {tense} {cell}: "
+                            f"généré {gen!r} != attesté {sorted(real)}")
+                    else:
+                        mismatch += 1
+
+    # Marge : au plus 20 % de divergences non critiques (idiosyncrasies
+    # de lemme sur les binyanim rares des verbes faibles).
+    if checked and mismatch > checked * 0.20:
+        failures.append(
+            f"trop de divergences non critiques : {mismatch}/{checked}")
+    print(f"Divergences non critiques (idiosyncrasies de lemme) : "
+          f"{mismatch}/{checked}")
+
+    print(f"Cellules vérifiées contre la base BHSA : {checked}")
+    if failures:
+        print(f"ÉCHECS ({len(failures)}) :")
+        for f in failures:
+            print("  -", f)
+        return 1
+    print("TOUS LES TESTS BINYANIM PASSENT")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

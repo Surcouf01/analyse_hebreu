@@ -24,6 +24,7 @@ from bhsa_grammar import (
     analyze_verse_by_reference,
     analyze_word,
     analyze_phrase,
+    analyze_binyanim,
     format_text,
     format_json,
     format_summary,
@@ -31,6 +32,8 @@ from bhsa_grammar import (
     format_word_json,
     format_phrase,
     format_phrase_json,
+    format_binyanim,
+    format_binyanim_json,
     book_list,
     book_list_fr,
     DataNotFoundError,
@@ -50,7 +53,8 @@ def build_parser():
         "reference",
         nargs="?",
         help='Référence du verset, ex. "Genèse 1:1", "Gen 1:1", "Genesis 1:1".\n'
-             "Ou, avec --word, un mot hébreu à analyser (avec nikkud, sans teamim).",
+             "Ou, avec --word/--binyanim, un mot hébreu (avec nikkud, sans teamim)\n"
+             "ou une racine trilitaire ; avec --phrase, une phrase hébreu.",
     )
     p.add_argument(
         "--word",
@@ -63,8 +67,14 @@ def build_parser():
         help="Analyse une phrase hébreu libre (argument = la phrase, ou fichier via --file).",
     )
     p.add_argument(
+        "--binyanim",
+        action="store_true",
+        help="Conjugue un verbe hébreu dans les 7 binyanim, toutes personnes "
+             "(argument = mot conjugué ou racine trilitaire, ou fichier via --file).",
+    )
+    p.add_argument(
         "--file",
-        help="Fichier contenant un mot/ligne (--word) ou une phrase/ligne (--phrase).",
+        help="Fichier contenant un mot/ligne (--word/--binyanim) ou une phrase/ligne (--phrase).",
     )
     p.add_argument(
         "--format",
@@ -140,6 +150,37 @@ def main(argv=None):
                 print(format_word_json(analysis))
             else:
                 print(format_word(analysis))
+        return 0 if any_found else 1
+
+    # Mode conjugaison dans tous les binyanim
+    if args.binyanim:
+        F, L = api.F, api.L
+        verbs = []
+        if args.file:
+            try:
+                with open(args.file, encoding="utf-8") as fh:
+                    verbs = [w.strip() for w in fh if w.strip()]
+            except OSError as exc:
+                print(f"Erreur de lecture du fichier : {exc}", file=sys.stderr)
+                return 1
+        elif args.reference:
+            verbs = [args.reference]
+        else:
+            print("Erreur : en mode --binyanim, fournissez un verbe (argument) ou --file FICHIER.",
+                  file=sys.stderr)
+            return 1
+
+        any_found = False
+        for i, w in enumerate(verbs):
+            if len(verbs) > 1:
+                print(f"\n{'='*20} Verbe {i+1}/{len(verbs)} : {w} {'='*20}")
+            analysis = analyze_binyanim(F, w)
+            if analysis["found"]:
+                any_found = True
+            if args.format == "json":
+                print(format_binyanim_json(analysis))
+            else:
+                print(format_binyanim(analysis))
         return 0 if any_found else 1
 
     # Mode analyse de phrase libre

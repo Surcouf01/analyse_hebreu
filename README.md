@@ -54,7 +54,7 @@ python gui_hebreu.py
 Pré-requis : `tkinter` (inclus dans la plupart des distributions Python ; sur
 Debian/Ubuntu : `sudo apt install python3-tk`).
 
-L'interface comporte trois onglets :
+L'interface comporte quatre onglets :
 
 - **Verset** : sélection du livre, du chapitre puis du verset au moyen de
   listes déroulantes liées. Les livres sont présentés **dans l'ordre
@@ -73,6 +73,15 @@ L'interface comporte trois onglets :
   en UTF-8. Formats : texte ou JSON.
 - **Phrase** : analyse d'une phrase hébreu libre, saisie via le même clavier
   hébreu virtuel (UTF-8). Formats : texte ou JSON.
+- **Binyanim** : conjugaison d'un verbe hébreu (mot conjugué ou racine
+  trilitaire) dans les 7 binyanim, pour toutes les personnes. Le résultat est
+  présenté en **sous-onglets, un par binyan**, dont le libellé combine le nom
+  français et le nom hébreu (ex. « qal (paal) · פָּעַל ») ; un marqueur ✓
+  signale le binyan attesté dans la BHSA pour la forme saisie. L'onglet
+  « Verbe » affiche la racine, le lemme, la traduction et la **catégorie du
+  verbe** (fort, ou faible avec sa classe : lamed-he, creux, pe-nun, etc.).
+  Le GUI parse la sortie marquée du CLI (`###BINYAN|...###`). Formats :
+  texte ou JSON.
 
 La base BHSA est chargée en arrière-plan au démarrage ; les boutons restent
 inactifs jusqu'à la fin du chargement. Les analyses s'exécutent dans des
@@ -165,6 +174,30 @@ gouvernant un verbe, **jussif potentiel** (yiqtol 3e pers court sous לֹא/אַ
 article défini déterminant le nom suivant, état construit (סְמִיכוּת) entre deux
 noms consécutifs, marqueur d'objet direct אֵת.
 
+Conjugaison d'un verbe dans tous les binyanim :
+```bash
+python analyse_hebreu.py --binyanim "שָׁמַר"        # verbe fort, mot conjugué
+python analyse_hebreu.py --binyanim "שמר"           # racine trilitaire nue
+python analyse_hebreu.py --binyanim "בָּנָה"          # verbe lamed-he (faible)
+python analyse_hebreu.py --binyanim --file verbes.txt  # un verbe par ligne
+python analyse_hebreu.py --binyanim "קום" --format json
+```
+
+Le mode `--binyanim` identifie le verbe (lemme BHSA ou racine), détecte sa
+catégorie (verbe **fort** ou **faible** : pe-alef/guttural/nun/yod,
+ayin-guttural, creux, double, lamed-he/alef/guttural), puis génère la
+conjugaison complète dans les **7 binyanim** (qal, nifal, piel, pual,
+hitpael, hifil, hofal) : parfait, imparfait et impératif pour toutes les
+personnes (1re/2e/3e, masculin/féminin, singulier/pluriel), plus infinitifs
+et participes. Les gabarits vocaliques sont extraits des formes dominantes
+attestées dans la base BHSA (`bhsa_grammar/binyan_templates.json`, généré
+par `scripts/extract_binyan_templates.py`).
+
+Chaque en-tête de binyan de la sortie texte est marqué pour être
+identifiable/parsable par le GUI :
+`###BINYAN|<code>|<nom fr>|<nom hébreu>|<attesté>###`, de même que l'en-tête
+de verbe `###VERB|...###` et la catégorie de verbe faible `###WEAK|...###`.
+
 Formats de sortie :
 - `text` (défaut) : arbre hiérarchique phrase → clause → syntagme → mot,
   chaque niveau suivi de ses règles (↳).
@@ -236,7 +269,14 @@ bhsa_grammar/
   rules.py               # moteur de règles grammaticales (mot, syntagme, clause) + cohortif + qere/ketiv
   word_analyzer.py       # analyse d'un mot isolé (normalisation, préfixes, recherche)
   phrase_analyzer.py     # analyse d'une phrase libre (segmentation + règles contextuelles + jussif)
+  binyan_diag.py         # diagnostics heuristiques du binyan d'une forme conjuguée
+  binyan_gen.py          # conjugaison dans les 7 binyanim (mode --binyanim) + verbes faibles
+  binyan_templates.json  # gabarits vocaliques extraits de la BHSA (par catégorie de verbe)
   report.py             # formatage text / json / summary (verset, mot, phrase)
+scripts/
+  extract_binyan_templates.py  # régénère binyan_templates.json depuis la BHSA
+tests/
+  test_binyanim.py       # non-régression du mode binyanim (formes vs BHSA)
 ```
 
 ## Règles grammaticales détectées

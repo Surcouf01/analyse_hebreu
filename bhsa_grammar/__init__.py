@@ -22,6 +22,14 @@ from .translation import (
     has_book as translation_has_book,
     TranslationNotFoundError,
 )
+from .binyan_gen import (
+    analyze_binyanim,
+    BINYANIM,
+    classify_root,
+    binyanim_to_text,
+    binyanim_to_json,
+    parse_binyanim_text,
+)
 
 __all__ = [
     "load_corpus",
@@ -49,6 +57,12 @@ __all__ = [
     "get_translation",
     "translation_has_book",
     "TranslationNotFoundError",
+    "analyze_binyanim",
+    "BINYANIM",
+    "classify_root",
+    "format_binyanim",
+    "format_binyanim_json",
+    "parse_binyanim_text",
 ]
 
 __version__ = "1.0.0"
@@ -102,3 +116,13 @@ def format_phrase(phrase_analysis):
 
 def format_phrase_json(phrase_analysis, indent=2):
     return phrase_to_json(phrase_analysis, indent=indent)
+
+
+def format_binyanim(binyanim_analysis):
+    """Formate le résultat d'analyze_binyanim en texte marqué (GUI-ready)."""
+    return binyanim_to_text(binyanim_analysis)
+
+
+def format_binyanim_json(binyanim_analysis, indent=2):
+    """Formate le résultat d'analyze_binyanim en JSON."""
+    return binyanim_to_json(binyanim_analysis, indent=indent)

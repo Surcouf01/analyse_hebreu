@@ -31,6 +31,7 @@ from bhsa_grammar import (
     analyze_verse_by_reference,
     analyze_word,
     analyze_phrase,
+    analyze_binyanim,
     format_text,
     format_json,
     format_summary,
@@ -38,6 +39,9 @@ from bhsa_grammar import (
     format_word_json,
     format_phrase,
     format_phrase_json,
+    format_binyanim,
+    format_binyanim_json,
+    parse_binyanim_text,
     book_french,
     DataNotFoundError,
     load_translation,
@@ -324,13 +328,16 @@ class AnalyseurGUI:
         self.tab_verse = ttk.Frame(self.notebook)
         self.tab_word = ttk.Frame(self.notebook)
         self.tab_phrase = ttk.Frame(self.notebook)
+        self.tab_binyanim = ttk.Frame(self.notebook)
         self.notebook.add(self.tab_verse, text="Verset")
         self.notebook.add(self.tab_word, text="Mot")
         self.notebook.add(self.tab_phrase, text="Phrase")
+        self.notebook.add(self.tab_binyanim, text="Binyanim")
 
         self._build_verse_tab()
         self._build_word_tab()
         self._build_phrase_tab()
+        self._build_binyanim_tab()
 
         # Barre d'état (chargement de la base / analyse en cours).
         self.status = ttk.Label(self.root, text="Chargement de la base BHSA…",
@@ -533,7 +540,7 @@ class AnalyseurGUI:
     def _on_corpus_loaded(self, api):
         self.api = api
         self.status.configure(text="Base BHSA chargée. Prêt.")
-        for btn in (self.btn_verse, self.btn_word, self.btn_phrase):
+        for btn in (self.btn_verse, self.btn_word, self.btn_phrase, self.btn_binyanim):
             btn.state(["!disabled"])
         self._populate_books()
 
@@ -604,6 +611,165 @@ class AnalyseurGUI:
         if verses:
             self.verse_combo.current(0)
 
+    def _build_binyanim_tab(self):
+        """Onglet « Binyanim » : conjugaison d'un verbe dans les 7 binyanim.
+
+        Le résultat du CLI (texte marqué) est parsé puis présenté en
+        sous-onglets, un par binyan, dont le libellé combine le nom
+        français et le nom hébreu (ex. « qal (paal) / פָּעַל »).
+        """
+        tab = self.tab_binyanim
+        form = ttk.LabelFrame(tab, text="Verbe à conjuguer (mot conjugué ou racine trilitaire)")
+        form.pack(fill="x", padx=8, pady=8)
+
+        self.binyanim_entry = tk.Entry(form, font=HEBREW_FONT, justify="right")
+        self.binyanim_entry.pack(fill="x", padx=4, pady=4)
+        self.binyanim_entry.bind("<FocusIn>", self._remember_target)
+
+        hint = ttk.Label(form,
+                         text="Saisissez un mot conjugué (ex. שָׁמַר, avec nikkud) ou une racine "
+                              "trilitaire nue (ex. שמר, קום, בנה). La conjugaison est générée "
+                              "pour les 7 binyanim ; la catégorie du verbe (fort ou faible) "
+                              "est détectée automatiquement.",
+                         wraplength=760, justify="left")
+        hint.pack(anchor="w", padx=4, pady=(2, 6))
+
+        self._build_keyboard(form)
+
+        opts = ttk.Frame(tab)
+        opts.pack(fill="x", padx=8)
+        ttk.Label(opts, text="Format :").pack(side="left", padx=(0, 4))
+        self.binyanim_format = tk.StringVar(value="text")
+        ttk.Radiobutton(opts, text="Texte", variable=self.binyanim_format,
+                        value="text").pack(side="left")
+        ttk.Radiobutton(opts, text="JSON", variable=self.binyanim_format,
+                        value="json").pack(side="left")
+
+        self.btn_binyanim = ttk.Button(tab, text="Conjuguer le verbe",
+                                       command=self._run_binyanim)
+        self.btn_binyanim.pack(anchor="w", padx=8, pady=8)
+        self.btn_binyanim.state(["disabled"])
+
+        # Zone de résultat : sous-onglets par binyan + sortie brute.
+        frame = ttk.LabelFrame(tab, text="Résultat")
+        frame.pack(fill="both", expand=True, padx=8, pady=(0, 8))
+        self.binyanim_notebook = ttk.Notebook(frame)
+        self.binyanim_notebook.grid(row=0, column=0, sticky="nsew")
+        # Onglet « Verbe » : identification + catégorie faible.
+        self.binyanim_verb_tab = ttk.Frame(self.binyanim_notebook)
+        self.binyanim_notebook.add(self.binyanim_verb_tab, text="Verbe")
+        self.binyanim_verb_text = self._make_binyanim_output(self.binyanim_verb_tab)
+        # Onglet « Sortie complète » : texte marqué brut du CLI.
+        self.binyanim_raw_tab = ttk.Frame(self.binyanim_notebook)
+        self.binyanim_notebook.add(self.binyanim_raw_tab, text="Sortie complète")
+        self.binyanim_raw_text = self._make_binyanim_output(self.binyanim_raw_tab)
+        frame.rowconfigure(0, weight=1)
+        frame.columnconfigure(0, weight=1)
+
+    def _make_binyanim_output(self, parent):
+        """Zone de texte défilable (ascenseurs vertical + horizontal)."""
+        text = tk.Text(parent, font=HEBREW_FONT_MONO, wrap="none",
+                       height=10, width=40)
+        text.grid(row=0, column=0, sticky="nsew")
+        yscroll = ttk.Scrollbar(parent, orient="vertical", command=text.yview)
+        yscroll.grid(row=0, column=1, sticky="ns")
+        xscroll = ttk.Scrollbar(parent, orient="horizontal", command=text.xview)
+        xscroll.grid(row=1, column=0, sticky="ew")
+        text.configure(yscrollcommand=yscroll.set, xscrollcommand=xscroll.set)
+        parent.rowconfigure(0, weight=1)
+        parent.columnconfigure(0, weight=1)
+        text.configure(state="disabled")
+        return text
+
+    def _run_binyanim(self):
+        if self.api is None:
+            return
+        form = self.binyanim_entry.get().strip()
+        if not form:
+            messagebox.showwarning("Binyanim", "Saisissez un verbe hébreu ou une racine.")
+            return
+        fmt = self.binyanim_format.get()
+        F = self.api.F
+        self._disable_buttons()
+        self.status.configure(text=f"Conjugaison de « {form} »…")
+
+        def worker():
+            analysis = analyze_binyanim(F, form)
+            if fmt == "json":
+                result = format_binyanim_json(analysis)
+                self._work_queue.put(("binyanim_raw", result))
+            else:
+                result = format_binyanim(analysis)
+                self._work_queue.put(("binyanim_raw", result))
+                parsed = parse_binyanim_text(result)
+                self._work_queue.put(("binyanim_parsed", parsed))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _show_binyanim_raw(self, text):
+        """Affiche la sortie brute (texte marqué ou JSON)."""
+        self._set_output(self.binyanim_raw_text, text)
+        self.binyanim_notebook.select(self.binyanim_raw_tab)
+        self.status.configure(text="Prêt.")
+        self._enable_buttons()
+
+    def _show_binyanim_parsed(self, parsed):
+        """Construit un sous-onglet par binyan à partir du texte parsé.
+
+        Le libellé de chaque sous-onglet combine le nom français et le nom
+        hébreu du binyan : « qal (paal) · פָּעַל ».
+        """
+        # Nettoyer les sous-onglets de binyanim précédents (garder Verbe
+        # et Sortie complète, toujours en fin de notebook).
+        keep = {str(self.binyanim_verb_tab), str(self.binyanim_raw_tab)}
+        for tab_id in list(self.binyanim_notebook.tabs()):
+            if tab_id in keep:
+                continue
+            self.binyanim_notebook.forget(tab_id)
+
+        verb = parsed.get("verb", {})
+        weak = parsed.get("weak", {})
+        header = []
+        if verb.get("root"):
+            header.append(f"Racine : {verb['root']}")
+        if verb.get("lex"):
+            header.append(f"lemme BHSA : {verb['lex']}")
+        if verb.get("gloss_fr"):
+            header.append(f"« {verb['gloss_fr']} »")
+        lines = []
+        if header:
+            lines.append("  · ".join(header))
+        if weak:
+            is_weak = weak.get("code") not in (None, "strong")
+            if is_weak:
+                lines.append("")
+                lines.append(f"Verbe faible : {weak.get('label', '')}")
+                if weak.get("desc"):
+                    lines.append(f"  {weak['desc']}")
+            else:
+                lines.append("")
+                lines.append("Verbe fort (shalem) : conjugaison régulière.")
+        self._set_output(self.binyanim_verb_text, "\n".join(lines))
+
+        raw_index = self.binyanim_notebook.index(self.binyanim_raw_tab)
+        for b in parsed.get("binyanim", []):
+            tab = ttk.Frame(self.binyanim_notebook)
+            label = f"{b['name_fr']} · {b['name_he']}"
+            if b.get("attested"):
+                label += " ✓"
+            # Insérer avant l'onglet « Sortie complète ».
+            self.binyanim_notebook.insert(raw_index, tab, text=label)
+            raw_index += 1
+            text = self._make_binyanim_output(tab)
+            self._set_output(text, b.get("text", ""))
+
+        if parsed.get("binyanim"):
+            # Sélectionner le premier binyan.
+            first = self.binyanim_notebook.tabs()[0]
+            self.binyanim_notebook.select(first)
+        self.status.configure(text="Prêt.")
+        self._enable_buttons()
+
     # --- Lancement des analyses (en arrière-plan) -----------------------
     def _set_output(self, widget, text):
         widget.configure(state="normal")
@@ -612,12 +778,13 @@ class AnalyseurGUI:
         widget.configure(state="disabled")
 
     def _disable_buttons(self):
-        for btn in (self.btn_verse, self.btn_word, self.btn_phrase):
+        for btn in (self.btn_verse, self.btn_word, self.btn_phrase, self.btn_binyanim):
             btn.state(["disabled"])
 
     def _enable_buttons(self):
         if self.api is not None:
-            for btn in (self.btn_verse, self.btn_word, self.btn_phrase):
+            for btn in (self.btn_verse, self.btn_word, self.btn_phrase,
+                        self.btn_binyanim):
                 btn.state(["!disabled"])
 
     def _build_translation_header(self, analysis, fr, chap, verse, trans_enabled=None):
@@ -767,6 +934,10 @@ class AnalyseurGUI:
                     self._set_output(self.tab_phrase._output, payload)
                     self.status.configure(text="Prêt.")
                     self._enable_buttons()
+                elif kind == "binyanim_raw":
+                    self._show_binyanim_raw(payload)
+                elif kind == "binyanim_parsed":
+                    self._show_binyanim_parsed(payload)
         except queue.Empty:
             pass
         self.root.after(120, self._poll_queue)
