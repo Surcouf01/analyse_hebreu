@@ -125,11 +125,13 @@ def _fr_participe_passe(gloss):
 
 
 def _load_binyan_senses():
-    """Charge le lexique de sens par (lemme, binyan), s'il existe.
+    """Charge le lexique de sens par (racine, binyan), s'il existe.
 
-    binyan_senses_fr_en.json : {"LEMME": {"binyan": ["fr", "en"], ...}}.
+    binyan_senses_fr_en.json : {"ראה": {"binyan": ["fr", "en"], ...}} —
+    les clés sont les racines hébraïques (consonnes nues, sans nikkud),
+    plus lisibles à maintenir que les lemmes BHSA translittérés.
     Les sens réellement divergents selon le binyan (ex. ראה : voir /
-    apparaître / montrer) y sont donnés manuellement ; tout lemme/binyan
+    apparaître / montrer) y sont donnés manuellement ; toute racine/binyan
     absent retombe sur la périphrase générée.
     """
     import json
@@ -146,10 +148,10 @@ def _load_binyan_senses():
     return _SENSES_CACHE
 
 
-def binyan_translation(code, gloss_fr, gloss_en, lex=None):
+def binyan_translation(code, gloss_fr, gloss_en, root=None):
     """Traduction du verbe dans un binyan, en français et en anglais.
 
-    Consulte d'abord le lexique de sens par (lemme, binyan)\
+    Consulte d'abord le lexique de sens par (racine, binyan)\
     (binyan_senses_fr_en.json) : sens divergents réels documentés\
     (ex. ראה : qal « voir », nifal « apparaître », hifil « montrer »).
     À défaut, construit une périphrase à partir des gloss du lemme :
@@ -157,8 +159,8 @@ def binyan_translation(code, gloss_fr, gloss_en, lex=None):
     Chaque langue n'est remplie que si le gloss source existe.
     Renvoie ("", "") si aucun gloss n'est disponible.
     """
-    if lex:
-        entry = _load_binyan_senses().get(lex, {}).get(code)
+    if root:
+        entry = _load_binyan_senses().get(root, {}).get(code)
         if entry and len(entry) >= 2 and (entry[0] or entry[1]):
             return entry[0] or "", entry[1] or ""
     v_fr = (gloss_fr or "").strip()
@@ -1205,7 +1207,7 @@ def analyze_binyanim(F, form):
     gloss_en = verb.get("gloss") or ""
     for code, name_fr, name_he in BINYANIM:
         tr_fr, tr_en = binyan_translation(code, gloss_fr, gloss_en,
-                                         lex=verb.get("lex"))
+                                         root=verb.get("root_display"))
         entry = {
             "code": code,
             "name_fr": name_fr,
