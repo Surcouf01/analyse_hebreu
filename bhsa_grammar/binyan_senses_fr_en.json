@@ -255,13 +255,51 @@
       "present oneself"
     ]
   },
+  "בנה": {
+    "qal": [
+      "bâtir",
+      "build; rebuild"
+    ],
+    "nif": [
+      "être bâti",
+      "be built; be rebuilt"
+    ]
+  },
+  "שמר": {
+    "qal": [
+      "garder",
+      "keep, have charge of; tend"
+    ],
+    "nif": [
+      "être gardé",
+      "observe, celebrate; keep"
+    ],
+    "piel": [
+      "garder (intensif), observer",
+      "keep (intensive), observe"
+    ]
+  },
+  "גזר": {
+    "qal": [
+      "couper, partager",
+      "divide, cut in two; divide"
+    ],
+    "nif": [
+      "être coupé",
+      "be cut off; be cut off = destroyed"
+    ]
+  },
   "אבד": {
     "qal": [
-      "",
-      "perish, die; perish, be exterminated"
+      "périr, disparaître",
+      "perish, vanish"
+    ],
+    "piel": [
+      "faire périr, détruire, anéantir",
+      "cause to perish, destroy, blot out"
     ],
     "hif": [
-      "",
+      "détruire, faire périr",
       "destroy, put to death"
     ]
   },
@@ -317,15 +355,29 @@
   },
   "אהב": {
     "qal": [
-      "",
-      "love; loving a paramour"
+      "aimer",
+      "love"
     ],
     "nif": [
       "",
-      "lovely, loveable; friends"
+      "lovely, loveable"
+    ],
+    "piel": [
+      "aimer (intensif)",
+      "love (intensive)"
+    ]
+  },
+  "אהל": {
+    "piel": [
+      "",
+      "pitch one's tent"
     ]
   },
   "אוה": {
+    "piel": [
+      "",
+      "desire; evil"
+    ],
     "hit": [
       "",
       "desire for yourselves"
@@ -367,6 +419,12 @@
       "yarn; spin"
     ]
   },
+  "אזן": {
+    "piel": [
+      "",
+      "weigh"
+    ]
+  },
   "אזר": {
     "qal": [
       "",
@@ -374,7 +432,11 @@
     ],
     "nif": [
       "",
-      "girded with might; gird"
+      "girded with might"
+    ],
+    "piel": [
+      "",
+      "gird"
     ],
     "hit": [
       "",
@@ -390,6 +452,10 @@
       "",
       "be caught; have possessions"
     ],
+    "piel": [
+      "",
+      "enclose, overlay; shut"
+    ],
     "hof": [
       "",
       "fastened to"
@@ -398,41 +464,41 @@
   "אחר": {
     "qal": [
       "",
-      "and I have tarried; delay, tarry"
+      "and I have tarried"
+    ],
+    "piel": [
+      "",
+      "delay, tarry; keep back"
     ]
   },
   "אטם": {
     "qal": [
       "",
       "shut, stop; closed"
-    ],
-    "hif": [
-      "",
-      "id quod"
     ]
   },
   "איב": {
     "qal": [
-      "",
-      "be hostile to, treat as enemy; enemy"
+      "être hostile, traiter en ennemi",
+      "be hostile to, treat as enemy"
     ]
   },
   "אכל": {
     "qal": [
-      "",
-      "eat; eat of"
+      "manger",
+      "eat"
     ],
     "nif": [
-      "",
-      "be eaten; be uneatable"
+      "être mangé",
+      "be eaten"
     ],
     "pual": [
-      "",
+      "être consommé",
       "be consumed"
     ],
     "hif": [
-      "",
-      "cause to eat, feed with; cause to devour"
+      "nourrir, faire manger",
+      "feed, cause to eat"
     ]
   },
   "אלה": {
@@ -455,10 +521,14 @@
     "nif": [
       "",
       "be bound; be dumb"
+    ],
+    "piel": [
+      "",
+      "binding sheaves"
     ]
   },
   "אלף": {
-    "qal": [
+    "piel": [
       "",
       "fin"
     ]
@@ -476,6 +546,10 @@
     ]
   },
   "אמץ": {
+    "piel": [
+      "",
+      "make firm, strengthen; assure, secure"
+    ],
     "hit": [
       "",
       "strengthen oneself; confirm oneself"
@@ -483,19 +557,27 @@
   },
   "אמר": {
     "nif": [
-      "",
-      "be said, told; said"
+      "être dit, être rapporté",
+      "be said, be told"
     ],
     "hif": [
-      "",
-      "cause to declare"
+      "faire dire, faire proclamer",
+      "cause to say, make proclamation"
     ],
     "hit": [
-      "",
-      "act proudly, boast; exchange"
+      "se vanter, agir avec arrogance",
+      "boast, act proudly"
+    ],
+    "qal": [
+      "dire",
+      "say"
     ]
   },
   "אנה": {
+    "piel": [
+      "",
+      "cause; or allow"
+    ],
     "pual": [
       "",
       "be allowed to meet, be sent, Imperfect; evil"
@@ -517,12 +599,6 @@
       "Impefect; be angry"
     ]
   },
-  "אנק": {
-    "nif": [
-      "",
-      "id"
-    ]
-  },
   "אנש": {
     "qal": [
       "",
@@ -535,20 +611,24 @@
   },
   "אסף": {
     "qal": [
-      "",
-      "gather, collect; against"
+      "assembler, rassembler, recueillir",
+      "gather, collect"
     ],
     "nif": [
-      "",
-      "assemble, be gathered; compose, arrange"
+      "être rassemblé, s'assembler",
+      "be gathered, assemble"
+    ],
+    "piel": [
+      "recueillir, recevoir",
+      "gather in, receive in"
     ],
     "pual": [
-      "",
-      "be gathered; against"
+      "être recueilli",
+      "be gathered"
     ],
     "hit": [
-      "",
-      "gather themselves"
+      "se rassembler",
+      "gather oneself"
     ]
   },
   "אסר": {
@@ -607,6 +687,10 @@
     "qal": [
       "",
       "lie in wait; liers-in-wait"
+    ],
+    "piel": [
+      "",
+      "liers-in-wait"
     ]
   },
   "ארג": {
@@ -644,7 +728,11 @@
     ],
     "nif": [
       "",
-      "cursed; curse, lay under a curse"
+      "cursed"
+    ],
+    "piel": [
+      "",
+      "curse, lay under a curse; the curse-bringing waters"
     ],
     "hof": [
       "",
@@ -668,7 +756,7 @@
     ]
   },
   "אשר": {
-    "qal": [
+    "piel": [
       "",
       "go straight on, advance; lead on"
     ],
@@ -685,6 +773,12 @@
     "hif": [
       "",
       "bring, Imperative; bring beasts"
+    ]
+  },
+  "באר": {
+    "piel": [
+      "",
+      "make distinct, plain; stones"
     ]
   },
   "באש": {
@@ -726,7 +820,11 @@
   "בהל": {
     "nif": [
       "",
-      "be disturbed, dismayed, terrified; id"
+      "be disturbed, dismayed, terrified; terrible"
+    ],
+    "piel": [
+      "",
+      "Particle; dismay, terrify"
     ],
     "pual": [
       "",
@@ -739,16 +837,16 @@
   },
   "בוא": {
     "qal": [
-      "",
-      "come in; go out and come in"
+      "venir, entrer",
+      "come, come in"
     ],
     "hif": [
-      "",
-      "cause to come in, bring in; bring, carry in"
+      "faire venir, faire entrer, apporter",
+      "bring, cause to come in"
     ],
     "hof": [
-      "",
-      "be brought in; into a house"
+      "être amené, être introduit",
+      "be brought in"
     ]
   },
   "בוז": {
@@ -766,7 +864,7 @@
   "בוס": {
     "qal": [
       "",
-      "tread down, trample; id"
+      "tread down, trample; reject, loathe"
     ],
     "hof": [
       "",
@@ -788,7 +886,7 @@
   "בזה": {
     "qal": [
       "",
-      "despise, regard with contempt; id"
+      "despise, regard with contempt; a despising of soul"
     ],
     "nif": [
       "",
@@ -807,12 +905,6 @@
     "pual": [
       "",
       "be taken as spoil"
-    ]
-  },
-  "בזר": {
-    "qal": [
-      "",
-      "id"
     ]
   },
   "בחל": {
@@ -850,9 +942,9 @@
     ]
   },
   "בטה": {
-    "qal": [
+    "piel": [
       "",
-      "one that babbleth; speak rashly, unadvisedly"
+      "speak rashly, unadvisedly"
     ]
   },
   "בטח": {
@@ -893,9 +985,17 @@
     "qal": [
       "",
       "weep; laugh"
+    ],
+    "piel": [
+      "",
+      "lament; bewail"
     ]
   },
   "בכר": {
+    "piel": [
+      "",
+      "bear early, new fruit; make"
+    ],
     "pual": [
       "",
       "born; made a firstling"
@@ -914,7 +1014,11 @@
   "בלה": {
     "qal": [
       "",
-      "wear out; from upon"
+      "wear out; I am worn out"
+    ],
+    "piel": [
+      "",
+      "wear out; consume away"
     ]
   },
   "בלל": {
@@ -934,7 +1038,11 @@
     ],
     "nif": [
       "",
-      "swallowed up; swallow"
+      "swallowed up"
+    ],
+    "piel": [
+      "",
+      "swallow; as a swallowing"
     ],
     "pual": [
       "",
@@ -945,16 +1053,6 @@
     "pual": [
       "",
       "devastated; a devastated city"
-    ]
-  },
-  "בנה": {
-    "qal": [
-      "bâtir",
-      "build; rebuild"
-    ],
-    "nif": [
-      "être bâti",
-      "be built; be rebuilt"
     ]
   },
   "בעה": {
@@ -988,6 +1086,10 @@
       "",
       "burn; begin to burn, be kindled"
     ],
+    "piel": [
+      "",
+      "kindle; light"
+    ],
     "pual": [
       "",
       "burn"
@@ -1004,13 +1106,21 @@
   "בעת": {
     "nif": [
       "",
-      "be terrified; fall upon"
+      "be terrified"
+    ],
+    "piel": [
+      "",
+      "fall upon; overwhelm"
     ]
   },
   "בצע": {
     "qal": [
       "",
       "cut off, break off; in wrath"
+    ],
+    "piel": [
+      "",
+      "cut off; dis"
     ]
   },
   "בצק": {
@@ -1026,7 +1136,11 @@
     ],
     "nif": [
       "",
-      "be withheld; fortify"
+      "be withheld"
+    ],
+    "piel": [
+      "",
+      "fortify"
     ]
   },
   "בקע": {
@@ -1037,6 +1151,10 @@
     "nif": [
       "",
       "be cleft, rent open; burst open"
+    ],
+    "piel": [
+      "",
+      "cleave, cut to pieces; rend open"
     ],
     "pual": [
       "",
@@ -1065,9 +1183,19 @@
       "be emptied; empty out"
     ]
   },
-  "בקש": {
-    "pual": [
+  "בקר": {
+    "piel": [
       "",
+      "seek, look for; seek"
+    ]
+  },
+  "בקש": {
+    "piel": [
+      "chercher, rechercher, demander",
+      "seek, search for"
+    ],
+    "pual": [
+      "être recherché",
       "be sought"
     ]
   },
@@ -1080,6 +1208,10 @@
       "",
       "Pass; be created"
     ],
+    "piel": [
+      "",
+      "cut down; cut out"
+    ],
     "hif": [
       "",
       "make yourselves fat"
@@ -1088,7 +1220,11 @@
   "ברה": {
     "qal": [
       "",
-      "eat bread; for devouring"
+      "eat bread"
+    ],
+    "piel": [
+      "",
+      "for devouring"
     ],
     "hif": [
       "",
@@ -1098,7 +1234,7 @@
   "ברח": {
     "qal": [
       "",
-      "go; flee"
+      "go; pass though"
     ],
     "hif": [
       "",
@@ -1106,21 +1242,25 @@
     ]
   },
   "ברך": {
-    "qal": [
-      "",
-      "kneel down; let us kneel before Yahweh"
+    "piel": [
+      "bénir",
+      "bless"
     ],
     "nif": [
-      "",
+      "se bénir",
       "bless oneself"
     ],
-    "hit": [
-      "",
-      "bless God; God blesses"
-    ],
     "pual": [
-      "",
-      "be blessed, adored; prospered by God"
+      "être béni",
+      "be blessed"
+    ],
+    "hit": [
+      "se bénir, se féliciter",
+      "bless oneself"
+    ],
+    "qal": [
+      "bénir, s'agenouiller",
+      "kneel, bless"
     ]
   },
   "ברק": {
@@ -1136,10 +1276,18 @@
     ],
     "nif": [
       "",
-      "purify oneself; purify"
+      "purify oneself"
+    ],
+    "piel": [
+      "",
+      "purify; purify, cleanse"
     ]
   },
   "בשר": {
+    "piel": [
+      "",
+      "gladden with good tidings; bear tidings"
+    ],
     "hit": [
       "",
       "receive good tidings"
@@ -1150,6 +1298,10 @@
       "",
       "boil, cook; grow ripe"
     ],
+    "piel": [
+      "",
+      "boil; bake"
+    ],
     "pual": [
       "",
       "be boiled, sodden"
@@ -1157,12 +1309,6 @@
     "hif": [
       "",
       "ripened, brought to ripeness"
-    ]
-  },
-  "בתר": {
-    "qal": [
-      "",
-      "id"
     ]
   },
   "גאה": {
@@ -1179,6 +1325,10 @@
     "nif": [
       "",
       "redeem oneself; be redeemed"
+    ],
+    "piel": [
+      "",
+      "pollute, desecrate"
     ],
     "hif": [
       "",
@@ -1214,6 +1364,10 @@
       "",
       "be strong, mighty; stronger than"
     ],
+    "piel": [
+      "",
+      "make strong, strengthen"
+    ],
     "hif": [
       "",
       "confirm a covenant; we will confirm covenant with our tongue"
@@ -1233,6 +1387,10 @@
     "qal": [
       "",
       "grow up; become great"
+    ],
+    "piel": [
+      "",
+      "cause to grow; bring up children"
     ],
     "pual": [
       "",
@@ -1254,11 +1412,21 @@
     ],
     "nif": [
       "",
-      "be hewn off; hew off, down, in two"
+      "be hewn off"
+    ],
+    "piel": [
+      "",
+      "hew off, down, in two; Asherîm"
     ],
     "pual": [
       "",
       "hew down"
+    ]
+  },
+  "גדף": {
+    "piel": [
+      "",
+      "cut, wound; revile"
     ]
   },
   "גדר": {
@@ -1300,13 +1468,13 @@
   "גור": {
     "qal": [
       "",
-      "evil cannot be a guest of thine; abide"
+      "abide; dwell"
     ]
   },
   "גזה": {
     "qal": [
       "",
-      "he that severed me; protector"
+      "protector; benefactor"
     ]
   },
   "גזז": {
@@ -1329,16 +1497,6 @@
       "sleep"
     ]
   },
-  "גזר": {
-    "qal": [
-      "couper, partager",
-      "divide, cut in two; divide"
-    ],
-    "nif": [
-      "être coupé",
-      "be cut off; be cut off = destroyed"
-    ]
-  },
   "גיח": {
     "qal": [
       "",
@@ -1353,27 +1511,35 @@
   },
   "גלה": {
     "qal": [
-      "",
-      "reveal; uncovered of eyes"
+      "découvrir, révéler, rendre visible",
+      "reveal, uncover"
     ],
     "nif": [
-      "",
-      "uncover oneself; shew oneself"
+      "se dévoiler, se révéler",
+      "uncover oneself, show oneself"
+    ],
+    "piel": [
+      "emmener en exil, déporter",
+      "carry away into exile"
     ],
     "pual": [
-      "",
-      "be uncovered; open rebuke"
+      "être découvert",
+      "be uncovered"
     ],
     "hif": [
-      "",
-      "carry away into exile, take into exile"
+      "emmener en exil, déporter",
+      "carry away into exile, take captive"
     ],
     "hof": [
-      "",
-      "carried into exile; was uncovered"
+      "être déporté, être emmené en exil",
+      "be carried into exile"
     ]
   },
   "גלח": {
+    "piel": [
+      "",
+      "shave; shave off"
+    ],
     "pual": [
       "",
       "be shaven"
@@ -1404,6 +1570,10 @@
     ]
   },
   "גמא": {
+    "piel": [
+      "",
+      "pit, hollow; he makes [paws"
+    ],
     "hif": [
       "",
       "let me drink a little water, pray"
@@ -1432,7 +1602,11 @@
     ],
     "nif": [
       "",
-      "be stolen; steal away"
+      "be stolen"
+    ],
+    "piel": [
+      "",
+      "steal away"
     ],
     "pual": [
       "",
@@ -1449,10 +1623,16 @@
       "defend"
     ]
   },
+  "מגן": {
+    "piel": [
+      "",
+      "deliver up; deliver, give"
+    ]
+  },
   "געל": {
     "hif": [
       "",
-      "rinse out; rejection"
+      "and doth not cause; allow"
     ],
     "qal": [
       "",
@@ -1486,7 +1666,11 @@
   "גרה": {
     "hit": [
       "",
-      "stir up, excite; garû"
+      "excite oneself; engage in strife"
+    ],
+    "piel": [
+      "",
+      "excite, stir up, strife"
     ]
   },
   "גרע": {
@@ -1508,7 +1692,7 @@
   "גרס": {
     "qal": [
       "",
-      "my soul is crushed; for"
+      "my soul is crushed"
     ]
   },
   "גרש": {
@@ -1519,6 +1703,10 @@
     "nif": [
       "",
       "be driven away; be driven, tossed"
+    ],
+    "piel": [
+      "",
+      "drive out, away"
     ]
   },
   "גשם": {
@@ -1531,10 +1719,16 @@
       "cause; send rain"
     ]
   },
+  "גשש": {
+    "piel": [
+      "",
+      "ib., grope, grope for"
+    ]
+  },
   "דאג": {
     "qal": [
       "",
-      "be anxious, concerned; id"
+      "be anxious, concerned"
     ]
   },
   "דאה": {
@@ -1561,20 +1755,20 @@
   },
   "דבר": {
     "qal": [
-      "",
-      "speak; word spoken"
+      "parler",
+      "speak"
     ],
     "nif": [
-      "",
-      "speak with one another, talk; against"
+      "se parler, converser",
+      "speak with one another"
     ],
-    "pual": [
-      "",
-      "glorious things are being spoken in thee; of thee"
+    "piel": [
+      "parler (intensif)",
+      "speak"
     ],
     "hit": [
-      "",
-      "speaking this word; heard"
+      "se parler (l'un à l'autre)",
+      "speak to one another"
     ],
     "hif": [
       "",
@@ -1592,6 +1786,10 @@
     ]
   },
   "דדה": {
+    "piel": [
+      "",
+      "lead slowly"
+    ],
     "hit": [
       "",
       "walk deliberately"
@@ -1664,7 +1862,7 @@
   "דחק": {
     "qal": [
       "",
-      "thrust, crowd; them that maltreated and oppressed them"
+      "thrust, crowd"
     ]
   },
   "דין": {
@@ -1682,13 +1880,17 @@
       "",
       "crushed; contrite ones"
     ],
+    "piel": [
+      "",
+      "crush; crush me"
+    ],
     "pual": [
       "",
       "crushed"
     ],
     "hit": [
       "",
-      "must let themselves be crushed; are crushed"
+      "must let themselves be crushed"
     ]
   },
   "דכה": {
@@ -1699,6 +1901,10 @@
     "nif": [
       "",
       "be crushed, broken; be contrite"
+    ],
+    "piel": [
+      "",
+      "crush down; crush to pieces"
     ]
   },
   "דלג": {
@@ -1748,7 +1954,11 @@
   "דמה": {
     "qal": [
       "",
-      "be like, resemble; liken, compare; imagine, think, devise"
+      "be like, resemble"
+    ],
+    "piel": [
+      "",
+      "liken, compare; imagine, think, devise; liken"
     ],
     "nif": [
       "",
@@ -1848,13 +2058,9 @@
     ]
   },
   "דשן": {
-    "qal": [
+    "piel": [
       "",
       "make fat; find"
-    ],
-    "pual": [
-      "",
-      "be made fat; it hath fattened itself"
     ]
   },
   "הבל": {
@@ -1871,10 +2077,6 @@
     "qal": [
       "",
       "Perf; growl"
-    ],
-    "hif": [
-      "",
-      "those that make chirpings and mutterings"
     ]
   },
   "הדך": {
@@ -1937,36 +2139,36 @@
   },
   "היה": {
     "qal": [
-      "",
-      "Fall out, happen; what has happened to him"
+      "être, advenir, arriver",
+      "be, fall out, happen"
     ],
     "nif": [
-      "",
-      "either, be done, be brought about; occur, come to pass"
+      "se produire, survenir",
+      "be done, occur, come to pass"
     ]
   },
   "הכר": {
     "hif": [
       "",
-      "ye came me; ye deal hardy with, wrong me"
+      "wrong, detract from; opprimentes"
     ]
   },
   "הלך": {
     "hif": [
-      "",
-      "go, proceed, move, walk; depart, go away"
+      "conduire, faire marcher",
+      "cause to walk, lead"
     ],
-    "nif": [
-      "",
-      "walk; walk, tread on coals"
+    "piel": [
+      "marcher (à la manière de)",
+      "walk (like)"
     ],
     "hit": [
-      "",
-      "walking about; nacked they keep going about"
+      "aller çà et là, circuler",
+      "go about, move to and fro"
     ],
     "qal": [
-      "",
-      "in darkness we walk; depart, go entirely away"
+      "marcher, aller",
+      "go, walk"
     ]
   },
   "הלל": {
@@ -1977,6 +2179,10 @@
     "hif": [
       "",
       "flash forth light; sun"
+    ],
+    "piel": [
+      "",
+      "praise; and those praising"
     ],
     "pual": [
       "",
@@ -2001,12 +2207,6 @@
       "move noisily; confuse, discomfit"
     ]
   },
-  "המן": {
-    "qal": [
-      "",
-      "because ye rebelled"
-    ]
-  },
   "הפך": {
     "qal": [
       "",
@@ -2018,7 +2218,7 @@
     ],
     "hit": [
       "",
-      "turn this way; that, every way"
+      "turn this way; transform oneself"
     ],
     "hof": [
       "",
@@ -2053,18 +2253,32 @@
     "nif": [
       "",
       "be thrown; torn down"
+    ],
+    "piel": [
+      "",
+      "overthrow, tear down; destroyers"
     ]
   },
   "זבח": {
     "qal": [
       "",
       "slaughter for sacrifice; sacrificers of mankind"
+    ],
+    "piel": [
+      "",
+      "sacrifice"
     ]
   },
   "זבל": {
     "qal": [
       "",
       "my husband will honour me; dwell with me"
+    ]
+  },
+  "זהם": {
+    "piel": [
+      "",
+      "his life maketh it, bread, loathsome"
     ]
   },
   "זהר": {
@@ -2092,13 +2306,13 @@
   "זוע": {
     "qal": [
       "",
-      "tremble, quake; violently shake thee"
+      "tremble, quake"
     ]
   },
   "זור": {
     "qal": [
       "",
-      "become estranged; from"
+      "become estranged; strange"
     ],
     "nif": [
       "",
@@ -2112,13 +2326,13 @@
   "זחל": {
     "qal": [
       "",
-      "crawl; id"
+      "crawl"
     ]
   },
   "זיד": {
     "qal": [
       "",
-      "against; hath she acted presumptuously"
+      "hath she acted presumptuously"
     ],
     "hif": [
       "",
@@ -2129,6 +2343,10 @@
     "qal": [
       "",
       "be clean, pure; be clear, be justified"
+    ],
+    "piel": [
+      "",
+      "make; keep clean, pure"
     ],
     "hit": [
       "",
@@ -2158,7 +2376,7 @@
   "זמם": {
     "qal": [
       "",
-      "purpose, devise; id"
+      "consider, fix thought upon; purpose, devise"
     ]
   },
   "זמן": {
@@ -2168,6 +2386,10 @@
     ]
   },
   "זמר": {
+    "piel": [
+      "",
+      "make music, melody; singing"
+    ],
     "nif": [
       "",
       "be pruned"
@@ -2180,7 +2402,7 @@
     ],
     "pual": [
       "",
-      "fornication was not done; after thee"
+      "fornication was not done"
     ],
     "hif": [
       "",
@@ -2195,6 +2417,12 @@
     "hif": [
       "",
       "reject"
+    ]
+  },
+  "זנק": {
+    "piel": [
+      "",
+      "cause to spring, spurt; throw, shoot"
     ]
   },
   "זעך": {
@@ -2264,7 +2492,11 @@
     ],
     "nif": [
       "",
-      "be scattered, dispersed; when ye shall be dispersed"
+      "be scattered, dispersed"
+    ],
+    "piel": [
+      "",
+      "scatter, disperse; scatterers"
     ],
     "pual": [
       "",
@@ -2316,7 +2548,7 @@
   "חבא": {
     "qal": [
       "",
-      "id; —abû"
+      "—abû; hide oneself"
     ],
     "nif": [
       "",
@@ -2358,7 +2590,11 @@
     ],
     "nif": [
       "",
-      "becometh pledged to it; writhe, twist"
+      "becometh pledged to it"
+    ],
+    "piel": [
+      "",
+      "writhe, twist; travail"
     ],
     "pual": [
       "",
@@ -2367,6 +2603,10 @@
   },
   "חבק": {
     "qal": [
+      "",
+      "embrace"
+    ],
+    "piel": [
       "",
       "embrace"
     ]
@@ -2379,6 +2619,10 @@
     "pual": [
       "",
       "tie magic knots, charm; charm"
+    ],
+    "piel": [
+      "",
+      "make an ally of unite; unite, join"
     ],
     "hif": [
       "",
@@ -2394,7 +2638,7 @@
       "",
       "bind, bind on; and I bound"
     ],
-    "pual": [
+    "piel": [
       "",
       "bind, restrain; bind up"
     ]
@@ -2433,6 +2677,10 @@
     "hif": [
       "",
       "sharpen; of his friend"
+    ],
+    "piel": [
+      "",
+      "cheerest him; with gladness"
     ]
   },
   "חדל": {
@@ -2445,28 +2693,36 @@
       "should I be made to leave"
     ]
   },
-  "חדר": {
-    "qal": [
-      "",
-      "that which surroundeth them"
-    ]
-  },
   "חדש": {
     "hit": [
       "",
-      "id; new moon"
+      "new moon; new-city"
+    ],
+    "piel": [
+      "",
+      "renew, make anew; bringest fresh (new) witnesses"
     ]
   },
   "חוב": {
     "qal": [
       "",
-      "I am guilty; inculpate"
+      "I am guilty"
+    ],
+    "piel": [
+      "",
+      "inculpate"
     ]
   },
   "חוג": {
     "qal": [
       "",
       "hath drawn as a circle"
+    ]
+  },
+  "חוה": {
+    "piel": [
+      "",
+      "declare, make known; yet words for God"
     ]
   },
   "חול": {
@@ -2507,42 +2763,44 @@
   },
   "חזק": {
     "qal": [
-      "",
-      "be; grow strong"
+      "être fort, se fortifier",
+      "be strong, grow strong"
+    ],
+    "piel": [
+      "fortifier, affermir",
+      "strengthen, make firm"
     ],
     "hif": [
-      "",
-      "making strong, fortifying; repair"
+      "fortifier, affermir",
+      "strengthen, make firm"
     ],
     "hit": [
-      "",
-      "strengthen oneself; against"
+      "se fortifier",
+      "strengthen oneself"
     ]
   },
   "חטא": {
     "qal": [
-      "",
-      "miss; one hastening with his feet misseth"
+      "pécher, manquer (le but)",
+      "miss, sin"
+    ],
+    "piel": [
+      "subir une perte, faire faute",
+      "bear loss, miss"
     ],
     "hif": [
-      "",
-      "induce; cause to sin"
+      "faire pécher, induire en péché",
+      "induce to sin, cause to sin"
     ],
     "hit": [
-      "",
-      "miss oneself, lose oneself; be bewildered, beside oneself"
+      "s'égarer, être hors de soi",
+      "miss oneself, be bewildered"
     ]
   },
   "חטב": {
     "pual": [
       "",
       "hewn"
-    ]
-  },
-  "חטם": {
-    "qal": [
-      "",
-      "I will restrain for thee"
     ]
   },
   "חטף": {
@@ -2553,24 +2811,36 @@
   },
   "חיה": {
     "qal": [
-      "",
-      "live; have life"
+      "vivre",
+      "live"
+    ],
+    "piel": [
+      "garder en vie",
+      "preserve alive"
     ],
     "hif": [
-      "",
-      "preserve alive, let live; quicken, revive"
+      "faire vivre, garder en vie, ranimer",
+      "preserve alive, keep alive, revive"
     ]
   },
   "חכה": {
     "qal": [
       "",
-      "waiting for him; wait, tarry"
+      "waiting for him"
+    ],
+    "piel": [
+      "",
+      "wait, tarry; tarry not"
     ]
   },
   "חכם": {
     "qal": [
       "",
       "be or become wise, act wisely; if thy mind be wise"
+    ],
+    "piel": [
+      "",
+      "make wise, teach wisdom"
     ],
     "pual": [
       "",
@@ -2582,13 +2852,17 @@
     ]
   },
   "חלה": {
-    "qal": [
+    "piel": [
       "",
       "be; become weak"
     ],
     "nif": [
       "",
-      "severe, sore"
+      "make oneself sick; strain oneself"
+    ],
+    "qal": [
+      "",
+      "diseased; severe, sore"
     ],
     "hit": [
       "",
@@ -2608,6 +2882,10 @@
       "",
       "it is my piercing, my wound; my sickness"
     ],
+    "piel": [
+      "",
+      "—âlalu"
+    ],
     "hif": [
       "",
       "untie, loosen, open; tie"
@@ -2618,7 +2896,7 @@
     ],
     "hof": [
       "",
-      "then it was begun; that they may wait (?) a little"
+      "then it was begun; cease a little from anointing"
     ]
   },
   "חלם": {
@@ -2638,7 +2916,11 @@
     ],
     "hif": [
       "",
-      "pass away; pass through"
+      "change; cause to succeed"
+    ],
+    "piel": [
+      "",
+      "cause to pass; change"
     ]
   },
   "חלץ": {
@@ -2646,9 +2928,13 @@
       "",
       "draw, draw off; draw out, present"
     ],
-    "nif": [
+    "piel": [
       "",
       "pull out, tear out; but I delivered"
+    ],
+    "nif": [
+      "",
+      "be; go equipped"
     ],
     "hif": [
       "",
@@ -2660,9 +2946,13 @@
       "",
       "divide, apportion; divide with"
     ],
-    "nif": [
+    "piel": [
       "",
       "divide oneself; be divided"
+    ],
+    "nif": [
+      "",
+      "divide, apportion; give a portion to"
     ],
     "pual": [
       "",
@@ -2691,6 +2981,10 @@
     "nif": [
       "",
       "desirable; more desirable than gold"
+    ],
+    "piel": [
+      "",
+      "delight greatly"
     ]
   },
   "חמל": {
@@ -2706,7 +3000,11 @@
     ],
     "nif": [
       "",
-      "inflame oneself with; keep"
+      "inflame oneself with"
+    ],
+    "piel": [
+      "",
+      "keep; warm"
     ],
     "hit": [
       "",
@@ -2733,6 +3031,12 @@
     "qal": [
       "",
       "and wine which foams; be red"
+    ]
+  },
+  "חמש": {
+    "piel": [
+      "",
+      "the land of Egypt; take a fifth part"
     ]
   },
   "חנה": {
@@ -2762,6 +3066,10 @@
       "",
       "be pitied; groan"
     ],
+    "piel": [
+      "",
+      "make gracious, favourable; direct favour to"
+    ],
     "hof": [
       "",
       "be shewn favour, consideration"
@@ -2784,7 +3092,11 @@
   "חנק": {
     "nif": [
       "",
-      "strangled himself; strangle"
+      "strangled himself"
+    ],
+    "piel": [
+      "",
+      "strangle"
     ]
   },
   "חסה": {
@@ -2804,13 +3116,17 @@
       "",
       "by lacking intelligence (sense); be in want, want"
     ],
+    "piel": [
+      "",
+      "cause to lack; and depriving myself of good things?"
+    ],
     "hif": [
       "",
-      "cause to be lacking, fail; he that gathered little caused no lack"
+      "cause to be lacking, fail"
     ]
   },
   "חפה": {
-    "nif": [
+    "piel": [
       "",
       "overlay"
     ]
@@ -2848,11 +3164,15 @@
     ],
     "pual": [
       "",
-      "search; test"
+      "be searched for; a searched out search"
     ],
     "nif": [
       "",
-      "searched out; search through"
+      "searched out"
+    ],
+    "piel": [
+      "",
+      "search through; search for"
     ],
     "hit": [
       "",
@@ -2893,6 +3213,18 @@
       "curtailed"
     ]
   },
+  "חצץ": {
+    "piel": [
+      "",
+      "archers"
+    ]
+  },
+  "חצצר": {
+    "piel": [
+      "",
+      "players on clarions"
+    ]
+  },
   "חקה": {
     "pual": [
       "",
@@ -2900,17 +3232,13 @@
     ],
     "hit": [
       "",
-      "graving; for"
+      "graving; the soles of my feet"
     ]
   },
   "חקק": {
     "qal": [
       "",
       "cut in; on, upon, engrave, inscribe"
-    ],
-    "pual": [
-      "",
-      "that which is decreed"
     ],
     "hof": [
       "",
@@ -2925,6 +3253,10 @@
     "nif": [
       "",
       "be searched out, found out, ascertained; searched out"
+    ],
+    "piel": [
+      "",
+      "he sought out"
     ]
   },
   "חרב": {
@@ -2956,11 +3288,11 @@
   "חרה": {
     "qal": [
       "",
-      "anger was kindled, burned; against"
+      "anger was kindled, burned; it was kindled for"
     ],
     "nif": [
       "",
-      "be angry; all that are incensed against (thee)"
+      "be angry"
     ],
     "hif": [
       "",
@@ -3035,10 +3367,6 @@
     "hif": [
       "",
       "fabricating mischief against"
-    ],
-    "hit": [
-      "",
-      "and they kept quiet"
     ]
   },
   "חרת": {
@@ -3069,12 +3397,20 @@
   },
   "חשב": {
     "qal": [
-      "",
-      "think; account"
+      "penser, calculer, estimer, concevoir (un plan)",
+      "think, compute, reckon, devise"
     ],
     "nif": [
-      "",
-      "impute iniquity to"
+      "être compté, être considéré comme, être imputé",
+      "be accounted, be reckoned, be imputed"
+    ],
+    "piel": [
+      "penser à, considérer, méditer",
+      "think upon, consider, be mindful of"
+    ],
+    "hit": [
+      "se considérer, se compter",
+      "reckon oneself"
     ]
   },
   "חשה": {
@@ -3128,7 +3464,7 @@
   "חתן": {
     "hit": [
       "",
-      "id; make oneself daughter's husband"
+      "make oneself daughter's husband; to, with"
     ]
   },
   "חתר": {
@@ -3144,7 +3480,11 @@
     ],
     "nif": [
       "",
-      "he is put in awe; be shattered"
+      "he is put in awe"
+    ],
+    "piel": [
+      "",
+      "be shattered"
     ],
     "hif": [
       "",
@@ -3160,7 +3500,7 @@
   "טבל": {
     "qal": [
       "",
-      "dip; in"
+      "dip; moisten with, with some of"
     ],
     "nif": [
       "",
@@ -3186,6 +3526,10 @@
       "",
       "be clean; be clean ceremonially"
     ],
+    "piel": [
+      "",
+      "cleanse, purify; physically"
+    ],
     "pual": [
       "",
       "he hath not been cleansed; a land not cleansed"
@@ -3202,7 +3546,7 @@
     ],
     "hif": [
       "",
-      "do well, act right; that"
+      "do well, act right"
     ]
   },
   "טוה": {
@@ -3253,6 +3597,12 @@
       "patched"
     ]
   },
+  "טלל": {
+    "piel": [
+      "",
+      "they laid its timbers"
+    ]
+  },
   "טמא": {
     "qal": [
       "",
@@ -3262,13 +3612,17 @@
       "",
       "defile oneself, be defiled; be regarded as unclean"
     ],
+    "piel": [
+      "",
+      "defile; sacred places"
+    ],
     "pual": [
       "",
       "myself is not polluted"
     ],
     "hit": [
       "",
-      "defile oneself; for"
+      "defile oneself"
     ]
   },
   "טמה": {
@@ -3281,6 +3635,12 @@
     "qal": [
       "",
       "hide; hide, bury"
+    ]
+  },
+  "טנף": {
+    "piel": [
+      "",
+      "how should I soil them"
     ]
   },
   "טעה": {
@@ -3296,17 +3656,19 @@
   "טעם": {
     "qal": [
       "",
-      "taste; she tasteth that her gain is good"
+      "taste; is good"
     ]
   },
   "טען": {
     "qal": [
       "",
       "load your beasts"
-    ],
-    "pual": [
+    ]
+  },
+  "טפח": {
+    "piel": [
       "",
-      "those pierced with a sword"
+      "spread out; I have brought up, reared"
     ]
   },
   "טפל": {
@@ -3334,7 +3696,7 @@
     ],
     "nif": [
       "",
-      "id; his wrath teareth"
+      "torn"
     ],
     "pual": [
       "",
@@ -3348,7 +3710,7 @@
   "יאה": {
     "qal": [
       "",
-      "for thee it; is befitting"
+      "is befitting"
     ]
   },
   "יאל": {
@@ -3358,7 +3720,7 @@
     ],
     "hif": [
       "",
-      "take refuge with, escape, hasten to; be in front of"
+      "shew willingness; accept an invitation, acquiesce"
     ]
   },
   "יאש": {
@@ -3369,6 +3731,12 @@
     "nif": [
       "",
       "despair; and Saul shall despair of me, to seek me"
+    ]
+  },
+  "יבב": {
+    "piel": [
+      "",
+      "shrilly cried"
     ]
   },
   "יבל": {
@@ -3384,7 +3752,11 @@
   "יבש": {
     "qal": [
       "",
-      "be dried up; make dry, dry up"
+      "be dry, dried up without moisture; be dried up"
+    ],
+    "piel": [
+      "",
+      "make dry, dry up; shall dry up"
     ],
     "hif": [
       "",
@@ -3398,7 +3770,11 @@
     ],
     "nif": [
       "",
-      "grieved; grieve"
+      "grieved"
+    ],
+    "piel": [
+      "",
+      "grieve"
     ],
     "hif": [
       "",
@@ -3409,6 +3785,10 @@
     "qal": [
       "",
       "toil, labour; grow"
+    ],
+    "piel": [
+      "",
+      "weary, make weary; cause to go toilsomely"
     ],
     "hif": [
       "",
@@ -3424,11 +3804,15 @@
   "ידה": {
     "hif": [
       "",
-      "give thanks, confess; acknowledge"
+      "throw; give thanks, laud, praise"
     ],
     "qal": [
       "",
-      "shoot; at"
+      "shoot"
+    ],
+    "piel": [
+      "",
+      "on me; Infinitive; cast down"
     ],
     "hit": [
       "",
@@ -3448,12 +3832,16 @@
     ]
   },
   "יחד": {
-    "qal": [
+    "piel": [
       "",
       "unite; let"
     ]
   },
   "יחל": {
+    "piel": [
+      "",
+      "wait, tarry; wait"
+    ],
     "nif": [
       "",
       "wait; be weak"
@@ -3464,7 +3852,7 @@
     ]
   },
   "יחם": {
-    "qal": [
+    "piel": [
       "",
       "conceived me; heat"
     ]
@@ -3497,28 +3885,36 @@
     "hof": [
       "",
       "be able; I am not able to rise up"
+    ],
+    "qal": [
+      "pouvoir, être capable",
+      "be able, prevail"
     ]
   },
   "ילד": {
     "qal": [
-      "",
-      "bear, bring froth; be delivered of a child"
+      "enfanter, mettre au monde",
+      "bear, bring forth"
     ],
     "hif": [
-      "",
-      "beget; child"
+      "engendrer, faire naître",
+      "beget, cause to bring forth"
     ],
     "nif": [
-      "",
-      "be born; he was born poor"
+      "naître",
+      "be born"
+    ],
+    "piel": [
+      "aider à enfanter",
+      "cause to give birth"
     ],
     "pual": [
-      "",
+      "être né",
       "be born"
     ],
     "hof": [
-      "",
-      "day of one's being born"
+      "être mis au monde",
+      "be brought forth"
     ],
     "hit": [
       "",
@@ -3554,7 +3950,7 @@
     ],
     "hif": [
       "",
-      "id; give suck to, nurse"
+      "give suck to, nurse; nursing"
     ]
   },
   "יסד": {
@@ -3564,7 +3960,11 @@
     ],
     "nif": [
       "",
-      "be founded; found"
+      "be founded"
+    ],
+    "piel": [
+      "",
+      "found"
     ],
     "pual": [
       "",
@@ -3577,20 +3977,20 @@
   },
   "יסף": {
     "qal": [
-      "",
-      "add; increase"
+      "ajouter, continuer de",
+      "add, continue"
     ],
     "nif": [
       "",
       "be joined, added to; is increased"
     ],
     "hif": [
-      "",
-      "add"
+      "ajouter encore, faire de nouveau",
+      "add, do again"
     ]
   },
   "יסר": {
-    "qal": [
+    "piel": [
       "",
       "admonish; away from walking"
     ],
@@ -3648,7 +4048,7 @@
   "יעץ": {
     "qal": [
       "",
-      "advise, counsel; against"
+      "advise, counsel; wonder of a counsellor"
     ],
     "nif": [
       "",
@@ -3662,7 +4062,11 @@
   "יפה": {
     "qal": [
       "",
-      "be beautiful; beautify"
+      "be beautiful"
+    ],
+    "piel": [
+      "",
+      "beautify"
     ],
     "hit": [
       "",
@@ -3678,27 +4082,27 @@
   "יפע": {
     "hif": [
       "",
-      "id; šûpu"
+      "shine out, forth, display beans; light"
     ]
   },
   "יצא": {
     "hif": [
-      "",
-      "cause to go; come out, bring out, lead out"
+      "faire sortir, produire",
+      "bring out, cause to go out"
     ],
     "qal": [
-      "",
-      "carry; bring out"
+      "sortir",
+      "go out, come out"
     ],
     "hof": [
-      "",
+      "être fait sortir",
       "be brought forth"
     ]
   },
   "יצב": {
     "hit": [
       "",
-      "be constant, firm"
+      "station oneself, take one's stand, stand; stand aloof"
     ]
   },
   "יצג": {
@@ -3815,16 +4219,16 @@
   },
   "ירא": {
     "qal": [
-      "",
-      "fear, be afraid; fear not"
+      "craindre, avoir peur",
+      "fear, be afraid"
     ],
     "nif": [
-      "",
-      "be fearful, dreadful; cause astonishment and awe"
+      "être craint, être redouté",
+      "be feared, be dreadful"
     ],
     "hif": [
       "",
-      "and they shot at; the shooters, archers"
+      "the shooters, archers"
     ],
     "hof": [
       "",
@@ -3833,12 +4237,12 @@
   },
   "ירד": {
     "qal": [
-      "",
-      "come; go down"
+      "descendre",
+      "go down, descend"
     ],
     "hif": [
-      "",
-      "cause to come; go down"
+      "faire descendre",
+      "cause to go down, bring down"
     ]
   },
   "ירה": {
@@ -3869,36 +4273,48 @@
   },
   "ירש": {
     "qal": [
-      "",
-      "take possession of; have as a possession"
+      "prendre possession, hériter",
+      "take possession of, inherit"
     ],
     "nif": [
+      "être dépossédé",
+      "be dispossessed"
+    ],
+    "piel": [
       "",
-      "be; dispossessed"
+      "devour"
     ],
     "hif": [
-      "",
-      "cause to possess; inherit"
+      "faire hériter, donner en possession",
+      "cause to possess, make inherit"
     ]
   },
   "ישב": {
     "qal": [
-      "",
-      "sit; sit down"
+      "s'asseoir, habiter",
+      "sit, dwell"
     ],
     "nif": [
-      "",
-      "be inhabited; be habitable"
+      "être habité",
+      "be inhabited"
+    ],
+    "piel": [
+      "habiter",
+      "inhabit"
     ],
     "hif": [
-      "",
-      "cause to sit; set, place"
+      "faire asseoir, installer, établir",
+      "cause to sit, set, establish"
+    ],
+    "hof": [
+      "être établi, être installé",
+      "be settled"
     ]
   },
   "ישט": {
     "hif": [
       "",
-      "id; aš‰u"
+      "aš‰u; extended"
     ]
   },
   "ישם": {
@@ -3915,18 +4331,22 @@
   },
   "ישע": {
     "nif": [
-      "",
-      "be capacious; make wide, spacious"
+      "être sauvé, être libéré",
+      "be liberated, be saved"
     ],
     "hif": [
-      "",
-      "deliver, save; give width and breadth to, liberate"
+      "délivrer, sauver, libérer",
+      "deliver, save, liberate"
     ]
   },
   "ישר": {
     "qal": [
       "",
       "go straight; be pleasing, agreeable, right"
+    ],
+    "piel": [
+      "",
+      "make smooth, straight; make smooth"
     ],
     "hif": [
       "",
@@ -3940,7 +4360,7 @@
     ],
     "hif": [
       "",
-      "leave over, leave; from"
+      "leave over, leave; leave a remnant"
     ]
   },
   "כאב": {
@@ -3956,19 +4376,27 @@
   "כאה": {
     "nif": [
       "",
-      "draw back timidly; abstain, through timidity"
+      "then shall he be cowed; downhearted"
     ]
   },
   "כבה": {
     "qal": [
       "",
-      "be quenched, extinguished; quench, extinguish"
+      "be quenched, extinguished"
+    ],
+    "piel": [
+      "",
+      "quench, extinguish; coal"
     ]
   },
   "כבס": {
     "qal": [
       "",
       "highway of fuller's; treader's, washer's"
+    ],
+    "piel": [
+      "",
+      "wash; treading"
     ],
     "pual": [
       "",
@@ -3991,6 +4419,10 @@
     "qal": [
       "",
       "grow dim; he shall not grow dim"
+    ],
+    "piel": [
+      "",
+      "grow faint"
     ]
   },
   "כוה": {
@@ -4011,16 +4443,24 @@
   },
   "כון": {
     "nif": [
-      "",
-      "be set up, established, fixed; be firm"
+      "être établi, être préparé, être affermi",
+      "be established, be prepared, be firm"
     ],
     "hif": [
-      "",
-      "establish, set up; accomplish, do"
+      "établir, préparer, affermir",
+      "establish, prepare, make firm"
     ],
     "hof": [
-      "",
-      "be established; be fastened"
+      "être établi, être fixé",
+      "be established, be fixed"
+    ],
+    "piel": [
+      "établir, affermir",
+      "establish, make firm"
+    ],
+    "hit": [
+      "se préparer",
+      "prepare oneself"
     ]
   },
   "כור": {
@@ -4032,7 +4472,11 @@
   "כזב": {
     "nif": [
       "",
-      "his hope has been made deceptive; lie, tell a lie"
+      "his hope has been made deceptive"
+    ],
+    "piel": [
+      "",
+      "lie, tell a lie; lie to"
     ],
     "hif": [
       "",
@@ -4044,6 +4488,10 @@
       "",
       "be effaced; revere"
     ],
+    "piel": [
+      "",
+      "hide; conceal toward, with reference to"
+    ],
     "hif": [
       "",
       "hide; efface, annihilate"
@@ -4052,7 +4500,11 @@
   "כחש": {
     "nif": [
       "",
-      "thine enemies shall cringe; act deceptively, feigning obedience"
+      "act deceptively, feigning obedience"
+    ],
+    "piel": [
+      "",
+      "device; false swearing"
     ],
     "hit": [
       "",
@@ -4066,15 +4518,23 @@
     ]
   },
   "כלה": {
+    "piel": [
+      "achever, terminer, consommer",
+      "complete, bring to an end, finish"
+    ],
     "pual": [
-      "",
-      "be finished, ended; Imperfect; be completed"
+      "être achevé, être consommé",
+      "be finished, be completed"
+    ],
+    "qal": [
+      "être achevé, finir, disparaître",
+      "be finished, come to an end, cease"
     ]
   },
   "כלם": {
     "hif": [
       "",
-      "id; wound"
+      "put to shame; insult, humiliate"
     ],
     "nif": [
       "",
@@ -4088,7 +4548,7 @@
   "כמה": {
     "qal": [
       "",
-      "faint; for thee"
+      "faint"
     ]
   },
   "כמס": {
@@ -4104,15 +4564,19 @@
     ]
   },
   "כנה": {
+    "piel": [
+      "",
+      "he betitles; makes use of a title"
+    ],
     "pual": [
       "",
-      "give a flattering title"
+      "he is betitled"
     ]
   },
   "כנס": {
     "qal": [
       "",
-      "as; a wine skin"
+      "a wine skin; gather, collect"
     ]
   },
   "כנע": {
@@ -4138,7 +4602,11 @@
     ],
     "nif": [
       "",
-      "covered; cover, clothe"
+      "covered"
+    ],
+    "piel": [
+      "",
+      "cover, clothe; cover, conceal"
     ],
     "hit": [
       "",
@@ -4163,11 +4631,13 @@
       "they shall by all means clip their heads; shave"
     ]
   },
-  "כסף": {
-    "qal": [
+  "כרסם": {
+    "piel": [
       "",
-      "like a lion that longeth to rend"
-    ],
+      "cut; eat away"
+    ]
+  },
+  "כסף": {
     "nif": [
       "",
       "house; Perfect"
@@ -4206,16 +4676,16 @@
     ]
   },
   "כפף": {
-    "qal": [
-      "",
-      "those bowed down"
-    ],
     "nif": [
       "",
       "shall I bow myself"
     ]
   },
   "כפר": {
+    "piel": [
+      "",
+      "cover over, pacify, propitiate; pacify"
+    ],
     "pual": [
       "",
       "be covered over, atoned for; this"
@@ -4224,7 +4694,7 @@
   "כפש": {
     "hif": [
       "",
-      "id; furnish"
+      "furnish; with a bent rim"
     ]
   },
   "כרבל": {
@@ -4242,21 +4712,25 @@
   "כרם": {
     "qal": [
       "",
-      "vinedressers; id"
+      "vinedressers"
     ]
   },
   "כרת": {
     "qal": [
-      "",
-      "cut off; things"
+      "couper, retrancher",
+      "cut off, cut down"
     ],
     "nif": [
-      "",
-      "be cut off; things"
+      "être retranché, être exterminé",
+      "be cut off"
     ],
     "hif": [
-      "",
-      "cut off; cutt off, to, or from"
+      "retrancher, détruire",
+      "cut off, destroy"
+    ],
+    "pual": [
+      "être coupé",
+      "be cut off"
     ]
   },
   "כשל": {
@@ -4277,21 +4751,29 @@
   },
   "כתב": {
     "qal": [
-      "",
-      "cstr; write"
+      "écrire",
+      "write"
     ],
     "nif": [
-      "",
-      "be written; in, or among"
+      "être écrit, être consigné",
+      "be written, be recorded"
+    ],
+    "piel": [
+      "écrire (intensif)",
+      "write persistently"
     ]
   },
   "כתם": {
     "nif": [
       "",
-      "id; blood-stain"
+      "blood-stain; stained"
     ]
   },
   "כתר": {
+    "piel": [
+      "",
+      "surrounding; wait, I pray"
+    ],
     "hif": [
       "",
       "throw out crowns; triumph"
@@ -4300,11 +4782,11 @@
   "כתת": {
     "qal": [
       "",
-      "beat or crush fine; beat"
+      "beat or crush fine"
     ],
-    "pual": [
+    "piel": [
       "",
-      "and they were beaten in pieces"
+      "beat; crush fine"
     ],
     "hif": [
       "",
@@ -4323,6 +4805,12 @@
     "hif": [
       "",
       "weary, make weary, exhaust; exhaust patience of"
+    ]
+  },
+  "לבב": {
+    "piel": [
+      "",
+      "ravished my heart; priv"
     ]
   },
   "לבן": {
@@ -4352,7 +4840,11 @@
   "להט": {
     "qal": [
       "",
-      "flaming fire; set ablaze"
+      "flaming fire"
+    ],
+    "piel": [
+      "",
+      "set ablaze; his breath setteth coals ablaze"
     ]
   },
   "להם": {
@@ -4374,7 +4866,7 @@
   "לוז": {
     "qal": [
       "",
-      "let them not; depart from thine eyes"
+      "let them not"
     ],
     "nif": [
       "",
@@ -4382,7 +4874,7 @@
     ],
     "hif": [
       "",
-      "let them; from thine eyes"
+      "let them"
     ]
   },
   "לוט": {
@@ -4394,7 +4886,7 @@
   "לון": {
     "hif": [
       "",
-      "remain all night; with"
+      "cause to rest, lodge; dwell, abide"
     ]
   },
   "לוע": {
@@ -4410,7 +4902,7 @@
     ]
   },
   "לחך": {
-    "qal": [
+    "piel": [
       "",
       "lick up"
     ]
@@ -4418,7 +4910,7 @@
   "לחם": {
     "qal": [
       "",
-      "do battle with those battling with me; with"
+      "do battle with those battling with me; doing battle against me"
     ],
     "nif": [
       "",
@@ -4433,6 +4925,12 @@
     "nif": [
       "",
       "squeeze oneself"
+    ]
+  },
+  "לחש": {
+    "piel": [
+      "",
+      "voice of whisperers; serpent-charmers"
     ]
   },
   "לטש": {
@@ -4478,7 +4976,7 @@
   "לעב": {
     "hif": [
       "",
-      "and they were; making jest at"
+      "making jest at"
     ]
   },
   "לעג": {
@@ -4519,34 +5017,34 @@
   },
   "לקח": {
     "qal": [
-      "",
-      "take and carry along; take"
+      "prendre",
+      "take"
     ],
     "nif": [
-      "",
-      "be captured; be taken away, removed"
+      "être pris, se laisser prendre",
+      "be taken, be captured"
     ],
     "pual": [
-      "",
-      "be taken; and there shall be taken from them"
+      "être pris",
+      "be taken"
     ],
     "hof": [
-      "",
-      "be taken, brought; be taken"
+      "être pris, être enlevé",
+      "be taken away"
     ],
     "hit": [
-      "",
-      "taking hold of itself; in close succession, incessant"
+      "s'empoigner, se saisir",
+      "take hold of oneself"
     ]
   },
   "לקט": {
     "qal": [
       "",
-      "glean; gather, gather up"
+      "glean"
     ],
-    "pual": [
+    "piel": [
       "",
-      "ye shall be picked up"
+      "gather, gather up; pick, pick off"
     ],
     "hit": [
       "",
@@ -4557,18 +5055,32 @@
     "qal": [
       "",
       "lap; lapping up"
+    ],
+    "piel": [
+      "",
+      "lap, lap up"
+    ]
+  },
+  "לקש": {
+    "piel": [
+      "",
+      "take everything; schnell zusammenraffen"
     ]
   },
   "מאן": {
     "qal": [
       "",
       "be distasteful; taeduit, piguit"
+    ],
+    "piel": [
+      "",
+      "Inf; refuse"
     ]
   },
   "מאס": {
     "qal": [
       "",
-      "cstr; reject, refuse"
+      "reject, refuse; despise"
     ],
     "nif": [
       "",
@@ -4588,7 +5100,11 @@
     ],
     "nif": [
       "",
-      "be measured; extend, continue"
+      "be measured"
+    ],
+    "piel": [
+      "",
+      "extend, continue; measure, measure off"
     ]
   },
   "מהל": {
@@ -4601,6 +5117,10 @@
     "nif": [
       "",
       "be hurried; hasty, precipitate"
+    ],
+    "piel": [
+      "",
+      "hasten, make haste; hasten"
     ],
     "qal": [
       "",
@@ -4667,22 +5187,20 @@
   },
   "מות": {
     "qal": [
-      "",
-      "die; and his heart died within him"
+      "mourir",
+      "die"
     ],
     "hif": [
-      "",
-      "kill, put to death; executioners"
+      "faire mourir, tuer",
+      "kill, put to death"
     ],
     "hof": [
-      "",
-      "be killed, put to death; die prematurely"
-    ]
-  },
-  "מחא": {
-    "qal": [
-      "",
-      "id"
+      "être mis à mort, être tué",
+      "be killed, be put to death"
+    ],
+    "piel": [
+      "mourir (intensif)",
+      "die (intensive)"
     ]
   },
   "מחה": {
@@ -4737,16 +5255,24 @@
   },
   "מלא": {
     "qal": [
-      "",
-      "adjective; be full"
+      "remplir, être rempli",
+      "fill, be full"
+    ],
+    "piel": [
+      "remplir",
+      "fill"
     ],
     "pual": [
-      "",
-      "set"
+      "être rempli",
+      "be filled"
     ],
     "hit": [
-      "",
-      "mass themselves"
+      "se remplir, s'assembler",
+      "fill oneself, mass oneself"
+    ],
+    "nif": [
+      "être rempli",
+      "be filled"
     ]
   },
   "מלח": {
@@ -4766,7 +5292,11 @@
     ],
     "nif": [
       "",
-      "id; slip away"
+      "slip away; past"
+    ],
+    "piel": [
+      "",
+      "lay; let escape"
     ],
     "hif": [
       "",
@@ -4779,18 +5309,18 @@
   },
   "מלך": {
     "qal": [
-      "",
-      "be; king, reign"
+      "régner, être roi",
+      "reign, be king"
     ],
     "hif": [
-      "",
-      "make king; queen, cause to reign"
+      "faire régner, couronner",
+      "make king, cause to reign"
     ]
   },
   "מלל": {
     "qal": [
       "",
-      "that speaketh with his feet"
+      "it withereth"
     ],
     "nif": [
       "",
@@ -4810,7 +5340,11 @@
     ],
     "nif": [
       "",
-      "be counted, numbered; id"
+      "be counted, numbered; be reckoned, assigned"
+    ],
+    "piel": [
+      "",
+      "appoint, ordain"
     ],
     "pual": [
       "",
@@ -4820,7 +5354,7 @@
   "מנע": {
     "qal": [
       "",
-      "withhold; id"
+      "withhold"
     ],
     "nif": [
       "",
@@ -4866,13 +5400,17 @@
     ],
     "hif": [
       "",
-      "cause to shake; id"
+      "cause to shake"
     ]
   },
   "מעט": {
     "qal": [
       "",
       "too small; become"
+    ],
+    "piel": [
+      "",
+      "become few"
     ],
     "hif": [
       "",
@@ -4897,16 +5435,16 @@
   },
   "מצא": {
     "qal": [
-      "",
-      "find; and find quiet for yourselves"
+      "trouver",
+      "find"
     ],
     "nif": [
-      "",
-      "be found; be lighted upon, encountered"
+      "être trouvé, se trouver",
+      "be found, be encountered"
     ],
     "hif": [
-      "",
-      "cause to find, attain; cause to light upon, come upon, come"
+      "faire trouver",
+      "cause to find"
     ]
   },
   "מצה": {
@@ -4917,12 +5455,6 @@
     "nif": [
       "",
       "and; shall be drained out"
-    ]
-  },
-  "מצץ": {
-    "qal": [
-      "",
-      "ye may drain out and delight yourselves"
     ]
   },
   "מקק": {
@@ -4977,10 +5509,6 @@
     "nif": [
       "",
       "a sore, grievous; made sick"
-    ],
-    "hif": [
-      "",
-      "what sickens thee"
     ]
   },
   "מרק": {
@@ -4990,7 +5518,7 @@
     ],
     "hif": [
       "",
-      "blows that cut in, cleanse away evil; a cleaning"
+      "a cleaning"
     ],
     "pual": [
       "",
@@ -5001,6 +5529,10 @@
     "qal": [
       "",
       "the soul; it is very bitter to me on your account"
+    ],
+    "piel": [
+      "",
+      "make bitter, shew bitterness; shewed bitterness"
     ],
     "hif": [
       "",
@@ -5046,17 +5578,25 @@
     ],
     "qal": [
       "",
-      "use a proverb; is he not a maker of parables?"
+      "use a proverb"
+    ],
+    "piel": [
+      "",
+      "is he not a maker of parables?"
     ]
   },
   "משש": {
     "qal": [
       "",
-      "will feel me; through, grope"
+      "will feel me"
+    ],
+    "piel": [
+      "",
+      "through, grope; grope"
     ],
     "hif": [
       "",
-      "that one may feel; darkness"
+      "darkness; and let me touch"
     ]
   },
   "מתח": {
@@ -5084,7 +5624,7 @@
   "נאם": {
     "qal": [
       "",
-      "and they uttered; as an utterance"
+      "as an utterance"
     ]
   },
   "נאף": {
@@ -5100,17 +5640,27 @@
   "נאץ": {
     "qal": [
       "",
-      "contemn; contemn, spurn"
+      "contemn"
+    ],
+    "piel": [
+      "",
+      "contemn, spurn; cause to contemn"
     ],
     "hif": [
       "",
       "every day is my name contemned"
     ]
   },
+  "נאר": {
+    "piel": [
+      "",
+      "abhor"
+    ]
+  },
   "נבא": {
     "nif": [
       "",
-      "prophesy; against"
+      "prophesy; unto"
     ],
     "hit": [
       "",
@@ -5124,6 +5674,10 @@
     ]
   },
   "נבט": {
+    "piel": [
+      "",
+      "look"
+    ],
     "hif": [
       "",
       "look; look upon, behold"
@@ -5132,7 +5686,11 @@
   "נבל": {
     "qal": [
       "",
-      "be foolish; regard"
+      "be foolish"
+    ],
+    "piel": [
+      "",
+      "regard; treat as a"
     ]
   },
   "נבע": {
@@ -5154,7 +5712,11 @@
   "נגח": {
     "qal": [
       "",
-      "gore; push"
+      "gore"
+    ],
+    "piel": [
+      "",
+      "push; thrust at"
     ],
     "hit": [
       "",
@@ -5164,7 +5726,11 @@
   "נגן": {
     "qal": [
       "",
-      "players; play"
+      "players"
+    ],
+    "piel": [
+      "",
+      "play; player, minstrel"
     ]
   },
   "נגע": {
@@ -5175,6 +5741,10 @@
     "nif": [
       "",
       "be stricken, defeated"
+    ],
+    "piel": [
+      "",
+      "strike"
     ],
     "pual": [
       "",
@@ -5255,6 +5825,12 @@
       "be chased away, Imperfect; thorns thrust away"
     ]
   },
+  "נדה": {
+    "piel": [
+      "",
+      "thrust away, exclude"
+    ]
+  },
   "נדח": {
     "qal": [
       "",
@@ -5297,6 +5873,10 @@
     "qal": [
       "",
       "drive; led"
+    ],
+    "piel": [
+      "",
+      "drive away, lead off; leading off"
     ]
   },
   "נהה": {
@@ -5310,6 +5890,10 @@
     ]
   },
   "נהל": {
+    "piel": [
+      "",
+      "lead; bring to a station, a goal"
+    ],
     "hit": [
       "",
       "journey by stations, stages; I will proceed, journey on, by stages"
@@ -5375,12 +5959,6 @@
       "let; shake"
     ]
   },
-  "נום": {
-    "qal": [
-      "",
-      "id"
-    ]
-  },
   "נון": {
     "nif": [
       "",
@@ -5404,7 +5982,7 @@
     ],
     "nif": [
       "",
-      "be tossed about; id"
+      "be tossed about"
     ]
   },
   "נוף": {
@@ -5424,7 +6002,7 @@
   "נזה": {
     "hif": [
       "",
-      "sprinkle; erupit, stillavit"
+      "cause to spurt, sprinkle; the sprinkler of"
     ],
     "qal": [
       "",
@@ -5466,6 +6044,10 @@
       "",
       "take possession, inherit; have or get a"
     ],
+    "piel": [
+      "",
+      "divide for a possession: Perfect"
+    ],
     "hit": [
       "",
       "possess oneself of"
@@ -5485,6 +6067,12 @@
       "the king's business was urgent; ursit instititgue rogando"
     ]
   },
+  "נחש": {
+    "piel": [
+      "",
+      "divine, learn by omens; be unlucky"
+    ]
+  },
   "נחת": {
     "qal": [
       "",
@@ -5492,7 +6080,11 @@
     ],
     "nif": [
       "",
-      "descend into"
+      "penetrate"
+    ],
+    "piel": [
+      "",
+      "cause to descend; press down"
     ],
     "hif": [
       "",
@@ -5501,22 +6093,22 @@
   },
   "נטה": {
     "qal": [
-      "",
-      "stretch out, extend; stretching out"
+      "tendre, étendre, incliner",
+      "stretch out, extend, incline"
     ],
     "nif": [
-      "",
-      "be stretched out; stretch themselves out"
+      "s'étendre, s'allonger",
+      "be stretched out"
     ],
     "hif": [
-      "",
-      "stretch out"
+      "faire étendre, faire pencher",
+      "stretch out, incline"
     ]
   },
   "נטל": {
     "qal": [
       "",
-      "lift; lift over thee"
+      "lift; lift (and lay) upon"
     ]
   },
   "נעץ": {
@@ -5542,7 +6134,7 @@
   "נטר": {
     "qal": [
       "",
-      "keep, maintain; for"
+      "keep, maintain; keep, guard"
     ]
   },
   "נטש": {
@@ -5562,7 +6154,7 @@
   "נכה": {
     "qal": [
       "",
-      "id; laesit, nocuit, repugnavit"
+      "laesit, nocuit, repugnavit; laesit, vulneravit"
     ],
     "nif": [
       "",
@@ -5574,13 +6166,17 @@
     ],
     "hof": [
       "",
-      "cstr; smite"
+      "smite; strike"
     ]
   },
   "נכל": {
     "qal": [
       "",
-      "knave; their wiles with which they beguiled you"
+      "knave"
+    ],
+    "piel": [
+      "",
+      "their wiles with which they beguiled you"
     ],
     "hit": [
       "",
@@ -5590,11 +6186,11 @@
   "נכר": {
     "qal": [
       "",
-      "know, be acquainted with; id"
+      "know, be acquainted with; be shrewd, cunning"
     ],
     "nif": [
       "",
-      "they are not recognized; do ye not recognize their tokens"
+      "they are not recognized"
     ],
     "hif": [
       "",
@@ -5603,6 +6199,12 @@
     "hit": [
       "",
       "a youth maketh himself known"
+    ]
+  },
+  "נסה": {
+    "piel": [
+      "",
+      "test, try; attempt, assay, try"
     ]
   },
   "נסח": {
@@ -5666,7 +6268,7 @@
   "נעם": {
     "qal": [
       "",
-      "id; them...shall be delight"
+      "them...shall be delight"
     ]
   },
   "נער": {
@@ -5676,7 +6278,11 @@
     ],
     "nif": [
       "",
-      "I am shaken out like a locust; that wicked men may be shaken out of it"
+      "I am shaken out like a locust; I will shake myself"
+    ],
+    "piel": [
+      "",
+      "shake utterly out; and"
     ],
     "hit": [
       "",
@@ -5690,7 +6296,7 @@
     ],
     "hif": [
       "",
-      "a blown; pot"
+      "the life of its; owners I have caused them to breathe out"
     ],
     "pual": [
       "",
@@ -5699,22 +6305,26 @@
   },
   "נפל": {
     "qal": [
-      "",
-      "fall; and there fall into it"
+      "tomber",
+      "fall"
     ],
     "hif": [
-      "",
-      "fall; as"
+      "faire tomber, renverser",
+      "cause to fall, fell"
     ],
     "hit": [
-      "",
-      "throw; prostrate oneself"
+      "se prosterner, se jeter à terre",
+      "prostrate oneself"
     ]
   },
   "נפץ": {
     "qal": [
       "",
       "and a shattering; and shattered"
+    ],
+    "piel": [
+      "",
+      "dash to pieces; when"
     ],
     "pual": [
       "",
@@ -5753,16 +6363,16 @@
   },
   "נצל": {
     "hif": [
-      "",
-      "delivering; id"
+      "sauver, délivrer, arracher",
+      "deliver, save, snatch away"
     ],
     "nif": [
-      "",
-      "tear oneself away, deliver oneself; escape from-unto"
+      "s'arracher, s'échapper, être sauvé",
+      "deliver oneself, escape, be saved"
     ],
-    "hit": [
-      "",
-      "and they stripped themselves"
+    "piel": [
+      "dépouiller de",
+      "strip of, spoil"
     ]
   },
   "נצץ": {
@@ -5828,7 +6438,11 @@
   "נקף": {
     "nif": [
       "",
-      "struck away; after my skin, which they"
+      "struck away"
+    ],
+    "piel": [
+      "",
+      "after my skin, which they; have struck off"
     ],
     "qal": [
       "",
@@ -5844,9 +6458,9 @@
       "",
       "boring; picking out"
     ],
-    "pual": [
+    "piel": [
       "",
-      "ye were digged"
+      "boring out; he"
     ]
   },
   "נקש": {
@@ -5856,7 +6470,11 @@
     ],
     "nif": [
       "",
-      "after them; strike"
+      "after them"
+    ],
+    "piel": [
+      "",
+      "strike; take aim"
     ],
     "hit": [
       "",
@@ -5865,20 +6483,24 @@
   },
   "נשא": {
     "qal": [
-      "",
-      "roar; lift, lift up"
+      "porter, élever, soulever",
+      "lift, carry, bear"
+    ],
+    "piel": [
+      "élever, emporter",
+      "lift up, carry away"
     ],
     "hif": [
-      "",
-      "be responsible for; incur guilt"
+      "faire porter, faire apporter",
+      "cause to bear, cause to bring"
     ],
     "nif": [
-      "",
-      "take away; forgive"
+      "être porté, être emporté",
+      "be lifted, be borne"
     ],
     "hit": [
-      "",
-      "lift oneself up; he who exalts himself"
+      "s'élever, s'exalter",
+      "lift oneself up, exalt oneself"
     ]
   },
   "נשג": {
@@ -5920,7 +6542,11 @@
   "נשל": {
     "qal": [
       "",
-      "slip or drop off; thine olives shall drop off"
+      "slip or drop off; draw off"
+    ],
+    "piel": [
+      "",
+      "he cleared; entirely"
     ]
   },
   "נשף": {
@@ -5934,6 +6560,10 @@
       "",
       "kiss; and my hand hath kissed my mouth"
     ],
+    "piel": [
+      "",
+      "kiss"
+    ],
     "hif": [
       "",
       "gently touching"
@@ -5945,10 +6575,16 @@
       "their might is dry"
     ]
   },
+  "נתח": {
+    "piel": [
+      "",
+      "cut up, in pieces; cut up into pieces"
+    ]
+  },
   "נתך": {
     "qal": [
       "",
-      "pour forth; against"
+      "pour forth"
     ],
     "nif": [
       "",
@@ -5961,12 +6597,16 @@
   },
   "נתן": {
     "qal": [
-      "",
-      "give; bestow"
+      "donner, accorder",
+      "give, bestow"
     ],
     "nif": [
-      "",
-      "be given; id"
+      "être donné",
+      "be given"
+    ],
+    "hof": [
+      "être donné, être accordé",
+      "be given, be granted"
     ]
   },
   "נתס": {
@@ -5982,7 +6622,11 @@
     ],
     "nif": [
       "",
-      "be pulled, broken, down: Perfect; tear down"
+      "be pulled, broken, down: Perfect"
+    ],
+    "piel": [
+      "",
+      "tear down"
     ],
     "pual": [
       "",
@@ -5997,12 +6641,20 @@
     "nif": [
       "",
       "be drawn away"
+    ],
+    "piel": [
+      "",
+      "tear apart, snap; the cords"
     ]
   },
   "נתר": {
     "qal": [
       "",
       "yea, it; starts up from its place"
+    ],
+    "piel": [
+      "",
+      "leap with them"
     ],
     "hif": [
       "",
@@ -6034,13 +6686,17 @@
       "",
       "turn oneself; close round"
     ],
+    "piel": [
+      "",
+      "encompass, surround; encompass"
+    ],
     "hif": [
       "",
       "turn; cause to turn: turn"
     ],
     "hof": [
       "",
-      "be turned; that can be turned, movable"
+      "be turned; turned"
     ]
   },
   "סבך": {
@@ -6082,13 +6738,17 @@
       "",
       "be shut up; be shut, closed"
     ],
+    "piel": [
+      "",
+      "deliver up"
+    ],
     "pual": [
       "",
       "be shut up; down into"
     ],
     "hif": [
       "",
-      "deliver up; shut up"
+      "deliver up"
     ]
   },
   "סוג": {
@@ -6123,16 +6783,16 @@
   },
   "סור": {
     "qal": [
-      "",
-      "turn aside; from following"
+      "se détourner, s'écarter",
+      "turn aside, depart"
     ],
     "hif": [
-      "",
-      "cause to; depart"
+      "faire détourner, éloigner",
+      "turn away, remove"
     ],
     "hof": [
-      "",
-      "be taken away, removed; Damascus is removed from"
+      "être éloigné, être retiré",
+      "be removed, be taken away"
     ]
   },
   "סות": {
@@ -6160,7 +6820,7 @@
   "סחר": {
     "qal": [
       "",
-      "go about, to and fro; in"
+      "go about, to and fro; journey unto a land which"
     ]
   },
   "סכך": {
@@ -6215,8 +6875,14 @@
       "they who were weighed against gold"
     ]
   },
+  "סלד": {
+    "piel": [
+      "",
+      "and I would spring"
+    ]
+  },
   "סלה": {
-    "qal": [
+    "piel": [
       "",
       "hath flouted at"
     ],
@@ -6242,7 +6908,13 @@
     ],
     "hit": [
       "",
-      "exalt oneself; against"
+      "exalt oneself"
+    ]
+  },
+  "סלף": {
+    "piel": [
+      "",
+      "pervert; perverteth"
     ]
   },
   "סלק": {
@@ -6259,6 +6931,10 @@
     "nif": [
       "",
       "support; brace oneself"
+    ],
+    "piel": [
+      "",
+      "sustain; me with raisin-cakes"
     ]
   },
   "סמן": {
@@ -6270,7 +6946,7 @@
   "סעד": {
     "qal": [
       "",
-      "id; support, sustain"
+      "support, sustain; sustain, stay"
     ]
   },
   "סעה": {
@@ -6286,7 +6962,11 @@
     ],
     "nif": [
       "",
-      "was enraged; and storm them away"
+      "was enraged"
+    ],
+    "piel": [
+      "",
+      "and storm them away; like chaff"
     ]
   },
   "ספד": {
@@ -6314,9 +6994,9 @@
       "",
       "attach me, pray, to"
     ],
-    "nif": [
+    "piel": [
       "",
-      "and they shall attach themselves to; joining"
+      "joining; thy fury"
     ],
     "hit": [
       "",
@@ -6340,13 +7020,17 @@
     ]
   },
   "סקל": {
+    "piel": [
+      "",
+      "stone, pelt with stones; free"
+    ],
     "qal": [
       "",
       "pelt with stones, stone to death"
     ],
     "nif": [
       "",
-      "be stoned to death; stone, pelt with stones"
+      "be stoned to death"
     ],
     "pual": [
       "",
@@ -6376,7 +7060,11 @@
     ],
     "nif": [
       "",
-      "be stopped up; stopping"
+      "be stopped up"
+    ],
+    "piel": [
+      "",
+      "stopping; quite up"
     ]
   },
   "סתר": {
@@ -6384,13 +7072,17 @@
       "",
       "hide oneself; be hid, concealed"
     ],
+    "piel": [
+      "",
+      "carefully hide"
+    ],
     "pual": [
       "",
       "love carefully concealed"
     ],
     "hit": [
       "",
-      "hide oneself carefully; a God that completely hides himself"
+      "hide oneself carefully"
     ],
     "hif": [
       "",
@@ -6399,20 +7091,20 @@
   },
   "עבד": {
     "hof": [
-      "",
-      "labour, work, do work; till"
+      "être labouré, être travaillé",
+      "be tilled, be worked"
     ],
     "nif": [
-      "",
-      "be tilled; cultivated"
+      "être travaillé, être cultivé",
+      "be tilled, be cultivated"
     ],
     "qal": [
-      "",
-      "it has not been worked; service"
+      "travailler, servir",
+      "work, serve"
     ],
     "hif": [
-      "",
-      "compel to labour; at"
+      "faire travailler",
+      "compel to labour"
     ]
   },
   "עבה": {
@@ -6426,19 +7118,19 @@
       "",
       "take possession of a thing pledged; give a pledge"
     ],
-    "hif": [
+    "piel": [
       "",
       "lend on pledge; interchange"
     ]
   },
   "עבר": {
     "qal": [
-      "",
-      "cross; overflow"
+      "passer, traverser",
+      "pass, cross over"
     ],
     "hif": [
-      "",
-      "pass on; pass on before, go in advance of"
+      "faire passer, faire traverser",
+      "cause to pass, bring over"
     ],
     "nif": [
       "",
@@ -6481,9 +7173,17 @@
     "nif": [
       "",
       "it; shall not be hoed"
+    ],
+    "piel": [
+      "",
+      "they left nothing lacking"
     ]
   },
   "עוד": {
+    "piel": [
+      "",
+      "surround; restore, relieve"
+    ],
     "hif": [
       "",
       "testify, bear witness; cause to testify, take as witness"
@@ -6497,6 +7197,10 @@
     "nif": [
       "",
       "be bent, bowed down, twisted; one perverted of mind"
+    ],
+    "piel": [
+      "",
+      "hath he twisted; its surface will he distort"
     ],
     "hif": [
       "",
@@ -6517,6 +7221,10 @@
     "qal": [
       "",
       "giving suck"
+    ],
+    "piel": [
+      "",
+      "<Imperfect"
     ]
   },
   "עון": {
@@ -6542,9 +7250,13 @@
     ]
   },
   "עור": {
+    "piel": [
+      "",
+      "blindeth"
+    ],
     "qal": [
       "",
-      "rouse oneself; against"
+      "rouse oneself; my heart waketh"
     ],
     "nif": [
       "",
@@ -6556,6 +7268,10 @@
     ]
   },
   "עות": {
+    "piel": [
+      "",
+      "make crooked; pervert"
+    ],
     "pual": [
       "",
       "what is bent"
@@ -6567,16 +7283,16 @@
   },
   "עזב": {
     "qal": [
-      "",
-      "leave; depart from"
+      "abandonner, quitter",
+      "leave, forsake"
     ],
     "nif": [
-      "",
-      "be left to; be forsaken"
+      "être abandonné, rester",
+      "be left, be forsaken"
     ],
     "pual": [
-      "",
-      "be deserted"
+      "être abandonné, être délaissé",
+      "be deserted, be forsaken"
     ]
   },
   "עזז": {
@@ -6596,7 +7312,7 @@
     ],
     "nif": [
       "",
-      "I am helped; id"
+      "I am helped; he was wonderfully helped"
     ]
   },
   "עטה": {
@@ -6624,13 +7340,17 @@
     ],
     "hit": [
       "",
-      "faint, faint away; id"
+      "faint, faint away"
     ]
   },
   "עטר": {
     "qal": [
       "",
       "were surrounding; upon David"
+    ],
+    "piel": [
+      "",
+      "with which; crowned him"
     ]
   },
   "עיט": {
@@ -6651,30 +7371,30 @@
   },
   "עלה": {
     "qal": [
-      "",
-      "go up, ascend; to"
+      "monter, gravir",
+      "go up, ascend"
     ],
     "nif": [
-      "",
-      "be brought up; be taken up"
+      "être monté, être emmené",
+      "be brought up, be taken up"
     ],
     "hif": [
-      "",
-      "bring up; by means of"
+      "faire monter, amener",
+      "bring up, cause to ascend"
     ],
     "hof": [
-      "",
-      "be carried away; be taken up"
+      "être amené, être enlevé",
+      "be brought up, be carried away"
     ],
     "hit": [
-      "",
-      "lift oneself: Imperfect; against"
+      "s'élever, se soulever",
+      "lift oneself"
     ]
   },
   "עלז": {
     "qal": [
       "",
-      "exult, triumph; in"
+      "exult, triumph; will I exult"
     ]
   },
   "עלם": {
@@ -6707,6 +7427,12 @@
     "hit": [
       "",
       "let us delight ourselves"
+    ]
+  },
+  "עלע": {
+    "piel": [
+      "",
+      "they drink; blood"
     ]
   },
   "עלף": {
@@ -6761,16 +7487,16 @@
   },
   "ענה": {
     "qal": [
-      "",
-      "answer, respond to; be responsive"
+      "répondre, répondre à",
+      "answer, respond"
     ],
     "hif": [
       "",
       "causes; occupies him"
     ],
     "nif": [
-      "",
-      "humble oneself; be afficted"
+      "être répondu, être entendu",
+      "be answered"
     ],
     "pual": [
       "",
@@ -6779,6 +7505,10 @@
     "hit": [
       "",
       "humble oneself; be afflicted"
+    ],
+    "piel": [
+      "répondre (intensif)",
+      "answer (intensive)"
     ]
   },
   "ענק": {
@@ -6794,7 +7524,7 @@
   "ענש": {
     "qal": [
       "",
-      "punish; those fined"
+      "punish; mulcted"
     ]
   },
   "עפל": {
@@ -6812,15 +7542,13 @@
       "",
       "be pained; is in pain"
     ],
+    "piel": [
+      "",
+      "they vexed; my affairs they vex"
+    ],
     "hif": [
       "",
       "they used to cause him; pain"
-    ]
-  },
-  "עצה": {
-    "qal": [
-      "",
-      "he that shuts his eyes"
     ]
   },
   "עצם": {
@@ -6831,6 +7559,10 @@
     "hif": [
       "",
       "make strong, Imperfect"
+    ],
+    "piel": [
+      "",
+      "he hath tightly shut your eyes"
     ]
   },
   "עצר": {
@@ -6847,6 +7579,10 @@
     "qal": [
       "",
       "attacked; overreached"
+    ],
+    "piel": [
+      "",
+      "hold back; holdeth"
     ]
   },
   "עקל": {
@@ -6858,7 +7594,11 @@
   "עקש": {
     "nif": [
       "",
-      "one crooked in ways; their paths they have twisted. Imperfect"
+      "one crooked in ways"
+    ],
+    "piel": [
+      "",
+      "their paths they have twisted. Imperfect; they make crooked; Participle"
     ],
     "hif": [
       "",
@@ -6876,6 +7616,10 @@
     ]
   },
   "ערה": {
+    "piel": [
+      "",
+      "lay bare; empty"
+    ],
     "hif": [
       "",
       "make naked; pour out"
@@ -6892,13 +7636,13 @@
     ],
     "nif": [
       "",
-      "compare; what likeness will ye compare to him?"
+      "compare; be comparable"
     ]
   },
   "ערל": {
     "qal": [
       "",
-      "ye shall regard; as uncircumcised"
+      "as uncircumcised; remove its foreskin"
     ],
     "nif": [
       "",
@@ -6945,22 +7689,26 @@
   },
   "עשה": {
     "qal": [
-      "",
-      "do; do might"
+      "faire, accomplir, fabriquer",
+      "do, make"
     ],
     "nif": [
-      "",
-      "be done; be committed"
+      "être fait, être fabriqué",
+      "be done, be made"
     ],
     "pual": [
-      "",
-      "I was made"
+      "être fait",
+      "be made"
     ]
   },
   "עשר": {
     "hif": [
       "",
-      "taking, reckoning, tithe; receiving tithes"
+      "taking, reckoning, tithe"
+    ],
+    "piel": [
+      "",
+      "receiving tithes"
     ],
     "qal": [
       "",
@@ -6991,12 +7739,20 @@
     "qal": [
       "",
       "they have grown fat, they are smooth; shine"
+    ],
+    "hit": [
+      "",
+      "God will give a thought to us"
     ]
   },
   "עתד": {
+    "piel": [
+      "",
+      "and make it ready"
+    ],
     "hit": [
       "",
-      "were prepared; for"
+      "were prepared; heaps"
     ]
   },
   "עתם": {
@@ -7023,10 +7779,6 @@
     "qal": [
       "",
       "make supplication; in behalf of"
-    ],
-    "hif": [
-      "",
-      "ye have multiplied against me your words"
     ]
   },
   "פאה": {
@@ -7048,7 +7800,11 @@
     ],
     "nif": [
       "",
-      "meet together, each other, Perfect; they keep encountering darkness"
+      "meet together, each other, Perfect"
+    ],
+    "piel": [
+      "",
+      "they keep encountering darkness"
     ]
   },
   "פדה": {
@@ -7106,7 +7862,7 @@
     ]
   },
   "פזז": {
-    "qal": [
+    "piel": [
       "",
       "shew agility, leap"
     ]
@@ -7130,6 +7886,10 @@
       "",
       "be in dread; turn in dread"
     ],
+    "piel": [
+      "",
+      "be in great dread, Imperfect; deeply dreading"
+    ],
     "hif": [
       "",
       "filled; with dread"
@@ -7151,6 +7911,10 @@
     "nif": [
       "",
       "be beyond one's power, difficult; too difficult for"
+    ],
+    "piel": [
+      "",
+      "make a special votive offering"
     ],
     "hif": [
       "",
@@ -7176,7 +7940,11 @@
   "פלח": {
     "qal": [
       "",
-      "cleaving; cleave open, through"
+      "cleaving"
+    ],
+    "piel": [
+      "",
+      "cleave open, through; cause to cleave open"
     ]
   },
   "פלט": {
@@ -7184,12 +7952,20 @@
       "",
       "and; escape"
     ],
+    "piel": [
+      "",
+      "bring into security; cause to escape, cast forth"
+    ],
     "hif": [
       "",
-      "vomit; be delivered"
+      "bring into security; Imperfect"
     ]
   },
   "פלל": {
+    "piel": [
+      "",
+      "mediate, judge: Perfect; arbitrate"
+    ],
     "hit": [
       "",
       "intercede; on behalf of"
@@ -7200,13 +7976,17 @@
       "",
       "turn; turn away"
     ],
+    "piel": [
+      "",
+      "make clear; empty"
+    ],
     "hif": [
       "",
       "turn; make a turn, shew"
     ],
     "hof": [
       "",
-      "be ye turned back!; which is faced northward"
+      "which is faced northward"
     ],
     "nif": [
       "",
@@ -7214,7 +7994,7 @@
     ]
   },
   "פסח": {
-    "nif": [
+    "piel": [
       "",
       "they went limping; stepped"
     ]
@@ -7228,7 +8008,7 @@
   "פסס": {
     "qal": [
       "",
-      "have vanished; from"
+      "have vanished"
     ]
   },
   "פעל": {
@@ -7254,7 +8034,7 @@
     ]
   },
   "פצח": {
-    "qal": [
+    "piel": [
       "",
       "break bones in pieces: Perfect"
     ]
@@ -7294,6 +8074,10 @@
       "",
       "divide, separate; dividing"
     ],
+    "piel": [
+      "",
+      "make a separation"
+    ],
     "hif": [
       "",
       "divide, separate; make a division, separation"
@@ -7308,11 +8092,11 @@
   "פרח": {
     "qal": [
       "",
-      "flourish"
+      "bud, sprout, send out shoots"
     ],
     "hif": [
       "",
-      "hatch; sprout"
+      "cause to bud; sprout"
     ]
   },
   "פרט": {
@@ -7364,6 +8148,10 @@
       "",
       "tear away; snatck"
     ],
+    "piel": [
+      "",
+      "he shall tear off; tear off"
+    ],
     "hit": [
       "",
       "tear off; be broken off, Perfect"
@@ -7372,11 +8160,7 @@
   "פרר": {
     "hof": [
       "",
-      "is made ineffectual; bursts"
-    ],
-    "qal": [
-      "",
-      "didst divide"
+      "be frustratred; be broken"
     ]
   },
   "פרש": {
@@ -7386,35 +8170,39 @@
     ],
     "nif": [
       "",
-      "they shall be scattered; spread out"
+      "they shall be scattered"
+    ],
+    "piel": [
+      "",
+      "spread out"
     ],
     "pual": [
       "",
       "had; been distinctly declared; Participle"
     ]
   },
-  "פשע": {
-    "qal": [
-      "",
-      "against"
-    ],
-    "nif": [
-      "",
-      "offended"
-    ]
-  },
   "פשט": {
     "qal": [
       "",
-      "strip off, put off; id"
+      "strip off, put off; stripping off"
     ],
     "hif": [
       "",
-      "strip; of"
+      "strip; strip off"
     ],
     "hit": [
       "",
       "he stripped himself of"
+    ]
+  },
+  "פשע": {
+    "qal": [
+      "",
+      "rebel, revolt; transgress"
+    ],
+    "nif": [
+      "",
+      "offended"
     ]
   },
   "פתה": {
@@ -7442,11 +8230,15 @@
     ],
     "nif": [
       "",
-      "id; open"
+      "be opend; be let loose"
+    ],
+    "piel": [
+      "",
+      "loose; free"
     ],
     "hit": [
       "",
-      "loosen thee; the fetters of thy neck"
+      "the fetters of thy neck"
     ]
   },
   "פתל": {
@@ -7458,7 +8250,7 @@
   "צבא": {
     "qal": [
       "",
-      "wage war, fight; against"
+      "wage war, fight; serve"
     ]
   },
   "צבר": {
@@ -7481,6 +8273,10 @@
     "nif": [
       "",
       "the holy place shall be put right; be justified"
+    ],
+    "piel": [
+      "",
+      "justify"
     ],
     "hif": [
       "",
@@ -7559,6 +8355,10 @@
     "qal": [
       "",
       "laugh; at, concerning"
+    ],
+    "piel": [
+      "",
+      "jest; sport, play"
     ]
   },
   "צלה": {
@@ -7612,6 +8412,10 @@
       "",
       "sprout, spring up; wood sprouting with trees"
     ],
+    "piel": [
+      "",
+      "grow abunduntly"
+    ],
     "hif": [
       "",
       "cause to grow; who causeth mountains to sprout grass"
@@ -7625,6 +8429,10 @@
     "nif": [
       "",
       "be ended, annihilated; Perfect; I am"
+    ],
+    "piel": [
+      "",
+      "hath put an end to me; have annihilated me"
     ],
     "hif": [
       "",
@@ -7646,7 +8454,7 @@
   "צנף": {
     "qal": [
       "",
-      "he shall wind; he will wind thee entirely up"
+      "he shall wind; a winding"
     ]
   },
   "צעד": {
@@ -7663,6 +8471,10 @@
     "qal": [
       "",
       "one stooping; bending"
+    ],
+    "piel": [
+      "",
+      "men inclining, tipping"
     ]
   },
   "צען": {
@@ -7678,7 +8490,11 @@
     ],
     "nif": [
       "",
-      "be summoned; cry aloud"
+      "be summoned"
+    ],
+    "piel": [
+      "",
+      "cry aloud"
     ]
   },
   "צפד": {
@@ -7690,7 +8506,11 @@
   "צפה": {
     "qal": [
       "",
-      "may; keep watch between me and thee"
+      "may; which looketh"
+    ],
+    "piel": [
+      "",
+      "overlay, plate: Perfect; overlay"
     ],
     "pual": [
       "",
@@ -7772,7 +8592,7 @@
   "קבע": {
     "qal": [
       "",
-      "those robbing them; circumvent"
+      "circumvent"
     ]
   },
   "קבץ": {
@@ -7782,7 +8602,7 @@
     ],
     "nif": [
       "",
-      "against; unto"
+      "unto; be gathered"
     ]
   },
   "קבר": {
@@ -7792,7 +8612,11 @@
     ],
     "nif": [
       "",
-      "be buried; id"
+      "be buried"
+    ],
+    "piel": [
+      "",
+      "bury"
     ]
   },
   "קדר": {
@@ -7804,7 +8628,11 @@
   "קדש": {
     "qal": [
       "",
-      "be set apart, consecrated; be hallowed"
+      "be set apart, consecrated"
+    ],
+    "piel": [
+      "",
+      "observe as holy, keep sacred; honour as sacred, hallow"
     ],
     "nif": [
       "",
@@ -7834,9 +8662,9 @@
     ]
   },
   "קוה": {
-    "qal": [
+    "piel": [
       "",
-      "those waiting for; wait"
+      "wait; look eagerly, for"
     ],
     "nif": [
       "",
@@ -7847,24 +8675,24 @@
     "qal": [
       "",
       "I felt a loathing at"
-    ],
-    "nif": [
-      "",
-      "id. Imperfect"
     ]
   },
   "קום": {
     "qal": [
-      "",
-      "arise; rising"
+      "se lever, se dresser",
+      "arise, stand up"
+    ],
+    "piel": [
+      "établir, affermir, ratifier",
+      "establish, confirm, fulfil"
     ],
     "hif": [
-      "",
-      "cause to arise, raise; lift up"
+      "faire lever, ériger, élever",
+      "raise, set up, establish"
     ],
     "hof": [
-      "",
-      "be raised up; be set up"
+      "être élevé, être érigé",
+      "be raised up, be set up"
     ]
   },
   "קוץ": {
@@ -7874,7 +8702,7 @@
     ],
     "hif": [
       "",
-      "distress; feel a sickening dread"
+      "let us cause her sickening dread"
     ]
   },
   "קור": {
@@ -7904,6 +8732,10 @@
     ]
   },
   "קטר": {
+    "piel": [
+      "",
+      "make sacrifices smoke; incense"
+    ],
     "pual": [
       "",
       "fumigated with myrrh"
@@ -7962,6 +8794,10 @@
       "",
       "shew oneself swift; appear trifling"
     ],
+    "piel": [
+      "",
+      "curse; make contemptible"
+    ],
     "pual": [
       "",
       "be cursed; is cursed"
@@ -7972,6 +8808,10 @@
     ]
   },
   "קלס": {
+    "piel": [
+      "",
+      "scoff at hire; collect"
+    ],
     "hit": [
       "",
       "mock, deride"
@@ -7980,7 +8820,11 @@
   "קלע": {
     "qal": [
       "",
-      "one slinging; with"
+      "one slinging; a stone at"
+    ],
+    "piel": [
+      "",
+      "he shall sling away"
     ]
   },
   "קמט": {
@@ -8004,7 +8848,7 @@
   "קנה": {
     "qal": [
       "",
-      "cstr; get, acquire"
+      "get, acquire; buy"
     ],
     "nif": [
       "",
@@ -8032,16 +8876,24 @@
     ]
   },
   "קפץ": {
+    "piel": [
+      "",
+      "springing"
+    ],
     "qal": [
       "",
       "shut; away from"
     ],
     "nif": [
       "",
-      "are gathered in; springing"
+      "are gathered in"
     ]
   },
   "קצב": {
+    "piel": [
+      "",
+      "chop; cut off"
+    ],
     "qal": [
       "",
       "he cut off a stick; Passive participle; a flock of"
@@ -8052,21 +8904,19 @@
       "",
       "cutting off; peoples"
     ],
+    "piel": [
+      "",
+      "cut off in Israel; be angry with"
+    ],
     "hif": [
       "",
       "dust; Infinitive construct; house"
     ]
   },
-  "קצע": {
-    "hif": [
-      "",
-      "id. Imperfect"
-    ]
-  },
   "קצף": {
     "qal": [
       "",
-      "be wroth; against"
+      "be wroth"
     ],
     "hif": [
       "",
@@ -8078,7 +8928,7 @@
     ]
   },
   "קצץ": {
-    "qal": [
+    "piel": [
       "",
       "cut; hew off"
     ],
@@ -8092,23 +8942,31 @@
       "",
       "be short; be impatient"
     ],
-    "hif": [
+    "piel": [
       "",
       "shorten Perfect"
+    ],
+    "hif": [
+      "",
+      "shall reap"
     ]
   },
   "קרב": {
     "qal": [
-      "",
-      "approach; keep to thyself"
+      "s'approcher, approcher",
+      "approach, come near"
     ],
     "nif": [
-      "",
-      "he shall be brought unto God; cause to approach, bring near"
+      "s'approcher, être amené près",
+      "approach, be brought near"
+    ],
+    "piel": [
+      "rapprocher",
+      "bring near"
     ],
     "hif": [
-      "",
-      "bring near, bring, present; join, incorporate"
+      "faire approcher, présenter, offrir",
+      "bring near, present, offer"
     ]
   },
   "קרה": {
@@ -8129,10 +8987,6 @@
     "nif": [
       "",
       "shall; make themselves bald for them"
-    ],
-    "hif": [
-      "",
-      "and they shall make a baldness; for thee"
     ],
     "hof": [
       "",
@@ -8184,7 +9038,11 @@
     ],
     "nif": [
       "",
-      "hardly bestead, hard pressed; she made hard in her bearing"
+      "hardly bestead, hard pressed"
+    ],
+    "piel": [
+      "",
+      "she made hard in her bearing"
     ],
     "hif": [
       "",
@@ -8196,7 +9054,7 @@
       "",
       "bind; bind, confine"
     ],
-    "nif": [
+    "piel": [
       "",
       "bind on; bind fast"
     ],
@@ -8225,12 +9083,12 @@
   },
   "רבה": {
     "qal": [
-      "",
-      "become many, numerous; be fruitful and multiply"
+      "devenir nombreux, se multiplier",
+      "become many, multiply"
     ],
     "hif": [
-      "",
-      "make much; many"
+      "multiplier, rendre nombreux",
+      "multiply, make many"
     ]
   },
   "רבך": {
@@ -8262,15 +9120,15 @@
   "רגז": {
     "qal": [
       "",
-      "quake; id"
+      "quake; come quivering"
     ],
     "hif": [
       "",
-      "didst enrage me"
+      "cause to quake, disquiet, enrage: cause; quake"
     ],
     "hit": [
       "",
-      "excite oneself; thine exciting thyself"
+      "excite oneself"
     ]
   },
   "רגל": {
@@ -8289,10 +9147,6 @@
     "qal": [
       "",
       "murmurers"
-    ],
-    "nif": [
-      "",
-      "and they murmured"
     ]
   },
   "רגע": {
@@ -8364,7 +9218,11 @@
   "רוה": {
     "qal": [
       "",
-      "we will take our fill of love; be intoxicated, drunk"
+      "we will take our fill of love"
+    ],
+    "piel": [
+      "",
+      "be intoxicated, drunk; drench, water abundantly"
     ],
     "hif": [
       "",
@@ -8383,22 +9241,30 @@
   },
   "רום": {
     "qal": [
-      "",
-      "be high; be (set on) high"
+      "être haut, être élevé",
+      "be high, be set on high"
     ],
     "hif": [
-      "",
-      "be exalted; shew exaltation"
+      "élever, exalter",
+      "exalt, set on high"
     ],
     "hof": [
-      "",
-      "contribute"
+      "être apporté (en offrande)",
+      "be brought (as contribution)"
+    ],
+    "piel": [
+      "élever",
+      "raise, exalt"
+    ],
+    "hit": [
+      "s'élever, s'exalter",
+      "exalt oneself"
     ]
   },
   "רוץ": {
     "qal": [
       "",
-      "run; against"
+      "run; on"
     ],
     "hif": [
       "",
@@ -8421,12 +9287,6 @@
       "be made lean, Imperfect"
     ]
   },
-  "רזם": {
-    "qal": [
-      "",
-      "why do thine eyes flash"
-    ]
-  },
   "רזן": {
     "qal": [
       "",
@@ -8434,33 +9294,39 @@
     ]
   },
   "רחב": {
-    "qal": [
-      "",
-      "against"
-    ],
     "hif": [
       "",
-      "be widened, enlarged"
+      "make large; make wide"
     ],
     "nif": [
       "",
       "a broad, roomy, pasture"
+    ],
+    "qal": [
+      "",
+      "alarm; my step, stride"
     ]
   },
   "רחם": {
-    "qal": [
+    "piel": [
       "",
-      "I love thee; have compassion, compassionate"
+      "have compassion, compassionate"
     ],
     "pual": [
       "",
       "be shewn compassion, compassionated"
     ]
   },
+  "רחף": {
+    "piel": [
+      "",
+      "hovering; brooding"
+    ]
+  },
   "רחץ": {
     "qal": [
       "",
-      "wash; id"
+      "wash; wash off, away"
     ],
     "pual": [
       "",
@@ -8475,6 +9341,10 @@
     "qal": [
       "",
       "be far, distant; far from"
+    ],
+    "piel": [
+      "",
+      "send far away"
     ],
     "hif": [
       "",
@@ -8574,6 +9444,10 @@
       "",
       "give a ringing cry; cry"
     ],
+    "piel": [
+      "",
+      "give a ringing cry"
+    ],
     "pual": [
       "",
       "no ringing cry shall be given"
@@ -8586,7 +9460,7 @@
   "רעב": {
     "qal": [
       "",
-      "be hungry; id"
+      "be hungry; if I should be hungry"
     ],
     "hif": [
       "",
@@ -8624,7 +9498,7 @@
     ],
     "hif": [
       "",
-      "thunder, cause thunder; — Perfect; against"
+      "thunder, cause thunder; — Perfect; make her fret"
     ]
   },
   "רעע": {
@@ -8650,7 +9524,7 @@
   "רעש": {
     "qal": [
       "",
-      "quake, shake; id"
+      "quake, shake"
     ],
     "nif": [
       "",
@@ -8670,15 +9544,23 @@
       "",
       "be healed; healing has come to us"
     ],
+    "piel": [
+      "",
+      "have healed, heal; he shall have"
+    ],
     "hit": [
       "",
       "in order to get healed"
     ]
   },
   "רפד": {
+    "piel": [
+      "",
+      "spread out; support me"
+    ],
     "qal": [
       "",
-      "he; spread out"
+      "he"
     ]
   },
   "רפה": {
@@ -8686,9 +9568,9 @@
       "",
       "sink down; sink, decline"
     ],
-    "nif": [
+    "piel": [
       "",
-      "idle; let"
+      "let; drop"
     ],
     "hif": [
       "",
@@ -8727,6 +9609,10 @@
     "nif": [
       "",
       "I shall be slain; Participle; the murdered woman"
+    ],
+    "piel": [
+      "",
+      "murder, assassinate; murderer, assassin"
     ]
   },
   "רצע": {
@@ -8762,6 +9648,10 @@
       "",
       "skip about, Perfect; a time to skip about"
     ],
+    "piel": [
+      "",
+      "dance, leap: Imperfect; I will dance"
+    ],
     "hif": [
       "",
       "he; made them skip"
@@ -8792,6 +9682,10 @@
       "",
       "I will stamp them down; beat"
     ],
+    "piel": [
+      "",
+      "with gold over-layeth it; beateth it out"
+    ],
     "pual": [
       "",
       "silver beaten out"
@@ -8818,6 +9712,10 @@
     ]
   },
   "רתח": {
+    "piel": [
+      "",
+      "cause to boil"
+    ],
     "pual": [
       "",
       "have been made to boil"
@@ -8839,16 +9737,20 @@
   },
   "שבע": {
     "qal": [
-      "",
-      "be sated; graze"
+      "être rassasié",
+      "be sated, be satisfied"
     ],
     "nif": [
+      "se rassasier",
+      "be sated"
+    ],
+    "piel": [
       "",
-      "sated; satisfy"
+      "satisfy; they shall"
     ],
     "hif": [
-      "",
-      "satisfy; enrich"
+      "rassasier, enrichir",
+      "satisfy, enrich"
     ]
   },
   "שבר": {
@@ -8858,7 +9760,11 @@
     ],
     "nif": [
       "",
-      "broke for it my boundary; quench"
+      "be broken; be maimed, crippled"
+    ],
+    "piel": [
+      "",
+      "shatter, break; shattering"
     ],
     "hif": [
       "",
@@ -8880,6 +9786,10 @@
       "",
       "be high; be"
     ],
+    "piel": [
+      "",
+      "set; on high"
+    ],
     "pual": [
       "",
       "be set; on high"
@@ -8899,12 +9809,6 @@
       "they have increased riches"
     ]
   },
-  "שוט": {
-    "qal": [
-      "",
-      "those falling away to falsehood"
-    ]
-  },
   "שוך": {
     "qal": [
       "",
@@ -8912,6 +9816,10 @@
     ]
   },
   "שום": {
+    "piel": [
+      "",
+      "designate, fix; šâmu. fix, determine"
+    ],
     "qal": [
       "",
       "pass; put, set"
@@ -8944,7 +9852,11 @@
   "שחק": {
     "qal": [
       "",
-      "laugh; id"
+      "laugh; sport, play"
+    ],
+    "piel": [
+      "",
+      "make sport; jest"
     ],
     "hif": [
       "",
@@ -8983,12 +9895,16 @@
     "hif": [
       "",
       "look at; was desirable to look upon"
+    ],
+    "piel": [
+      "",
+      "make childless; cause barrenness"
     ]
   },
   "שכר": {
     "qal": [
       "",
-      "hire; against"
+      "hire"
     ],
     "nif": [
       "",
@@ -8998,9 +9914,9 @@
       "",
       "earn wages, Participle"
     ],
-    "hif": [
+    "piel": [
       "",
-      "id.: Perfect"
+      "make drunken: Imperfect; I made them drunk"
     ]
   },
   "שלק": {
@@ -9017,6 +9933,10 @@
     "qal": [
       "",
       "rejoice; take pleasure in"
+    ],
+    "piel": [
+      "",
+      "cause to rejoice, gladden; cause to exult at"
     ]
   },
   "שנא": {
@@ -9026,7 +9946,11 @@
     ],
     "nif": [
       "",
-      "is hated; by"
+      "is hated"
+    ],
+    "piel": [
+      "",
+      "enemy"
     ]
   },
   "שער": {
@@ -9036,7 +9960,11 @@
     ],
     "nif": [
       "",
-      "it is tempestuous; and it"
+      "it is tempestuous"
+    ],
+    "piel": [
+      "",
+      "and it; shall whirl him away"
     ]
   },
   "שקד": {
@@ -9059,12 +9987,22 @@
     "qal": [
       "",
       "he persevered with God"
+    ],
+    "piel": [
+      "",
+      "thy remnant"
     ]
   },
   "שרט": {
     "nif": [
       "",
       "shall be severely scratched"
+    ]
+  },
+  "שרך": {
+    "piel": [
+      "",
+      "entangling her ways"
     ]
   },
   "שרע": {
@@ -9084,7 +10022,11 @@
     ],
     "nif": [
       "",
-      "be burned; one burning him"
+      "be burned"
+    ],
+    "piel": [
+      "",
+      "one burning him; burning"
     ],
     "pual": [
       "",
@@ -9112,7 +10054,7 @@
   "שאב": {
     "qal": [
       "",
-      "draw; that which"
+      "draw; drew"
     ]
   },
   "שאג": {
@@ -9180,6 +10122,10 @@
     ]
   },
   "שבח": {
+    "piel": [
+      "",
+      "he stilleth it"
+    ],
     "hif": [
       "",
       "Pi`el"
@@ -9224,7 +10170,11 @@
     ],
     "nif": [
       "",
-      "we are utterly ruined; assault not his dwelling-place"
+      "we are utterly ruined"
+    ],
+    "piel": [
+      "",
+      "assault not his dwelling-place; he who assaults, maltreats"
     ],
     "pual": [
       "",
@@ -9239,19 +10189,27 @@
   },
   "שוב": {
     "qal": [
-      "",
-      "turn back, return; turn back"
+      "revenir, retourner",
+      "turn back, return"
     ],
     "hif": [
-      "",
-      "restored"
+      "faire revenir, ramener, restaurer",
+      "restore, bring back"
     ],
     "hof": [
-      "",
-      "has been returned!; which is restored to"
+      "être ramené, être restauré",
+      "be restored, be brought back"
+    ],
+    "piel": [
+      "revenir (à la manière de)",
+      "return (like)"
     ]
   },
   "שוה": {
+    "piel": [
+      "",
+      "he hath levelled; I have smoothed"
+    ],
     "qal": [
       "",
       "it was not equalled to me; God did not requite"
@@ -9259,6 +10217,12 @@
     "hif": [
       "",
       "make like: Imperfect"
+    ]
+  },
+  "שוט": {
+    "qal": [
+      "",
+      "go; rove about: Perfect"
     ]
   },
   "שוף": {
@@ -9276,7 +10240,7 @@
   "שור": {
     "qal": [
       "",
-      "didst journey to; Melek with"
+      "Melek with; oil"
     ]
   },
   "שחד": {
@@ -9292,7 +10256,7 @@
     ],
     "nif": [
       "",
-      "id; be reduced, weakened"
+      "be reduced, weakened; proceed humbly"
     ],
     "hif": [
       "",
@@ -9310,7 +10274,7 @@
     ]
   },
   "שחר": {
-    "qal": [
+    "piel": [
       "",
       "seeks him early; discipline"
     ]
@@ -9319,6 +10283,10 @@
     "nif": [
       "",
       "be marred, spoiled, Perfect; be injured"
+    ],
+    "piel": [
+      "",
+      "spoil, ruin; destroy"
     ],
     "hif": [
       "",
@@ -9342,7 +10310,7 @@
     ],
     "nif": [
       "",
-      "dashing, rushing; flow, run"
+      "be rinsed out, off; be swept away"
     ],
     "pual": [
       "",
@@ -9367,16 +10335,16 @@
   },
   "שכב": {
     "qal": [
-      "",
-      "lie down; sleep"
+      "se coucher, dormir",
+      "lie down, sleep"
     ],
     "hif": [
-      "",
-      "lay, Perfect; lay"
+      "faire coucher, déposer",
+      "lay, cause to lie down"
     ],
     "hof": [
-      "",
-      "laid; shall be laid"
+      "être couché, être déposé",
+      "be laid"
     ]
   },
   "שכח": {
@@ -9386,7 +10354,11 @@
     ],
     "nif": [
       "",
-      "be forgotten; hath caused to forget"
+      "be forgotten"
+    ],
+    "piel": [
+      "",
+      "hath caused to forget"
     ],
     "hif": [
       "",
@@ -9404,7 +10376,7 @@
     ]
   },
   "שכן": {
-    "qal": [
+    "piel": [
       "",
       "settle down to abide; settle down"
     ],
@@ -9429,20 +10401,24 @@
   },
   "שלח": {
     "qal": [
-      "",
-      "send; with"
+      "envoyer",
+      "send"
+    ],
+    "piel": [
+      "envoyer au loin, renvoyer",
+      "send away, send off"
     ],
     "nif": [
-      "",
-      "letters were sent; send off, away"
+      "être envoyé",
+      "be sent"
     ],
     "pual": [
-      "",
-      "be sent off; be put away, divorced"
+      "être renvoyé, être congédié",
+      "be sent off, be put away"
     ],
     "hif": [
-      "",
-      "and I; will send"
+      "faire envoyer",
+      "cause to send"
     ]
   },
   "שלט": {
@@ -9478,7 +10454,7 @@
   "שמט": {
     "qal": [
       "",
-      "let drop, fall; Let her fall, and they let her fall"
+      "let drop, fall; let fall"
     ],
     "nif": [
       "",
@@ -9519,36 +10495,34 @@
   },
   "שמע": {
     "qal": [
-      "",
-      "hear; speaking"
+      "entendre, écouter",
+      "hear, listen"
     ],
     "hit": [
-      "",
-      "hear say = hear it said; concerning"
+      "entendre dire, se faire rapporter",
+      "hear it said"
     ],
     "nif": [
+      "être entendu, être obéi",
+      "be heard, be obeyed"
+    ],
+    "piel": [
       "",
-      "be heard"
+      "he caused; hear"
     ],
     "hif": [
-      "",
-      "cause to hear; make proclamation to"
-    ]
-  },
-  "שמר": {
-    "qal": [
-      "garder",
-      "keep, have charge of; tend"
-    ],
-    "nif": [
-      "être gardé",
-      "observe, celebrate; keep"
+      "faire entendre, proclamer",
+      "cause to hear, proclaim"
     ]
   },
   "שנה": {
     "qal": [
       "",
       "I do not change: Imperfect; is"
+    ],
+    "piel": [
+      "",
+      "šanê ‰êmi; madness"
     ],
     "pual": [
       "",
@@ -9563,6 +10537,10 @@
     "qal": [
       "",
       "whet, sharpen: Perfect; sharpened"
+    ],
+    "piel": [
+      "",
+      "incisively; I was pierced"
     ]
   },
   "שסה": {
@@ -9582,7 +10560,7 @@
     ]
   },
   "שסע": {
-    "qal": [
+    "piel": [
       "",
       "tear in two; restrain"
     ]
@@ -9623,12 +10601,12 @@
   },
   "שפט": {
     "qal": [
-      "",
-      "act as law-giver, judge, governor; judges"
+      "juger, rendre justice, gouverner",
+      "judge, act as law-giver"
     ],
     "nif": [
-      "",
-      "enter into controversy, plead; with"
+      "entrer en procès, plaider",
+      "enter into controversy, plead"
     ]
   },
   "שפך": {
@@ -9692,7 +10670,7 @@
     ],
     "nif": [
       "",
-      "weigh; weigh out"
+      "be weighed; be weighted out"
     ]
   },
   "שקע": {
@@ -9726,7 +10704,7 @@
     ]
   },
   "שקר": {
-    "qal": [
+    "piel": [
       "",
       "deal falsely"
     ]
@@ -9747,16 +10725,18 @@
     "pual": [
       "",
       "be rooted up; take root"
-    ],
-    "hif": [
+    ]
+  },
+  "שרת": {
+    "piel": [
       "",
-      "id.: Imperfect; id"
+      "serve; officers"
     ]
   },
   "שתה": {
     "qal": [
-      "",
-      "drink; whose venom"
+      "boire",
+      "drink"
     ],
     "nif": [
       "",
@@ -9790,13 +10770,13 @@
   "תוה": {
     "hif": [
       "",
-      "set a mark; upon"
+      "set a mark"
     ]
   },
   "תור": {
     "qal": [
       "",
-      "seek out, select; id"
+      "seek out, select; find out how"
     ],
     "hif": [
       "",
@@ -9813,6 +10793,10 @@
     "qal": [
       "",
       "by him; are actions estimated"
+    ],
+    "piel": [
+      "",
+      "mete out"
     ],
     "pual": [
       "",
@@ -9834,7 +10818,7 @@
       "",
       "they were hanged on a tree"
     ],
-    "hof": [
+    "piel": [
       "",
       "hang up"
     ]
@@ -9879,9 +10863,17 @@
     "hif": [
       "",
       "have hired; give"
+    ],
+    "piel": [
+      "",
+      "let them recount; celebrate"
     ]
   },
   "תעב": {
+    "piel": [
+      "",
+      "regard as an abomination abhor; cause to be an abomination"
+    ],
     "hif": [
       "",
       "make abominable, do abominably"
@@ -9912,7 +10904,7 @@
   "תפר": {
     "qal": [
       "",
-      "sackcloth I have sewed upon; those who keep sewing"
+      "sackcloth I have sewed upon"
     ]
   },
   "תפש": {
@@ -9928,7 +10920,11 @@
   "תקן": {
     "qal": [
       "",
-      "bent; make straight"
+      "bent"
+    ],
+    "piel": [
+      "",
+      "make straight"
     ]
   },
   "תקע": {
@@ -9944,7 +10940,7 @@
   "תקף": {
     "qal": [
       "",
-      "one overpower him; id"
+      "one overpower him"
     ]
   }
 }

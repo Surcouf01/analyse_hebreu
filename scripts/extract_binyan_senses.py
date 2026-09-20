@@ -47,7 +47,7 @@ STEM_TO_BINYAN = {
 }
 
 STEM_RE = re.compile(
-    r"<b>\s*(Qal|Niph`al|Piel|Pu`al|Hithpa`el|Hiph`il|Hoph`al)"
+    r"<b>\s*(Qal|Niph`al|Pi`el|Piel|Pu`al|Hithpa`el|Hiph`il|Hoph`al)"
     r"\s*(?:\d+)?\s*</b>")
 
 # Mots purement morphologiques : les fragments qui commencent par eux
@@ -56,10 +56,28 @@ _MORPH_START = re.compile(
     r"^(Perfect|Imperfect|Imperative|Infinitive|Participle|Jussive|"
     r"cohortative|suffix|consecutive|absolute|construct|"
     r"3 ?m(asculine)?|2 ?m|1 ?(sing|pl)|feminine|masculine|plural|"
-    r"passive|active|and he|and she|so|also|not|only)",
+    r"passive|active|and he|and she|so|also|not|only|"
+    r"cstr|abs|id|subst|adjective|declining)",
     re.I)
-# Fragments à éliminer même au milieu d'un sens (bruit BDB).
-_NOISE_TOKENS = ("and he", "and she", "hath made", "I kept", "thou")
+# En-têtes morphologiques : une vraie section de stem du BDB commence
+# par des formes (Perfect/Imperfect/Participle...) ; un renvoi croisé
+# (« compare Niph`al 3 ») n'en contient pas.
+_MORPH_HINT = re.compile(
+    r"\b(Perfect|Imperfect|Imperative|Infinitive|Participle|"
+    r"Jussive|Cohortative)\b")
+# Fragments à éliminer même au milieu d'un sens (bruit BDB) : formes
+# archaïques du verbe et fragments contextuels. Frontières de mots
+# obligatoires (« thou » ne doit pas éliminer « thought »).
+_NOISE_RE = re.compile(
+    r"\b(and he|and she|and they|hath made|I kept|hast kept|"
+    r"thou|ye|thee|thine|shalt|wilt|didst)\b", re.I)
+# Fragments purement fonctionnels (prépositions, pronoms) : ce ne sont
+# pas des sens — le BDB les met en highlight dans les constructions.
+_FUNC_WORDS = {"as", "with", "among", "at", "what", "in", "or", "so",
+               "against", "for", "towards", "of", "to", "upon", "by",
+               "from", "one", "id", "naked", "withal"}
+# Gloses de participes contextuels décrivant des personnes.
+_PARTICIPLE_GLOSS_RE = re.compile(r"^(those|busy|such)\b|\bthat\b")
 
 HEB_RE = re.compile(r"<bdbheb>.*?</bdbheb>", re.S)
 ARC_RE = re.compile(r"<bdbarc>.*?</bdbarc>", re.S)
@@ -112,14 +130,11 @@ def _root_of_entry(content):
 def extract_senses(content):
     """Sens par binyan d'une entrée BDB (dict code -> sens anglais)."""
     out = {}
+    sections = {}
     marks = list(STEM_RE.finditer(content))
     for i, m in enumerate(marks):
-        stem = m.group(1).replace("`", "").replace("al", "al")
-        # normalisation Niph`al -> Niphal, etc.
-        stem_key = stem.replace("`", "")
-        stem_key = {"Niphal": "Niphal", "Pual": "Pual", "Hithpael": "Hithpael",
-                    "Hiphil": "Hiphil", "Hophal": "Hophal",
-                    "Qal": "Qal", "Piel": "Piel"}.get(stem_key, stem_key)
+        # normalisation Pi`el -> Piel, Niph`al -> Niphal, etc.
+        stem_key = m.group(1).replace("`", "")
         code = STEM_TO_BINYAN.get(stem_key)
         if not code:
             continue
@@ -135,7 +150,13 @@ def extract_senses(content):
                 continue
             if _MORPH_START.match(txt):
                 continue
-            if any(n in txt for n in _NOISE_TOKENS):
+            if _NOISE_RE.search(txt):
+                continue
+            if _PARTICIPLE_GLOSS_RE.search(txt):
+                continue
+            # fragments purement fonctionnels (« as », « with, among ») :
+            # tous les mots sont des outils grammaticaux
+            if txt and all(w in _FUNC_WORDS for w in txt.split()):
                 continue
             # écarter les gloses contextuelles (« fashioned the rib into
             # a woman », « the hill ») et les substantifs dérivés
@@ -150,12 +171,20 @@ def extract_senses(content):
             # emplois contextuels de plus en plus spécifiques
             if len(senses) >= 2:
                 break
+        # Un même stem peut apparaître plusieurs fois (renvois croisés
+        # « compare Niph`al 3 ») : on retient la première section qui
+        # contient des en-têtes morphologiques — c'est la vraie section
+        # du lexique.
         if senses:
-            # fusionner les sens en une chaîne anglaise compacte
-            en = "; ".join(senses)
-            # ne pas écraser un sens déjà retenu (premier stem = principal)
-            if code not in out:
-                out[code] = en
+            has_morph = bool(_MORPH_HINT.search(frag))
+            sections.setdefault(code, []).append((has_morph, senses))
+    for code, secs in sections.items():
+        for has_morph, senses in secs:
+            if has_morph:
+                out[code] = "; ".join(senses)
+                break
+        else:
+            out[code] = "; ".join(secs[0][1])
     return out
 
 
@@ -214,9 +243,13 @@ def main(argv=None):
             if code not in final[root]:
                 final[root][code] = ["", en]
             else:
-                # le sens anglais du BDB affine l'existant
                 entry = final[root][code]
-                if len(entry) >= 2 and not entry[1]:
+                # le sens anglais du BDB affine l'existant : on remplit
+                # le champ anglais s'il est vide, et on l'actualise tant
+                # que le champ français n'est pas traduit (permet de
+                # rejouer l'extraction avec des filtres améliorés sans
+                # toucher aux racines déjà validées).
+                if len(entry) >= 2 and (not entry[1] or not entry[0]):
                     entry[1] = en
 
     with open(out_path, "w", encoding="utf-8") as fh:
