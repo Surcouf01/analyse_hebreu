@@ -201,6 +201,7 @@ python analyse_hebreu.py --binyanim "שמר"           # racine trilitaire nue
 python analyse_hebreu.py --binyanim "בָּנָה"          # verbe lamed-he (faible)
 python analyse_hebreu.py --binyanim --file verbes.txt  # un verbe par ligne
 python analyse_hebreu.py --binyanim "קום" --format json
+python analyse_hebreu.py --binyanim --mishna-binyanim "אכל"  # + binyanim mishnaïques
 ```
 
 Le mode `--binyanim` identifie le verbe (lemme BHSA ou racine), détecte sa
@@ -227,6 +228,33 @@ du Rabbinat 1899** (domaine public), récupérée via l'API Sefaria
 (`bhsa_grammar/sefaria_client.py`). Sefaria ne fournit pas de lexique
 hébreu→français : les versets français servent de contexte d'occurrence,
 la traduction des sens reste une curation manuelle.
+
+#### Binyanim mishnaïques (Sefaria)
+
+Avec `--mishna-binyanim` (CLI) ou la case « Binyanim mishnaïques (Sefaria) »
+(GUI, onglet Binyanim), les binyanim attestés dans la **Mishna** mais absents
+de la Bible hébraïque sont signalés, avec des formes d'attestation :
+le libellé de l'onglet GUI passe en **orange** (au lieu du rouge
+« pas de sens biblique ») et le texte affiche
+« ✸ Attesté dans la Mishna (binyan non biblique) : … ».
+
+Les données viennent de `bhsa_grammar/mishnah_binyanim.json` :
+`scripts/extract_mishnah_binyanim.py` télécharge la Mishna hébraïque
+vocalisée (« Torat Emet 357 », domaine public) via l'API Sefaria, compare
+tout token à l'index des formes vocalisées générées par le moteur de
+conjugaison (tous gabarits BHSA, verbes faibles inclus) et retient, par
+racine, les binyanim non bibliques (ex. piel de אכל : וְאִכְלוּ).
+Le matching est vocalisé : teamim/daghesh neutralisés, hataf→voyelle
+pleine, préfixes d'incorporation testés par retrait. La comparaison étant
+exacte, le fichier ne contient que des formes conformes aux gabarits
+bibliques — pas de bruit d'heuristique.
+
+Régénération (n'écrase jamais sans `--force`, les curations manuelles
+devant être préservées) :
+```bash
+python scripts/extract_mishnah_binyanim.py --force           # 63 traités
+python scripts/extract_mishnah_binyanim.py --limit 4 --out /tmp/t.json --force  # test
+```
 
 Workflow d'enrichissement (procédure incrémentale) :
 

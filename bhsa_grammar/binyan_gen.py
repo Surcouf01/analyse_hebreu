@@ -24,6 +24,7 @@ attestées dans le texte biblique (ex. impératif hofal), la forme régulière
 est construite par analogie.
 """
 
+import os
 import unicodedata
 
 from .lex_fr import best_gloss, gloss_fr as _gloss_fr_pure
@@ -1133,9 +1134,14 @@ def generate_binyan_non_finite(vs, root, category):
 # API principale
 # =============================================================================
 
-def analyze_binyanim(F, form):
+def analyze_binyanim(F, form, use_mishnah=False):
     """Analyse « binyanim » complète d'un mot hébreu conjugué ou d'une
     racine trilitaire.
+
+    Si ``use_mishnah`` est vrai, les binyanim attestés dans la Mishna
+    (fichier ``mishnah_binyanim.json``, extrait du corpus Sefaria) mais
+    absents de la Bible hébraïque sont signalés dans chaque entrée via
+    le champ ``mishnah_forms`` (liste de formes attestées ; vide sinon).
 
     Renvoie :
         {
@@ -1208,6 +1214,8 @@ def analyze_binyanim(F, form):
     attested = verb.get("binyan_attested")
     gloss_fr = _gloss_fr_pure(verb.get("lex"))
     gloss_en = verb.get("gloss") or ""
+    mishnah_data = load_mishnah_binyanim() if use_mishnah else {}
+    mishnah_root = mishnah_data.get(verb.get("root_display") or "", {})
     for code, name_fr, name_he in BINYANIM:
         tr_fr, tr_en = binyan_translation(code, gloss_fr, gloss_en,
                                          root=verb.get("root_display"))
@@ -1220,6 +1228,7 @@ def analyze_binyanim(F, form):
             "translation_en": tr_en,
             "attested": (attested == code),
             "exists": (code in binyanim_of_lex) if binyanim_of_lex is not None else None,
+            "mishnah_forms": list(mishnah_root.get(code, [])),
             "paradigm": generate_binyan_paradigm(code, root, category),
             "non_finite": generate_binyan_non_finite(code, root, category),
         }
@@ -1238,15 +1247,42 @@ MARK_VERB = "###VERB"
 MARK_WEAK = "###WEAK"
 MARK_BINYAN = "###BINYAN"
 
+MISHNAH_JSON = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            "mishnah_binyanim.json")
+_MISHNAH_CACHE = {"path": None, "data": {}}
+
+
+def load_mishnah_binyanim():
+    """Charge mishnah_binyanim.json (binyanim mishnaïques par racine).
+
+    Format : {"<racine>": {"<code>": ["<forme>", ...]}}. Tolérant si le
+    fichier est absent (aucune donnée mishnaïque). Mis en cache tant que
+    le fichier ne change pas de chemin.
+    """
+    if not os.path.isfile(MISHNAH_JSON):
+        return {}
+    if _MISHNAH_CACHE["path"] != MISHNAH_JSON:
+        import json
+        try:
+            with open(MISHNAH_JSON, encoding="utf-8") as fh:
+                _MISHNAH_CACHE["data"] = json.load(fh)
+            _MISHNAH_CACHE["path"] = MISHNAH_JSON
+        except (OSError, ValueError):
+            _MISHNAH_CACHE["data"] = {}
+            _MISHNAH_CACHE["path"] = None
+    return _MISHNAH_CACHE["data"]
+
 
 def binyanim_to_text(analysis):
     """Formate le résultat d'analyze_binyanim en texte lisible.
 
     Les en-têtes de binyan portent un marqueur parsable :
-        ###BINYAN|<code>|<nom fr>|<nom hébreu>|<attesté 0/1>|<existant 0/1/vide>|<trad fr>|<trad en>###
+        ###BINYAN|<code>|<nom fr>|<nom hébreu>|<attesté 0/1>|<existant 0/1/vide>|<trad fr>|<trad en>|<formes mishna ; ;>###
     (le champ « existant » dit si le binyan est attesté pour cette racine
     dans la BHSA : vide = information indisponible, racine non attestée ;
-    les traductions du verbe dans ce binyan suivent, fr puis en).
+    les traductions du verbe dans ce binyan suivent, fr puis en ; le
+    dernier champ liste les formes attestées dans la Mishna pour ce
+    binyan non biblique, jointes par « ; », vide si aucune).
     ainsi que l'en-tête de verbe et la catégorie de verbe faible :
         ###VERB|<racine>|<lemme>|<traduction fr>###
         ###WEAK|<code>|<libellé>|<description>###
@@ -1280,7 +1316,9 @@ def binyanim_to_text(analysis):
         att = "1" if b["attested"] else "0"
         exists = b.get("exists")
         exists_flag = "" if exists is None else ("1" if exists else "0")
-        lines.append(MARK_BINYAN + f"|{b['code']}|{b['name_fr']}|{b['name_he']}|{att}|{exists_flag}|{b.get('translation_fr', '')}|{b.get('translation_en', '')}###")
+        mishnah_forms = b.get("mishnah_forms") or []
+        mishnah_part = ";".join(mishnah_forms)
+        lines.append(MARK_BINYAN + f"|{b['code']}|{b['name_fr']}|{b['name_he']}|{att}|{exists_flag}|{b.get('translation_fr', '')}|{b.get('translation_en', '')}|{mishnah_part}###")
         attest = " (binyan attesté dans la BHSA pour cette forme)" if b["attested"] else ""
         lines.append(f"-- {b['name_fr']} / {b['name_he']} — {b['sense']}{attest} --")
         tr_fr = b.get("translation_fr") or ""
@@ -1290,10 +1328,14 @@ def binyanim_to_text(analysis):
         if trads:
             lines.append(f"  Traduction : {'  |  '.join(trads)}")
         if exists is False:
-            lines.append("⚠ Cette racine n'a pas de sens dans ce binyan : "
-                         "aucune occurrence de ce binyan pour cette racine "
-                         "dans la Bible hébraïque (paradigme théorique, "
-                         "construit par analogie).")
+            if mishnah_forms:
+                lines.append("✸ Attesté dans la Mishna (binyan non "
+                             "biblique) : " + ", ".join(mishnah_forms))
+            else:
+                lines.append("⚠ Cette racine n'a pas de sens dans ce binyan : "
+                             "aucune occurrence de ce binyan pour cette racine "
+                             "dans la Bible hébraïque (paradigme théorique, "
+                             "construit par analogie).")
         for tense in ("perf", "impf", "impv"):
             lines.append(f"  {TENSE_LABELS[tense]} :")
             for ps, gn, nu, label in TENSE_PERSONS[tense]:
@@ -1319,9 +1361,12 @@ def parse_binyanim_text(text):
             "verb": {"root":..., "lex":..., "gloss_fr":...},
             "weak": {"code":..., "label":..., "desc":...},
             "binyanim": [{"code","name_fr","name_he","attested","exists",
-                        "translation_fr","translation_en","text"}, ...],
+                        "translation_fr","translation_en","mishnah_forms",
+                        "text"}, ...],
         }
-    ("exists" vaut True, False ou None si l'information est indisponible.)
+    ("exists" vaut True, False ou None si l'information est indisponible ;
+    "mishnah_forms" liste les formes attestées dans la Mishna pour ce
+    binyan, vide si aucune.)
     """
     import re
     verb = {}
@@ -1344,11 +1389,13 @@ def parse_binyanim_text(text):
             parts = line[len(MARK_BINYAN) + 1:].rstrip("#").split("|")
             if len(parts) >= 4:
                 exists_part = parts[4] if len(parts) >= 5 else None
+                mishnah_part = parts[7] if len(parts) > 7 else ""
                 current = {"code": parts[0], "name_fr": parts[1],
                            "name_he": parts[2], "attested": parts[3] == "1",
                            "exists": (exists_part == "1") if exists_part else None,
                            "translation_fr": parts[5] if len(parts) > 5 else "",
                            "translation_en": parts[6] if len(parts) > 6 else "",
+                           "mishnah_forms": [f for f in mishnah_part.split(";") if f],
                            "text": []}
                 binyanim.append(current)
             continue
@@ -1381,6 +1428,7 @@ def binyanim_to_json(analysis, indent=2, ensure_ascii=False):
                 "translation_en": b.get("translation_en"),
                 "attested": b["attested"],
                 "exists": b.get("exists"),
+                "mishnah_forms": b.get("mishnah_forms") or [],
                 "paradigm": {
                     tense: {_key(cell): form
                            for cell, form in forms.items() if form}

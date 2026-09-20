@@ -76,6 +76,13 @@ def build_parser():
              "(argument = mot conjugué ou racine trilitaire, ou fichier via --file).",
     )
     p.add_argument(
+        "--mishna-binyanim",
+        action="store_true",
+        help="En mode --binyanim, signale aussi les binyanim attestés dans la "
+             "Mishna (Sefaria, fichier mishnah_binyanim.json) mais absents "
+             "de la Bible hébraïque, avec des formes d'attestation.",
+    )
+    p.add_argument(
         "--file",
         help="Fichier contenant un mot/ligne (--word/--binyanim) ou une phrase/ligne (--phrase).",
     )
@@ -266,7 +273,7 @@ def main(argv=None):
         for i, w in enumerate(verbs):
             if len(verbs) > 1:
                 print(f"\n{'='*20} Verbe {i+1}/{len(verbs)} : {w} {'='*20}")
-            analysis = analyze_binyanim(F, w)
+            analysis = analyze_binyanim(F, w, use_mishnah=args.mishna_binyanim)
             if analysis["found"]:
                 any_found = True
             if args.format == "json":

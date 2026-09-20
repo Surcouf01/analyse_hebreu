@@ -252,8 +252,9 @@ class BinyanimNotebook(ttk.Frame):
 
     Contrairement à ttk.Notebook, chaque titre d'onglet est un tk.Label :
     son libellé peut être coloré individuellement (rouge pour un binyan
-    qui n'a pas de sens pour la racine analysée), ce que l'API ttk.Notebook
-    ne permet pas.
+    qui n'a pas de sens pour la racine analysée, orange pour un binyan
+    attesté dans la Mishna mais absent de la Bible), ce que l'API
+    ttk.Notebook ne permet pas.
 
     Repris l'API utile de ttk.Notebook : add/insert/forget/select/tabs/
     index, plus ``tab(tab_id, text=..., fg=...)`` pour modifier un onglet.
@@ -263,6 +264,7 @@ class BinyanimNotebook(ttk.Frame):
     _FG_ACTIVE = "black"
     _FG_INACTIVE = "gray40"
     _FG_MISSING = "#b00020"
+    _FG_MISHNAH = "#c06000"
 
     def __init__(self, parent, **kwargs):
         super().__init__(parent, **kwargs)
@@ -888,6 +890,10 @@ class AnalyseurGUI:
                         value="text").pack(side="left")
         ttk.Radiobutton(opts, text="JSON", variable=self.binyanim_format,
                         value="json").pack(side="left")
+        self.binyanim_use_mishnah = tk.BooleanVar(value=False)
+        ttk.Checkbutton(opts, text="Binyanim mishnaïques (Sefaria)",
+                        variable=self.binyanim_use_mishnah,
+                        style="Toolbutton").pack(side="left", padx=(16, 0))
 
         self.btn_binyanim = ttk.Button(tab, text="Conjuguer le verbe",
                                        command=self._run_binyanim)
@@ -935,12 +941,13 @@ class AnalyseurGUI:
             messagebox.showwarning("Binyanim", "Saisissez un verbe hébreu ou une racine.")
             return
         fmt = self.binyanim_format.get()
+        use_mishnah = bool(self.binyanim_use_mishnah.get())
         F = self.api.F
         self._disable_buttons()
         self.status.configure(text=f"Conjugaison de « {form} »…")
 
         def worker():
-            analysis = analyze_binyanim(F, form)
+            analysis = analyze_binyanim(F, form, use_mishnah=use_mishnah)
             if fmt == "json":
                 result = format_binyanim_json(analysis)
                 self._work_queue.put(("binyanim_raw", result))
@@ -967,7 +974,10 @@ class AnalyseurGUI:
 
         Quand la racine n'a pas de sens dans un binyan (binyan non attesté
         pour ce lemme dans la Bible hébraïque), le libellé de l'onglet est
-        coloré en rouge et l'onglet affiche un avertissement.
+        coloré en rouge et l'onglet affiche un avertissement. Si des formes
+        de ce binyan sont attestées dans la Mishna (option « Binyanim
+        mishnaïques »), le libellé passe en orange et l'avertissement
+        mentionne ces formes.
         """
         # Nettoyer les sous-onglets de binyanim précédents (garder Verbe
         # et Sortie complète, toujours en fin de notebook).
@@ -1019,16 +1029,29 @@ class AnalyseurGUI:
             if trads:
                 head = ("Traduction : " + "  |  ".join(trads) + "\n\n")
                 content = head + content
+            mishnah_forms = b.get("mishnah_forms") or []
             if b.get("exists") is False:
-                self.binyanim_notebook.tab(
-                    tab, fg=BinyanimNotebook._FG_MISSING)
-                warn = ("⚠ Cette racine n'a pas de sens dans ce binyan "
-                        f"({b['name_fr']} / {b['name_he']}) : "
-                        "aucune occurrence de ce binyan pour cette racine "
-                        "dans la Bible hébraïque.\n"
-                        "Le paradigme ci-dessous est théorique, construit "
-                        "par analogie.\n\n")
-                content = warn + content
+                if mishnah_forms:
+                    self.binyanim_notebook.tab(
+                        tab, fg=BinyanimNotebook._FG_MISHNAH)
+                    warn = ("⚠ Pas de sens biblique dans ce binyan "
+                            f"({b['name_fr']} / {b['name_he']}), mais "
+                            "attesté dans la Mishna (binyan non "
+                            "biblique) : " + ", ".join(mishnah_forms) +
+                            ".\n"
+                            "Le paradigme ci-dessous est théorique, "
+                            "construit par analogie.\n\n")
+                    content = warn + content
+                else:
+                    self.binyanim_notebook.tab(
+                        tab, fg=BinyanimNotebook._FG_MISSING)
+                    warn = ("⚠ Cette racine n'a pas de sens dans ce binyan "
+                            f"({b['name_fr']} / {b['name_he']}) : "
+                            "aucune occurrence de ce binyan pour cette racine "
+                            "dans la Bible hébraïque.\n"
+                            "Le paradigme ci-dessous est théorique, construit "
+                            "par analogie.\n\n")
+                    content = warn + content
             self._set_output(text, content)
 
         if parsed.get("binyanim"):
