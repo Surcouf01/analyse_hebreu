@@ -107,6 +107,20 @@ KEYBOARD_FONT = HEBREW_FONT_MONO
 _v_fam, _v_size = KEYBOARD_FONT
 KEYBOARD_FONT_VOWELS = (_v_fam, max(6, _v_size - 5))
 
+# Police des titres d'onglets (binyanim) : configurable via gui.properties
+# (clés font.tabs.family / font.tabs.size), avec repli sur la police de
+# saisie si les clés sont absentes.
+def _tab_font():
+    try:
+        size = int(_PROPS["font.tabs.size"])
+    except (KeyError, ValueError):
+        size = HEBREW_FONT[1]
+    family = _PROPS.get("font.tabs.family", HEBREW_FONT[0])
+    return (family, size)
+
+
+BINYAN_TAB_FONT = _tab_font()
+
 
 # Marques de contrôle bidi pour forcer le rendu droite-à-gauche des lignes
 # hébraïques dans la zone de résultat du GUI. Tk n'applique pas toujours
@@ -287,12 +301,15 @@ class BinyanimNotebook(ttk.Frame):
         self._select(tab_id)
 
     def _btn_font(self):
-        """Police des titres d'onglets : normale, et grasse pour l'onglet actif."""
+        """Police des titres d'onglets : normale, et grasse pour l'onglet actif.
+
+        Famille et taille configurables via gui.properties
+        (font.tabs.family / font.tabs.size, cf. BINYAN_TAB_FONT).
+        """
         if not hasattr(self, "_fonts"):
-            base = str(tk.Label(self.bar).cget("font"))
-            bold = tkfont.Font(root=self, font=base)
+            bold = tkfont.Font(root=self, font=BINYAN_TAB_FONT)
             bold.configure(weight="bold")
-            self._fonts = (base, bold)
+            self._fonts = (BINYAN_TAB_FONT, bold)
         return self._fonts
 
 
@@ -908,6 +925,13 @@ class AnalyseurGUI:
             raw_index += 1
             text = self._make_binyanim_output(tab)
             content = b.get("text", "")
+            tr_fr = b.get("translation_fr") or ""
+            tr_en = b.get("translation_en") or ""
+            trads = [f"fr : {tr_fr}" for _ in (0,) if tr_fr] + \
+                    [f"en : {tr_en}" for _ in (0,) if tr_en]
+            if trads:
+                head = ("Traduction : " + "  |  ".join(trads) + "\n\n")
+                content = head + content
             if b.get("exists") is False:
                 self.binyanim_notebook.tab(
                     tab, fg=BinyanimNotebook._FG_MISSING)

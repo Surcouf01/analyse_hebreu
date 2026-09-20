@@ -26,7 +26,7 @@ est construite par analogie.
 
 import unicodedata
 
-from .lex_fr import best_gloss
+from .lex_fr import best_gloss, gloss_fr as _gloss_fr_pure
 
 # --- Binyanim (code BHSA, français, hébreu) -----------------------------------
 # Ordre pédagogique classique : qal, nifal, piel, pual, hitpael, hifil, hofal.
@@ -49,6 +49,94 @@ BINYAN_SENSE = {
     "hif": "causatif actif",
     "hof": "causatif passif",
 }
+
+# Traduction du verbe dans chaque binyan, en français et en anglais, à partir
+# du gloss du lemme (BHSA : gloss anglais ; lex_fr.json : gloss français).
+# La BHSA ne fournit pas de gloss par binyan : la traduction est construite
+# par périphrase d'après la valeur sémantique du binyan.
+_BINYAN_TRANSLATION_FR = {
+    "qal": "{v}",
+    "nif": "être {pp}",
+    "piel": "{v} (intensif)",
+    "pual": "être {pp} (intensif)",
+    "hit": "se {v}",
+    "hif": "faire {v}",
+    "hof": "être fait {v}",
+}
+_BINYAN_TRANSLATION_EN = {
+    "qal": "{v}",
+    "nif": "to be {pp}",
+    "piel": "{v} (intensive)",
+    "pual": "to be {pp} (intensive)",
+    "hit": "to {v} oneself",
+    "hif": "to cause to {v}",
+    "hof": "to be made to {v}",
+}
+
+# Participe passé irrégulier des verbes anglais courants de la BHSA (les
+# gloss de la base sont en anglais : keep, build, turn, ...).
+_EN_IRREGULAR_PP = {
+    "keep": "kept", "build": "built", "turn": "turned", "fall": "fallen",
+    "sit": "sat", "send": "sent", "make": "made", "speak": "spoken",
+    "write": "written", "eat": "eaten", "give": "given", "take": "taken",
+    "know": "known", "come": "come", "go": "gone", "see": "seen",
+    "say": "said", "do": "done", "find": "found", "hear": "heard",
+    "bring": "brought", "buy": "bought", "teach": "taught",
+    "think": "thought", "seek": "sought", "stand": "stood",
+    "run": "ran", "rise": "risen", "be": "been", "have": "had",
+    "love": "loved", "live": "lived", "die": "died", "rule": "ruled",
+    "bear": "borne", "give": "given", "go out": "gone out",
+}
+
+
+def _en_participle(gloss):
+    """Participe passé anglais du gloss BHSA (règles + irréguliers)."""
+    if not gloss:
+        return ""
+    if gloss in _EN_IRREGULAR_PP:
+        return _EN_IRREGULAR_PP[gloss]
+    if gloss.endswith("e") and not gloss.endswith("ee"):
+        return gloss + "d"
+    if gloss.endswith(("ay", "ey", "oy")):
+        return gloss + "ed"
+    if gloss.endswith("y") and gloss[:-1].endswith(("b", "d", "g", "l",
+                                                    "m", "n", "p", "r", "t")):
+        return gloss[:-1] + "ied"
+    return gloss + "ed"
+
+
+def _fr_participe_passe(gloss):
+    """Participe passé français du gloss (1er groupe -er, -ir/-re réguliers)."""
+    if not gloss:
+        return ""
+    if gloss.endswith("er"):
+        stem = gloss[:-2]
+        if stem and stem[-1] in "éèê":
+            stem = stem[:-1] + "é"
+        return stem + "é"
+    if gloss.endswith("ir"):
+        return gloss[:-2] + "i"
+    if gloss.endswith("re"):
+        return gloss[:-2] + "u"
+    return gloss
+
+
+def binyan_translation(code, gloss_fr, gloss_en):
+    """Traduction du verbe dans un binyan, en français et en anglais.
+
+    Construite par périphrase à partir des gloss du lemme : « garder » →
+    nifal « être gardé », hifil « faire garder », hitpael « se garder »...
+    Chaque langue n'est remplie que si le gloss source existe (le gloss
+    français pur vient de lex_fr.json, l'anglais de la BHSA).
+    Renvoie ("", "") si aucun gloss n'est disponible.
+    """
+    v_fr = (gloss_fr or "").strip()
+    v_en = (gloss_en or "").strip()
+    pp_fr = _fr_participe_passe(v_fr) if v_fr else ""
+    pp_en = _en_participle(v_en) if v_en else ""
+    fr = _BINYAN_TRANSLATION_FR[code].format(v=v_fr, pp=pp_fr).strip() if v_fr else ""
+    en = _BINYAN_TRANSLATION_EN[code].format(v=v_en, pp=pp_en).strip() if v_en else ""
+    return fr, en
 
 # --- Lettres et signes ---------------------------------------------------------
 ALEF = "\u05D0"
@@ -1082,12 +1170,17 @@ def analyze_binyanim(F, form):
         verb["binyanim_of_lex"] = sorted(binyanim_of_lex)
 
     attested = verb.get("binyan_attested")
+    gloss_fr = _gloss_fr_pure(verb.get("lex"))
+    gloss_en = verb.get("gloss") or ""
     for code, name_fr, name_he in BINYANIM:
+        tr_fr, tr_en = binyan_translation(code, gloss_fr, gloss_en)
         entry = {
             "code": code,
             "name_fr": name_fr,
             "name_he": name_he,
             "sense": BINYAN_SENSE[code],
+            "translation_fr": tr_fr,
+            "translation_en": tr_en,
             "attested": (attested == code),
             "exists": (code in binyanim_of_lex) if binyanim_of_lex is not None else None,
             "paradigm": generate_binyan_paradigm(code, root, category),
@@ -1113,9 +1206,10 @@ def binyanim_to_text(analysis):
     """Formate le résultat d'analyze_binyanim en texte lisible.
 
     Les en-têtes de binyan portent un marqueur parsable :
-        ###BINYAN|<code>|<nom fr>|<nom hébreu>|<attesté 0/1>|<existant 0/1/vide>###
+        ###BINYAN|<code>|<nom fr>|<nom hébreu>|<attesté 0/1>|<existant 0/1/vide>|<trad fr>|<trad en>###
     (le champ « existant » dit si le binyan est attesté pour cette racine
-    dans la BHSA : vide = information indisponible, racine non attestée).
+    dans la BHSA : vide = information indisponible, racine non attestée ;
+    les traductions du verbe dans ce binyan suivent, fr puis en).
     ainsi que l'en-tête de verbe et la catégorie de verbe faible :
         ###VERB|<racine>|<lemme>|<traduction fr>###
         ###WEAK|<code>|<libellé>|<description>###
@@ -1149,9 +1243,15 @@ def binyanim_to_text(analysis):
         att = "1" if b["attested"] else "0"
         exists = b.get("exists")
         exists_flag = "" if exists is None else ("1" if exists else "0")
-        lines.append(MARK_BINYAN + f"|{b['code']}|{b['name_fr']}|{b['name_he']}|{att}|{exists_flag}###")
+        lines.append(MARK_BINYAN + f"|{b['code']}|{b['name_fr']}|{b['name_he']}|{att}|{exists_flag}|{b.get('translation_fr', '')}|{b.get('translation_en', '')}###")
         attest = " (binyan attesté dans la BHSA pour cette forme)" if b["attested"] else ""
         lines.append(f"-- {b['name_fr']} / {b['name_he']} — {b['sense']}{attest} --")
+        tr_fr = b.get("translation_fr") or ""
+        tr_en = b.get("translation_en") or ""
+        trads = [f"fr : {tr_fr}" for _ in (0,) if tr_fr] + \
+                [f"en : {tr_en}" for _ in (0,) if tr_en]
+        if trads:
+            lines.append(f"  Traduction : {'  |  '.join(trads)}")
         if exists is False:
             lines.append("⚠ Cette racine n'a pas de sens dans ce binyan : "
                          "aucune occurrence de ce binyan pour cette racine "
@@ -1181,7 +1281,8 @@ def parse_binyanim_text(text):
         {
             "verb": {"root":..., "lex":..., "gloss_fr":...},
             "weak": {"code":..., "label":..., "desc":...},
-            "binyanim": [{"code","name_fr","name_he","attested","exists","text"}, ...],
+            "binyanim": [{"code","name_fr","name_he","attested","exists",
+                        "translation_fr","translation_en","text"}, ...],
         }
     ("exists" vaut True, False ou None si l'information est indisponible.)
     """
@@ -1209,6 +1310,8 @@ def parse_binyanim_text(text):
                 current = {"code": parts[0], "name_fr": parts[1],
                            "name_he": parts[2], "attested": parts[3] == "1",
                            "exists": (exists_part == "1") if exists_part else None,
+                           "translation_fr": parts[5] if len(parts) > 5 else "",
+                           "translation_en": parts[6] if len(parts) > 6 else "",
                            "text": []}
                 binyanim.append(current)
             continue
@@ -1237,6 +1340,8 @@ def binyanim_to_json(analysis, indent=2, ensure_ascii=False):
                 "name_fr": b["name_fr"],
                 "name_he": b["name_he"],
                 "sense": b["sense"],
+                "translation_fr": b.get("translation_fr"),
+                "translation_en": b.get("translation_en"),
                 "attested": b["attested"],
                 "exists": b.get("exists"),
                 "paradigm": {

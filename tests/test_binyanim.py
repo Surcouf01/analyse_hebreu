@@ -164,6 +164,31 @@ def main():
             failures.append(f"parse בנה: exists {b['code']}={b.get('exists')!r} != {want!r}")
         if want is False and "pas de sens" not in b["text"]:
             failures.append(f"parse בנה: avertissement manquant pour {b['code']}")
+    # Traductions par binyan (fr + en) : périphrase d'après le gloss.
+    # בנה = « bâtir » / « build ».
+    tr_bn = {b["code"]: (b.get("translation_fr"), b.get("translation_en"))
+             for b in r_bn["binyanim"]}
+    expect_tr = {
+        "qal": ("bâtir", "build"),
+        "nif": ("être bâti", "to be built"),
+        "piel": ("bâtir (intensif)", "build (intensive)"),
+        "pual": ("être bâti (intensif)", "to be built (intensive)"),
+        "hit": ("se bâtir", "to build oneself"),
+        "hif": ("faire bâtir", "to cause to build"),
+        "hof": ("être fait bâtir", "to be made to build"),
+    }
+    for code, want in expect_tr.items():
+        if tr_bn.get(code) != want:
+            failures.append(f"trad בנה: {code} {tr_bn.get(code)} != {want}")
+    # Les marqueurs du texte doivent porter les traductions, et le parse
+    # doit les restituer.
+    for b in parsed_bn["binyanim"]:
+        want = expect_tr[b["code"]]
+        got = (b.get("translation_fr"), b.get("translation_en"))
+        if got != want:
+            failures.append(f"parse trad בנה: {b['code']} {got} != {want}")
+        if "Traduction" not in b["text"]:
+            failures.append(f"parse trad בנה: ligne Traduction manquante pour {b['code']}")
 
     # Vérification contre les formes réellement attestées : pour le verbe
     # FORT de référence et les cellules clés du qal, les formes générées
