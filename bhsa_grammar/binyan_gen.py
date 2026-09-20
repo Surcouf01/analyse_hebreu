@@ -130,8 +130,10 @@ def _load_binyan_senses():
     binyan_senses_fr_en.json : {"ראה": {"binyan": ["fr", "en"], ...}} —
     les clés sont les racines hébraïques (consonnes nues, sans nikkud),
     plus lisibles à maintenir que les lemmes BHSA translittérés.
-    Les sens réellement divergents selon le binyan (ex. ראה : voir /
-    apparaître / montrer) y sont donnés manuellement ; toute racine/binyan
+    Les sens par binyan proviennent du lexique BDB (Brown-Driver-Briggs,
+    domaine public) via scripts/extract_binyan_senses.py (~1 000 racines,
+    anglais), complétés manuellement en français pour certaines racines
+    (ex. ראה : voir / apparaître / montrer). Toute racine/binyan
     absent retombe sur la périphrase générée.
     """
     import json
@@ -160,7 +162,8 @@ def binyan_translation(code, gloss_fr, gloss_en, root=None):
     Renvoie ("", "") si aucun gloss n'est disponible.
     """
     if root:
-        entry = _load_binyan_senses().get(root, {}).get(code)
+        root_entry = _load_binyan_senses().get(root, {})
+        entry = root_entry.get(code)
         if entry and len(entry) >= 2 and (entry[0] or entry[1]):
             return entry[0] or "", entry[1] or ""
     v_fr = (gloss_fr or "").strip()

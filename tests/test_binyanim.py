@@ -168,9 +168,11 @@ def main():
     # בנה = « bâtir » / « build ».
     tr_bn = {b["code"]: (b.get("translation_fr"), b.get("translation_en"))
              for b in r_bn["binyanim"]}
+    # qal/nif : sens BDB du lexique ; les autres binyanim ne sont pas
+    # couverts par le BDB pour cette racine : périphrase.
     expect_tr = {
-        "qal": ("bâtir", "build"),
-        "nif": ("être bâti", "to be built"),
+        "qal": ("bâtir", "build; rebuild"),
+        "nif": ("être bâti", "be built; be rebuilt"),
         "piel": ("bâtir (intensif)", "build (intensive)"),
         "pual": ("être bâti (intensif)", "to be built (intensive)"),
         "hit": ("se bâtir", "to build oneself"),
