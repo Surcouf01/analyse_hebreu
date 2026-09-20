@@ -180,6 +180,18 @@ def main():
     for code, want in expect_tr.items():
         if tr_bn.get(code) != want:
             failures.append(f"trad בנה: {code} {tr_bn.get(code)} != {want}")
+    # Lexique de sens par binyan (binyan_senses_fr_en.json) : ראה a des sens
+    # réellement divergents — voir (qal), apparaître (nifal), montrer (hifil).
+    r_ra = analyze_binyanim(F, "רָאָה")
+    tr_ra = {b["code"]: b.get("translation_fr") for b in r_ra["binyanim"]}
+    expect_ra = {"qal": "voir", "nif": "être vu, apparaître",
+                 "hif": "montrer", "hit": "se montrer, se faire voir"}
+    for code, want in expect_ra.items():
+        if tr_ra.get(code) != want:
+            failures.append(f"trad ראה: {code} {tr_ra.get(code)!r} != {want!r}")
+    distinct_ra = {t.split(",")[0] for t in tr_ra.values() if t}
+    if len(distinct_ra) < 3:
+        failures.append(f"trad ראה: moins de 3 sens distincts : {sorted(distinct_ra)}")
     # Les marqueurs du texte doivent porter les traductions, et le parse
     # doit les restituer.
     for b in parsed_bn["binyanim"]:

@@ -1,0 +1,258 @@
+{
+  "R>H[": {
+    "qal": [
+      "voir",
+      "see"
+    ],
+    "nif": [
+      "être vu, apparaître",
+      "appear"
+    ],
+    "hif": [
+      "montrer",
+      "show"
+    ],
+    "hit": [
+      "se montrer, se faire voir",
+      "show oneself"
+    ],
+    "pual": [
+      "être montré",
+      "be shown"
+    ],
+    "hof": [
+      "être montré",
+      "be shown"
+    ]
+  },
+  "JD<[": {
+    "qal": [
+      "connaître",
+      "know"
+    ],
+    "nif": [
+      "être connu",
+      "be known"
+    ],
+    "piel": [
+      "faire connaître avec soin",
+      "make known carefully"
+    ],
+    "hit": [
+      "se faire connaître",
+      "make oneself known"
+    ],
+    "hif": [
+      "faire connaître, révéler",
+      "make known, reveal"
+    ],
+    "hof": [
+      "être révélé",
+      "be revealed"
+    ]
+  },
+  "NXM[": {
+    "qal": [
+      "consoler",
+      "comfort"
+    ],
+    "nif": [
+      "être consolé, se consoler",
+      "be comforted"
+    ],
+    "piel": [
+      "consoler, regretter",
+      "comfort, regret"
+    ],
+    "pual": [
+      "être consolé",
+      "be comforted"
+    ],
+    "hit": [
+      "se consoler, se repentir",
+      "be sorry, repent oneself"
+    ]
+  },
+  "PQD[": {
+    "qal": [
+      "visiter, charger",
+      "visit, appoint"
+    ],
+    "nif": [
+      "être visité, être manqué",
+      "be visited, be missed"
+    ],
+    "piel": [
+      "confier une charge",
+      "entrust"
+    ],
+    "pual": [
+      "être chargé",
+      "be entrusted"
+    ],
+    "hit": [
+      "se rechercher mutuellement",
+      "seek one another"
+    ],
+    "hif": [
+      "confier, charger",
+      "appoint, commit"
+    ],
+    "hof": [
+      "être chargé",
+      "be committed"
+    ]
+  },
+  "KBD[": {
+    "qal": [
+      "être lourd, honorer",
+      "be heavy, honor"
+    ],
+    "nif": [
+      "être honoré, s'alourdir",
+      "be honored"
+    ],
+    "piel": [
+      "honorer, glorifier",
+      "honor"
+    ],
+    "pual": [
+      "être honoré",
+      "be honored"
+    ],
+    "hit": [
+      "se montrer lourd, s'opiniâtrer",
+      "deal severely"
+    ],
+    "hif": [
+      "rendre lourd, honorer",
+      "make heavy, honor"
+    ],
+    "hof": [
+      "être rendu lourd",
+      "be made heavy"
+    ]
+  },
+  "ZKR[": {
+    "qal": [
+      "se souvenir, mentionner",
+      "remember, mention"
+    ],
+    "nif": [
+      "être rappelé, être mentionné",
+      "be remembered"
+    ],
+    "hif": [
+      "faire souvenir, rappeler",
+      "remind, mention"
+    ]
+  },
+  "SPR[": {
+    "qal": [
+      "compter, raconter",
+      "count, recount"
+    ],
+    "nif": [
+      "être compté, être raconté",
+      "be counted, be recounted"
+    ],
+    "piel": [
+      "raconter avec soin",
+      "recount carefully"
+    ],
+    "pual": [
+      "être raconté",
+      "be recounted"
+    ],
+    "hit": [
+      "se faire raconter",
+      "be recounted"
+    ],
+    "hif": [
+      "faire raconter",
+      "cause to recount"
+    ]
+  },
+  "CLM[": {
+    "qal": [
+      "être complet, achever",
+      "be complete"
+    ],
+    "nif": [
+      "être achevé",
+      "be completed"
+    ],
+    "piel": [
+      "rembourser, récompenser",
+      "repay, requite"
+    ],
+    "pual": [
+      "être remboursé",
+      "be repaid"
+    ],
+    "hit": [
+      "se récompenser mutuellement",
+      "requite one another"
+    ],
+    "hif": [
+      "achever, récompenser",
+      "complete, repay"
+    ],
+    "hof": [
+      "être achevé",
+      "be completed"
+    ]
+  },
+  "QR<[": {
+    "qal": [
+      "appeler, rencontrer",
+      "call, meet"
+    ],
+    "nif": [
+      "se rencontrer, être appelé",
+      "meet, be called"
+    ],
+    "piel": [
+      "proclamer",
+      "proclaim"
+    ],
+    "pual": [
+      "être proclamé",
+      "be proclaimed"
+    ],
+    "hit": [
+      "se faire proclamer, s'assembler",
+      "meet, assemble oneself"
+    ],
+    "hif": [
+      "proclamer, appeler",
+      "proclaim"
+    ],
+    "hof": [
+      "être appelé",
+      "be called"
+    ]
+  },
+  "NGD[": {
+    "qal": [
+      "aller à la rencontre",
+      "go toward, meet"
+    ],
+    "nif": [
+      "s'opposer",
+      "oppose oneself"
+    ],
+    "hif": [
+      "déclarer, annoncer",
+      "tell, declare"
+    ],
+    "hof": [
+      "être déclaré, être annoncé",
+      "be told, be declared"
+    ],
+    "hit": [
+      "se présenter devant",
+      "present oneself"
+    ]
+  }
+}

@@ -28,6 +28,9 @@ import unicodedata
 
 from .lex_fr import best_gloss, gloss_fr as _gloss_fr_pure
 
+# Cache du lexique de sens par (lemme, binyan).
+_SENSES_CACHE = None
+
 # --- Binyanim (code BHSA, français, hébreu) -----------------------------------
 # Ordre pédagogique classique : qal, nifal, piel, pual, hitpael, hifil, hofal.
 BINYANIM = (
@@ -121,15 +124,43 @@ def _fr_participe_passe(gloss):
     return gloss
 
 
-def binyan_translation(code, gloss_fr, gloss_en):
+def _load_binyan_senses():
+    """Charge le lexique de sens par (lemme, binyan), s'il existe.
+
+    binyan_senses_fr_en.json : {"LEMME": {"binyan": ["fr", "en"], ...}}.
+    Les sens réellement divergents selon le binyan (ex. ראה : voir /
+    apparaître / montrer) y sont donnés manuellement ; tout lemme/binyan
+    absent retombe sur la périphrase générée.
+    """
+    import json
+    import os
+    global _SENSES_CACHE
+    if _SENSES_CACHE is None:
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            "binyan_senses_fr_en.json")
+        try:
+            with open(path, encoding="utf-8") as fh:
+                _SENSES_CACHE = json.load(fh)
+        except (OSError, ValueError):
+            _SENSES_CACHE = {}
+    return _SENSES_CACHE
+
+
+def binyan_translation(code, gloss_fr, gloss_en, lex=None):
     """Traduction du verbe dans un binyan, en français et en anglais.
 
-    Construite par périphrase à partir des gloss du lemme : « garder » →
-    nifal « être gardé », hifil « faire garder », hitpael « se garder »...
-    Chaque langue n'est remplie que si le gloss source existe (le gloss
-    français pur vient de lex_fr.json, l'anglais de la BHSA).
+    Consulte d'abord le lexique de sens par (lemme, binyan)\
+    (binyan_senses_fr_en.json) : sens divergents réels documentés\
+    (ex. ראה : qal « voir », nifal « apparaître », hifil « montrer »).
+    À défaut, construit une périphrase à partir des gloss du lemme :
+    « garder » → nifal « être gardé », hifil « faire garder »...
+    Chaque langue n'est remplie que si le gloss source existe.
     Renvoie ("", "") si aucun gloss n'est disponible.
     """
+    if lex:
+        entry = _load_binyan_senses().get(lex, {}).get(code)
+        if entry and len(entry) >= 2 and (entry[0] or entry[1]):
+            return entry[0] or "", entry[1] or ""
     v_fr = (gloss_fr or "").strip()
     v_en = (gloss_en or "").strip()
     pp_fr = _fr_participe_passe(v_fr) if v_fr else ""
@@ -1173,7 +1204,8 @@ def analyze_binyanim(F, form):
     gloss_fr = _gloss_fr_pure(verb.get("lex"))
     gloss_en = verb.get("gloss") or ""
     for code, name_fr, name_he in BINYANIM:
-        tr_fr, tr_en = binyan_translation(code, gloss_fr, gloss_en)
+        tr_fr, tr_en = binyan_translation(code, gloss_fr, gloss_en,
+                                         lex=verb.get("lex"))
         entry = {
             "code": code,
             "name_fr": name_fr,
