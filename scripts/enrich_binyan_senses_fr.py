@@ -53,6 +53,46 @@ MAX_VERSES_PER_BINYAN = 3
 # Ordre pédagogique des binyanim (celui de binyan_gen.BINYANIM).
 BINYAN_ORDER = ("qal", "nif", "piel", "pual", "hit", "hif", "hof")
 
+# Libellé complet de chaque binyan pour l'indicateur de progression.
+BINYAN_LABELS = {
+    "qal": "qal (paal)", "nif": "nifal", "piel": "piel",
+    "pual": "pual", "hit": "hitpael", "hif": "hifil",
+    "hof": "hofal",
+}
+
+# Translitération consonantique hébreu → latin (style BDB, ASCII).
+# Le shin pointé שׁ devient "sh", le sin שׂ devient "s" ; les lettres
+# gutturales א/ע sont notées ' et ` pour rester distinguables.
+TRANSLIT = {
+    "א": "'", "ב": "b", "ג": "g", "ד": "d", "ה": "h", "ו": "w",
+    "ז": "z", "ח": "ch", "ט": "t", "י": "y", "כ": "k", "ל": "l",
+    "מ": "m", "נ": "n", "ס": "s", "ע": "`", "פ": "p", "צ": "ts",
+    "ק": "q", "ר": "r", "ת": "t",
+    "ך": "k", "ם": "m", "ן": "n", "ף": "p", "ץ": "ts",
+    "שׁ": "sh", "שׂ": "s", "ש": "sh",
+}
+
+
+def transliterate(root):
+    """Translittère une racine hébraïque en lettres latines (BDB-like).
+
+    Le shin/sin est un pointé à deux graphèmes (ש + שׂ/שׁ) : on le
+    consomme en priorité avant la lettre seule, pour distinguer
+    שׁ « sh » (garder) de שׂ « s » (empoisonner).
+    """
+    out = []
+    s = root or ""
+    i = 0
+    while i < len(s):
+        pair = s[i:i + 2]
+        if pair in TRANSLIT:
+            out.append(TRANSLIT[pair])
+            i += 2
+            continue
+        out.append(TRANSLIT.get(s[i], s[i]))
+        i += 1
+    return "".join(out)
+
 # Seuls les 7 binyanim hébreux sont dans le périmètre ; les stems
 # araméens (peal, pael…) et formes rares sont écartés par le filtre
 # d'appartenance à BINYAN_ORDER ci-dessous.
@@ -104,8 +144,13 @@ def has_fr(entry):
     return any(s and s[0].strip() for s in entry.values())
 
 
-def build_report(senses, occurrences, roots):
-    """Construit le rapport de curation pour les racines demandées."""
+def build_report(senses, occurrences, roots, progress=None):
+    """Construit le rapport de curation pour les racines demandées.
+
+    ``progress`` : callback (index, total, racine, translitération, binyan,
+    nb de versets affichés) appelé pour chaque binyan traité ; utilisé pour
+    l'indicateur de progression (racine + translitération + binyan).
+    """
     lines = []
     chapter_cache = {}
 
@@ -118,7 +163,8 @@ def build_report(senses, occurrences, roots):
             return verses[verse - 1]
         return None
 
-    for root in roots:
+    total = len(roots)
+    for idx, root in enumerate(roots, start=1):
         entry = senses.get(root)
         if entry is None:
             lines.append(f"### {root} : racine absente du lexique\n")
@@ -142,6 +188,9 @@ def build_report(senses, occurrences, roots):
                     ref = f"{book} {chapter}:{verse}"
                     lines.append(f"      {ref} — {text}")
                     shown += 1
+            if progress:
+                progress(idx, total, root, transliterate(root),
+                         BINYAN_LABELS[vs], shown)
         lines.append("")
     return "\n".join(lines)
 
@@ -182,7 +231,12 @@ def main(argv=None):
         roots = candidates[: args.limit]
 
     print(f"Racines à traiter : {len(roots)}", file=sys.stderr)
-    report = build_report(senses, occurrences, roots)
+
+    def progress(idx, total, root, translit, binyan, shown):
+        print(f"[{idx}/{total}] {root} ({translit}) — {binyan} : "
+              f"{shown} verset(s)", file=sys.stderr, flush=True)
+
+    report = build_report(senses, occurrences, roots, progress=progress)
 
     if args.report:
         with open(args.report, "w", encoding="utf-8") as fh:
