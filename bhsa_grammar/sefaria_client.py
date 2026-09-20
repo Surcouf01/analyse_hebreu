@@ -39,6 +39,15 @@ import urllib.request
 # présentes mais leur licence est inconnue ou restrictive.)
 RABBINAT_TITLE = "Bible du Rabbinat 1899 [fr]"
 
+# Versions de la Mishna sur Sefaria :
+#  - hébreu : « Torat Emet 357 » (domaine public, avec nikkud) ;
+#  - français : « Le Talmud de Jérusalem, traduit par Moise Schwab,
+#    1878-1890 [fr] » (domaine public) — traduction du Talmud de Jérusalem
+#    couvrant la Mishna (38 des 63 traités : Seder Zeraim, Moed, Nashim et
+#    Nezikin ; les ordres Kodashim et Tahorot ne sont pas couverts).
+MISHNAH_HE_TITLE = "Torat Emet 357"
+SCHWAB_TITLE = "Le Talmud de Jérusalem, traduit par Moise Schwab, 1878-1890 [fr]"
+
 # Base de l'API v3 de Sefaria (format ``language|versionTitle`` pour
 # demander une version précise d'un texte).
 _API_BASE = "https://www.sefaria.org/api/v3/texts/"
@@ -158,10 +167,11 @@ def clear_cache():
                     pass
 
 
-def _fetch_chapter_json(book_sefaria, chapter, version_title, timeout):
+def _fetch_chapter_json(book_sefaria, chapter, version_title, timeout,
+                         language="french"):
     """Récupère le JSON d'un chapitre entier via l'API v3 de Sefaria."""
     ref = f"{book_sefaria} {chapter}"
-    version = urllib.parse.quote(f"french|{version_title}")
+    version = urllib.parse.quote(f"{language}|{version_title}")
     url = (f"{_API_BASE}{urllib.parse.quote(ref)}"
            f"?version={version}&return_format=text_only")
     req = urllib.request.Request(url, headers={"User-Agent": "analyse_hebreu/1.0"})
@@ -194,16 +204,63 @@ def fetch_chapter_verses_fr(book, chapter, version_title=RABBINAT_TITLE,
                                      timeout)
     except (SefariaError, OSError, ValueError, urllib.error.URLError):
         return None
+    # les segments non-chaînes (notes de bas de page) sont ignorés
     flat = []
     for item in verses:
         if isinstance(item, str):
             flat.append(item)
         elif isinstance(item, list):
             flat.extend(s for s in item if isinstance(s, str))
-        # les segments non-chaînes (notes de bas de page) sont ignorés
     if use_cache and cache:
         cache.put(version_title, book_sefaria, chapter, flat)
     return flat
+
+
+def fetch_section_texts(book, chapter, version_title, language,
+                        timeout=DEFAULT_TIMEOUT, use_cache=True):
+    """Renvoie la liste des segments d'une section, ou ``None``.
+
+    Généralisation de ``fetch_chapter_verses_fr`` : la langue est
+    paramétrable (``french``, ``hebrew``…) et ``book`` est un titre Sefaria
+    arbitraire (ex. ``"Mishnah Berakhot"``). Le résultat est mis en cache
+    par (titre de version, livre, chapitre).
+    """
+    cache = _get_cache()
+    if use_cache and cache:
+        cached = cache.get(version_title, book, chapter)
+        if cached is not None:
+            return cached
+    try:
+        texts = _fetch_chapter_json(book, chapter, version_title, timeout,
+                                    language=language)
+    except (SefariaError, OSError, ValueError, urllib.error.URLError):
+        return None
+    flat = []
+    for item in texts:
+        if isinstance(item, str):
+            flat.append(item)
+        elif isinstance(item, list):
+            flat.extend(s for s in item if isinstance(s, str))
+    if use_cache and cache:
+        cache.put(version_title, book, chapter, flat)
+    return flat
+
+
+def fetch_mishnah_mishnayot(tractate, chapter, language,
+                            timeout=DEFAULT_TIMEOUT, use_cache=True):
+    """Renvoie la liste des mishnayot d'un chapitre, ou ``None``.
+
+    ``language`` vaut ``"hebrew"`` ou ``"french"``. La version hébreu est
+    « Torat Emet 357 » (domaine public) ; la version française est la
+    traduction de Moïse Schwab (domaine public), qui ne couvre que 38
+    traités — la fonction renvoie alors ``None``.
+    """
+    if language == "hebrew":
+        version_title = MISHNAH_HE_TITLE
+    else:
+        version_title = SCHWAB_TITLE
+    return fetch_section_texts(tractate, chapter, version_title, language,
+                               timeout, use_cache)
 
 
 def fetch_verse_fr(book, chapter, verse, version_title=RABBINAT_TITLE,

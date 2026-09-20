@@ -56,17 +56,29 @@ Debian/Ubuntu : `sudo apt install python3-tk`).
 
 L'interface comporte quatre onglets :
 
-- **Verset** : sélection du livre, du chapitre puis du verset au moyen de
-  listes déroulantes liées. Les livres sont présentés **dans l'ordre
-  canonique de la Bible hébraïque** (Torah en tête : Genèse, Exode, Lévitique,
-  Nombres, Deutéronome, …). Les listes de chapitres et de versets sont
-  **bornées aux limites réelles** de la base BHSA (on ne peut pas
-  sélectionner un chapitre ou un verset inexistant). Formats disponibles :
-  texte, synthèse, JSON ; option « masquer le détail mot à mot ».
-  Des **traductions française et anglaise** du verset (Louis Segond 1910,
-  King James Version 1611, toutes deux domaine public) sont affichées en
-  tête du résultat ; elles sont activables individuellement par cases à
-  cocher.
+- **Livre** : sélection d'abord du **corpus** — **Bible (BHSA)** ou
+  **Mishna (Sefaria)** — puis du livre, du chapitre et du verset au moyen de
+  listes déroulantes liées et remplies selon le contexte. Pour la Bible,
+  les livres sont présentés **dans l'ordre canonique de la Bible
+  hébraïque** (Torah en tête : Genèse, Exode, Lévitique, Nombres,
+  Deutéronome, …) et les listes sont **bornées aux limites réelles** de la
+  base BHSA. Formats disponibles : texte, synthèse, JSON ; option
+  « masquer le détail mot à mot ». Des **traductions française et anglaise**
+  du verset (Louis Segond 1910, King James Version 1611, toutes deux
+  domaine public) sont affichées en tête du résultat ; elles sont
+  activables individuellement par cases à cocher.
+
+  Pour la **Mishna**, les six *sedarim* (Zeraim, Moed, Nashim, Nezikin,
+  Kodashim, Tahorot) et leurs 63 traités sont listés dans l'ordre canonique
+  (structure issue de l'API Sefaria, intégrée au projet : aucun réseau
+  n'est nécessaire pour les listes). L'affichage d'une mishna donne le
+  **texte hébreu** (« Torat Emet 357 », domaine public) et, quand le traité
+  est couvert, la **traduction française** de **Moïse Schwab** (« Le Talmud
+  de Jérusalem, traduit par Moise Schwab, 1878-1890 », domaine public — 38
+  traités sur 63 : Zeraim, Moed, Nashim et la plupart de Nezikin ; les
+  ordres Kodashim et Tahorot ne sont pas couverts). Les options d'analyse
+  grammaticale (formats, traductions Segond/KJV) sont grisées dans ce mode,
+  car elles ne s'appliquent pas à la Mishna.
 - **Mot** : analyse d'un mot hébreu isolé, saisi à l'aide d'un **clavier
   hébreu virtuel** (consonnes + points-voyelles/nikkud + daguesh, en UTF-8).
   Un clavier physique en hébreu reste utilisable : la saisie se fait toujours
@@ -107,8 +119,8 @@ latéralement si elles dépassent du cadre.
 
 #### Traductions française et anglaise
 
-L'onglet **Verset** affiche, en tête du résultat, une ou deux traductions du
-verset analysé, toutes deux **domaine public** :
+L'onglet **Livre** (mode Bible) affiche, en tête du résultat, une ou deux
+traductions du verset analysé, toutes deux **domaine public** :
 
 - **Louis Segond 1910** (français) — fichier `data/louis_segond_1910.txt` ;
 - **King James Version 1611** (anglais) — fichier `data/kjv_1611.txt`.
@@ -140,7 +152,15 @@ python analyse_hebreu.py "Genesis 1:1" --format json # sortie JSON
 python analyse_hebreu.py "Genèse 1:1" --translation # + traduction Louis Segond
 python analyse_hebreu.py "Genèse 1:1" --translation --translation-en # + KJV anglaise
 python analyse_hebreu.py "Psaume 23:1" --format summary
-python analyse_hebreu.py --list-books                # livres disponibles
+python analyse_hebreu.py --list-books                # livres de la Bible
+```
+
+Affichage d'une mishna (texte via l'API Sefaria, sans analyse BHSA) :
+```bash
+python analyse_hebreu.py --mishna "Bérakhot 1:1"     # hébreu + trad. Schwab
+python analyse_hebreu.py --mishna "Berakhot 2:5"     # nom Sefaria accepté
+python analyse_hebreu.py --mishna "Avot 1:3"          # nom français court
+python analyse_hebreu.py --mishna --list-books        # les 63 traités
 ```
 
 Analyse d'un mot isolé (avec nikkud, sans teamim) :
@@ -282,7 +302,7 @@ print(format_text(analyse))
 ## Structure du projet
 
 ```
-analyse_hebreu.py        # CLI (mode verset, mot, phrase)
+analyse_hebreu.py        # CLI (mode verset/livre, mot, phrase, binyanim, mishna)
 gui_hebreu.py           # interface graphique Tkinter (mêmes fonctions que le CLI)
 gui.properties         # polices/tailles d'affichage du GUI (points)
 data/
@@ -300,7 +320,10 @@ bhsa_grammar/
   binyan_gen.py          # conjugaison dans les 7 binyanim (mode --binyanim) + verbes faibles
   binyan_templates.json  # gabarits vocaliques extraits de la BHSA (par catégorie de verbe)
   binyan_senses_fr_en.json  # sens par (racine, binyan) — BDB (EN, domaine public) + curation FR
-  sefaria_client.py     # client de l'API Sefaria (Bible du Rabbinat 1899 [fr], domaine public)
+  sefaria_client.py     # client de l'API Sefaria (Rabbinat 1899, Mishna : Torat Emet
+                        # + Schwab, domaine public)
+  mishnah_catalog.py    # catalogue statique de la Mishna : 63 traités, sedarim,
+                        # structure chapitres/mishnayot (source API Sefaria)
   report.py             # formatage text / json / summary (verset, mot, phrase)
 scripts/
   extract_binyan_templates.py  # régénère binyan_templates.json depuis la BHSA
@@ -356,7 +379,7 @@ détectent :
   issue du lexique Strong hébreu-français de Bible Strong (base interlinéaire
   STEP, CC BY 4.0), alignée sur les lemmes BHSA par les consonnes du lemme
   (~8 000 lemmes couverts, ≈98 % des occurrences). Les lemmes non couverts
-  retombent sur le gloss anglais de la BHSA. En mode verset, la traduction
+  retombent sur le gloss anglais de la BHSA. En mode livre (Bible), la traduction
   s'affiche sous la forme `« Dieu »` après le lemme ; en mode mot, des lignes
   `Traduction (fr)` / `Traduction (en)` ; en mode phrase, dans les lectures
   possibles.

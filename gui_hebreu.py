@@ -4,10 +4,11 @@
 Fenêtre Tkinter à onglets qui reprend chacune des fonctions du programme en
 ligne de commande (``analyse_hebreu.py``) :
 
-  - Onglet « Verset »  : analyse d'un verset par sélection successive du
-    livre (dans l'ordre canonique de la Bible hébraïque, Torah en premier),
+  - Onglet « Livre »   : sélection du corpus (Bible hébraïque via la base
+    BHSA, ou Mishna via l'API Sefaria), puis analyse d'un verset (Bible)
+    ou affichage d'une mishna (Mishna) par sélection successive du livre,
     du chapitre puis du verset, au moyen de listes déroulantes bornées aux
-    limites réelles de la base BHSA.
+    limites réelles de la base BHSA ou du catalogue Mishna.
   - Onglet « Mot »     : analyse d'un mot hébreu isolé, saisie via un clavier
     hébreu virtuel (points-voyelles inclus) en UTF-8.
   - Onglet « Phrase »  : analyse d'une phrase hébreu libre, saisie via le
@@ -48,6 +49,8 @@ from bhsa_grammar import (
     get_translation,
     TranslationNotFoundError,
 )
+from bhsa_grammar.sefaria_client import fetch_mishnah_mishnayot
+from bhsa_grammar.mishnah_catalog import SEDARIM, STRUCTURE, SCHWAB_TRACTATES
 
 
 # Langues de traduction disponibles, avec leur libellé.
@@ -120,6 +123,10 @@ def _tab_font():
 
 
 BINYAN_TAB_FONT = _tab_font()
+
+# Onglet « Livre » : corpus disponibles.
+CORPUS_BIBLE = "Bible (BHSA)"
+CORPUS_MISHNA = "Mishna (Sefaria)"
 
 
 # Marques de contrôle bidi pour forcer le rendu droite-à-gauche des lignes
@@ -490,7 +497,7 @@ class AnalyseurGUI:
         self.tab_word = ttk.Frame(self.notebook)
         self.tab_phrase = ttk.Frame(self.notebook)
         self.tab_binyanim = ttk.Frame(self.notebook)
-        self.notebook.add(self.tab_verse, text="Verset")
+        self.notebook.add(self.tab_verse, text="Livre")
         self.notebook.add(self.tab_word, text="Mot")
         self.notebook.add(self.tab_phrase, text="Phrase")
         self.notebook.add(self.tab_binyanim, text="Binyanim")
@@ -508,48 +515,63 @@ class AnalyseurGUI:
     def _build_verse_tab(self):
         tab = self.tab_verse
 
-        form = ttk.LabelFrame(tab, text="Référence du verset")
+        form = ttk.LabelFrame(tab, text="Référence du livre")
         form.pack(fill="x", padx=8, pady=8)
 
+        # Corpus : Bible hébraïque (BHSA) ou Mishna (Sefaria).
+        ttk.Label(form, text="Corpus :").grid(row=0, column=0, sticky="w", padx=4, pady=6)
+        self.corpus_var = tk.StringVar(value=CORPUS_BIBLE)
+        self.corpus_combo = ttk.Combobox(form, textvariable=self.corpus_var,
+                                         state="readonly", width=14,
+                                         values=[CORPUS_BIBLE, CORPUS_MISHNA])
+        self.corpus_combo.grid(row=0, column=1, sticky="w", padx=4, pady=6)
+        self.corpus_combo.bind("<<ComboboxSelected>>", self._on_corpus_change)
+
         # Livre (ordre canonique : Torah en premier), Chapitre, Verset.
-        ttk.Label(form, text="Livre :").grid(row=0, column=0, sticky="w", padx=4, pady=6)
+        ttk.Label(form, text="Livre :").grid(row=0, column=2, sticky="w", padx=(16, 4), pady=6)
         self.book_var = tk.StringVar()
         self.book_combo = ttk.Combobox(form, textvariable=self.book_var,
                                        state="readonly", width=30)
-        self.book_combo.grid(row=0, column=1, sticky="w", padx=4, pady=6)
+        self.book_combo.grid(row=0, column=3, sticky="w", padx=4, pady=6)
         self.book_combo.bind("<<ComboboxSelected>>", self._on_book_change)
 
-        ttk.Label(form, text="Chapitre :").grid(row=0, column=2, sticky="w", padx=(16, 4), pady=6)
+        ttk.Label(form, text="Chapitre :").grid(row=0, column=4, sticky="w", padx=(16, 4), pady=6)
         self.chapter_var = tk.StringVar()
         self.chapter_combo = ttk.Combobox(form, textvariable=self.chapter_var,
                                           state="readonly", width=8)
-        self.chapter_combo.grid(row=0, column=3, sticky="w", padx=4, pady=6)
+        self.chapter_combo.grid(row=0, column=5, sticky="w", padx=4, pady=6)
         self.chapter_combo.bind("<<ComboboxSelected>>", self._on_chapter_change)
 
-        ttk.Label(form, text="Verset :").grid(row=0, column=4, sticky="w", padx=(16, 4), pady=6)
+        ttk.Label(form, text="Verset :").grid(row=0, column=6, sticky="w", padx=(16, 4), pady=6)
         self.verse_var = tk.StringVar()
         self.verse_combo = ttk.Combobox(form, textvariable=self.verse_var,
                                         state="readonly", width=8)
-        self.verse_combo.grid(row=0, column=5, sticky="w", padx=4, pady=6)
+        self.verse_combo.grid(row=0, column=7, sticky="w", padx=4, pady=6)
 
-        # Options de format
+        # Options de format (analyse BHSA uniquement ; sans effet en mode
+        # Mishna, qui affiche texte hébreu + traduction).
         opts = ttk.Frame(tab)
         opts.pack(fill="x", padx=8)
         ttk.Label(opts, text="Format :").pack(side="left", padx=(0, 4))
         self.verse_format = tk.StringVar(value="text")
-        ttk.Radiobutton(opts, text="Texte", variable=self.verse_format,
-                        value="text").pack(side="left")
-        ttk.Radiobutton(opts, text="Synthèse", variable=self.verse_format,
-                        value="summary").pack(side="left")
-        ttk.Radiobutton(opts, text="JSON", variable=self.verse_format,
-                        value="json").pack(side="left")
+        self.verse_format_widgets = []
+        for value, label in (("text", "Texte"), ("summary", "Synthèse"),
+                             ("json", "JSON")):
+            rb = ttk.Radiobutton(opts, text=label, variable=self.verse_format,
+                                 value=value)
+            rb.pack(side="left")
+            self.verse_format_widgets.append(rb)
         self.verse_no_words = tk.BooleanVar(value=False)
-        ttk.Checkbutton(opts, text="Masquer le détail mot à mot",
-                        variable=self.verse_no_words).pack(side="left", padx=(16, 0))
+        self.verse_no_words_widget = ttk.Checkbutton(
+            opts, text="Masquer le détail mot à mot",
+            variable=self.verse_no_words)
+        self.verse_no_words_widget.pack(side="left", padx=(16, 0))
 
-        # Choix des traductions affichées.
+        # Choix des traductions affichées (BHSA uniquement ; la Mishna a sa
+        # propre traduction Schwab).
         trads = ttk.Frame(tab)
         trads.pack(fill="x", padx=8, pady=(4, 0))
+        self.verse_trads_frame = trads
         ttk.Label(trads, text="Traductions :").pack(side="left", padx=(0, 4))
         self.verse_trans = {}
         for lang, label in TRANSLATIONS:
@@ -557,7 +579,7 @@ class AnalyseurGUI:
             ttk.Checkbutton(trads, text=label, variable=var).pack(side="left", padx=4)
             self.verse_trans[lang] = var
 
-        self.btn_verse = ttk.Button(tab, text="Analyser le verset",
+        self.btn_verse = ttk.Button(tab, text="Afficher le verset / la mishna",
                                    command=self._run_verse)
         self.btn_verse.pack(anchor="w", padx=8, pady=8)
         self.btn_verse.state(["disabled"])
@@ -716,6 +738,35 @@ class AnalyseurGUI:
 
     # --- Peuplement des listes déroulantes ------------------------------
     def _populate_books(self):
+        """Remplit la liste des livres selon le corpus sélectionné.
+
+        - Bible (BHSA) : ordre canonique de la Bible hébraïque (Torah en
+          tête) = ordre naturel des nœuds « book » dans Text-Fabric ;
+        - Mishna (Sefaria) : les six sedarim dans l'ordre canonique, les
+          traités dans l'ordre canonique au sein de chaque seder (le
+          catalogue statique évite tout appel réseau).
+        """
+        if self.corpus_var.get() == CORPUS_MISHNA:
+            self._book_order = []
+            display = []
+            for seder, tracts in SEDARIM:
+                display.append(seder)
+                self._book_order.append((None, seder, None))
+                for title, fr in tracts:
+                    display.append("    " + fr)
+                    self._book_order.append((title, fr, None))
+            self.book_combo["values"] = display
+            # Index par libellé affiché (indenté) ; l'indentation marque
+            # visuellement l'appartenance au seder et est retirée à l'usage.
+            self._book_index = {}
+            for title, fr, _n in self._book_order:
+                if title is not None:
+                    self._book_index["    " + fr] = (title, None)
+            if display:
+                # Premier traité (Bérakhot), pas le seder lui-même.
+                self.book_combo.set(display[1])
+                self._on_book_change()
+            return
         F = self.api.F
         # Ordre canonique de la Bible hébraïque (Torah en tête) = ordre
         # naturel des nœuds « book » dans Text-Fabric.
@@ -733,15 +784,40 @@ class AnalyseurGUI:
             self.book_combo.current(0)
             self._on_book_change()
 
+    def _on_corpus_change(self, event=None):
+        """Bascule entre Bible et Mishna : repeuple la liste des livres.
+
+        En mode Mishna, les options d'analyse BHSA (formats, traductions
+        Segond/KJV) n'ont pas d'effet : elles sont grisées.
+        """
+        mishna = self.corpus_var.get() == CORPUS_MISHNA
+        state = "disabled" if mishna else "!disabled"
+        for rb in self.verse_format_widgets:
+            rb.state([state])
+        self.verse_no_words_widget.state([state])
+        for child in self.verse_trads_frame.winfo_children():
+            if isinstance(child, ttk.Checkbutton):
+                child.state([state])
+        self._populate_books()
+
     def _on_book_change(self, event=None):
-        if self.api is None:
-            return
-        F, L = self.api.F, self.api.L
         fr = self.book_var.get()
         entry = self._book_index.get(fr)
         if entry is None:
             return
-        _bhsa, book_node = entry
+        bhsa, book_node = entry
+        if self.corpus_var.get() == CORPUS_MISHNA:
+            # Catalogue statique : nombre de mishnayot par chapitre.
+            shape = STRUCTURE.get(bhsa, [])
+            chapters = list(range(1, len(shape) + 1))
+            self.chapter_combo["values"] = [str(c) for c in chapters]
+            if chapters:
+                self.chapter_combo.current(0)
+                self._on_chapter_change()
+            return
+        if self.api is None:
+            return
+        F, L = self.api.F, self.api.L
         chapters = sorted({F.chapter.v(c) for c in L.i(book_node, "chapter")})
         self._chapters_for_book = chapters
         self.chapter_combo["values"] = [str(c) for c in chapters]
@@ -750,18 +826,25 @@ class AnalyseurGUI:
             self._on_chapter_change()
 
     def _on_chapter_change(self, event=None):
-        if self.api is None:
-            return
-        F, L = self.api.F, self.api.L
         fr = self.book_var.get()
         entry = self._book_index.get(fr)
         if entry is None:
             return
-        _bhsa, book_node = entry
+        bhsa, book_node = entry
         try:
             chap = int(self.chapter_var.get())
         except ValueError:
             return
+        if self.corpus_var.get() == CORPUS_MISHNA:
+            shape = STRUCTURE.get(bhsa, [])
+            n = shape[chap - 1] if 1 <= chap <= len(shape) else 0
+            self.verse_combo["values"] = [str(v) for v in range(1, n + 1)]
+            if n:
+                self.verse_combo.current(0)
+            return
+        if self.api is None:
+            return
+        F, L = self.api.F, self.api.L
         chap_node = next((c for c in L.i(book_node, "chapter")
                          if F.chapter.v(c) == chap), None)
         if chap_node is None:
@@ -1006,8 +1089,6 @@ class AnalyseurGUI:
         return ""
 
     def _run_verse(self):
-        if self.api is None:
-            return
         fr = self.book_var.get()
         entry = self._book_index.get(fr)
         if entry is None:
@@ -1018,6 +1099,11 @@ class AnalyseurGUI:
         verse = self.verse_var.get()
         if not chap or not verse:
             messagebox.showwarning("Référence", "Sélectionnez chapitre et verset.")
+            return
+        if self.corpus_var.get() == CORPUS_MISHNA:
+            self._run_mishnah(bhsa, fr.strip(), int(chap), int(verse))
+            return
+        if self.api is None:
             return
         reference = f"{fr} {chap}:{verse}"
         fmt = self.verse_format.get()
@@ -1049,6 +1135,48 @@ class AnalyseurGUI:
                 self._work_queue.put(("verse_done", header + result))
             except ValueError as exc:
                 self._work_queue.put(("verse_done", f"Erreur : {exc}"))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _run_mishnah(self, tractate, fr, chapter, mishnah):
+        """Affiche une mishna (texte hébreu + traduction française).
+
+        Le texte vient de l'API Sefaria : hébreu « Torat Emet 357 » (couvre
+        les 63 traités) et français « Le Talmud de Jérusalem, traduit par
+        Moise Schwab, 1878-1890 » (38 traités seulement — sinon seul
+        l'hébreu est affiché).
+        """
+        out = self.tab_verse._output
+        self._disable_buttons()
+        reference = f"{fr} {chapter}:{mishnah}"
+        self.status.configure(text=f"Chargement Mishna : {reference}…")
+
+        def worker():
+            blocks = []
+            he = fetch_mishnah_mishnayot(tractate, chapter, "hebrew")
+            if he and 1 <= mishnah <= len(he):
+                blocks.append(f"Hébreu (Torat Emet) — {reference}\n{he[mishnah - 1]}")
+            else:
+                blocks.append(f"Hébreu (Torat Emet) — {reference}\n"
+                              "(texte indisponible : API Sefaria injoignable "
+                              "ou référence absente)")
+            if tractate in SCHWAB_TRACTATES:
+                fr_texts = fetch_mishnah_mishnayot(tractate, chapter, "french")
+                if fr_texts and 1 <= mishnah <= len(fr_texts):
+                    blocks.append(
+                        f"Traduction (Moïse Schwab, Talmud de Jérusalem) — "
+                        f"{reference}\n{fr_texts[mishnah - 1]}")
+                else:
+                    blocks.append(
+                        f"Traduction (Moïse Schwab, Talmud de Jérusalem) — "
+                        f"{reference}\n(mishna absente de la traduction)")
+            else:
+                blocks.append(
+                    f"Traduction française — {reference}\n"
+                    "(traité non couvert par la traduction de Schwab ; "
+                    "seul le texte hébreu est disponible)"
+                )
+            self._work_queue.put(("verse_done", "\n\n".join(blocks)))
 
         threading.Thread(target=worker, daemon=True).start()
 

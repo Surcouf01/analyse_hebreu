@@ -41,13 +41,16 @@ from bhsa_grammar import (
     get_translation,
     TranslationNotFoundError,
 )
+from bhsa_grammar.mishnah_catalog import SEDARIM, SCHWAB_TRACTATES
 
 
 def build_parser():
     p = argparse.ArgumentParser(
         prog="analyse_hebreu",
-        description="Analyse grammaticale d'un verset d'hébreu biblique (BHSA/ETCBC).",
-        epilog="Ex. : python analyse_hebreu.py 'Genèse 1:1' --format text",
+        description="Analyse grammaticale d'un texte d'hébreu biblique (BHSA/ETCBC) "
+                    "— verset de la Bible ou mishna (via Sefaria).",
+        epilog="Ex. : python analyse_hebreu.py 'Genèse 1:1' --format text ; "
+                "python analyse_hebreu.py --mishna 'Bérakhot 1:1'",
     )
     p.add_argument(
         "reference",
@@ -100,15 +103,96 @@ def build_parser():
              "domaine public) du verset analysé.",
     )
     p.add_argument(
+        "--mishna",
+        action="store_true",
+        help="Affiche une mishna (argument = référence, ex. 'Bérakhot 1:1', "
+             "'Mishnah Berakhot 2:5', 'Avot 1:3'). Le texte hébreu (Torat "
+             "Emet, domaine public) vient de l'API Sefaria, ainsi que la "
+             "traduction française (Moïse Schwab, domaine public) lorsque "
+             "le traité est couvert (38 sur 63).",
+    )
+    p.add_argument(
         "--list-books",
         action="store_true",
-        help="Liste les livres disponibles et quitte.",
+        help="Liste les livres disponibles et quitte (Bible seule ; avec "
+             "--mishna, les traités de la Mishna).",
     )
     return p
 
 
+def _run_mishna_cli(args):
+    """Mode livre : affiche une mishna via l'API Sefaria (sans la base BHSA)."""
+    if not args.reference:
+        print("Erreur : en mode --mishna, fournissez une référence "
+              "(ex. 'Bérakhot 1:1').", file=sys.stderr)
+        return 1
+    from bhsa_grammar.sefaria_client import fetch_mishnah_mishnayot
+    book, rest = (args.reference.split(" ", 1)
+                  if " " in args.reference else (args.reference, "1:1"))
+    book = book.strip()
+    try:
+        if ":" in rest:
+            chap_s, mish_s = rest.split(":")
+        else:
+            chap_s, mish_s = rest, "1"
+        chapter, mishnah = int(chap_s), int(mish_s)
+    except ValueError:
+        print(f"Erreur : référence de mishna invalide ({args.reference}).",
+              file=sys.stderr)
+        return 1
+    # Résolution du traité : nom Sefaria, nom français ou mot-clé
+    # (n'importe quel mot du nom, ex. « Avot » pour « Pirké Avot »).
+    names = {}
+    for _seder, tracts in SEDARIM:
+        for t, fr in tracts:
+            for w in (t.lower().split() + fr.lower().split()):
+                names.setdefault(w, t)
+            names.setdefault(t.lower(), t)
+            names.setdefault(fr.lower(), t)
+    tractate = names.get(book.lower()) or names.get(book.lower().rstrip("s"))
+    if tractate is None:
+        print(f"Erreur : traité inconnu « {book} ». Utilisez --list-books --mishna "
+              "pour la liste (noms Sefaria ou français).", file=sys.stderr)
+        return 1
+    fr_name = next(fr for t, fr in [x for _, tracts in SEDARIM for x in tracts]
+                   if t == tractate)
+    # Bornes connues du catalogue : erreur claire si la référence dépasse.
+    from bhsa_grammar.mishnah_catalog import STRUCTURE
+    shape = STRUCTURE.get(tractate) or []
+    if shape and (not 1 <= chapter <= len(shape)
+                  or not 1 <= mishnah <= shape[chapter - 1]):
+        print(f"Erreur : {fr_name} compte {len(shape)} chapitre(s) ; la "
+              f"référence {chapter}:{mishnah} n'existe pas.", file=sys.stderr)
+        return 1
+    he = fetch_mishnah_mishnayot(tractate, chapter, "hebrew")
+    if he and 1 <= mishnah <= len(he):
+        print(f"=== {fr_name} {chapter}:{mishnah} ===")
+        print(he[mishnah - 1])
+    else:
+        print(f"Erreur : mishna {fr_name} {chapter}:{mishnah} indisponible "
+              "(API Sefaria injoignable ou référence inexistante).",
+              file=sys.stderr)
+        return 1
+    if tractate in SCHWAB_TRACTATES:
+        fr_texts = fetch_mishnah_mishnayot(tractate, chapter, "french")
+        if fr_texts and 1 <= mishnah <= len(fr_texts):
+            print()
+            print("Traduction (Moïse Schwab, Talmud de Jérusalem) — "
+                  f"{fr_name} {chapter}:{mishnah}")
+            print(fr_texts[mishnah - 1])
+    else:
+        print()
+        print("(Traduction française non disponible pour ce traité : "
+              "la traduction de Schwab ne couvre que 38 traités sur 63.)")
+    return 0
+
+
 def main(argv=None):
     args = build_parser().parse_args(argv)
+
+    # Mode Mishna : pas besoin de la base BHSA.
+    if args.mishna and not args.list_books:
+        return _run_mishna_cli(args)
 
     try:
         api = load_corpus()
@@ -117,6 +201,14 @@ def main(argv=None):
         return 2
 
     if args.list_books:
+        if args.mishna:
+            print("Traités de la Mishna disponibles (nom français — nom Sefaria) :")
+            for seder, tracts in SEDARIM:
+                print(f"  {seder} :")
+                for title, fr in tracts:
+                    schwab = "" if title in SCHWAB_TRACTATES else "  [sans trad. FR]"
+                    print(f"    - {fr}  ({title}){schwab}")
+            return 0
         print("Livres disponibles (nom français — nom BHSA) :")
         for bhsa, fr in book_list_fr(api.F):
             print(f"  - {fr}  ({bhsa})")
@@ -210,9 +302,10 @@ def main(argv=None):
                 print(format_phrase(analysis))
         return 0
 
-    # Mode analyse de verset
+    # Mode analyse de verset (Bible)
     if not args.reference:
-        print("Erreur : une référence de verset (ou --word MOT) est requise.", file=sys.stderr)
+        print("Erreur : une référence de verset (ou --word MOT, ou --mishna "
+              "RÉFÉRENCE) est requise.", file=sys.stderr)
         return 1
 
     try:
