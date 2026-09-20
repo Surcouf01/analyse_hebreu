@@ -137,6 +137,33 @@ def main():
         failures.append("parse: racine manquante")
     if not parsed["weak"].get("code"):
         failures.append("parse: catégorie faible manquante")
+    # Champ « existe » : d'après la BHSA, שמר est attesté en qal, nifal,
+    # piel et hitpael, mais pas en pual/hifil/hofal ; בנה est attesté en
+    # qal, nifal et hitpael (hitpelel des lamed-he), mais pas en
+    # piel/pual/hifil/hofal.
+    exists_smr = {b["code"]: b.get("exists") for b in r["binyanim"]}
+    for code in ("qal", "nif", "piel", "hit"):
+        if exists_smr.get(code) is not True:
+            failures.append(f"שמר: binyan {code} devrait exister : {exists_smr}")
+    for code in ("pual", "hif", "hof"):
+        if exists_smr.get(code) is not False:
+            failures.append(f"שמר: binyan {code} ne devrait pas exister : {exists_smr}")
+    r_bn = analyze_binyanim(F, "בָּנָה")
+    exists_bn = {b["code"]: b.get("exists") for b in r_bn["binyanim"]}
+    for code in ("qal", "nif", "hit"):
+        if exists_bn.get(code) is not True:
+            failures.append(f"בנה: binyan {code} devrait exister : {exists_bn}")
+    for code in ("piel", "pual", "hif", "hof"):
+        if exists_bn.get(code) is not False:
+            failures.append(f"בנה: binyan {code} ne devrait pas exister : {exists_bn}")
+    text_bn = binyanim_to_text(r_bn)
+    parsed_bn = parse_binyanim_text(text_bn)
+    for b in parsed_bn["binyanim"]:
+        want = exists_bn[b["code"]]
+        if b.get("exists") != want:
+            failures.append(f"parse בנה: exists {b['code']}={b.get('exists')!r} != {want!r}")
+        if want is False and "pas de sens" not in b["text"]:
+            failures.append(f"parse בנה: avertissement manquant pour {b['code']}")
 
     # Vérification contre les formes réellement attestées : pour le verbe
     # FORT de référence et les cellules clés du qal, les formes générées

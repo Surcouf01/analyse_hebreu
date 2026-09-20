@@ -24,7 +24,7 @@ import os
 import queue
 import threading
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, font as tkfont
 
 from bhsa_grammar import (
     load_corpus,
@@ -224,6 +224,146 @@ _HEBREW_ROWS = (
     ("\u05D6", "\u05E1", "\u05D1", "\u05D4", "\u05E0", "\u05DE",
      "\u05E6", "\u05EA", "\u05E5"),
 )
+
+
+class BinyanimNotebook(ttk.Frame):
+    """Bloc d'onglets des binyanim.
+
+    Contrairement à ttk.Notebook, chaque titre d'onglet est un tk.Label :
+    son libellé peut être coloré individuellement (rouge pour un binyan
+    qui n'a pas de sens pour la racine analysée), ce que l'API ttk.Notebook
+    ne permet pas.
+
+    Repris l'API utile de ttk.Notebook : add/insert/forget/select/tabs/
+    index, plus ``tab(tab_id, text=..., fg=...)`` pour modifier un onglet.
+    Le widget enfant doit être griddé dans ``self.body`` par l'appelant.
+    """
+
+    _FG_ACTIVE = "black"
+    _FG_INACTIVE = "gray40"
+    _FG_MISSING = "#b00020"
+
+    def __init__(self, parent, **kwargs):
+        super().__init__(parent, **kwargs)
+        self._tab_id_seq = 0
+        self._tabs = []
+        # barre de titres : rangée de labels cliquables
+        self.bar = tk.Frame(self)
+        self.bar.grid(row=0, column=0, sticky="ew")
+        # corps : seul l'onglet sélectionné est griddé
+        self.body = tk.Frame(self)
+        self.body.grid(row=1, column=0, sticky="nsew")
+        self.rowconfigure(1, weight=1)
+        self.columnconfigure(0, weight=1)
+        self._selected = None
+
+    def _tab_id(self):
+        self._tab_id_seq += 1
+        return f"tab{self._tab_id_seq}"
+
+    def _button_fg(self, tab):
+        if tab["fg"] is not None:
+            return tab["fg"]
+        return self._FG_ACTIVE if tab["id"] == self._selected else self._FG_INACTIVE
+
+    def _refresh_bar(self):
+        base_font, bold_font = self._btn_font()
+        for tab in self._tabs:
+            btn = tab["button"]
+            btn.configure(foreground=self._button_fg(tab))
+            btn.configure(font=bold_font if tab["id"] == self._selected else base_font)
+
+    def _select(self, tab_id):
+        for tab in self._tabs:
+            if tab["id"] == tab_id:
+                tab["widget"].grid(row=0, column=0, sticky="nsew")
+                self._selected = tab_id
+            else:
+                tab["widget"].grid_forget()
+        self._refresh_bar()
+
+    def _on_click(self, tab_id):
+        # tkinter callback : ne jamais laisser remonter d'exception
+        self._select(tab_id)
+
+    def _btn_font(self):
+        """Police des titres d'onglets : normale, et grasse pour l'onglet actif."""
+        if not hasattr(self, "_fonts"):
+            base = str(tk.Label(self.bar).cget("font"))
+            bold = tkfont.Font(root=self, font=base)
+            bold.configure(weight="bold")
+            self._fonts = (base, bold)
+        return self._fonts
+
+
+    def add(self, widget, text=""):
+        return self.insert(len(self._tabs), widget, text=text)
+
+    def insert(self, index, widget, text=""):
+        tab_id = self._tab_id()
+        btn = tk.Label(self.bar, text=text, padx=8, pady=3, takefocus=False)
+        tab = {"id": tab_id, "widget": widget, "button": btn, "text": text,
+               "fg": None}
+        self._tabs.insert(index, tab)
+        btn.bind("<Button-1>", lambda e, t=tab_id: self._on_click(t))
+        # reconstruire la barre dans l'ordre logique des onglets
+        for tab_ in self._tabs:
+            tab_["button"].grid_forget()
+        for i, tab_ in enumerate(self._tabs):
+            tab_["button"].grid(row=0, column=i, sticky="w")
+        if self._selected is None:
+            self._select(tab_id)
+        return tab_id
+
+    def forget(self, tab_id):
+        for i, tab in enumerate(self._tabs):
+            if tab["id"] == tab_id:
+                del self._tabs[i]
+                tab["button"].destroy()
+                tab["widget"].grid_forget()
+                break
+        else:
+            return
+        for i, tab_ in enumerate(self._tabs):
+            tab_["button"].grid(row=0, column=i, sticky="w")
+        if self._selected == tab_id:
+            self._selected = None
+            if self._tabs:
+                self._select(self._tabs[0]["id"])
+
+    def select(self, target):
+        if self.index(target) is None:
+            return
+        self._select(self._resolve(target))
+
+    def tab(self, target, text=None, fg=None):
+        tab = self._find(target)
+        if tab is None:
+            return {}
+        if text is not None:
+            tab["text"] = text
+            tab["button"].configure(text=text)
+        if fg is not None:
+            tab["fg"] = fg
+        self._refresh_bar()
+        return {"text": tab["text"]}
+
+    def tabs(self):
+        return [tab["id"] for tab in self._tabs]
+
+    def index(self, target):
+        tab = self._find(target)
+        return None if tab is None else self._tabs.index(tab)
+
+    def _resolve(self, target):
+        tab = self._find(target)
+        return tab["id"] if tab else None
+
+    def _find(self, target):
+        for tab in self._tabs:
+            if target == tab["id"] or target == tab["widget"]:
+                return tab
+        return None
 
 
 class HebrewKeyboard(ttk.Frame):
@@ -653,16 +793,18 @@ class AnalyseurGUI:
         # Zone de résultat : sous-onglets par binyan + sortie brute.
         frame = ttk.LabelFrame(tab, text="Résultat")
         frame.pack(fill="both", expand=True, padx=8, pady=(0, 8))
-        self.binyanim_notebook = ttk.Notebook(frame)
+        self.binyanim_notebook = BinyanimNotebook(frame)
         self.binyanim_notebook.grid(row=0, column=0, sticky="nsew")
         # Onglet « Verbe » : identification + catégorie faible.
-        self.binyanim_verb_tab = ttk.Frame(self.binyanim_notebook)
+        self.binyanim_verb_tab = ttk.Frame(self.binyanim_notebook.body)
         self.binyanim_notebook.add(self.binyanim_verb_tab, text="Verbe")
         self.binyanim_verb_text = self._make_binyanim_output(self.binyanim_verb_tab)
         # Onglet « Sortie complète » : texte marqué brut du CLI.
-        self.binyanim_raw_tab = ttk.Frame(self.binyanim_notebook)
+        self.binyanim_raw_tab = ttk.Frame(self.binyanim_notebook.body)
         self.binyanim_notebook.add(self.binyanim_raw_tab, text="Sortie complète")
         self.binyanim_raw_text = self._make_binyanim_output(self.binyanim_raw_tab)
+        # Ids des onglets fixes, pour le nettoyage des sous-onglets de binyan.
+        self.binyanim_fixed_ids = set(self.binyanim_notebook.tabs())
         frame.rowconfigure(0, weight=1)
         frame.columnconfigure(0, weight=1)
 
@@ -718,10 +860,14 @@ class AnalyseurGUI:
 
         Le libellé de chaque sous-onglet combine le nom français et le nom
         hébreu du binyan : « qal (paal) · פָּעַל ».
+
+        Quand la racine n'a pas de sens dans un binyan (binyan non attesté
+        pour ce lemme dans la Bible hébraïque), le libellé de l'onglet est
+        coloré en rouge et l'onglet affiche un avertissement.
         """
         # Nettoyer les sous-onglets de binyanim précédents (garder Verbe
         # et Sortie complète, toujours en fin de notebook).
-        keep = {str(self.binyanim_verb_tab), str(self.binyanim_raw_tab)}
+        keep = self.binyanim_fixed_ids
         for tab_id in list(self.binyanim_notebook.tabs()):
             if tab_id in keep:
                 continue
@@ -753,7 +899,7 @@ class AnalyseurGUI:
 
         raw_index = self.binyanim_notebook.index(self.binyanim_raw_tab)
         for b in parsed.get("binyanim", []):
-            tab = ttk.Frame(self.binyanim_notebook)
+            tab = ttk.Frame(self.binyanim_notebook.body)
             label = f"{b['name_fr']} · {b['name_he']}"
             if b.get("attested"):
                 label += " ✓"
@@ -761,7 +907,18 @@ class AnalyseurGUI:
             self.binyanim_notebook.insert(raw_index, tab, text=label)
             raw_index += 1
             text = self._make_binyanim_output(tab)
-            self._set_output(text, b.get("text", ""))
+            content = b.get("text", "")
+            if b.get("exists") is False:
+                self.binyanim_notebook.tab(
+                    tab, fg=BinyanimNotebook._FG_MISSING)
+                warn = ("⚠ Cette racine n'a pas de sens dans ce binyan "
+                        f"({b['name_fr']} / {b['name_he']}) : "
+                        "aucune occurrence de ce binyan pour cette racine "
+                        "dans la Bible hébraïque.\n"
+                        "Le paradigme ci-dessous est théorique, construit "
+                        "par analogie.\n\n")
+                content = warn + content
+            self._set_output(text, content)
 
         if parsed.get("binyanim"):
             # Sélectionner le premier binyan.

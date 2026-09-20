@@ -1027,6 +1027,7 @@ def analyze_binyanim(F, form):
                 "category_desc": "...",
                 "is_weak": bool,
                 "binyan_attested": "qal" | None,
+                "binyanim_of_lex": ["hif", "hof", "qal", ...] | None,
             },
             "binyanim": [       # 7 binyanim, ordre pédagogique
                 {
@@ -1035,6 +1036,7 @@ def analyze_binyanim(F, form):
                     "name_he": "פָּעַל",
                     "sense": "actif simple",
                     "attested": bool,
+                    "exists": bool | None,
                     "paradigm": {"perf": {...}, "impf": {...}, "impv": {...}},
                     "non_finite": {(vt, gn, nu): forme},
                 },
@@ -1063,8 +1065,23 @@ def analyze_binyanim(F, form):
     verb["is_weak"] = category != "strong"
     verb["root_display"] = "".join(root)
 
-    attested = verb.get("binyan_attested")
+    # Binyanim attestés pour le lemme dans la BHSA (toutes occurrences du
+    # lemme, indépendamment de la forme saisie) : sert à repérer les binyanim
+    # qui « n'ont pas de sens » pour cette racine. Les variantes hitpael des
+    # verbes faibles (htpa/hitpolel « htpo », hitpelel « htpe ») comptent
+    # comme hitpael.
+    binyanim_of_lex = None
+    if verb.get("lex"):
+        binyanim_of_lex = set()
+        for w in F.otype.s("word"):
+            if F.sp.v(w) != "verb":
+                continue
+            if F.lex.v(w) == verb["lex"]:
+                vs = F.vs.v(w)
+                binyanim_of_lex.add("hit" if vs in ("htpa", "htpo", "htpe") else vs)
+        verb["binyanim_of_lex"] = sorted(binyanim_of_lex)
 
+    attested = verb.get("binyan_attested")
     for code, name_fr, name_he in BINYANIM:
         entry = {
             "code": code,
@@ -1072,6 +1089,7 @@ def analyze_binyanim(F, form):
             "name_he": name_he,
             "sense": BINYAN_SENSE[code],
             "attested": (attested == code),
+            "exists": (code in binyanim_of_lex) if binyanim_of_lex is not None else None,
             "paradigm": generate_binyan_paradigm(code, root, category),
             "non_finite": generate_binyan_non_finite(code, root, category),
         }
@@ -1095,7 +1113,9 @@ def binyanim_to_text(analysis):
     """Formate le résultat d'analyze_binyanim en texte lisible.
 
     Les en-têtes de binyan portent un marqueur parsable :
-        ###BINYAN|<code>|<nom fr>|<nom hébreu>|<attesté 0/1>###
+        ###BINYAN|<code>|<nom fr>|<nom hébreu>|<attesté 0/1>|<existant 0/1/vide>###
+    (le champ « existant » dit si le binyan est attesté pour cette racine
+    dans la BHSA : vide = information indisponible, racine non attestée).
     ainsi que l'en-tête de verbe et la catégorie de verbe faible :
         ###VERB|<racine>|<lemme>|<traduction fr>###
         ###WEAK|<code>|<libellé>|<description>###
@@ -1127,9 +1147,16 @@ def binyanim_to_text(analysis):
 
     for b in analysis["binyanim"]:
         att = "1" if b["attested"] else "0"
-        lines.append(MARK_BINYAN + f"|{b['code']}|{b['name_fr']}|{b['name_he']}|{att}###")
+        exists = b.get("exists")
+        exists_flag = "" if exists is None else ("1" if exists else "0")
+        lines.append(MARK_BINYAN + f"|{b['code']}|{b['name_fr']}|{b['name_he']}|{att}|{exists_flag}###")
         attest = " (binyan attesté dans la BHSA pour cette forme)" if b["attested"] else ""
         lines.append(f"-- {b['name_fr']} / {b['name_he']} — {b['sense']}{attest} --")
+        if exists is False:
+            lines.append("⚠ Cette racine n'a pas de sens dans ce binyan : "
+                         "aucune occurrence de ce binyan pour cette racine "
+                         "dans la Bible hébraïque (paradigme théorique, "
+                         "construit par analogie).")
         for tense in ("perf", "impf", "impv"):
             lines.append(f"  {TENSE_LABELS[tense]} :")
             for ps, gn, nu, label in TENSE_PERSONS[tense]:
@@ -1154,8 +1181,9 @@ def parse_binyanim_text(text):
         {
             "verb": {"root":..., "lex":..., "gloss_fr":...},
             "weak": {"code":..., "label":..., "desc":...},
-            "binyanim": [{"code","name_fr","name_he","attested","text"}, ...],
+            "binyanim": [{"code","name_fr","name_he","attested","exists","text"}, ...],
         }
+    ("exists" vaut True, False ou None si l'information est indisponible.)
     """
     import re
     verb = {}
@@ -1177,8 +1205,10 @@ def parse_binyanim_text(text):
         if line.startswith(MARK_BINYAN + "|"):
             parts = line[len(MARK_BINYAN) + 1:].rstrip("#").split("|")
             if len(parts) >= 4:
+                exists_part = parts[4] if len(parts) >= 5 else None
                 current = {"code": parts[0], "name_fr": parts[1],
                            "name_he": parts[2], "attested": parts[3] == "1",
+                           "exists": (exists_part == "1") if exists_part else None,
                            "text": []}
                 binyanim.append(current)
             continue
@@ -1208,6 +1238,7 @@ def binyanim_to_json(analysis, indent=2, ensure_ascii=False):
                 "name_he": b["name_he"],
                 "sense": b["sense"],
                 "attested": b["attested"],
+                "exists": b.get("exists"),
                 "paradigm": {
                     tense: {_key(cell): form
                            for cell, form in forms.items() if form}
