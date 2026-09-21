@@ -24,6 +24,7 @@ La base BHSA est chargée en arrière-plan au démarrage (cf. ``bhsa_grammar``).
 import os
 import queue
 import threading
+import unicodedata
 import tkinter as tk
 from tkinter import ttk, messagebox, font as tkfont
 
@@ -142,6 +143,195 @@ CORPUS_MISHNA = "Mishna (Sefaria)"
 _RLM = "\u200F"
 _RLE = "\u202B"
 _PDF = "\u202C"
+
+# Caractères sans largeur propre (combining) : nikoud, teamim, marques
+# bidi. La sélection par défaut de Tk (tk::TextClosestGap) tranche avec la
+# demi-largeur du caractère sous le curseur ; sur ces caractères de
+# largeur nulle, la borne tombe à l'intérieur d'un cluster (base + ses
+# points), là où plusieurs indices s'affichent au même endroit — sur un
+# rendu bidi (Windows), l'index oscille d'un pixel à l'autre et la
+# sélection « danse ». On ramène donc les bornes de sélection au bord du
+# cluster, position stable visuellement.
+_MARKS = frozenset(
+    [chr(c) for c in range(0x0591, 0x05BD)]       # teamim + nikoud
+    + [chr(0x05BD), chr(0x05BF), chr(0x05C0)]
+    + [chr(c) for c in range(0x05C1, 0x05C8)]     # shin/sin, qamats qatan…
+    + [chr(c) for c in range(0x200E, 0x200F)]      # LRM, RLM
+    + [chr(c) for c in range(0x202A, 0x202F)]      # embeddings bidi (RLE, PDF…)
+)
+
+
+def _is_mark(ch):
+    """Vrai pour un caractère sans largeur propre (marque combinante,
+    teamim, nikkud, marque bidi)."""
+    return len(ch) == 1 and (ch in _MARKS or unicodedata.combining(ch) != 0)
+
+
+def _cluster_start(text_widget, index):
+    """Index du début du cluster de glyphes contenant ``index``.
+
+    Un cluster = un caractère de base + ses marques combinantes (nikkud,
+    teamim, marques bidi). Ramener une borne de sélection au début du
+    cluster la rend positionnellement stable (les marques ont une
+    largeur nulle : tous les indices du cluster occupent le même espace
+    visuel).
+    """
+    idx = text_widget.index(index)
+    while _is_mark(text_widget.get(idx)):
+        prev = text_widget.index(idx + " - 1 c")
+        if prev == idx:
+            break
+        idx = prev
+    return idx
+
+
+def _cluster_end(text_widget, index):
+    """Index de fin (exclusive) du cluster contenant ``index``."""
+    idx = _cluster_start(text_widget, index)
+    last = text_widget.index("end - 1 c")
+    while text_widget.compare(idx, "<=", last):
+        nxt = text_widget.index(idx + " + 1 c")
+        if not _is_mark(text_widget.get(nxt)):
+            return nxt
+        idx = nxt
+    return text_widget.index("end")
+
+
+def _nearest_cluster_index(w, x, y):
+    """Index de bord de cluster le plus proche du pixel (x, y).
+
+    Tk trancherait avec la demi-largeur du caractère sous le pixel —
+    quand ce caractère est un nikkud (largeur nulle), la borne tombe au
+    milieu d'un cluster, position instable. On prend l'index brut puis on
+    l'arrime au bord de cluster (début du cluster pointé, ou fin du
+    précédent selon la moitié de la largeur du caractère de base).
+    """
+    raw = w.index(f"@{x},{y}")
+    cstart = _cluster_start(w, raw)
+    # Cluster de marques sans base (ex. RLE en début de ligne) : le
+    # rattacher au cluster suivant, visible lui.
+    while _is_mark(w.get(cstart)):
+        nxt = _cluster_end(w, cstart)
+        if nxt == cstart:
+            break
+        cstart = nxt
+    bb = w.bbox(cstart)
+    if bb and x > bb[0] + bb[2] / 2:
+        return _cluster_end(w, cstart)
+    return cstart
+
+
+def _make_stable_selection(text_widget):
+    """Sélection à la souris stable sur l'hébreu vocalisé.
+
+    Remplace la sélection par défaut de Tk (tk::TextButton1 /
+    tk::TextSelectTo) pour ce widget : chaque borne est arrimée aux bords
+    de clusters de glyphes (base + nikkud + teamim). Sans cela, Tk
+    tranche à la demi-largeur du caractère sous le curseur ; sur un
+    nikkud ou un teamim (largeur nulle) la borne tombe au milieu d'un
+    cluster, là où plusieurs indices s'affichent au même endroit — et
+    sur un rendu bidi (Windows), chaque mouvement de souris fait
+    osciller l'index entre ces positions : la sélection « danse ».
+
+    Les handlers sont liés au widget (avant la classe Text dans les
+    bindtags) et retournent "break" : Tk n'applique pas sa sélection par
+    défaut. Double-clic et triple-clic sélectionnent mot et ligne
+    (bornes de mots/lignes de Tk, arrimées aux clusters), le clic simple
+    place le curseur, Maj+clic étend la sélection.
+    """
+    w = text_widget
+    if getattr(w, "_stable_sel_bound", False):
+        return
+    w._stable_sel_bound = True
+    state = {"anchor": None}
+
+    def _sel_apply(first, last):
+        w.tag_remove("sel", "1.0", "end")
+        if w.compare(first, "<", last):
+            w.tag_add("sel", first, last)
+
+    def press(event):
+        state["anchor"] = _nearest_cluster_index(w, event.x, event.y)
+        state["mode"] = "char"
+        w.mark_set("insert", state["anchor"])
+        w.tag_remove("sel", "1.0", "end")
+        w.focus_set()
+        return "break"
+
+    def drag(event):
+        if state["anchor"] is None:
+            return "break"
+        cur = _nearest_cluster_index(w, event.x, event.y)
+        anchor = state["anchor"]
+        if w.compare(cur, "<=", anchor):
+            _sel_apply(cur, anchor)
+        else:
+            _sel_apply(anchor, cur)
+        return "break"
+
+    def release(event):
+        try:
+            if w.index("sel.first") == w.index("sel.last"):
+                w.tag_remove("sel", "1.0", "end")
+        except tk.TclError:
+            pass
+        state["anchor"] = None
+        return "break"
+
+    def double_click(event):
+        # Mot : bornes définies par les espaces (les wordbreaks de Tk
+        # traitent chaque nikkud comme un mot isolé), arrimées aux
+        # clusters.
+        pos = _nearest_cluster_index(w, event.x, event.y)
+        first = pos
+        while True:
+            prev = w.index(f"{first} - 1 c")
+            if prev == first or w.get(prev) == " " or w.get(prev) == "\n":
+                break
+            first = prev
+        last = pos
+        while True:
+            nxt = w.index(f"{last} + 1 c")
+            if nxt == last or w.get(last) == " " or w.get(last) == "\n":
+                break
+            last = nxt
+        first = _cluster_start(w, first)
+        last = _cluster_end(w, last)
+        state["anchor"] = first
+        _sel_apply(first, last)
+        w.mark_set("insert", first)
+        return "break"
+
+    def triple_click(event):
+        pos = _nearest_cluster_index(w, event.x, event.y)
+        first = w.index(f"{pos} linestart")
+        last = w.index(f"{pos} lineend")
+        state["anchor"] = first
+        _sel_apply(first, _cluster_end(w, last))
+        w.mark_set("insert", first)
+        return "break"
+
+    def shift_press(event):
+        # Étendre la sélection jusqu'à la position cliquée.
+        anchor = state["anchor"]
+        if anchor is None:
+            # Pas de drag en cours : ancre = position courante du curseur.
+            anchor = w.index("insert")
+            state["anchor"] = anchor
+        cur = _nearest_cluster_index(w, event.x, event.y)
+        if w.compare(cur, "<=", anchor):
+            _sel_apply(cur, anchor)
+        else:
+            _sel_apply(anchor, cur)
+        return "break"
+
+    w.bind("<Button-1>", press)
+    w.bind("<B1-Motion>", drag)
+    w.bind("<ButtonRelease-1>", release)
+    w.bind("<Double-Button-1>", double_click)
+    w.bind("<Triple-Button-1>", triple_click)
+    w.bind("<Shift-Button-1>", shift_press)
+    w.bind("<Shift-B1-Motion>", drag)
 
 
 def _has_hebrew(line):
@@ -678,6 +868,7 @@ class AnalyseurGUI:
         frame.columnconfigure(0, weight=1)
         frame.rowconfigure(0, weight=1)
         self.output_text.configure(state="disabled")
+        _make_stable_selection(self.output_text)
         # Associer la zone de résultat partagée (une par onglet).
         parent._output = self.output_text
 
@@ -931,6 +1122,7 @@ class AnalyseurGUI:
         parent.rowconfigure(0, weight=1)
         parent.columnconfigure(0, weight=1)
         text.configure(state="disabled")
+        _make_stable_selection(text)
         return text
 
     def _run_binyanim(self):
