@@ -28,6 +28,8 @@ import unicodedata
 import tkinter as tk
 from tkinter import ttk, messagebox, font as tkfont
 
+from bidi_display import to_visual, to_logical
+
 from bhsa_grammar import (
     load_corpus,
     analyze_verse_by_reference,
@@ -334,46 +336,6 @@ def _make_stable_selection(text_widget):
     w.bind("<Shift-B1-Motion>", drag)
 
 
-def _has_hebrew(line):
-    """Vrai si la ligne contient au moins un caractère hébreu (lettres,
-    diacritiques ou ponctuation, bloc U+0590..U+05FF)."""
-    return any(0x0590 <= ord(c) <= 0x05FF for c in line)
-
-
-def _starts_with_hebrew(line):
-    """Vrai si le premier caractère significatif de la ligne est hébreu
-    (ligne purement hébraïque, sans préfixe LTR)."""
-    for c in line:
-        if c.isspace():
-            continue
-        return 0x0590 <= ord(c) <= 0x05FF
-    return False
-
-
-def _rtlize(text):
-    """Marque les lignes contenant de l'hébreu pour le rendu RTL du GUI.
-
-    - Les lignes purement hébraïques (commençant par un caractère hébreu) sont
-      enveloppées dans un embedding RTL explicite (RLE ... PDF), ce qui
-      force tout le segment en RTL.
-    - Les lignes mixtes (préfixe LTR puis hébreu) reçoivent un RLM en début,
-    suffisant à orienter le segment hébreu sans inverser le préfixe LTR.
-
-    N'affecte que l'affichage du GUI (zone de résultat) ; la sortie CLI
-    (terminal) n'est pas modifiée car le terminal gère lui-même le bidi.
-    """
-    if not text:
-        return text
-    out_lines = []
-    for line in text.split("\n"):
-        if not _has_hebrew(line):
-            out_lines.append(line)
-        elif _starts_with_hebrew(line):
-            out_lines.append(_RLE + line + _PDF)
-        else:
-            out_lines.append(_RLM + line)
-    return "\n".join(out_lines)
-
 
 # --- Clavier hébreu virtuel ------------------------------------------------
 # Points-voyelles (nikkud) et daguesh — marques combinantes UTF-8.
@@ -660,6 +622,41 @@ class HebrewKeyboard(ttk.Frame):
             pass
 
 
+class ResultText(tk.Text):
+    """Zone de résultat en texte hébreu stable.
+
+    Le texte affiché est stocké en ordre visuel (cf. bidi_display.to_visual),
+    l'ordre logique du widget coïncide donc avec l'affichage : la sélection
+    à la souris (gérée par _make_stable_selection, qui arrime les bornes aux
+    clusters de glyphes) est stable et prévisible. La copie (Ctrl+C)
+    restitue l'ordre logique du texte d'origine.
+    """
+
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.bind("<<Copy>>", self._on_copy)
+
+    def set_text(self, text):
+        """Remplace le contenu par ``text`` mis en ordre visuel."""
+        self.configure(state="normal")
+        self.delete("1.0", "end")
+        self.insert("1.0", to_visual(text))
+        self.configure(state="disabled")
+
+    # --- Copie en ordre logique ------------------------------------------
+    def _on_copy(self, event=None):
+        try:
+            text = self.get("sel.first", "sel.last")
+        except tk.TclError:
+            return None
+        if not text:
+            return None
+        self.clipboard_clear()
+        self.clipboard_append(to_logical(text))
+        return "break"
+
+
 class AnalyseurGUI:
     """Fenêtre principale de l'analyseur grammatical."""
 
@@ -854,8 +851,8 @@ class AnalyseurGUI:
     def _build_output(self, parent):
         frame = ttk.LabelFrame(parent, text="Résultat")
         frame.pack(fill="both", expand=True, padx=8, pady=(0, 8))
-        self.output_text = tk.Text(frame, font=HEBREW_FONT_MONO, wrap="word",
-                                   height=10, width=40)
+        self.output_text = ResultText(frame, font=HEBREW_FONT_MONO,
+                                      wrap="word", height=10, width=40)
         self.output_text.grid(row=0, column=0, sticky="nsew")
         yscroll = ttk.Scrollbar(frame, orient="vertical",
                                command=self.output_text.yview)
@@ -1111,8 +1108,8 @@ class AnalyseurGUI:
 
     def _make_binyanim_output(self, parent):
         """Zone de texte défilable (ascenseurs vertical + horizontal)."""
-        text = tk.Text(parent, font=HEBREW_FONT_MONO, wrap="none",
-                       height=10, width=40)
+        text = ResultText(parent, font=HEBREW_FONT_MONO, wrap="none",
+                          height=10, width=40)
         text.grid(row=0, column=0, sticky="nsew")
         yscroll = ttk.Scrollbar(parent, orient="vertical", command=text.yview)
         yscroll.grid(row=0, column=1, sticky="ns")
@@ -1255,10 +1252,7 @@ class AnalyseurGUI:
 
     # --- Lancement des analyses (en arrière-plan) -----------------------
     def _set_output(self, widget, text):
-        widget.configure(state="normal")
-        widget.delete("1.0", "end")
-        widget.insert("1.0", _rtlize(text))
-        widget.configure(state="disabled")
+        widget.set_text(text)
 
     def _disable_buttons(self):
         for btn in (self.btn_verse, self.btn_word, self.btn_phrase, self.btn_binyanim):
