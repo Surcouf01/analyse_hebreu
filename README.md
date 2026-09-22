@@ -54,25 +54,46 @@ python gui_hebreu.py
 Pré-requis : `tkinter` (inclus dans la plupart des distributions Python ; sur
 Debian/Ubuntu : `sudo apt install python3-tk`).
 
-L'interface comporte trois onglets :
+L'interface comporte quatre onglets :
 
-- **Verset** : sélection du livre, du chapitre puis du verset au moyen de
-  listes déroulantes liées. Les livres sont présentés **dans l'ordre
-  canonique de la Bible hébraïque** (Torah en tête : Genèse, Exode, Lévitique,
-  Nombres, Deutéronome, …). Les listes de chapitres et de versets sont
-  **bornées aux limites réelles** de la base BHSA (on ne peut pas
-  sélectionner un chapitre ou un verset inexistant). Formats disponibles :
-  texte, synthèse, JSON ; option « masquer le détail mot à mot ».
-  Des **traductions française et anglaise** du verset (Louis Segond 1910,
-  King James Version 1611, toutes deux domaine public) sont affichées en
-  tête du résultat ; elles sont activables individuellement par cases à
-  cocher.
+- **Livre** : sélection d'abord du **corpus** — **Bible (BHSA)** ou
+  **Mishna (Sefaria)** — puis du livre, du chapitre et du verset au moyen de
+  listes déroulantes liées et remplies selon le contexte. Pour la Bible,
+  les livres sont présentés **dans l'ordre canonique de la Bible
+  hébraïque** (Torah en tête : Genèse, Exode, Lévitique, Nombres,
+  Deutéronome, …) et les listes sont **bornées aux limites réelles** de la
+  base BHSA. Formats disponibles : texte, synthèse, JSON ; option
+  « masquer le détail mot à mot ». Des **traductions française et anglaise**
+  du verset (Louis Segond 1910, King James Version 1611, toutes deux
+  domaine public) sont affichées en tête du résultat ; elles sont
+  activables individuellement par cases à cocher.
+
+  Pour la **Mishna**, les six *sedarim* (Zeraim, Moed, Nashim, Nezikin,
+  Kodashim, Tahorot) et leurs 63 traités sont listés dans l'ordre canonique
+  (structure issue de l'API Sefaria, intégrée au projet : aucun réseau
+  n'est nécessaire pour les listes). L'affichage d'une mishna donne le
+  **texte hébreu** (« Torat Emet 357 », domaine public) et, quand le traité
+  est couvert, la **traduction française** de **Moïse Schwab** (« Le Talmud
+  de Jérusalem, traduit par Moise Schwab, 1878-1890 », domaine public — 38
+  traités sur 63 : Zeraim, Moed, Nashim et la plupart de Nezikin ; les
+  ordres Kodashim et Tahorot ne sont pas couverts). Les options d'analyse
+  grammaticale (formats, traductions Segond/KJV) sont grisées dans ce mode,
+  car elles ne s'appliquent pas à la Mishna.
 - **Mot** : analyse d'un mot hébreu isolé, saisi à l'aide d'un **clavier
   hébreu virtuel** (consonnes + points-voyelles/nikkud + daguesh, en UTF-8).
   Un clavier physique en hébreu reste utilisable : la saisie se fait toujours
   en UTF-8. Formats : texte ou JSON.
 - **Phrase** : analyse d'une phrase hébreu libre, saisie via le même clavier
   hébreu virtuel (UTF-8). Formats : texte ou JSON.
+- **Binyanim** : conjugaison d'un verbe hébreu (mot conjugué ou racine
+  trilitaire) dans les 7 binyanim, pour toutes les personnes. Le résultat est
+  présenté en **sous-onglets, un par binyan**, dont le libellé combine le nom
+  français et le nom hébreu (ex. « qal (paal) · פָּעַל ») ; un marqueur ✓
+  signale le binyan attesté dans la BHSA pour la forme saisie. L'onglet
+  « Verbe » affiche la racine, le lemme, la traduction et la **catégorie du
+  verbe** (fort, ou faible avec sa classe : lamed-he, creux, pe-nun, etc.).
+  Le GUI parse la sortie marquée du CLI (`###BINYAN|...###`). Formats :
+  texte ou JSON.
 
 La base BHSA est chargée en arrière-plan au démarrage ; les boutons restent
 inactifs jusqu'à la fin du chargement. Les analyses s'exécutent dans des
@@ -98,8 +119,8 @@ latéralement si elles dépassent du cadre.
 
 #### Traductions française et anglaise
 
-L'onglet **Verset** affiche, en tête du résultat, une ou deux traductions du
-verset analysé, toutes deux **domaine public** :
+L'onglet **Livre** (mode Bible) affiche, en tête du résultat, une ou deux
+traductions du verset analysé, toutes deux **domaine public** :
 
 - **Louis Segond 1910** (français) — fichier `data/louis_segond_1910.txt` ;
 - **King James Version 1611** (anglais) — fichier `data/kjv_1611.txt`.
@@ -131,7 +152,15 @@ python analyse_hebreu.py "Genesis 1:1" --format json # sortie JSON
 python analyse_hebreu.py "Genèse 1:1" --translation # + traduction Louis Segond
 python analyse_hebreu.py "Genèse 1:1" --translation --translation-en # + KJV anglaise
 python analyse_hebreu.py "Psaume 23:1" --format summary
-python analyse_hebreu.py --list-books                # livres disponibles
+python analyse_hebreu.py --list-books                # livres de la Bible
+```
+
+Affichage d'une mishna (texte via l'API Sefaria, sans analyse BHSA) :
+```bash
+python analyse_hebreu.py --mishna "Bérakhot 1:1"     # hébreu + trad. Schwab
+python analyse_hebreu.py --mishna "Berakhot 2:5"     # nom Sefaria accepté
+python analyse_hebreu.py --mishna "Avot 1:3"          # nom français court
+python analyse_hebreu.py --mishna --list-books        # les 63 traités
 ```
 
 Analyse d'un mot isolé (avec nikkud, sans teamim) :
@@ -164,6 +193,85 @@ mot isolé, puis ajoute des **règles contextuelles** : waw conjonctif, négatio
 gouvernant un verbe, **jussif potentiel** (yiqtol 3e pers court sous לֹא/אַל),
 article défini déterminant le nom suivant, état construit (סְמִיכוּת) entre deux
 noms consécutifs, marqueur d'objet direct אֵת.
+
+Conjugaison d'un verbe dans tous les binyanim :
+```bash
+python analyse_hebreu.py --binyanim "שָׁמַר"        # verbe fort, mot conjugué
+python analyse_hebreu.py --binyanim "שמר"           # racine trilitaire nue
+python analyse_hebreu.py --binyanim "בָּנָה"          # verbe lamed-he (faible)
+python analyse_hebreu.py --binyanim --file verbes.txt  # un verbe par ligne
+python analyse_hebreu.py --binyanim "קום" --format json
+python analyse_hebreu.py --binyanim --mishna-binyanim "אכל"  # + binyanim mishnaïques
+```
+
+Le mode `--binyanim` identifie le verbe (lemme BHSA ou racine), détecte sa
+catégorie (verbe **fort** ou **faible** : pe-alef/guttural/nun/yod,
+ayin-guttural, creux, double, lamed-he/alef/guttural), puis génère la
+conjugaison complète dans les **7 binyanim** (qal, nifal, piel, pual,
+hitpael, hifil, hofal) : parfait, imparfait et impératif pour toutes les
+personnes (1re/2e/3e, masculin/féminin, singulier/pluriel), plus infinitifs
+et participes. Les gabarits vocaliques sont extraits des formes dominantes
+attestées dans la base BHSA (`bhsa_grammar/binyan_templates.json`, généré
+par `scripts/extract_binyan_templates.py`).
+
+Chaque en-tête de binyan de la sortie texte est marqué pour être
+identifiable/parsable par le GUI :
+`###BINYAN|<code>|<nom fr>|<nom hébreu>|<attesté>###`, de même que l'en-tête
+de verbe `###VERB|...###` et la catégorie de verbe faible `###WEAK|...###`.
+
+La traduction du verbe par binyan (français + anglais) vient du lexique
+`bhsa_grammar/binyan_senses_fr_en.json` : sens anglais extraits du **BDB**
+(Brown-Driver-Briggs, domaine public) par `scripts/extract_binyan_senses.py`,
+traductions françaises enrichies progressivement. La curation FR s'appuie
+sur les occurrences réelles de chaque racine mises en regard de la **Bible
+du Rabbinat 1899** (domaine public), récupérée via l'API Sefaria
+(`bhsa_grammar/sefaria_client.py`). Sefaria ne fournit pas de lexique
+hébreu→français : les versets français servent de contexte d'occurrence,
+la traduction des sens reste une curation manuelle.
+
+#### Binyanim mishnaïques (Sefaria)
+
+Avec `--mishna-binyanim` (CLI) ou la case « Binyanim mishnaïques (Sefaria) »
+(GUI, onglet Binyanim), les binyanim attestés dans la **Mishna** mais absents
+de la Bible hébraïque sont signalés, avec des formes d'attestation :
+le libellé de l'onglet GUI passe en **orange** (au lieu du rouge
+« pas de sens biblique ») et le texte affiche
+« ✸ Attesté dans la Mishna (binyan non biblique) : … ».
+
+Les données viennent de `bhsa_grammar/mishnah_binyanim.json` :
+`scripts/extract_mishnah_binyanim.py` télécharge la Mishna hébraïque
+vocalisée (« Torat Emet 357 », domaine public) via l'API Sefaria, compare
+tout token à l'index des formes vocalisées générées par le moteur de
+conjugaison (tous gabarits BHSA, verbes faibles inclus) et retient, par
+racine, les binyanim non bibliques (ex. piel de אכל : וְאִכְלוּ).
+Le matching est vocalisé : teamim/daghesh neutralisés, hataf→voyelle
+pleine, préfixes d'incorporation testés par retrait. La comparaison étant
+exacte, le fichier ne contient que des formes conformes aux gabarits
+bibliques — pas de bruit d'heuristique.
+
+Régénération (n'écrase jamais sans `--force`, les curations manuelles
+devant être préservées) :
+```bash
+python scripts/extract_mishnah_binyanim.py --force           # 63 traités
+python scripts/extract_mishnah_binyanim.py --limit 4 --out /tmp/t.json --force  # test
+```
+
+Workflow d'enrichissement (procédure incrémentale) :
+
+```bash
+# 1. Rapport de curation : pour les N racines sans FR les plus fréquentes,
+#    sens BDB anglais + versets français d'occurrence, par binyan
+#    (indicateur de progression : [i/n] racine (translit) — binyan).
+python scripts/enrich_binyan_senses_fr.py --limit 40 --report rapport.txt
+
+# 2. Traduction manuelle : rédiger un fichier de curation JSON
+#    {racine: {binyan: [fr, en]}} — cf. docstring de merge_binyan_senses_fr.
+
+# 3. Fusion dans le lexique (jamais d'écrasement du FR existant).
+python scripts/merge_binyan_senses_fr.py curation.json            # applique
+python scripts/merge_binyan_senses_fr.py curation.json --dry-run  # simule
+python scripts/merge_binyan_senses_fr.py curation.json --check   # valide
+```
 
 Formats de sortie :
 - `text` (défaut) : arbre hiérarchique phrase → clause → syntagme → mot,
@@ -222,7 +330,7 @@ print(format_text(analyse))
 ## Structure du projet
 
 ```
-analyse_hebreu.py        # CLI (mode verset, mot, phrase)
+analyse_hebreu.py        # CLI (mode verset/livre, mot, phrase, binyanim, mishna)
 gui_hebreu.py           # interface graphique Tkinter (mêmes fonctions que le CLI)
 gui.properties         # polices/tailles d'affichage du GUI (points)
 data/
@@ -236,7 +344,24 @@ bhsa_grammar/
   rules.py               # moteur de règles grammaticales (mot, syntagme, clause) + cohortif + qere/ketiv
   word_analyzer.py       # analyse d'un mot isolé (normalisation, préfixes, recherche)
   phrase_analyzer.py     # analyse d'une phrase libre (segmentation + règles contextuelles + jussif)
+  binyan_diag.py         # diagnostics heuristiques du binyan d'une forme conjuguée
+  binyan_gen.py          # conjugaison dans les 7 binyanim (mode --binyanim) + verbes faibles
+  binyan_templates.json  # gabarits vocaliques extraits de la BHSA (par catégorie de verbe)
+  binyan_senses_fr_en.json  # sens par (racine, binyan) — BDB (EN, domaine public) + curation FR
+  sefaria_client.py     # client de l'API Sefaria (Rabbinat 1899, Mishna : Torat Emet
+                        # + Schwab, domaine public)
+  mishnah_catalog.py    # catalogue statique de la Mishna : 63 traités, sedarim,
+                        # structure chapitres/mishnayot (source API Sefaria)
   report.py             # formatage text / json / summary (verset, mot, phrase)
+scripts/
+  extract_binyan_templates.py  # régénère binyan_templates.json depuis la BHSA
+  extract_binyan_senses.py     # extrait les sens par binyan du lexique BDB (CSV)
+  enrich_binyan_senses_fr.py   # rapport de curation FR : occurrences BHSA × versets
+                               # Rabbinat 1899 (Sefaria) pour les racines sans FR
+  merge_binyan_senses_fr.py    # fusionne une curation JSON dans le lexique
+                               # (sans écraser le FR existant)
+tests/
+  test_binyanim.py       # non-régression du mode binyanim (formes vs BHSA)
 ```
 
 ## Règles grammaticales détectées
@@ -282,7 +407,7 @@ détectent :
   issue du lexique Strong hébreu-français de Bible Strong (base interlinéaire
   STEP, CC BY 4.0), alignée sur les lemmes BHSA par les consonnes du lemme
   (~8 000 lemmes couverts, ≈98 % des occurrences). Les lemmes non couverts
-  retombent sur le gloss anglais de la BHSA. En mode verset, la traduction
+  retombent sur le gloss anglais de la BHSA. En mode livre (Bible), la traduction
   s'affiche sous la forme `« Dieu »` après le lemme ; en mode mot, des lignes
   `Traduction (fr)` / `Traduction (en)` ; en mode phrase, dans les lectures
   possibles.

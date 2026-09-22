@@ -4,10 +4,11 @@
 Fenêtre Tkinter à onglets qui reprend chacune des fonctions du programme en
 ligne de commande (``analyse_hebreu.py``) :
 
-  - Onglet « Verset »  : analyse d'un verset par sélection successive du
-    livre (dans l'ordre canonique de la Bible hébraïque, Torah en premier),
+  - Onglet « Livre »   : sélection du corpus (Bible hébraïque via la base
+    BHSA, ou Mishna via l'API Sefaria), puis analyse d'un verset (Bible)
+    ou affichage d'une mishna (Mishna) par sélection successive du livre,
     du chapitre puis du verset, au moyen de listes déroulantes bornées aux
-    limites réelles de la base BHSA.
+    limites réelles de la base BHSA ou du catalogue Mishna.
   - Onglet « Mot »     : analyse d'un mot hébreu isolé, saisie via un clavier
     hébreu virtuel (points-voyelles inclus) en UTF-8.
   - Onglet « Phrase »  : analyse d'une phrase hébreu libre, saisie via le
@@ -23,14 +24,16 @@ La base BHSA est chargée en arrière-plan au démarrage (cf. ``bhsa_grammar``).
 import os
 import queue
 import threading
+import unicodedata
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, font as tkfont
 
 from bhsa_grammar import (
     load_corpus,
     analyze_verse_by_reference,
     analyze_word,
     analyze_phrase,
+    analyze_binyanim,
     format_text,
     format_json,
     format_summary,
@@ -38,12 +41,17 @@ from bhsa_grammar import (
     format_word_json,
     format_phrase,
     format_phrase_json,
+    format_binyanim,
+    format_binyanim_json,
+    parse_binyanim_text,
     book_french,
     DataNotFoundError,
     load_translation,
     get_translation,
     TranslationNotFoundError,
 )
+from bhsa_grammar.sefaria_client import fetch_mishnah_mishnayot
+from bhsa_grammar.mishnah_catalog import SEDARIM, STRUCTURE, SCHWAB_TRACTATES
 
 
 # Langues de traduction disponibles, avec leur libellé.
@@ -103,6 +111,24 @@ KEYBOARD_FONT = HEBREW_FONT_MONO
 _v_fam, _v_size = KEYBOARD_FONT
 KEYBOARD_FONT_VOWELS = (_v_fam, max(6, _v_size - 5))
 
+# Police des titres d'onglets (binyanim) : configurable via gui.properties
+# (clés font.tabs.family / font.tabs.size), avec repli sur la police de
+# saisie si les clés sont absentes.
+def _tab_font():
+    try:
+        size = int(_PROPS["font.tabs.size"])
+    except (KeyError, ValueError):
+        size = HEBREW_FONT[1]
+    family = _PROPS.get("font.tabs.family", HEBREW_FONT[0])
+    return (family, size)
+
+
+BINYAN_TAB_FONT = _tab_font()
+
+# Onglet « Livre » : corpus disponibles.
+CORPUS_BIBLE = "Bible (BHSA)"
+CORPUS_MISHNA = "Mishna (Sefaria)"
+
 
 # Marques de contrôle bidi pour forcer le rendu droite-à-gauche des lignes
 # hébraïques dans la zone de résultat du GUI. Tk n'applique pas toujours
@@ -117,6 +143,195 @@ KEYBOARD_FONT_VOWELS = (_v_fam, max(6, _v_size - 5))
 _RLM = "\u200F"
 _RLE = "\u202B"
 _PDF = "\u202C"
+
+# Caractères sans largeur propre (combining) : nikoud, teamim, marques
+# bidi. La sélection par défaut de Tk (tk::TextClosestGap) tranche avec la
+# demi-largeur du caractère sous le curseur ; sur ces caractères de
+# largeur nulle, la borne tombe à l'intérieur d'un cluster (base + ses
+# points), là où plusieurs indices s'affichent au même endroit — sur un
+# rendu bidi (Windows), l'index oscille d'un pixel à l'autre et la
+# sélection « danse ». On ramène donc les bornes de sélection au bord du
+# cluster, position stable visuellement.
+_MARKS = frozenset(
+    [chr(c) for c in range(0x0591, 0x05BD)]       # teamim + nikoud
+    + [chr(0x05BD), chr(0x05BF), chr(0x05C0)]
+    + [chr(c) for c in range(0x05C1, 0x05C8)]     # shin/sin, qamats qatan…
+    + [chr(c) for c in range(0x200E, 0x200F)]      # LRM, RLM
+    + [chr(c) for c in range(0x202A, 0x202F)]      # embeddings bidi (RLE, PDF…)
+)
+
+
+def _is_mark(ch):
+    """Vrai pour un caractère sans largeur propre (marque combinante,
+    teamim, nikkud, marque bidi)."""
+    return len(ch) == 1 and (ch in _MARKS or unicodedata.combining(ch) != 0)
+
+
+def _cluster_start(text_widget, index):
+    """Index du début du cluster de glyphes contenant ``index``.
+
+    Un cluster = un caractère de base + ses marques combinantes (nikkud,
+    teamim, marques bidi). Ramener une borne de sélection au début du
+    cluster la rend positionnellement stable (les marques ont une
+    largeur nulle : tous les indices du cluster occupent le même espace
+    visuel).
+    """
+    idx = text_widget.index(index)
+    while _is_mark(text_widget.get(idx)):
+        prev = text_widget.index(idx + " - 1 c")
+        if prev == idx:
+            break
+        idx = prev
+    return idx
+
+
+def _cluster_end(text_widget, index):
+    """Index de fin (exclusive) du cluster contenant ``index``."""
+    idx = _cluster_start(text_widget, index)
+    last = text_widget.index("end - 1 c")
+    while text_widget.compare(idx, "<=", last):
+        nxt = text_widget.index(idx + " + 1 c")
+        if not _is_mark(text_widget.get(nxt)):
+            return nxt
+        idx = nxt
+    return text_widget.index("end")
+
+
+def _nearest_cluster_index(w, x, y):
+    """Index de bord de cluster le plus proche du pixel (x, y).
+
+    Tk trancherait avec la demi-largeur du caractère sous le pixel —
+    quand ce caractère est un nikkud (largeur nulle), la borne tombe au
+    milieu d'un cluster, position instable. On prend l'index brut puis on
+    l'arrime au bord de cluster (début du cluster pointé, ou fin du
+    précédent selon la moitié de la largeur du caractère de base).
+    """
+    raw = w.index(f"@{x},{y}")
+    cstart = _cluster_start(w, raw)
+    # Cluster de marques sans base (ex. RLE en début de ligne) : le
+    # rattacher au cluster suivant, visible lui.
+    while _is_mark(w.get(cstart)):
+        nxt = _cluster_end(w, cstart)
+        if nxt == cstart:
+            break
+        cstart = nxt
+    bb = w.bbox(cstart)
+    if bb and x > bb[0] + bb[2] / 2:
+        return _cluster_end(w, cstart)
+    return cstart
+
+
+def _make_stable_selection(text_widget):
+    """Sélection à la souris stable sur l'hébreu vocalisé.
+
+    Remplace la sélection par défaut de Tk (tk::TextButton1 /
+    tk::TextSelectTo) pour ce widget : chaque borne est arrimée aux bords
+    de clusters de glyphes (base + nikkud + teamim). Sans cela, Tk
+    tranche à la demi-largeur du caractère sous le curseur ; sur un
+    nikkud ou un teamim (largeur nulle) la borne tombe au milieu d'un
+    cluster, là où plusieurs indices s'affichent au même endroit — et
+    sur un rendu bidi (Windows), chaque mouvement de souris fait
+    osciller l'index entre ces positions : la sélection « danse ».
+
+    Les handlers sont liés au widget (avant la classe Text dans les
+    bindtags) et retournent "break" : Tk n'applique pas sa sélection par
+    défaut. Double-clic et triple-clic sélectionnent mot et ligne
+    (bornes de mots/lignes de Tk, arrimées aux clusters), le clic simple
+    place le curseur, Maj+clic étend la sélection.
+    """
+    w = text_widget
+    if getattr(w, "_stable_sel_bound", False):
+        return
+    w._stable_sel_bound = True
+    state = {"anchor": None}
+
+    def _sel_apply(first, last):
+        w.tag_remove("sel", "1.0", "end")
+        if w.compare(first, "<", last):
+            w.tag_add("sel", first, last)
+
+    def press(event):
+        state["anchor"] = _nearest_cluster_index(w, event.x, event.y)
+        state["mode"] = "char"
+        w.mark_set("insert", state["anchor"])
+        w.tag_remove("sel", "1.0", "end")
+        w.focus_set()
+        return "break"
+
+    def drag(event):
+        if state["anchor"] is None:
+            return "break"
+        cur = _nearest_cluster_index(w, event.x, event.y)
+        anchor = state["anchor"]
+        if w.compare(cur, "<=", anchor):
+            _sel_apply(cur, anchor)
+        else:
+            _sel_apply(anchor, cur)
+        return "break"
+
+    def release(event):
+        try:
+            if w.index("sel.first") == w.index("sel.last"):
+                w.tag_remove("sel", "1.0", "end")
+        except tk.TclError:
+            pass
+        state["anchor"] = None
+        return "break"
+
+    def double_click(event):
+        # Mot : bornes définies par les espaces (les wordbreaks de Tk
+        # traitent chaque nikkud comme un mot isolé), arrimées aux
+        # clusters.
+        pos = _nearest_cluster_index(w, event.x, event.y)
+        first = pos
+        while True:
+            prev = w.index(f"{first} - 1 c")
+            if prev == first or w.get(prev) == " " or w.get(prev) == "\n":
+                break
+            first = prev
+        last = pos
+        while True:
+            nxt = w.index(f"{last} + 1 c")
+            if nxt == last or w.get(last) == " " or w.get(last) == "\n":
+                break
+            last = nxt
+        first = _cluster_start(w, first)
+        last = _cluster_end(w, last)
+        state["anchor"] = first
+        _sel_apply(first, last)
+        w.mark_set("insert", first)
+        return "break"
+
+    def triple_click(event):
+        pos = _nearest_cluster_index(w, event.x, event.y)
+        first = w.index(f"{pos} linestart")
+        last = w.index(f"{pos} lineend")
+        state["anchor"] = first
+        _sel_apply(first, _cluster_end(w, last))
+        w.mark_set("insert", first)
+        return "break"
+
+    def shift_press(event):
+        # Étendre la sélection jusqu'à la position cliquée.
+        anchor = state["anchor"]
+        if anchor is None:
+            # Pas de drag en cours : ancre = position courante du curseur.
+            anchor = w.index("insert")
+            state["anchor"] = anchor
+        cur = _nearest_cluster_index(w, event.x, event.y)
+        if w.compare(cur, "<=", anchor):
+            _sel_apply(cur, anchor)
+        else:
+            _sel_apply(anchor, cur)
+        return "break"
+
+    w.bind("<Button-1>", press)
+    w.bind("<B1-Motion>", drag)
+    w.bind("<ButtonRelease-1>", release)
+    w.bind("<Double-Button-1>", double_click)
+    w.bind("<Triple-Button-1>", triple_click)
+    w.bind("<Shift-Button-1>", shift_press)
+    w.bind("<Shift-B1-Motion>", drag)
 
 
 def _has_hebrew(line):
@@ -222,6 +437,155 @@ _HEBREW_ROWS = (
 )
 
 
+class BinyanimNotebook(ttk.Frame):
+    """Bloc d'onglets des binyanim.
+
+    Contrairement à ttk.Notebook, chaque titre d'onglet est un tk.Label :
+    son libellé peut être coloré individuellement (rouge pour un binyan
+    qui n'a pas de sens pour la racine analysée, orange pour un binyan
+    attesté dans la Mishna mais absent de la Bible), ce que l'API
+    ttk.Notebook ne permet pas.
+
+    Repris l'API utile de ttk.Notebook : add/insert/forget/select/tabs/
+    index, plus ``tab(tab_id, text=..., fg=...)`` pour modifier un onglet.
+    Le widget enfant doit être griddé dans ``self.body`` par l'appelant.
+    """
+
+    _FG_ACTIVE = "black"
+    _FG_INACTIVE = "gray40"
+    _FG_MISSING = "#b00020"
+    _FG_MISHNAH = "#c06000"
+
+    def __init__(self, parent, **kwargs):
+        super().__init__(parent, **kwargs)
+        self._tab_id_seq = 0
+        self._tabs = []
+        # barre de titres : rangée de labels cliquables
+        self.bar = tk.Frame(self)
+        self.bar.grid(row=0, column=0, sticky="ew")
+        # corps : seul l'onglet sélectionné est griddé
+        self.body = tk.Frame(self)
+        self.body.grid(row=1, column=0, sticky="nsew")
+        self.rowconfigure(1, weight=1)
+        self.columnconfigure(0, weight=1)
+        # L'onglet sélectionné doit s'étendre sur toute la largeur/hauteur
+        # du corps (sinon la zone de texte garde sa largeur demandée).
+        self.body.rowconfigure(0, weight=1)
+        self.body.columnconfigure(0, weight=1)
+        self._selected = None
+
+    def _tab_id(self):
+        self._tab_id_seq += 1
+        return f"tab{self._tab_id_seq}"
+
+    def _button_fg(self, tab):
+        if tab["fg"] is not None:
+            return tab["fg"]
+        return self._FG_ACTIVE if tab["id"] == self._selected else self._FG_INACTIVE
+
+    def _refresh_bar(self):
+        base_font, bold_font = self._btn_font()
+        for tab in self._tabs:
+            btn = tab["button"]
+            btn.configure(foreground=self._button_fg(tab))
+            btn.configure(font=bold_font if tab["id"] == self._selected else base_font)
+
+    def _select(self, tab_id):
+        for tab in self._tabs:
+            if tab["id"] == tab_id:
+                tab["widget"].grid(row=0, column=0, sticky="nsew")
+                self._selected = tab_id
+            else:
+                tab["widget"].grid_forget()
+        self._refresh_bar()
+
+    def _on_click(self, tab_id):
+        # tkinter callback : ne jamais laisser remonter d'exception
+        self._select(tab_id)
+
+    def _btn_font(self):
+        """Police des titres d'onglets : normale, et grasse pour l'onglet actif.
+
+        Famille et taille configurables via gui.properties
+        (font.tabs.family / font.tabs.size, cf. BINYAN_TAB_FONT).
+        """
+        if not hasattr(self, "_fonts"):
+            bold = tkfont.Font(root=self, font=BINYAN_TAB_FONT)
+            bold.configure(weight="bold")
+            self._fonts = (BINYAN_TAB_FONT, bold)
+        return self._fonts
+
+
+    def add(self, widget, text=""):
+        return self.insert(len(self._tabs), widget, text=text)
+
+    def insert(self, index, widget, text=""):
+        tab_id = self._tab_id()
+        btn = tk.Label(self.bar, text=text, padx=8, pady=3, takefocus=False)
+        tab = {"id": tab_id, "widget": widget, "button": btn, "text": text,
+               "fg": None}
+        self._tabs.insert(index, tab)
+        btn.bind("<Button-1>", lambda e, t=tab_id: self._on_click(t))
+        # reconstruire la barre dans l'ordre logique des onglets
+        for tab_ in self._tabs:
+            tab_["button"].grid_forget()
+        for i, tab_ in enumerate(self._tabs):
+            tab_["button"].grid(row=0, column=i, sticky="w")
+        if self._selected is None:
+            self._select(tab_id)
+        return tab_id
+
+    def forget(self, tab_id):
+        for i, tab in enumerate(self._tabs):
+            if tab["id"] == tab_id:
+                del self._tabs[i]
+                tab["button"].destroy()
+                tab["widget"].grid_forget()
+                break
+        else:
+            return
+        for i, tab_ in enumerate(self._tabs):
+            tab_["button"].grid(row=0, column=i, sticky="w")
+        if self._selected == tab_id:
+            self._selected = None
+            if self._tabs:
+                self._select(self._tabs[0]["id"])
+
+    def select(self, target):
+        if self.index(target) is None:
+            return
+        self._select(self._resolve(target))
+
+    def tab(self, target, text=None, fg=None):
+        tab = self._find(target)
+        if tab is None:
+            return {}
+        if text is not None:
+            tab["text"] = text
+            tab["button"].configure(text=text)
+        if fg is not None:
+            tab["fg"] = fg
+        self._refresh_bar()
+        return {"text": tab["text"]}
+
+    def tabs(self):
+        return [tab["id"] for tab in self._tabs]
+
+    def index(self, target):
+        tab = self._find(target)
+        return None if tab is None else self._tabs.index(tab)
+
+    def _resolve(self, target):
+        tab = self._find(target)
+        return tab["id"] if tab else None
+
+    def _find(self, target):
+        for tab in self._tabs:
+            if target == tab["id"] or target == tab["widget"]:
+                return tab
+        return None
+
+
 class HebrewKeyboard(ttk.Frame):
     """Clavier hébreu virtuel qui insère des caractères UTF-8 dans le widget
     texte ciblé (Entry ou Text).
@@ -324,13 +688,16 @@ class AnalyseurGUI:
         self.tab_verse = ttk.Frame(self.notebook)
         self.tab_word = ttk.Frame(self.notebook)
         self.tab_phrase = ttk.Frame(self.notebook)
-        self.notebook.add(self.tab_verse, text="Verset")
+        self.tab_binyanim = ttk.Frame(self.notebook)
+        self.notebook.add(self.tab_verse, text="Livre")
         self.notebook.add(self.tab_word, text="Mot")
         self.notebook.add(self.tab_phrase, text="Phrase")
+        self.notebook.add(self.tab_binyanim, text="Binyanim")
 
         self._build_verse_tab()
         self._build_word_tab()
         self._build_phrase_tab()
+        self._build_binyanim_tab()
 
         # Barre d'état (chargement de la base / analyse en cours).
         self.status = ttk.Label(self.root, text="Chargement de la base BHSA…",
@@ -340,48 +707,63 @@ class AnalyseurGUI:
     def _build_verse_tab(self):
         tab = self.tab_verse
 
-        form = ttk.LabelFrame(tab, text="Référence du verset")
+        form = ttk.LabelFrame(tab, text="Référence du livre")
         form.pack(fill="x", padx=8, pady=8)
 
+        # Corpus : Bible hébraïque (BHSA) ou Mishna (Sefaria).
+        ttk.Label(form, text="Corpus :").grid(row=0, column=0, sticky="w", padx=4, pady=6)
+        self.corpus_var = tk.StringVar(value=CORPUS_BIBLE)
+        self.corpus_combo = ttk.Combobox(form, textvariable=self.corpus_var,
+                                         state="readonly", width=14,
+                                         values=[CORPUS_BIBLE, CORPUS_MISHNA])
+        self.corpus_combo.grid(row=0, column=1, sticky="w", padx=4, pady=6)
+        self.corpus_combo.bind("<<ComboboxSelected>>", self._on_corpus_change)
+
         # Livre (ordre canonique : Torah en premier), Chapitre, Verset.
-        ttk.Label(form, text="Livre :").grid(row=0, column=0, sticky="w", padx=4, pady=6)
+        ttk.Label(form, text="Livre :").grid(row=0, column=2, sticky="w", padx=(16, 4), pady=6)
         self.book_var = tk.StringVar()
         self.book_combo = ttk.Combobox(form, textvariable=self.book_var,
                                        state="readonly", width=30)
-        self.book_combo.grid(row=0, column=1, sticky="w", padx=4, pady=6)
+        self.book_combo.grid(row=0, column=3, sticky="w", padx=4, pady=6)
         self.book_combo.bind("<<ComboboxSelected>>", self._on_book_change)
 
-        ttk.Label(form, text="Chapitre :").grid(row=0, column=2, sticky="w", padx=(16, 4), pady=6)
+        ttk.Label(form, text="Chapitre :").grid(row=0, column=4, sticky="w", padx=(16, 4), pady=6)
         self.chapter_var = tk.StringVar()
         self.chapter_combo = ttk.Combobox(form, textvariable=self.chapter_var,
                                           state="readonly", width=8)
-        self.chapter_combo.grid(row=0, column=3, sticky="w", padx=4, pady=6)
+        self.chapter_combo.grid(row=0, column=5, sticky="w", padx=4, pady=6)
         self.chapter_combo.bind("<<ComboboxSelected>>", self._on_chapter_change)
 
-        ttk.Label(form, text="Verset :").grid(row=0, column=4, sticky="w", padx=(16, 4), pady=6)
+        ttk.Label(form, text="Verset :").grid(row=0, column=6, sticky="w", padx=(16, 4), pady=6)
         self.verse_var = tk.StringVar()
         self.verse_combo = ttk.Combobox(form, textvariable=self.verse_var,
                                         state="readonly", width=8)
-        self.verse_combo.grid(row=0, column=5, sticky="w", padx=4, pady=6)
+        self.verse_combo.grid(row=0, column=7, sticky="w", padx=4, pady=6)
 
-        # Options de format
+        # Options de format (analyse BHSA uniquement ; sans effet en mode
+        # Mishna, qui affiche texte hébreu + traduction).
         opts = ttk.Frame(tab)
         opts.pack(fill="x", padx=8)
         ttk.Label(opts, text="Format :").pack(side="left", padx=(0, 4))
         self.verse_format = tk.StringVar(value="text")
-        ttk.Radiobutton(opts, text="Texte", variable=self.verse_format,
-                        value="text").pack(side="left")
-        ttk.Radiobutton(opts, text="Synthèse", variable=self.verse_format,
-                        value="summary").pack(side="left")
-        ttk.Radiobutton(opts, text="JSON", variable=self.verse_format,
-                        value="json").pack(side="left")
+        self.verse_format_widgets = []
+        for value, label in (("text", "Texte"), ("summary", "Synthèse"),
+                             ("json", "JSON")):
+            rb = ttk.Radiobutton(opts, text=label, variable=self.verse_format,
+                                 value=value)
+            rb.pack(side="left")
+            self.verse_format_widgets.append(rb)
         self.verse_no_words = tk.BooleanVar(value=False)
-        ttk.Checkbutton(opts, text="Masquer le détail mot à mot",
-                        variable=self.verse_no_words).pack(side="left", padx=(16, 0))
+        self.verse_no_words_widget = ttk.Checkbutton(
+            opts, text="Masquer le détail mot à mot",
+            variable=self.verse_no_words)
+        self.verse_no_words_widget.pack(side="left", padx=(16, 0))
 
-        # Choix des traductions affichées.
+        # Choix des traductions affichées (BHSA uniquement ; la Mishna a sa
+        # propre traduction Schwab).
         trads = ttk.Frame(tab)
         trads.pack(fill="x", padx=8, pady=(4, 0))
+        self.verse_trads_frame = trads
         ttk.Label(trads, text="Traductions :").pack(side="left", padx=(0, 4))
         self.verse_trans = {}
         for lang, label in TRANSLATIONS:
@@ -389,7 +771,7 @@ class AnalyseurGUI:
             ttk.Checkbutton(trads, text=label, variable=var).pack(side="left", padx=4)
             self.verse_trans[lang] = var
 
-        self.btn_verse = ttk.Button(tab, text="Analyser le verset",
+        self.btn_verse = ttk.Button(tab, text="Afficher le verset / la mishna",
                                    command=self._run_verse)
         self.btn_verse.pack(anchor="w", padx=8, pady=8)
         self.btn_verse.state(["disabled"])
@@ -486,6 +868,7 @@ class AnalyseurGUI:
         frame.columnconfigure(0, weight=1)
         frame.rowconfigure(0, weight=1)
         self.output_text.configure(state="disabled")
+        _make_stable_selection(self.output_text)
         # Associer la zone de résultat partagée (une par onglet).
         parent._output = self.output_text
 
@@ -533,7 +916,7 @@ class AnalyseurGUI:
     def _on_corpus_loaded(self, api):
         self.api = api
         self.status.configure(text="Base BHSA chargée. Prêt.")
-        for btn in (self.btn_verse, self.btn_word, self.btn_phrase):
+        for btn in (self.btn_verse, self.btn_word, self.btn_phrase, self.btn_binyanim):
             btn.state(["!disabled"])
         self._populate_books()
 
@@ -548,6 +931,35 @@ class AnalyseurGUI:
 
     # --- Peuplement des listes déroulantes ------------------------------
     def _populate_books(self):
+        """Remplit la liste des livres selon le corpus sélectionné.
+
+        - Bible (BHSA) : ordre canonique de la Bible hébraïque (Torah en
+          tête) = ordre naturel des nœuds « book » dans Text-Fabric ;
+        - Mishna (Sefaria) : les six sedarim dans l'ordre canonique, les
+          traités dans l'ordre canonique au sein de chaque seder (le
+          catalogue statique évite tout appel réseau).
+        """
+        if self.corpus_var.get() == CORPUS_MISHNA:
+            self._book_order = []
+            display = []
+            for seder, tracts in SEDARIM:
+                display.append(seder)
+                self._book_order.append((None, seder, None))
+                for title, fr in tracts:
+                    display.append("    " + fr)
+                    self._book_order.append((title, fr, None))
+            self.book_combo["values"] = display
+            # Index par libellé affiché (indenté) ; l'indentation marque
+            # visuellement l'appartenance au seder et est retirée à l'usage.
+            self._book_index = {}
+            for title, fr, _n in self._book_order:
+                if title is not None:
+                    self._book_index["    " + fr] = (title, None)
+            if display:
+                # Premier traité (Bérakhot), pas le seder lui-même.
+                self.book_combo.set(display[1])
+                self._on_book_change()
+            return
         F = self.api.F
         # Ordre canonique de la Bible hébraïque (Torah en tête) = ordre
         # naturel des nœuds « book » dans Text-Fabric.
@@ -565,15 +977,40 @@ class AnalyseurGUI:
             self.book_combo.current(0)
             self._on_book_change()
 
+    def _on_corpus_change(self, event=None):
+        """Bascule entre Bible et Mishna : repeuple la liste des livres.
+
+        En mode Mishna, les options d'analyse BHSA (formats, traductions
+        Segond/KJV) n'ont pas d'effet : elles sont grisées.
+        """
+        mishna = self.corpus_var.get() == CORPUS_MISHNA
+        state = "disabled" if mishna else "!disabled"
+        for rb in self.verse_format_widgets:
+            rb.state([state])
+        self.verse_no_words_widget.state([state])
+        for child in self.verse_trads_frame.winfo_children():
+            if isinstance(child, ttk.Checkbutton):
+                child.state([state])
+        self._populate_books()
+
     def _on_book_change(self, event=None):
-        if self.api is None:
-            return
-        F, L = self.api.F, self.api.L
         fr = self.book_var.get()
         entry = self._book_index.get(fr)
         if entry is None:
             return
-        _bhsa, book_node = entry
+        bhsa, book_node = entry
+        if self.corpus_var.get() == CORPUS_MISHNA:
+            # Catalogue statique : nombre de mishnayot par chapitre.
+            shape = STRUCTURE.get(bhsa, [])
+            chapters = list(range(1, len(shape) + 1))
+            self.chapter_combo["values"] = [str(c) for c in chapters]
+            if chapters:
+                self.chapter_combo.current(0)
+                self._on_chapter_change()
+            return
+        if self.api is None:
+            return
+        F, L = self.api.F, self.api.L
         chapters = sorted({F.chapter.v(c) for c in L.i(book_node, "chapter")})
         self._chapters_for_book = chapters
         self.chapter_combo["values"] = [str(c) for c in chapters]
@@ -582,18 +1019,25 @@ class AnalyseurGUI:
             self._on_chapter_change()
 
     def _on_chapter_change(self, event=None):
-        if self.api is None:
-            return
-        F, L = self.api.F, self.api.L
         fr = self.book_var.get()
         entry = self._book_index.get(fr)
         if entry is None:
             return
-        _bhsa, book_node = entry
+        bhsa, book_node = entry
         try:
             chap = int(self.chapter_var.get())
         except ValueError:
             return
+        if self.corpus_var.get() == CORPUS_MISHNA:
+            shape = STRUCTURE.get(bhsa, [])
+            n = shape[chap - 1] if 1 <= chap <= len(shape) else 0
+            self.verse_combo["values"] = [str(v) for v in range(1, n + 1)]
+            if n:
+                self.verse_combo.current(0)
+            return
+        if self.api is None:
+            return
+        F, L = self.api.F, self.api.L
         chap_node = next((c for c in L.i(book_node, "chapter")
                          if F.chapter.v(c) == chap), None)
         if chap_node is None:
@@ -604,6 +1048,211 @@ class AnalyseurGUI:
         if verses:
             self.verse_combo.current(0)
 
+    def _build_binyanim_tab(self):
+        """Onglet « Binyanim » : conjugaison d'un verbe dans les 7 binyanim.
+
+        Le résultat du CLI (texte marqué) est parsé puis présenté en
+        sous-onglets, un par binyan, dont le libellé combine le nom
+        français et le nom hébreu (ex. « qal (paal) / פָּעַל »).
+        """
+        tab = self.tab_binyanim
+        form = ttk.LabelFrame(tab, text="Verbe à conjuguer (mot conjugué ou racine trilitaire)")
+        form.pack(fill="x", padx=8, pady=8)
+
+        self.binyanim_entry = tk.Entry(form, font=HEBREW_FONT, justify="right")
+        self.binyanim_entry.pack(fill="x", padx=4, pady=4)
+        self.binyanim_entry.bind("<FocusIn>", self._remember_target)
+
+        hint = ttk.Label(form,
+                         text="Saisissez un mot conjugué (ex. שָׁמַר, avec nikkud) ou une racine "
+                              "trilitaire nue (ex. שמר, קום, בנה). La conjugaison est générée "
+                              "pour les 7 binyanim ; la catégorie du verbe (fort ou faible) "
+                              "est détectée automatiquement.",
+                         wraplength=760, justify="left")
+        hint.pack(anchor="w", padx=4, pady=(2, 6))
+
+        self._build_keyboard(form)
+
+        opts = ttk.Frame(tab)
+        opts.pack(fill="x", padx=8)
+        ttk.Label(opts, text="Format :").pack(side="left", padx=(0, 4))
+        self.binyanim_format = tk.StringVar(value="text")
+        ttk.Radiobutton(opts, text="Texte", variable=self.binyanim_format,
+                        value="text").pack(side="left")
+        ttk.Radiobutton(opts, text="JSON", variable=self.binyanim_format,
+                        value="json").pack(side="left")
+        self.binyanim_use_mishnah = tk.BooleanVar(value=False)
+        ttk.Checkbutton(opts, text="Binyanim mishnaïques (Sefaria)",
+                        variable=self.binyanim_use_mishnah,
+                        style="Toolbutton").pack(side="left", padx=(16, 0))
+
+        self.btn_binyanim = ttk.Button(tab, text="Conjuguer le verbe",
+                                       command=self._run_binyanim)
+        self.btn_binyanim.pack(anchor="w", padx=8, pady=8)
+        self.btn_binyanim.state(["disabled"])
+
+        # Zone de résultat : sous-onglets par binyan + sortie brute.
+        frame = ttk.LabelFrame(tab, text="Résultat")
+        frame.pack(fill="both", expand=True, padx=8, pady=(0, 8))
+        self.binyanim_notebook = BinyanimNotebook(frame)
+        self.binyanim_notebook.grid(row=0, column=0, sticky="nsew")
+        # Onglet « Verbe » : identification + catégorie faible.
+        self.binyanim_verb_tab = ttk.Frame(self.binyanim_notebook.body)
+        self.binyanim_notebook.add(self.binyanim_verb_tab, text="Verbe")
+        self.binyanim_verb_text = self._make_binyanim_output(self.binyanim_verb_tab)
+        # Onglet « Sortie complète » : texte marqué brut du CLI.
+        self.binyanim_raw_tab = ttk.Frame(self.binyanim_notebook.body)
+        self.binyanim_notebook.add(self.binyanim_raw_tab, text="Sortie complète")
+        self.binyanim_raw_text = self._make_binyanim_output(self.binyanim_raw_tab)
+        # Ids des onglets fixes, pour le nettoyage des sous-onglets de binyan.
+        self.binyanim_fixed_ids = set(self.binyanim_notebook.tabs())
+        frame.rowconfigure(0, weight=1)
+        frame.columnconfigure(0, weight=1)
+
+    def _make_binyanim_output(self, parent):
+        """Zone de texte défilable (ascenseurs vertical + horizontal)."""
+        text = tk.Text(parent, font=HEBREW_FONT_MONO, wrap="none",
+                       height=10, width=40)
+        text.grid(row=0, column=0, sticky="nsew")
+        yscroll = ttk.Scrollbar(parent, orient="vertical", command=text.yview)
+        yscroll.grid(row=0, column=1, sticky="ns")
+        xscroll = ttk.Scrollbar(parent, orient="horizontal", command=text.xview)
+        xscroll.grid(row=1, column=0, sticky="ew")
+        text.configure(yscrollcommand=yscroll.set, xscrollcommand=xscroll.set)
+        parent.rowconfigure(0, weight=1)
+        parent.columnconfigure(0, weight=1)
+        text.configure(state="disabled")
+        _make_stable_selection(text)
+        return text
+
+    def _run_binyanim(self):
+        if self.api is None:
+            return
+        form = self.binyanim_entry.get().strip()
+        if not form:
+            messagebox.showwarning("Binyanim", "Saisissez un verbe hébreu ou une racine.")
+            return
+        fmt = self.binyanim_format.get()
+        use_mishnah = bool(self.binyanim_use_mishnah.get())
+        F = self.api.F
+        self._disable_buttons()
+        self.status.configure(text=f"Conjugaison de « {form} »…")
+
+        def worker():
+            analysis = analyze_binyanim(F, form, use_mishnah=use_mishnah)
+            if fmt == "json":
+                result = format_binyanim_json(analysis)
+                self._work_queue.put(("binyanim_raw", result))
+            else:
+                result = format_binyanim(analysis)
+                self._work_queue.put(("binyanim_raw", result))
+                parsed = parse_binyanim_text(result)
+                self._work_queue.put(("binyanim_parsed", parsed))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _show_binyanim_raw(self, text):
+        """Affiche la sortie brute (texte marqué ou JSON)."""
+        self._set_output(self.binyanim_raw_text, text)
+        self.binyanim_notebook.select(self.binyanim_raw_tab)
+        self.status.configure(text="Prêt.")
+        self._enable_buttons()
+
+    def _show_binyanim_parsed(self, parsed):
+        """Construit un sous-onglet par binyan à partir du texte parsé.
+
+        Le libellé de chaque sous-onglet combine le nom français et le nom
+        hébreu du binyan : « qal (paal) · פָּעַל ».
+
+        Quand la racine n'a pas de sens dans un binyan (binyan non attesté
+        pour ce lemme dans la Bible hébraïque), le libellé de l'onglet est
+        coloré en rouge et l'onglet affiche un avertissement. Si des formes
+        de ce binyan sont attestées dans la Mishna (option « Binyanim
+        mishnaïques »), le libellé passe en orange et l'avertissement
+        mentionne ces formes.
+        """
+        # Nettoyer les sous-onglets de binyanim précédents (garder Verbe
+        # et Sortie complète, toujours en fin de notebook).
+        keep = self.binyanim_fixed_ids
+        for tab_id in list(self.binyanim_notebook.tabs()):
+            if tab_id in keep:
+                continue
+            self.binyanim_notebook.forget(tab_id)
+
+        verb = parsed.get("verb", {})
+        weak = parsed.get("weak", {})
+        header = []
+        if verb.get("root"):
+            header.append(f"Racine : {verb['root']}")
+        if verb.get("lex"):
+            header.append(f"lemme BHSA : {verb['lex']}")
+        if verb.get("gloss_fr"):
+            header.append(f"« {verb['gloss_fr']} »")
+        lines = []
+        if header:
+            lines.append("  · ".join(header))
+        if weak:
+            is_weak = weak.get("code") not in (None, "strong")
+            if is_weak:
+                lines.append("")
+                lines.append(f"Verbe faible : {weak.get('label', '')}")
+                if weak.get("desc"):
+                    lines.append(f"  {weak['desc']}")
+            else:
+                lines.append("")
+                lines.append("Verbe fort (shalem) : conjugaison régulière.")
+        self._set_output(self.binyanim_verb_text, "\n".join(lines))
+
+        raw_index = self.binyanim_notebook.index(self.binyanim_raw_tab)
+        for b in parsed.get("binyanim", []):
+            tab = ttk.Frame(self.binyanim_notebook.body)
+            label = f"{b['name_fr']} · {b['name_he']}"
+            if b.get("attested"):
+                label += " ✓"
+            # Insérer avant l'onglet « Sortie complète ».
+            self.binyanim_notebook.insert(raw_index, tab, text=label)
+            raw_index += 1
+            text = self._make_binyanim_output(tab)
+            content = b.get("text", "")
+            tr_fr = b.get("translation_fr") or ""
+            tr_en = b.get("translation_en") or ""
+            trads = [f"fr : {tr_fr}" for _ in (0,) if tr_fr] + \
+                    [f"en : {tr_en}" for _ in (0,) if tr_en]
+            if trads:
+                head = ("Traduction : " + "  |  ".join(trads) + "\n\n")
+                content = head + content
+            mishnah_forms = b.get("mishnah_forms") or []
+            if b.get("exists") is False:
+                if mishnah_forms:
+                    self.binyanim_notebook.tab(
+                        tab, fg=BinyanimNotebook._FG_MISHNAH)
+                    warn = ("⚠ Pas de sens biblique dans ce binyan "
+                            f"({b['name_fr']} / {b['name_he']}), mais "
+                            "attesté dans la Mishna (binyan non "
+                            "biblique) : " + ", ".join(mishnah_forms) +
+                            ".\n"
+                            "Le paradigme ci-dessous est théorique, "
+                            "construit par analogie.\n\n")
+                    content = warn + content
+                else:
+                    self.binyanim_notebook.tab(
+                        tab, fg=BinyanimNotebook._FG_MISSING)
+                    warn = ("⚠ Cette racine n'a pas de sens dans ce binyan "
+                            f"({b['name_fr']} / {b['name_he']}) : "
+                            "aucune occurrence de ce binyan pour cette racine "
+                            "dans la Bible hébraïque.\n"
+                            "Le paradigme ci-dessous est théorique, construit "
+                            "par analogie.\n\n")
+                    content = warn + content
+            self._set_output(text, content)
+
+        if parsed.get("binyanim"):
+            # Sélectionner le premier binyan.
+            first = self.binyanim_notebook.tabs()[0]
+            self.binyanim_notebook.select(first)
+        self.status.configure(text="Prêt.")
+        self._enable_buttons()
+
     # --- Lancement des analyses (en arrière-plan) -----------------------
     def _set_output(self, widget, text):
         widget.configure(state="normal")
@@ -612,12 +1261,13 @@ class AnalyseurGUI:
         widget.configure(state="disabled")
 
     def _disable_buttons(self):
-        for btn in (self.btn_verse, self.btn_word, self.btn_phrase):
+        for btn in (self.btn_verse, self.btn_word, self.btn_phrase, self.btn_binyanim):
             btn.state(["disabled"])
 
     def _enable_buttons(self):
         if self.api is not None:
-            for btn in (self.btn_verse, self.btn_word, self.btn_phrase):
+            for btn in (self.btn_verse, self.btn_word, self.btn_phrase,
+                        self.btn_binyanim):
                 btn.state(["!disabled"])
 
     def _build_translation_header(self, analysis, fr, chap, verse, trans_enabled=None):
@@ -654,8 +1304,6 @@ class AnalyseurGUI:
         return ""
 
     def _run_verse(self):
-        if self.api is None:
-            return
         fr = self.book_var.get()
         entry = self._book_index.get(fr)
         if entry is None:
@@ -666,6 +1314,11 @@ class AnalyseurGUI:
         verse = self.verse_var.get()
         if not chap or not verse:
             messagebox.showwarning("Référence", "Sélectionnez chapitre et verset.")
+            return
+        if self.corpus_var.get() == CORPUS_MISHNA:
+            self._run_mishnah(bhsa, fr.strip(), int(chap), int(verse))
+            return
+        if self.api is None:
             return
         reference = f"{fr} {chap}:{verse}"
         fmt = self.verse_format.get()
@@ -697,6 +1350,48 @@ class AnalyseurGUI:
                 self._work_queue.put(("verse_done", header + result))
             except ValueError as exc:
                 self._work_queue.put(("verse_done", f"Erreur : {exc}"))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _run_mishnah(self, tractate, fr, chapter, mishnah):
+        """Affiche une mishna (texte hébreu + traduction française).
+
+        Le texte vient de l'API Sefaria : hébreu « Torat Emet 357 » (couvre
+        les 63 traités) et français « Le Talmud de Jérusalem, traduit par
+        Moise Schwab, 1878-1890 » (38 traités seulement — sinon seul
+        l'hébreu est affiché).
+        """
+        out = self.tab_verse._output
+        self._disable_buttons()
+        reference = f"{fr} {chapter}:{mishnah}"
+        self.status.configure(text=f"Chargement Mishna : {reference}…")
+
+        def worker():
+            blocks = []
+            he = fetch_mishnah_mishnayot(tractate, chapter, "hebrew")
+            if he and 1 <= mishnah <= len(he):
+                blocks.append(f"Hébreu (Torat Emet) — {reference}\n{he[mishnah - 1]}")
+            else:
+                blocks.append(f"Hébreu (Torat Emet) — {reference}\n"
+                              "(texte indisponible : API Sefaria injoignable "
+                              "ou référence absente)")
+            if tractate in SCHWAB_TRACTATES:
+                fr_texts = fetch_mishnah_mishnayot(tractate, chapter, "french")
+                if fr_texts and 1 <= mishnah <= len(fr_texts):
+                    blocks.append(
+                        f"Traduction (Moïse Schwab, Talmud de Jérusalem) — "
+                        f"{reference}\n{fr_texts[mishnah - 1]}")
+                else:
+                    blocks.append(
+                        f"Traduction (Moïse Schwab, Talmud de Jérusalem) — "
+                        f"{reference}\n(mishna absente de la traduction)")
+            else:
+                blocks.append(
+                    f"Traduction française — {reference}\n"
+                    "(traité non couvert par la traduction de Schwab ; "
+                    "seul le texte hébreu est disponible)"
+                )
+            self._work_queue.put(("verse_done", "\n\n".join(blocks)))
 
         threading.Thread(target=worker, daemon=True).start()
 
@@ -767,6 +1462,10 @@ class AnalyseurGUI:
                     self._set_output(self.tab_phrase._output, payload)
                     self.status.configure(text="Prêt.")
                     self._enable_buttons()
+                elif kind == "binyanim_raw":
+                    self._show_binyanim_raw(payload)
+                elif kind == "binyanim_parsed":
+                    self._show_binyanim_parsed(payload)
         except queue.Empty:
             pass
         self.root.after(120, self._poll_queue)
