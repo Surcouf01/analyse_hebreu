@@ -968,6 +968,11 @@ class AnalyseurGUI:
                 self.book_combo.set(display[1])
                 self._on_book_change()
             return
+        if self.api is None:
+            # Base BHSA pas encore chargée (ou en échec) : la liste des
+            # livres bibliques reste vide ; _on_corpus_loaded la remplira.
+            self.book_combo["values"] = []
+            return
         F = self.api.F
         # Ordre canonique de la Bible hébraïque (Torah en tête) = ordre
         # naturel des nœuds « book » dans Text-Fabric.
