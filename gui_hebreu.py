@@ -54,6 +54,10 @@ from bhsa_grammar import (
 )
 from bhsa_grammar.sefaria_client import fetch_mishnah_mishnayot
 from bhsa_grammar.mishnah_catalog import SEDARIM, STRUCTURE, SCHWAB_TRACTATES
+from bhsa_grammar.mishnah_analyzer import (
+    analyze_mishnah_text,
+    mishnah_analysis_block,
+)
 
 
 # Langues de traduction disponibles, avec leur libellé.
@@ -756,6 +760,13 @@ class AnalyseurGUI:
             variable=self.verse_no_words)
         self.verse_no_words_widget.pack(side="left", padx=(16, 0))
 
+        # Analyse grammaticale de la mishna affichée (requiert la base BHSA,
+        # chargée au démarrage ; les formats Texte/JSON s'appliquent).
+        self.mishna_analyze = tk.BooleanVar(value=True)
+        ttk.Checkbutton(opts, text="Analyse grammaticale (mishna)",
+                        variable=self.mishna_analyze).pack(
+            side="left", padx=(16, 0))
+
         # Choix des traductions affichées (BHSA uniquement ; la Mishna a sa
         # propre traduction Schwab).
         trads = ttk.Frame(tab)
@@ -977,13 +988,14 @@ class AnalyseurGUI:
     def _on_corpus_change(self, event=None):
         """Bascule entre Bible et Mishna : repeuple la liste des livres.
 
-        En mode Mishna, les options d'analyse BHSA (formats, traductions
-        Segond/KJV) n'ont pas d'effet : elles sont grisées.
+        En mode Mishna, les options propres à la BHSA (masquage du détail
+        mot à mot, traductions Segond/KJV) n'ont pas d'effet : elles sont
+        grisées. Les formats Texte/Synthèse/JSON restent actifs : ils
+        s'appliquent aussi à l'analyse grammaticale de la mishna (Synthèse
+        est ramenée à Texte pour la Mishna).
         """
         mishna = self.corpus_var.get() == CORPUS_MISHNA
         state = "disabled" if mishna else "!disabled"
-        for rb in self.verse_format_widgets:
-            rb.state([state])
         self.verse_no_words_widget.state([state])
         for child in self.verse_trads_frame.winfo_children():
             if isinstance(child, ttk.Checkbutton):
@@ -1348,23 +1360,33 @@ class AnalyseurGUI:
         threading.Thread(target=worker, daemon=True).start()
 
     def _run_mishnah(self, tractate, fr, chapter, mishnah):
-        """Affiche une mishna (texte hébreu + traduction française).
+        """Affiche une mishna (texte hébreu + traduction + analyse).
 
         Le texte vient de l'API Sefaria : hébreu « Torat Emet 357 » (couvre
         les 63 traités) et français « Le Talmud de Jérusalem, traduit par
         Moise Schwab, 1878-1890 » (38 traités seulement — sinon seul
-        l'hébreu est affiché).
+        l'hébreu est affiché). L'analyse grammaticale (case à cocher « Analyse
+        grammaticale (mishna) ») passe le texte hébreu au moteur de phrase
+        BHSA : indicative, car la BHSA ne couvre que le vocabulaire biblique.
         """
         out = self.tab_verse._output
         self._disable_buttons()
         reference = f"{fr} {chapter}:{mishnah}"
         self.status.configure(text=f"Chargement Mishna : {reference}…")
 
+        analyze = self.mishna_analyze.get() and self.api is not None
+        fmt = "json" if self.verse_format.get() == "json" else "text"
+
         def worker():
             blocks = []
             he = fetch_mishnah_mishnayot(tractate, chapter, "hebrew")
             if he and 1 <= mishnah <= len(he):
-                blocks.append(f"Hébreu (Torat Emet) — {reference}\n{he[mishnah - 1]}")
+                hebrew_text = he[mishnah - 1]
+                blocks.append(f"Hébreu (Torat Emet) — {reference}\n{hebrew_text}")
+                if analyze:
+                    analysis = analyze_mishnah_text(self.api.F, self.api.L,
+                                                     hebrew_text)
+                    blocks.append(mishnah_analysis_block(analysis, fmt))
             else:
                 blocks.append(f"Hébreu (Torat Emet) — {reference}\n"
                               "(texte indisponible : API Sefaria injoignable "
