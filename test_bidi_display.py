@@ -10,6 +10,7 @@ from bidi_display import (
     to_visual,
     to_logical,
     has_hebrew,
+    logical_wrap,
     visual_cluster_bounds,
     visual_hebrew_word_range,
     LRM,
@@ -137,6 +138,54 @@ class TestStability(unittest.TestCase):
         self.assertNotIn("\u202B", visual)
         self.assertNotIn("\u202C", visual)
         self.assertNotIn("\u200F", visual)
+
+
+class TestLogicalWrap(unittest.TestCase):
+    """logical_wrap : retour à la ligne en ordre logique avant conversion."""
+
+    def test_short_line_untouched(self):
+        self.assertEqual(logical_wrap(GEN11, len, 1000), GEN11)
+
+    def test_latin_lines_untouched(self):
+        text = "Analyse grammaticale de l'hébreu biblique — une phrase assez " \
+               "longue qui dépasserait la largeur du widget."
+        self.assertEqual(logical_wrap(text, len, 10), text)
+
+    def test_hebrew_wraps_in_reading_order(self):
+        """La première ligne découpée doit contenir le PREMIER mot logique
+        (le début de la phrase), pas la fin : c'est ce qui garantit que
+        l'ordre d'affichage haut en bas reste l'ordre de lecture."""
+        words = ["בְּרֵאשִׁית", "בָּרָא", "אֱלֹהִים", "שָׁמַיִם", "וְאֵת"]
+        line = " ".join(words)
+        wrapped = logical_wrap(line, len, 12)
+        out_lines = wrapped.split("\n")
+        self.assertGreater(len(out_lines), 1)
+        for l in out_lines:
+            self.assertLessEqual(len(l), 12)
+        # Le premier mot logique est sur la première ligne...
+        self.assertIn(words[0], out_lines[0])
+        # ... et le dernier mot logique sur la dernière ligne.
+        self.assertIn(words[-1], out_lines[-1])
+
+    def test_round_trip_preserved(self):
+        """Le texte découpé puis visuel reste réversible en logique."""
+        wrapped = logical_wrap(GEN11 + " אֱלֹהִים שָׁמַיִם", len, 8)
+        self.assertEqual(to_logical(to_visual(wrapped)), wrapped)
+
+    def test_wide_word_split_by_clusters(self):
+        """Un mot plus large qu'une ligne est coupé entre clusters, jamais
+        au milieu d'une lettre + nikkud."""
+        word = "וּפְטוּרוֹת"
+        parts = bidi_display._split_wide_word(word, len, 3)
+        self.assertGreater(len(parts), 1)
+        joined = "".join(parts)
+        # chaque fragment reste un préfixe/suffixe du mot (clusters intacts)
+        self.assertEqual(sorted(parts[0]), sorted(word[:len(parts[0])]))
+        self.assertEqual(to_logical(to_visual(joined)), joined)
+
+    def test_empty_and_zero_width(self):
+        self.assertEqual(logical_wrap("", len, 80), "")
+        self.assertEqual(logical_wrap(GEN11, len, 0), GEN11)
 
 
 if __name__ == "__main__":

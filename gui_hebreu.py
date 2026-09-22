@@ -28,7 +28,7 @@ import unicodedata
 import tkinter as tk
 from tkinter import ttk, messagebox, font as tkfont
 
-from bidi_display import to_visual, to_logical
+from bidi_display import to_visual, to_logical, logical_wrap
 
 from bhsa_grammar import (
     load_corpus,
@@ -634,19 +634,79 @@ class ResultText(tk.Text):
     à la souris (gérée par _make_stable_selection, qui arrime les bornes aux
     clusters de glyphes) est stable et prévisible. La copie (Ctrl+C)
     restitue l'ordre logique du texte d'origine.
-    """
 
+    Le retour à la ligne automatique de Tk s'applique au texte stocké : sur
+    une ligne en ordre visuel, la première ligne affichée contiendrait la
+    FIN de la phrase. Les lignes hébraïques sont donc découpées en ordre
+    logique (logical_wrap) à la largeur du widget avant conversion ; la
+    découpe est refaite quand la fenêtre est redimensionnée.
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.bind("<<Copy>>", self._on_copy)
+        self._logical_text = ""
+        self._wrap_width = 0
+        self._wrap_job = None
+        font = kwargs.get("font")
+        self._tkfont = (tkfont.Font(root=self, font=font)
+                        if font is not None else None)
+        self._autowrap = kwargs.get("wrap") != "none"
+        self.bind("<Configure>", self.on_resize)
 
     def set_text(self, text):
-        """Remplace le contenu par ``text`` mis en ordre visuel."""
+        """Mémorise le texte logique et affiche (découpe + ordre visuel)."""
+        self._logical_text = text
+        self._wrap_width = 0
+        self._redisplay()
+
+    def _display_width(self):
+        """Largeur intérieure disponible pour une ligne (pixels)."""
+        try:
+            return max(1, self.winfo_width() - 12)
+        except tk.TclError:
+            return 0
+
+    def _redisplay(self):
+        """Découpe les lignes hébraïques à la largeur courante, convertit
+        en ordre visuel et remplace le contenu du widget."""
         self.configure(state="normal")
         self.delete("1.0", "end")
-        self.insert("1.0", to_visual(text))
+        width = self._display_width() if self._autowrap else 0
+        if width <= 1:
+            self.insert("1.0", to_visual(self._logical_text))
+        else:
+            self._wrap_width = width
+            self.insert("1.0", to_visual(
+                logical_wrap(self._logical_text, self._measure, width)))
         self.configure(state="disabled")
+
+    def _measure(self, s):
+        if self._tkfont is None:
+            return len(s)
+        return self._tkfont.measure(s)
+
+    def on_resize(self, event=None):
+        """Re-découpe (différé) si la largeur affichable a changé."""
+        if not self._autowrap:
+            return
+        width = self._display_width()
+        if width == self._wrap_width:
+            return
+        if self._wrap_job is not None:
+            try:
+                self.after_cancel(self._wrap_job)
+            except tk.TclError:
+                pass
+        self._wrap_job = self.after(60, self._redisplay)
+        self._wrap_width = width
+
+    def set_font(self, font):
+        """Change la police du rendu ; re-découpe car les largeurs changent."""
+        self._tkfont = tkfont.Font(root=self, font=font)
+        self.configure(font=font)
+        if self._logical_text:
+            self._redisplay()
 
     # --- Copie en ordre logique ------------------------------------------
     def _on_copy(self, event=None):

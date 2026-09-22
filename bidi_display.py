@@ -102,6 +102,61 @@ def _visual_clusters(clusters):
     return out
 
 
+def logical_wrap(text, measure, avail):
+    """Retour à la ligne en ordre LOGIQUE pour les lignes contenant de
+    l'hébreu, avant la conversion en ordre visuel.
+
+    Tk coupe les lignes trop longues au mot près sur le texte STOCKÉ :
+    en ordre visuel, la première ligne affichée contiendrait la FIN de
+    la phrase (le début tomberait sur la ligne suivante). Cette fonction
+    insère donc les retours à la ligne AVANT la conversion, au mot près
+    (ou entre clusters pour un mot plus large que la ligne). Les lignes
+    sans hébreu ne sont pas découpées : Tk les gère correctement (leur
+    ordre logique est leur ordre visuel).
+
+    ``measure(str) -> largeur`` (pixels, ou toute unité cohérente avec
+    ``avail``) ; ``avail`` est la largeur disponible d'une ligne.
+    """
+    if not text or not avail or avail <= 0:
+        return text
+    out_lines = []
+    for line in text.split("\n"):
+        if not has_hebrew(line):
+            out_lines.append(line)
+            continue
+        words = []
+        for w in line.split(" "):
+            words.extend(_split_wide_word(w, measure, avail))
+        cur = ""
+        for w in words:
+            cand = w if not cur else cur + " " + w
+            if cur and measure(cand) > avail:
+                out_lines.append(cur)
+                cur = w
+            else:
+                cur = cand
+        out_lines.append(cur)
+    return "\n".join(out_lines)
+
+
+def _split_wide_word(word, measure, avail):
+    """Coupe un mot plus large qu'une ligne entière entre clusters
+    (jamais au milieu d'une lettre + nikkud)."""
+    if measure(word) <= avail:
+        return [word]
+    parts = []
+    cur = ""
+    for c in _clusters(word):
+        if cur and measure(cur + c) > avail:
+            parts.append(cur)
+            cur = c
+        else:
+            cur += c
+    if cur:
+        parts.append(cur)
+    return parts
+
+
 def to_visual(text):
     """Prépare un texte pour un affichage hébreu stable dans le GUI.
 
