@@ -33,6 +33,30 @@ import unicodedata
 # Marque gauche-droite (Left-to-Right Mark) : invisible, sans largeur.
 LRM = "\u200E"
 
+# Marque droite-gauche (Right-to-Left Mark) : invisible, sans largeur.
+# Préfixe des lignes à base RTL CONTENANT du texte latin fort : sans elle,
+# to_logical ne pourrait pas distinguer, à la copie, une telle ligne visuelle
+# d'une ligne à base LTR (ordre des runs inversé dans les deux sens).
+RLM = "\u200F"
+
+
+def _base_rtl(line):
+    """Direction de base de la ligne : celle de la première lettre forte
+    (standard Unicode). Hébreu/arabe → RTL, latin → LTR ; les neutres
+    (ponctuation, espaces) et les chiffres sont ignorés. Par défaut RTL."""
+    for ch in line:
+        bd = unicodedata.bidirectional(ch)
+        if bd in ("R", "AL"):
+            return True
+        if bd == "L":
+            return False
+    return True
+
+
+def _has_ltr_strong(line):
+    """Vrai si la ligne contient au moins une lettre forte LTR (latine)."""
+    return any(unicodedata.bidirectional(c) == "L" for c in line)
+
 # Cluster hébreu en ordre visuel : LRM + une lettre de base (consonne ou
 # voyelle lettre) suivie de ses marques combinantes — nikkud U+05B0..U+05BD,
 # daguesh U+05BC, points shin/sin U+05C1..U+05C2, teamim U+0591..U+05AF.
@@ -84,11 +108,14 @@ def _cluster_is_rtl(cluster):
     return any(_is_hebrew_char(c) for c in cluster)
 
 
-def _visual_clusters(clusters):
-    """Réordonne les clusters en ordre visuel (ligne à base RTL) : les
-    segments s'empilent de droite à gauche ; à l'intérieur d'un segment
-    RTL les clusters sont inversés, un segment LTR (mots latins, chiffres,
-    espaces) garde son ordre interne. La transformation est involutive."""
+def _visual_clusters(clusters, base_rtl=True):
+    """Réordonne les clusters en ordre visuel. À l'intérieur d'un segment
+    RTL les clusters sont inversés ; un segment LTR (mots latins, chiffres,
+    espaces) garde son ordre interne. En base RTL les segments s'empilent
+    de droite à gauche (ordre inverse) ; en base LTR (en-tête latin suivi
+    d'hébreu, ex. « === Phrase analysée : … === ») ils restent dans l'ordre
+    logique, pour que le préfixe latin s'affiche bien en début de ligne.
+    La transformation est involutive dans les deux bases."""
     runs = []
     for c in clusters:
         rtl = _cluster_is_rtl(c)
@@ -96,8 +123,9 @@ def _visual_clusters(clusters):
             runs[-1][1].append(c)
         else:
             runs.append((rtl, [c]))
+    ordered = reversed(runs) if base_rtl else runs
     out = []
-    for rtl, run in reversed(runs):
+    for rtl, run in ordered:
         out.extend(reversed(run) if rtl else run)
     return out
 
@@ -174,12 +202,17 @@ def to_visual(text):
         if not any(_cluster_is_rtl(c) for c in clusters):
             out_lines.append(line)
             continue
+        base_rtl = _base_rtl(line)
         parts = []
-        for c in _visual_clusters(clusters):
+        for c in _visual_clusters(clusters, base_rtl):
             if _cluster_is_rtl(c):
                 parts.append(LRM)
             parts.append(c)
-        out_lines.append("".join(parts))
+        out = "".join(parts)
+        if base_rtl and _has_ltr_strong(line):
+            # Ligne RTL mixte : marquée pour que to_logical retrouve la base.
+            out = RLM + out
+        out_lines.append(out)
     return "\n".join(out_lines)
 
 
@@ -191,12 +224,18 @@ def to_logical(text):
         return text
     out_lines = []
     for line in text.split("\n"):
+        # Base de la ligne : marquée RLM (RTL mixte), sinon déduite du
+        # contenu (RTL par défaut, LTR si la ligne contient du latin fort).
+        # Les marques sont retirées AVANT le test : LRM a la classe bidi
+        # « L » et fausserait la détection.
+        marked_rtl = line.startswith(RLM)
         clean = _BIDI_MARKS_RE.sub("", line)
+        base_rtl = marked_rtl or not _has_ltr_strong(clean)
         clusters = _clusters(clean)
         if not any(_cluster_is_rtl(c) for c in clusters):
             out_lines.append(clean)
             continue
-        out_lines.append("".join(_visual_clusters(clusters)))
+        out_lines.append("".join(_visual_clusters(clusters, base_rtl)))
     return "\n".join(out_lines)
 
 

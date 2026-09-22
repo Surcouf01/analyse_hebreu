@@ -80,6 +80,24 @@ class TestRoundTrip(unittest.TestCase):
         latin = "=== Genesis 1:1 ==="
         self.assertEqual(to_visual(to_visual(latin)), latin)
 
+    def test_ltr_prefix_line_keeps_prefix_first(self):
+        """Une ligne dont la première lettre forte est latine (base LTR),
+        ex. « === Phrase analysée : … === », garde son préfixe en tête de
+        la chaîne stockée : il s'affiche en début de ligne, pas rejeté à
+        droite de l'hébreu."""
+        line = "=== Phrase analysée : מֵאֵימָתַי קוֹרִין ==="
+        visual = to_visual(line)
+        self.assertTrue(visual.startswith("=== Phrase analysée :"))
+        self.assertEqual(to_logical(visual), line)
+
+    def test_rtl_base_with_latin_marked_and_reversible(self):
+        """Une ligne à base RTL contenant du latin fort reste réversible
+        (marque RLM en tête de la ligne visuelle)."""
+        line = "בְּרֵאשִׁית wayyiqtol בָּרָא"
+        visual = to_visual(line)
+        self.assertTrue(visual.startswith(bidi_display.RLM))
+        self.assertEqual(to_logical(visual), line)
+
     def test_visual_marks_stripped_before_reorder(self):
         """Une entrée contenant déjà des marques bidi (ancien format RLE/RLM)\n        est normalisée sans doubler les marques."""
         legacy = "\u202B" + GEN11 + "\u202C"
