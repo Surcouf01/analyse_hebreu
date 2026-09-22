@@ -200,6 +200,14 @@ def main(argv=None):
     # Mode Mishna : pas besoin de la base BHSA.
     if args.mishna and not args.list_books:
         return _run_mishna_cli(args)
+    if args.list_books and args.mishna:
+        print("Traités de la Mishna disponibles (nom français — nom Sefaria) :")
+        for seder, tracts in SEDARIM:
+            print(f"  {seder} :")
+            for title, fr in tracts:
+                schwab = "" if title in SCHWAB_TRACTATES else "  [sans trad. FR]"
+                print(f"    - {fr}  ({title}){schwab}")
+        return 0
 
     try:
         api = load_corpus()
@@ -208,14 +216,6 @@ def main(argv=None):
         return 2
 
     if args.list_books:
-        if args.mishna:
-            print("Traités de la Mishna disponibles (nom français — nom Sefaria) :")
-            for seder, tracts in SEDARIM:
-                print(f"  {seder} :")
-                for title, fr in tracts:
-                    schwab = "" if title in SCHWAB_TRACTATES else "  [sans trad. FR]"
-                    print(f"    - {fr}  ({title}){schwab}")
-            return 0
         print("Livres disponibles (nom français — nom BHSA) :")
         for bhsa, fr in book_list_fr(api.F):
             print(f"  - {fr}  ({bhsa})")

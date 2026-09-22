@@ -117,6 +117,18 @@ La zone de résultat dispose d'un **ascenseur vertical et horizontal** : les
 longues lignes ne sont pas coupées (`wrap=none`) et peuvent être défiler
 latéralement si elles dépassent du cadre.
 
+#### Sélection stable du texte hébreu
+
+Le widget Text de Tk affiche correctement l'hébreu (le moteur de rendu de la
+plateforme réordonne les lettres de droite à gauche), mais il mesure le texte
+dans l'ordre **logique** du stockage : la position cliquée ne correspond pas
+au caractère affiché sous le curseur, et la sélection « danse ». Le GUI
+stocke donc le texte hébreu en ordre **visuel** (module `bidi_display.py`) :
+l'ordre du widget coïncide alors avec l'affichage, et la sélection à la
+souris devient stable — clic et glissement s'alignent sur les lettres
+pointées (lettre + voyelles/accents inséparables), double-clic : mot entier,
+triple-clic : ligne. La copie (Ctrl+C) restitue l'ordre logique d'origine.
+
 #### Traductions française et anglaise
 
 L'onglet **Livre** (mode Bible) affiche, en tête du résultat, une ou deux
@@ -332,6 +344,8 @@ print(format_text(analyse))
 ```
 analyse_hebreu.py        # CLI (mode verset/livre, mot, phrase, binyanim, mishna)
 gui_hebreu.py           # interface graphique Tkinter (mêmes fonctions que le CLI)
+bidi_display.py        # ordre visuel de l'hébreu pour le GUI (sélection stable)
+test_bidi_display.py   # tests du module bidi_display
 gui.properties         # polices/tailles d'affichage du GUI (points)
 data/
   louis_segond_1910.txt  # traduction française Louis Segond 1910 (domaine public)
