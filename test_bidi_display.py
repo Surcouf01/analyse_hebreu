@@ -87,7 +87,9 @@ class TestRoundTrip(unittest.TestCase):
         droite de l'hébreu."""
         line = "=== Phrase analysée : מֵאֵימָתַי קוֹרִין ==="
         visual = to_visual(line)
-        self.assertTrue(visual.startswith("=== Phrase analysée :"))
+        # marqueur de base LTR (double LRM, invisible) puis le préfixe
+        stripped = visual.lstrip(bidi_display.LRM + bidi_display.RLM)
+        self.assertTrue(stripped.startswith("=== Phrase analysée :"))
         self.assertEqual(to_logical(visual), line)
 
     def test_rtl_base_with_latin_marked_and_reversible(self):
@@ -188,7 +190,42 @@ class TestLogicalWrap(unittest.TestCase):
     def test_round_trip_preserved(self):
         """Le texte découpé puis visuel reste réversible en logique."""
         wrapped = logical_wrap(GEN11 + " אֱלֹהִים שָׁמַיִם", len, 8)
-        self.assertEqual(to_logical(to_visual(wrapped)), wrapped)
+        # les fragments portent un marqueur de base (RLM) ; la copie
+        # doit redonner le texte SANS les marqueurs, ligne par ligne.
+        expected = "\n".join(
+            l.lstrip(bidi_display.RLM + bidi_display.LRM)
+            for l in wrapped.split("\n"))
+        self.assertEqual(to_logical(to_visual(wrapped)), expected)
+
+    def test_wrapped_ltr_line_keeps_suffix_at_end(self):
+        """Fragment replié d'une ligne à base LTR : le suffixe neutre
+        (« === ») reste en FIN de fragment, pas rejeté à gauche (la base
+        de la ligne d'origine est préservée par le marqueur)."""
+        line = ("=== Phrase analysée : מֵאֵימָתַי קוֹרִין "
+                "אֶת שְׁמַע בְּעַרְבִית ===")
+        wrapped = logical_wrap(line, len, 40)
+        lines = wrapped.split("\n")
+        self.assertGreater(len(lines), 1)
+        self.assertTrue(lines[-1].endswith("==="))
+        self.assertEqual(to_logical(to_visual(wrapped)),
+                         "\n".join(
+                             l.lstrip(bidi_display.RLM + bidi_display.LRM)
+                             for l in lines))
+
+    def test_hebrew_segment_in_ltr_line_reads_rtl(self):
+        """Dans une ligne à base LTR, le segment hébreu multi-mots est
+        inversé d'un bloc : le DERNIER mot logique est le plus à GAUCHE
+        (premier dans la chaîne visuelle) — la phrase se lit de droite
+        à gauche, pas mot à mot de gauche à droite."""
+        line = "=== Phrase analysée : מֵאֵימָתַי קוֹרִין אֶת שְׁמַע ==="
+        visual = to_visual(line).lstrip(LRM + bidi_display.RLM)
+        seg = visual[visual.find("אֵים") if "אֵים" in visual else 0:]
+        # le segment hébreu est inversé cluster par cluster : la 1re
+        # lettre hébreu stockée est la DERNIÈRE lettre du DERNIER mot
+        # logique (ע de שְׁמַע) — la phrase se lit de droite à gauche.
+        first_heb = next(c for c in visual if "\u05D0" <= c <= "\u05EA")
+        self.assertEqual(first_heb, "ע")  # ayin final de שְׁמַע
+        self.assertEqual(to_logical(to_visual(line)), line)
 
     def test_wide_word_split_by_clusters(self):
         """Un mot plus large qu'une ligne est coupé entre clusters, jamais
