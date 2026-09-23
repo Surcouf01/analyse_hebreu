@@ -265,6 +265,60 @@ class TestLogicalWrap(unittest.TestCase):
         self.assertEqual(logical_wrap(GEN11, len, 0), GEN11)
 
 
+class TestMirrorParens(unittest.TestCase):
+    """Règle UAX #9 L4 : en contexte RTL, une parenthèse est rendue avec
+    son glyphe miroir — sinon les parenthèses autour d'une racine hébraïque
+    s'affichent « inversées » (ouvertures vers l'extérieur du mot)."""
+
+    def test_parens_around_hebrew_root(self):
+        """(בלהה) dans une ligne à base RTL : à l'écran (ordre du stockage,
+        gauche-à-droite), la racine inversée doit être PRÉCÉDÉE du glyphe
+        miroir de « ( » et SUIVIE de celui de « ) » — les parenthèses
+        encadrent le mot, elles ne s'ouvrent pas vers l'extérieur."""
+        line = "‣ בַּלָּ֫הֹ֥ות  (בלהה)  « Bilha »"
+        visual = to_visual(line)
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        self.assertIn("(ההלב)", clean)
+        self.assertNotIn(")ההלב(", clean)
+        # La copie restitue la ligne logique d'origine (involutivité :
+        # to_logical re-miroite dans l'autre sens).
+        self.assertEqual(to_logical(visual), line)
+
+    def test_parens_around_hebrew_in_ltr_line(self):
+        """A (בלהה) B : les parenthèses encadrent le mot hébreu inversé."""
+        visual = to_visual("A (בלהה) B")
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        self.assertIn("(ההלב)", clean)
+        self.assertEqual(to_logical(visual), "A (בלהה) B")
+
+    def test_latin_parens_not_mirrored(self):
+        """Une parenthèse en contexte LTR (latin) garde son glyphe."""
+        line = "Bilha : « servante » (nom propre)"
+        self.assertEqual(to_visual(line), line)
+        self.assertEqual(to_logical(line), line)
+
+    def test_brackets_and_braces_mirrored(self):
+        """Crochets et accolades autour d'une racine : idem parenthèses."""
+        line = "Racine [בלהה] et {בלהה}"
+        clean = (to_visual(line)
+                 .replace(LRM, "").replace(bidi_display.RLM, ""))
+        self.assertIn("[ההלב]", clean)
+        self.assertIn("{ההלב}", clean)
+        self.assertEqual(to_logical(to_visual(line)), line)
+
+    def test_guillemets_francais_not_mirrored(self):
+        """« » ne sont pas Bidi_Mirrored : leur glyphe ne change jamais
+        (seul l'ordre d'affichage suit le bidi, comme pour un navigateur)."""
+        line = "בלהה « Bilha »"
+        visual = to_visual(line)
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        self.assertIn("«", clean)
+        self.assertIn("»", clean)
+        self.assertEqual(clean.count("«"), 1)
+        self.assertEqual(clean.count("»"), 1)
+        self.assertEqual(to_logical(visual), line)
+
+
 class TestConsonantSearch(unittest.TestCase):
     """Recherche Ctrl-F : squelette consonantique (sans nikkud ni teamim)
     sur le texte stocké en ordre visuel."""

@@ -75,6 +75,34 @@ _BIDI_MARKS_RE = re.compile(
     "\u2066\u2067\u2068\u2069]"
 )
 
+# Paires de caractères miroir (règle UAX #9 L4) : en contexte RTL, une
+# parenthèse ouvrante est rendue avec le glyphe de sa fermante (et
+# réciproquement) pour que les parenthèses ENTOURENT visuellement le mot
+# qu'elles encadrent. Tk rend le texte stocké tel quel (le stockage visuel
+# court-circuite son moteur bidi) : le miroir doit donc être appliqué
+# explicitement, au moment du réordonnancement. Les guillemets français
+# « » ne sont PAS Bidi_Mirrored (U+00AB/U+00BB) : ils ne sont pas miroités.
+_MIRROR_PAIRS = {
+    "(": ")", ")": "(",
+    "[": "]", "]": "[",
+    "{": "}", "}": "{",
+    "<": ">", ">": "<",
+    "\u2039": "\u203a", "\u203a": "\u2039",  # guillemets simples ‹ ›
+    "\u27e8": "\u27e9", "\u27e9": "\u27e8",  # chevrons ⟨ ⟩
+}
+
+
+def _mirror_char(ch):
+    """Glyphe miroir d'un caractère (cf. _MIRROR_PAIRS), ou lui-même."""
+    return _MIRROR_PAIRS.get(ch, ch)
+
+
+def _mirror_cluster(cluster):
+    """Miroite les caractères miroirables d'un cluster (règle UAX #9 L4)."""
+    if not any(ch in _MIRROR_PAIRS for ch in cluster):
+        return cluster
+    return "".join(_mirror_char(ch) for ch in cluster)
+
 
 def _is_hebrew_char(ch):
     """Vrai pour tout caractère du bloc hébreu (lettres, voyelles/nikkud,
@@ -223,7 +251,14 @@ def _visual_clusters(clusters, base_rtl=True):
     ordered = list(reversed(runs)) if base_rtl else runs
     out = []
     for d, run in ordered:
-        out.extend(reversed(run) if d == "R" else run)
+        if d == "R":
+            # Règle UAX #9 L4 : un caractère miroir résolu RTL est rendu avec
+            # son glyphe miroir. La transformation est involutive : to_logical
+            # re-résout les directions et re-miroite, ce qui restitue
+            # l'original à la copie.
+            out.extend(_mirror_cluster(c) for c in reversed(run))
+        else:
+            out.extend(run)
     return out
 
 
