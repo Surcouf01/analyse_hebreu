@@ -430,6 +430,24 @@ def visual_hebrew_word_range(line, col):
 
 # --- Recherche consonantique (Ctrl-F dans la zone de résultat) ---------
 
+# Lettres finales (sofit) et leur forme médiale/institiale équivalente :
+# une recherche « insensible au sofit » plie ך→כ, ם→מ, ן→נ, ף→פ, ץ→צ
+# des deux côtés (requête et texte).
+_SOFIT_FOLD = {
+    "\u05DA": "\u05DB",  # ך -> כ
+    "\u05DD": "\u05DE",  # ם -> מ
+    "\u05DF": "\u05E0",  # ן -> נ
+    "\u05E3": "\u05E4",  # ף -> פ
+    "\u05E5": "\u05E6",  # ץ -> צ
+}
+
+
+def fold_sofit(text):
+    """Remplace chaque lettre finale (sofit) par sa forme médiale
+    équivalente (ך→כ, ם→מ, ן→נ, ף→פ, ץ→צ) ; les autres caractères
+    sont inchangés."""
+    return "".join(_SOFIT_FOLD.get(c, c) for c in text)
+
 
 def consonant_skeleton(text):
     """Squelette consonantique : lettres hébraïques nues (U+05D0..U+05EA),
@@ -493,7 +511,7 @@ def _stored_clusters(visual_line):
     return out, marked
 
 
-def find_line_matches(visual_line, query_skeleton):
+def find_line_matches(visual_line, query_skeleton, sofit_insensitive=True):
     """Recherche le squelette consonantique ``query_skeleton`` dans une
     ligne stockée en ordre visuel, et renvoie les correspondances en
     indices du texte STOCKÉ (marques LRM/RLM comprises) — directement
@@ -510,6 +528,11 @@ def find_line_matches(visual_line, query_skeleton):
     correspondance sur les clusters stockés via la permutation bidi
     (cf. _visual_cluster_indices).
 
+    ``sofit_insensitive`` (défaut True) plie les lettres finales des deux
+    côtés (ך→כ, ם→מ, ן→נ, ף→פ, ץ→צ) : « המלך » trouve « המלך » et
+    « מלכם » ; à False, seules les formes exactes correspondent (ך ne
+    matche que ך).
+
     Renvoie ``[(début, fin), …]`` en indices du texte stocké, en ordre de
     LECTURE (ordre logique : droite à gauche à l'écran pour l'hébreu) —
     l'ordre naturel pour naviguer d'occurrence en occurrence. L'étendue
@@ -519,6 +542,8 @@ def find_line_matches(visual_line, query_skeleton):
     """
     if not query_skeleton:
         return []
+    if sofit_insensitive:
+        query_skeleton = fold_sofit(query_skeleton)
     stored, base_rtl = _stored_clusters(visual_line)
     if not stored or base_rtl is None:
         return []
@@ -531,6 +556,8 @@ def find_line_matches(visual_line, query_skeleton):
     for k in perm:
         start, end, text = stored[k]
         letters = consonant_skeleton(text)
+        if sofit_insensitive:
+            letters = fold_sofit(letters)
         if letters:
             entries.append((letters, start, end))
     if not entries:

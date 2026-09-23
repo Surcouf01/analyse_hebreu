@@ -154,6 +154,11 @@ mots (`ברא אלהים`) est trouvée même si l'affichage visuel inverse les
 mots. Toutes les occurrences sont surlignées, la courante dans une teinte
 plus soutenue ; **Entrée**/**F3** passent à la suivante, **Maj+Entrée** à
 la précédente, la frappe actualise en direct.
+- **« Sofit insensible »** (case à cocher, cochée par défaut) : les
+lettres finales (ך ם ן ף ץ) sont équivalentes à leurs formes médiales
+(כ מ נ פ צ) des deux côtés — la requête `מלך` (kaf sofit) trouve le mot
+`מֶּלֶךְ` **et** la racine `מלכ` (écrite sans sofit) ; décochée, seules
+les formes exactes correspondent (ך ne matche que ך).
 - **Texte non hébreu** (traductions, labels) : recherche littérale
 insensible à la casse.
 

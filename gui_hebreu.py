@@ -676,6 +676,10 @@ class ResultText(tk.Text):
         self._find_pos = -1
         self._find_job = None
         self._find_focus_notifier = None
+        # Insensible aux lettres finales (sofit) : cochée par défaut — ך/כ,
+        # ם/מ, ן/נ, ף/פ, ץ/צ sont équivalentes ; décochée, seules les
+        # formes exactes correspondent.
+        self._find_sofit_var = tk.BooleanVar(self, value=True)
         self.bind("<Control-f>", self._on_find)
         self.bind("<Control-F>", self._on_find)
         self.bind("<F3>", self._on_f3)
@@ -781,6 +785,11 @@ class ResultText(tk.Text):
             entry = ttk.Entry(bar, textvariable=self._find_var, width=18,
                               font=HEBREW_FONT, justify="right")
             entry.pack(side="left", padx=(0, 4))
+            sofit_box = ttk.Checkbutton(
+                bar, text="Sofit insensible",
+                variable=self._find_sofit_var,
+                command=self._refresh_find)
+            sofit_box.pack(side="left", padx=(0, 6))
             self._find_count = ttk.Label(bar, text="", width=12, anchor="w")
             self._find_count.pack(side="left")
             btn_next = ttk.Button(bar, text="\u25b6", width=2,
@@ -901,11 +910,13 @@ class ResultText(tk.Text):
             skeleton = normalize_query(query)
             if not skeleton:
                 return []
+            sofit_insensitive = bool(self._find_sofit_var.get())
             for line_no in range(1, n_lines + 1):
                 line = self.get(f"{line_no}.0", f"{line_no}.0 lineend")
                 if not line:
                     continue
-                for a, b in find_line_matches(line, skeleton):
+                for a, b in find_line_matches(line, skeleton,
+                                              sofit_insensitive=sofit_insensitive):
                     matches.append((line_no, a, b))
         else:
             needle = query.casefold()

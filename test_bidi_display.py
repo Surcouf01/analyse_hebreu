@@ -15,6 +15,7 @@ from bidi_display import (
     visual_hebrew_word_range,
     consonant_skeleton,
     find_line_matches,
+    fold_sofit,
     normalize_query,
     LRM,
 )
@@ -389,6 +390,59 @@ class TestConsonantSearch(unittest.TestCase):
         fragments = to_visual(wrapped).split("\n")
         total = sum(len(find_line_matches(f, "אלהים")) for f in fragments)
         self.assertEqual(total, 1)
+
+    def test_sofit_fold_pairs(self):
+        """fold_sofit plie les cinq lettres finales vers leur forme
+        médiale, sans toucher au reste."""
+        self.assertEqual(fold_sofit("ךםןףץ"), "כמנפצ")
+        self.assertEqual(fold_sofit("ךְ"), "כְ")
+        self.assertEqual(fold_sofit("Bilha"), "Bilha")
+        self.assertEqual(fold_sofit(""), "")
+
+    def test_find_sofit_insensitive_default(self):
+        """Par défaut, ך et כ sont équivalentes : la requête המלך (avec
+        kaf sofit) ET המלכ (avec kaf normal) trouvent le mot הַמֶּלֶךְ."""
+        line = "וַיֹּאמֶר הַמֶּלֶךְ אֶל־מַלְכֵי"
+        visual = to_visual(line)
+        for q in ("המלך", "המלכ"):
+            matches = find_line_matches(visual, q)
+            self.assertEqual(len(matches), 1, q)
+            a, b = matches[0]
+            self.assertEqual(to_logical(visual[a:b]), "הַמֶּלֶךְ")
+
+    def test_find_sofit_sensitive_exact(self):
+        """sofit_insensitive=False : seules les formes EXACTES
+        correspondent — המלכ ne trouve plus הַמֶּלֶךְ (ך final)."""
+        line = "וַיֹּאמֶר הַמֶּלֶךְ אֶל־מַלְכֵי"
+        visual = to_visual(line)
+        self.assertEqual(find_line_matches(visual, "המלך",
+                                           sofit_insensitive=False),
+                         find_line_matches(visual, "המלך"))
+        self.assertEqual(
+            find_line_matches(visual, "המלכ", sofit_insensitive=False),
+            [])
+
+    def test_find_sofit_query_side_folded_too(self):
+        """Le pliage s'applique aussi à la requête — cas réel du GUI : les
+        racines affichées entre parenthèses sont écrites SANS sofit
+        (ex. « הַמֶּלֶךְ (מלכ) »). En mode insensible, la requête מלך (kaf
+        sofit) trouve le mot ET la racine ; en mode exact, seulement le
+        mot (la racine מלכ a un kaf normal)."""
+        line = "הַמֶּלֶךְ (מלכ) « roi »"
+        visual = to_visual(line)
+        matches = find_line_matches(visual, "מלך")  # kaf sofit en requête
+        self.assertEqual(len(matches), 2)
+        found = [to_logical(visual[a:b]) for a, b in matches]
+        # Le mot biblique contient מלך (kaf sofit) : trouvé au kaf près ;
+        # la racine entre parenthèses est écrite מלכ (kaf normal) : trouvée
+        # aussi en mode insensible.
+        self.assertIn("מֶּלֶךְ", found)
+        self.assertIn("מלכ", found)
+        exact = find_line_matches(visual, "מלך",
+                                  sofit_insensitive=False)
+        self.assertEqual(len(exact), 1)
+        a, b = exact[0]
+        self.assertEqual(to_logical(visual[a:b]), "מֶּלֶךְ")
 
     def test_no_query_no_match(self):
         self.assertEqual(find_line_matches(to_visual(GEN11), ""), [])
