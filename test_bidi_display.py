@@ -320,6 +320,55 @@ class TestMirrorParens(unittest.TestCase):
         self.assertEqual(to_logical(visual), line)
 
 
+class TestQuotePairs(unittest.TestCase):
+    """Paires « … » : une paire dont le contenu a une direction forte
+    homogène prend la direction du contenu (esprit UAX #9 N0) — sinon une
+    glosse française en ligne à base RTL s'affichait avec ses guillemets
+    ouvrant/fermant échangés."""
+
+    def test_french_gloss_in_rtl_line(self):
+        """Job 30:15 : « renverser » doit s'afficher INTACT (à gauche de
+        la ligne), guillemets dans l'ordre ouvrant-fermant."""
+        line = "‣ הָהְפַ֥ךְ  (הפך)  « renverser »"
+        visual = to_visual(line)
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        self.assertTrue(clean.startswith("« renverser »"), clean)
+        self.assertEqual(to_logical(visual), line)
+
+    def test_french_gloss_after_lemma(self):
+        """« Dieu » après un lemme hébreu : segment intact."""
+        line = "· וַיֹּאמֶר אֱלֹהִים « Dieu »"
+        visual = to_visual(line)
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        self.assertIn("« Dieu »", clean)
+        self.assertEqual(to_logical(visual), line)
+
+    def test_hebrew_content_keeps_rtl(self):
+        """Un contenu hébreu dans les guillemets reste inversé avec le bloc
+        RTL : la paire prend la direction du contenu (R), pas du latin."""
+        line = "א « שלום » ב"
+        visual = to_visual(line)
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        # Le bloc entier est inversé : ב … א avec « שלום » au milieu,
+        # guillemets échangés par l'inversion du run RTL.
+        self.assertTrue(clean.startswith("ב "), clean)
+        self.assertEqual(to_logical(visual), line)
+
+    def test_mixed_content_not_paired(self):
+        """Contenu mixte (hébreu + latin) : la paire ne prend pas de
+        direction du contenu (comportement N1/N2 inchangé), round-trip OK."""
+        line = "« המלך roi » mixte"
+        visual = to_visual(line)
+        self.assertEqual(to_logical(visual), line)
+
+    def test_nested_and_unbalanced_pairs(self):
+        """Paires imbriquées et guillemet non fermé : pas de crash, le
+        round-trip est préservé."""
+        for line in ('a « b « c » d » e', '« pas de fermant',
+                     '«», «», »'):
+            self.assertEqual(to_logical(to_visual(line)), line)
+
+
 class TestConsonantSearch(unittest.TestCase):
     """Recherche Ctrl-F : squelette consonantique (sans nikkud ni teamim)
     sur le texte stocké en ordre visuel."""

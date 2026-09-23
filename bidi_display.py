@@ -151,6 +151,49 @@ def _cluster_dir(cluster):
     return None
 
 
+# Paires de guillemets encadrantes. Contrairement aux crochets () [] {},
+# les guillemets français « » ne sont pas Bidi_Mirrored, mais ils encadrent
+# visuellement une citation : une paire dont le CONTENU a une direction
+# forte homogène prend cette direction (esprit de la règle N0 de UAX #9) —
+# sinon, en base RTL, une glosse française « renverser » s'affichait avec
+# ses guillemets échangés (« ouvrant/fermant inversés systématiquement »).
+_QUOTE_PAIRS = {"\u00ab": "\u00bb"}
+
+
+def _resolve_quote_pairs(clusters, raw):
+    """Passe préalable à la résolution N1/N2 : les paires « … » dont le
+    contenu est de direction forte homogène prennent la direction du
+    contenu. Modifie ``raw`` en place et le renvoie."""
+    n = len(clusters)
+    i = 0
+    while i < n:
+        first = clusters[i] if len(clusters[i]) == 1 else None
+        if first not in _QUOTE_PAIRS:
+            i += 1
+            continue
+        closer = _QUOTE_PAIRS[first]
+        j = i + 1
+        depth = 1
+        while j < n:
+            c = clusters[j]
+            if len(c) == 1 and c == closer:
+                depth -= 1
+                if depth == 0:
+                    break
+            elif len(c) == 1 and c == first:
+                depth += 1
+            j += 1
+        if j >= n:
+            i += 1
+            continue
+        inner = [raw[k] for k in range(i + 1, j) if raw[k] is not None]
+        if inner and all(d == inner[0] for d in inner):
+            raw[i] = inner[0]
+            raw[j] = inner[0]
+        i = j + 1
+    return raw
+
+
 def _resolve_dirs(clusters, base_rtl):
     """Résout la direction de chaque cluster (simplification de l'algorithme
     bidi Unicode, règles W4/N1/N2 + attache des ponctuations) :
@@ -183,6 +226,7 @@ def _resolve_dirs(clusters, base_rtl):
       bloc hébreu.
     """
     raw = [_cluster_dir(c) for c in clusters]
+    raw = _resolve_quote_pairs(clusters, raw)
     dirs = list(raw)
     n = len(dirs)
     for i in range(1, n - 1):
