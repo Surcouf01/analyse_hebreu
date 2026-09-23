@@ -227,6 +227,25 @@ class TestLogicalWrap(unittest.TestCase):
         self.assertEqual(first_heb, "ע")  # ayin final de שְׁמַע
         self.assertEqual(to_logical(to_visual(line)), line)
 
+    def test_sof_pasuq_attached_to_hebrew_end(self):
+        """Le sof pasuq « : » collé au dernier mot hébreu (Sefaria l'écrit
+        en deux-points ASCII, neutres) prend la direction du mot : il
+        s'inverse avec le bloc et s'affiche à la FIN de lecture (bord
+        gauche du bloc), pas détaché au bord droit."""
+        line = "=== Phrase analysée : וּפְטוּרוֹת מִן הַמַּעַשְׂרוֹת: ==="
+        visual = to_visual(line).lstrip(LRM + bidi_display.RLM)
+        # le segment hébreu inversé commence par ':' (sof pasuq = fin de
+        # lecture = bord gauche du bloc), PUIS la dernière lettre du
+        # dernier mot (ת de רוֹת).
+        # le sof pasuq du verset est le DERNIER ':' de la ligne ; il
+        # précède immédiatement la dernière lettre du dernier mot (ת)
+        # dans le stockage visuel du bloc hébreu inversé.
+        seg_start = visual.rindex(":")
+        self.assertLess(seg_start, visual.rindex("ת"))
+        seg = visual[seg_start:seg_start + 8]
+        self.assertTrue(seg.startswith(":" + LRM + "ת"))
+        self.assertEqual(to_logical(to_visual(line)), line)
+
     def test_wide_word_split_by_clusters(self):
         """Un mot plus large qu'une ligne est coupé entre clusters, jamais
         au milieu d'une lettre + nikkud."""

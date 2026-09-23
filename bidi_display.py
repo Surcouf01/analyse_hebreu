@@ -125,26 +125,40 @@ def _cluster_dir(cluster):
 
 def _resolve_dirs(clusters, base_rtl):
     """Résout la direction de chaque cluster (simplification de l'algorithme
-    bidi Unicode, règles W4/N1/N2) :
+    bidi Unicode, règles W4/N1/N2 + attache des ponctuations) :
 
-    - un neutre entouré de deux forts de même direction prend cette
-      direction (ex. l'espace ENTRE deux mots hébreux est RTL : tout le
-      segment hébreu s'inverse d'un bloc et se lit de droite à gauche,
-      même au milieu d'une ligne à base latine) ;
-    - un neutre entre deux directions différentes prend la direction de
-      base ;
     - un séparateur de nombres (ex. « : » de « 1:1 ») entre deux chiffres
       est un nombre (règle W4) ; les chiffres (EN) forment leur propre
       segment et gardent l'ordre gauche-droite (ex. « 123 » entre deux
       mots hébreux ne s'inverse pas). Contrairement à UAX #9 (où les
       chiffres influencent les neutres comme du RTL), les chiffres sont
       ici traités comme du LTR pour cette influence : « Clause 1 : … »
-      garde son deux-points à côté du texte latin.
+      garde son deux-points à côté du texte latin ;
+
+    - une PONCTUATION directement attachée à un mot (sans espace
+      intercalé) prend la direction de ce mot : le sof pasuq « : » collé
+      au dernier mot hébreu d'un verset (Sefaria l'écrit en deux-points
+      ASCII, neutre) est RTL — il s'inverse avec le bloc hébreu et
+      s'affiche à la FIN de lecture (bord gauche), même quand la ligne
+      est à base latine (ex. « === Phrase analysée : …רוֹת: === ») ;
+      sans cette règle, il se détachait du bloc et restait au bord
+      droit (début de lecture) ;
+
+    - un neutre entouré de deux forts de même direction prend cette
+      direction (ex. l'espace ENTRE deux mots hébreux est RTL : tout le
+      segment hébreu s'inverse d'un bloc et se lit de droite à gauche,
+      même au milieu d'une ligne à base latine) ;
+
+    - un neutre entre deux directions différentes prend la direction de
+      base ; les espaces ne sont JAMAIS attachés : « מִן === » garde ses
+      « === » au bord droit (fin de ligne), ils ne rejoignent pas le
+      bloc hébreu.
     """
-    dirs = [_cluster_dir(c) for c in clusters]
+    raw = [_cluster_dir(c) for c in clusters]
+    dirs = list(raw)
     n = len(dirs)
     for i in range(1, n - 1):
-        if (dirs[i] is None and dirs[i - 1] == "EN" and dirs[i + 1] == "EN"
+        if (raw[i] is None and raw[i - 1] == "EN" and raw[i + 1] == "EN"
                 and len(clusters[i]) == 1
                 and unicodedata.bidirectional(clusters[i][0])
                 in ("CS", "ES", "ET")):
@@ -153,16 +167,31 @@ def _resolve_dirs(clusters, base_rtl):
     def nearest(i, step):
         j = i + step
         while 0 <= j < n:
-            if dirs[j] is not None:
-                return dirs[j]
+            if raw[j] is not None:
+                return raw[j]
             j += step
         return None
 
     out = []
-    for i, d in enumerate(dirs):
+    for i in range(n):
+        d = dirs[i]
         if d is not None:
             out.append(d)
             continue
+        c = clusters[i]
+        # Attache : ponctuation collée à un mot fort (pas une espace).
+        if not c.isspace():
+            left_d = raw[i - 1] if i > 0 else None
+            right_d = raw[i + 1] if i < n - 1 else None
+            if left_d is not None and right_d is None:
+                out.append(left_d)
+                continue
+            if right_d is not None and left_d is None:
+                out.append(right_d)
+                continue
+            if left_d is not None and left_d == right_d:
+                out.append(left_d)
+                continue
         left = nearest(i, -1)
         right = nearest(i, +1)
         if left is not None and left == right:
