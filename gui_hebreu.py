@@ -23,6 +23,8 @@ La base BHSA est chargée en arrière-plan au démarrage (cf. ``bhsa_grammar``).
 
 import os
 import queue
+import signal
+import sys
 import threading
 import unicodedata
 import tkinter as tk
@@ -1552,10 +1554,49 @@ class AnalyseurGUI:
         self.root.after(120, self._poll_queue)
 
 
+def _quit_from_signal(root, signum, frame):
+    """Fermeture demandée par Ctrl-C (SIGINT) en ligne de commande.
+
+    Le mainloop() de Tk bloque le thread principal dans la boucle
+    d'événements Tcl : un SIGINT peut y être délivré au milieu d'un
+    callback Tkinter, et l'exception KeyboardInterrupt est alors avalée
+    par le rapport d'exception de Tkinter (la boucle continue) — la
+    fermeture semble aléatoire. On replane donc l'arrêt via
+    after_idle : destroy() s'exécute dans le thread principal, depuis la
+    boucle d'événements, et mainloop() rend la main proprement.
+    """
+    try:
+        root.after_idle(root.destroy)
+    except tk.TclError:
+        pass
+
+
+def _report_callback_exception(self, exc, val, tb):
+    """Gestionnaire d'exception de callback : une KeyboardInterrupt qui
+    s'échappe d'un callback Tkinter doit fermer l'application, pas être
+    simplement imprimée (comportement par défaut de Tkinter) — sinon le
+    Ctrl-C ne ferme pas systématiquement l'application."""
+    if isinstance(val, KeyboardInterrupt):
+        raise SystemExit(130)
+    # Comportement par défaut : trace complète sur stderr.
+    import traceback
+    print("Exception in Tkinter callback", file=sys.stderr)
+    traceback.print_exception(exc, val, tb)
+
+
 def main():
     root = tk.Tk()
+    tk.Tk.report_callback_exception = _report_callback_exception
     AnalyseurGUI(root)
-    root.mainloop()
+    signal.signal(signal.SIGINT, lambda s, f: _quit_from_signal(root, s, f))
+    try:
+        root.mainloop()
+    except SystemExit as exc:
+        if exc.code == 130:
+            root.destroy()
+            return 130
+        raise
+    return 0
 
 
 if __name__ == "__main__":
