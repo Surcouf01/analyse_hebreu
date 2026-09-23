@@ -76,9 +76,13 @@ L'interface comporte quatre onglets :
   est couvert, la **traduction française** de **Moïse Schwab** (« Le Talmud
   de Jérusalem, traduit par Moise Schwab, 1878-1890 », domaine public — 38
   traités sur 63 : Zeraim, Moed, Nashim et la plupart de Nezikin ; les
-  ordres Kodashim et Tahorot ne sont pas couverts). Les options d'analyse
-  grammaticale (formats, traductions Segond/KJV) sont grisées dans ce mode,
-  car elles ne s'appliquent pas à la Mishna.
+  ordres Kodashim et Tahorot ne sont pas couverts). La case à cocher
+  **« Analyse grammaticale (mishna) »** ajoute l'analyse mot à mot du texte
+  hébreu via le moteur de phrase BHSA (formats Texte/JSON actifs) ; elle est
+  **indicative** : la BHSA ne couvre que le vocabulaire biblique, les mots
+  propres à la Mishna sont signalés « Aucune occurrence trouvée ». Le
+  détail mot à mot BHSA et les traductions Segond/KJV restent grisés dans
+  ce mode, car ils ne s'appliquent pas à la Mishna.
 - **Mot** : analyse d'un mot hébreu isolé, saisi à l'aide d'un **clavier
   hébreu virtuel** (consonnes + points-voyelles/nikkud + daguesh, en UTF-8).
   Un clavier physique en hébreu reste utilisable : la saisie se fait toujours
@@ -167,13 +171,20 @@ python analyse_hebreu.py "Psaume 23:1" --format summary
 python analyse_hebreu.py --list-books                # livres de la Bible
 ```
 
-Affichage d'une mishna (texte via l'API Sefaria, sans analyse BHSA) :
+Affichage d'une mishna (texte via l'API Sefaria, analyse optionnelle) :
 ```bash
 python analyse_hebreu.py --mishna "Bérakhot 1:1"     # hébreu + trad. Schwab
 python analyse_hebreu.py --mishna "Berakhot 2:5"     # nom Sefaria accepté
 python analyse_hebreu.py --mishna "Avot 1:3"          # nom français court
 python analyse_hebreu.py --mishna --list-books        # les 63 traités
+python analyse_hebreu.py --mishna "Bérakhot 1:1" --mishna-analyze  # + grammaire
 ```
+
+L'analyse Mishna s'appuie sur la base BHSA (Bible) : le texte hébreu de
+Sefaria a le nikkud mais pas de teamim — la Mishna n'est pas cantillée,
+et le moteur retire les teamim de toute façon. Les termes post-bibliques
+absents du corpus biblique sont signalés « Aucune occurrence trouvée » :
+l'analyse reste indicative.
 
 Analyse d'un mot isolé (avec nikkud, sans teamim) :
 ```bash
@@ -366,6 +377,7 @@ bhsa_grammar/
                         # + Schwab, domaine public)
   mishnah_catalog.py    # catalogue statique de la Mishna : 63 traités, sedarim,
                         # structure chapitres/mishnayot (source API Sefaria)
+  mishnah_analyzer.py   # analyse grammaticale d'une mishna via le moteur BHSA
   report.py             # formatage text / json / summary (verset, mot, phrase)
 scripts/
   extract_binyan_templates.py  # régénère binyan_templates.json depuis la BHSA

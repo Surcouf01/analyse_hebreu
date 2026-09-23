@@ -42,6 +42,10 @@ from bhsa_grammar import (
     TranslationNotFoundError,
 )
 from bhsa_grammar.mishnah_catalog import SEDARIM, SCHWAB_TRACTATES
+from bhsa_grammar.mishnah_analyzer import (
+    analyze_mishnah_text,
+    mishnah_analysis_block,
+)
 
 
 def build_parser():
@@ -119,6 +123,13 @@ def build_parser():
              "le traité est couvert (38 sur 63).",
     )
     p.add_argument(
+        "--mishna-analyze",
+        action="store_true",
+        help="Avec --mishna : ajoute l'analyse grammaticale de la mishna "
+             "(mot à mot via la base BHSA, comme pour une phrase libre ; "
+             "requiert la base BHSA).",
+    )
+    p.add_argument(
         "--list-books",
         action="store_true",
         help="Liste les livres disponibles et quitte (Bible seule ; avec "
@@ -191,6 +202,16 @@ def _run_mishna_cli(args):
         print()
         print("(Traduction française non disponible pour ce traité : "
               "la traduction de Schwab ne couvre que 38 traités sur 63.)")
+    if args.mishna_analyze:
+        print()
+        try:
+            api = load_corpus()
+        except DataNotFoundError as exc:
+            print(f"(Analyse grammaticale indisponible : base BHSA introuvable.)\n"
+                  f"({exc})")
+            return 0
+        analysis = analyze_mishnah_text(api.F, api.L, he[mishnah - 1])
+        print(mishnah_analysis_block(analysis, "text"))
     return 0
 
 

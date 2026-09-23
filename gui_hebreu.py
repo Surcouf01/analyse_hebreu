@@ -28,7 +28,7 @@ import unicodedata
 import tkinter as tk
 from tkinter import ttk, messagebox, font as tkfont
 
-from bidi_display import to_visual, to_logical
+from bidi_display import to_visual, to_logical, logical_wrap
 
 from bhsa_grammar import (
     load_corpus,
@@ -54,6 +54,10 @@ from bhsa_grammar import (
 )
 from bhsa_grammar.sefaria_client import fetch_mishnah_mishnayot
 from bhsa_grammar.mishnah_catalog import SEDARIM, STRUCTURE, SCHWAB_TRACTATES
+from bhsa_grammar.mishnah_analyzer import (
+    analyze_mishnah_text,
+    mishnah_analysis_block,
+)
 
 
 # Langues de traduction disponibles, avec leur libellé.
@@ -630,19 +634,79 @@ class ResultText(tk.Text):
     à la souris (gérée par _make_stable_selection, qui arrime les bornes aux
     clusters de glyphes) est stable et prévisible. La copie (Ctrl+C)
     restitue l'ordre logique du texte d'origine.
-    """
 
+    Le retour à la ligne automatique de Tk s'applique au texte stocké : sur
+    une ligne en ordre visuel, la première ligne affichée contiendrait la
+    FIN de la phrase. Les lignes hébraïques sont donc découpées en ordre
+    logique (logical_wrap) à la largeur du widget avant conversion ; la
+    découpe est refaite quand la fenêtre est redimensionnée.
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.bind("<<Copy>>", self._on_copy)
+        self._logical_text = ""
+        self._wrap_width = 0
+        self._wrap_job = None
+        font = kwargs.get("font")
+        self._tkfont = (tkfont.Font(root=self, font=font)
+                        if font is not None else None)
+        self._autowrap = kwargs.get("wrap") != "none"
+        self.bind("<Configure>", self.on_resize)
 
     def set_text(self, text):
-        """Remplace le contenu par ``text`` mis en ordre visuel."""
+        """Mémorise le texte logique et affiche (découpe + ordre visuel)."""
+        self._logical_text = text
+        self._wrap_width = 0
+        self._redisplay()
+
+    def _display_width(self):
+        """Largeur intérieure disponible pour une ligne (pixels)."""
+        try:
+            return max(1, self.winfo_width() - 12)
+        except tk.TclError:
+            return 0
+
+    def _redisplay(self):
+        """Découpe les lignes hébraïques à la largeur courante, convertit
+        en ordre visuel et remplace le contenu du widget."""
         self.configure(state="normal")
         self.delete("1.0", "end")
-        self.insert("1.0", to_visual(text))
+        width = self._display_width() if self._autowrap else 0
+        if width <= 1:
+            self.insert("1.0", to_visual(self._logical_text))
+        else:
+            self._wrap_width = width
+            self.insert("1.0", to_visual(
+                logical_wrap(self._logical_text, self._measure, width)))
         self.configure(state="disabled")
+
+    def _measure(self, s):
+        if self._tkfont is None:
+            return len(s)
+        return self._tkfont.measure(s)
+
+    def on_resize(self, event=None):
+        """Re-découpe (différé) si la largeur affichable a changé."""
+        if not self._autowrap:
+            return
+        width = self._display_width()
+        if width == self._wrap_width:
+            return
+        if self._wrap_job is not None:
+            try:
+                self.after_cancel(self._wrap_job)
+            except tk.TclError:
+                pass
+        self._wrap_job = self.after(60, self._redisplay)
+        self._wrap_width = width
+
+    def set_font(self, font):
+        """Change la police du rendu ; re-découpe car les largeurs changent."""
+        self._tkfont = tkfont.Font(root=self, font=font)
+        self.configure(font=font)
+        if self._logical_text:
+            self._redisplay()
 
     # --- Copie en ordre logique ------------------------------------------
     def _on_copy(self, event=None):
@@ -755,6 +819,13 @@ class AnalyseurGUI:
             opts, text="Masquer le détail mot à mot",
             variable=self.verse_no_words)
         self.verse_no_words_widget.pack(side="left", padx=(16, 0))
+
+        # Analyse grammaticale de la mishna affichée (requiert la base BHSA,
+        # chargée au démarrage ; les formats Texte/JSON s'appliquent).
+        self.mishna_analyze = tk.BooleanVar(value=True)
+        ttk.Checkbutton(opts, text="Analyse grammaticale (mishna)",
+                        variable=self.mishna_analyze).pack(
+            side="left", padx=(16, 0))
 
         # Choix des traductions affichées (BHSA uniquement ; la Mishna a sa
         # propre traduction Schwab).
@@ -957,6 +1028,11 @@ class AnalyseurGUI:
                 self.book_combo.set(display[1])
                 self._on_book_change()
             return
+        if self.api is None:
+            # Base BHSA pas encore chargée (ou en échec) : la liste des
+            # livres bibliques reste vide ; _on_corpus_loaded la remplira.
+            self.book_combo["values"] = []
+            return
         F = self.api.F
         # Ordre canonique de la Bible hébraïque (Torah en tête) = ordre
         # naturel des nœuds « book » dans Text-Fabric.
@@ -977,13 +1053,14 @@ class AnalyseurGUI:
     def _on_corpus_change(self, event=None):
         """Bascule entre Bible et Mishna : repeuple la liste des livres.
 
-        En mode Mishna, les options d'analyse BHSA (formats, traductions
-        Segond/KJV) n'ont pas d'effet : elles sont grisées.
+        En mode Mishna, les options propres à la BHSA (masquage du détail
+        mot à mot, traductions Segond/KJV) n'ont pas d'effet : elles sont
+        grisées. Les formats Texte/Synthèse/JSON restent actifs : ils
+        s'appliquent aussi à l'analyse grammaticale de la mishna (Synthèse
+        est ramenée à Texte pour la Mishna).
         """
         mishna = self.corpus_var.get() == CORPUS_MISHNA
         state = "disabled" if mishna else "!disabled"
-        for rb in self.verse_format_widgets:
-            rb.state([state])
         self.verse_no_words_widget.state([state])
         for child in self.verse_trads_frame.winfo_children():
             if isinstance(child, ttk.Checkbutton):
@@ -1348,23 +1425,33 @@ class AnalyseurGUI:
         threading.Thread(target=worker, daemon=True).start()
 
     def _run_mishnah(self, tractate, fr, chapter, mishnah):
-        """Affiche une mishna (texte hébreu + traduction française).
+        """Affiche une mishna (texte hébreu + traduction + analyse).
 
         Le texte vient de l'API Sefaria : hébreu « Torat Emet 357 » (couvre
         les 63 traités) et français « Le Talmud de Jérusalem, traduit par
         Moise Schwab, 1878-1890 » (38 traités seulement — sinon seul
-        l'hébreu est affiché).
+        l'hébreu est affiché). L'analyse grammaticale (case à cocher « Analyse
+        grammaticale (mishna) ») passe le texte hébreu au moteur de phrase
+        BHSA : indicative, car la BHSA ne couvre que le vocabulaire biblique.
         """
         out = self.tab_verse._output
         self._disable_buttons()
         reference = f"{fr} {chapter}:{mishnah}"
         self.status.configure(text=f"Chargement Mishna : {reference}…")
 
+        analyze = self.mishna_analyze.get() and self.api is not None
+        fmt = "json" if self.verse_format.get() == "json" else "text"
+
         def worker():
             blocks = []
             he = fetch_mishnah_mishnayot(tractate, chapter, "hebrew")
             if he and 1 <= mishnah <= len(he):
-                blocks.append(f"Hébreu (Torat Emet) — {reference}\n{he[mishnah - 1]}")
+                hebrew_text = he[mishnah - 1]
+                blocks.append(f"Hébreu (Torat Emet) — {reference}\n{hebrew_text}")
+                if analyze:
+                    analysis = analyze_mishnah_text(self.api.F, self.api.L,
+                                                     hebrew_text)
+                    blocks.append(mishnah_analysis_block(analysis, fmt))
             else:
                 blocks.append(f"Hébreu (Torat Emet) — {reference}\n"
                               "(texte indisponible : API Sefaria injoignable "

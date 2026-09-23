@@ -10,6 +10,7 @@ from bidi_display import (
     to_visual,
     to_logical,
     has_hebrew,
+    logical_wrap,
     visual_cluster_bounds,
     visual_hebrew_word_range,
     LRM,
@@ -79,6 +80,26 @@ class TestRoundTrip(unittest.TestCase):
         latin = "=== Genesis 1:1 ==="
         self.assertEqual(to_visual(to_visual(latin)), latin)
 
+    def test_ltr_prefix_line_keeps_prefix_first(self):
+        """Une ligne dont la première lettre forte est latine (base LTR),
+        ex. « === Phrase analysée : … === », garde son préfixe en tête de
+        la chaîne stockée : il s'affiche en début de ligne, pas rejeté à
+        droite de l'hébreu."""
+        line = "=== Phrase analysée : מֵאֵימָתַי קוֹרִין ==="
+        visual = to_visual(line)
+        # marqueur de base LTR (double LRM, invisible) puis le préfixe
+        stripped = visual.lstrip(bidi_display.LRM + bidi_display.RLM)
+        self.assertTrue(stripped.startswith("=== Phrase analysée :"))
+        self.assertEqual(to_logical(visual), line)
+
+    def test_rtl_base_with_latin_marked_and_reversible(self):
+        """Une ligne à base RTL contenant du latin fort reste réversible
+        (marque RLM en tête de la ligne visuelle)."""
+        line = "בְּרֵאשִׁית wayyiqtol בָּרָא"
+        visual = to_visual(line)
+        self.assertTrue(visual.startswith(bidi_display.RLM))
+        self.assertEqual(to_logical(visual), line)
+
     def test_visual_marks_stripped_before_reorder(self):
         """Une entrée contenant déjà des marques bidi (ancien format RLE/RLM)\n        est normalisée sans doubler les marques."""
         legacy = "\u202B" + GEN11 + "\u202C"
@@ -137,6 +158,108 @@ class TestStability(unittest.TestCase):
         self.assertNotIn("\u202B", visual)
         self.assertNotIn("\u202C", visual)
         self.assertNotIn("\u200F", visual)
+
+
+class TestLogicalWrap(unittest.TestCase):
+    """logical_wrap : retour à la ligne en ordre logique avant conversion."""
+
+    def test_short_line_untouched(self):
+        self.assertEqual(logical_wrap(GEN11, len, 1000), GEN11)
+
+    def test_latin_lines_untouched(self):
+        text = "Analyse grammaticale de l'hébreu biblique — une phrase assez " \
+               "longue qui dépasserait la largeur du widget."
+        self.assertEqual(logical_wrap(text, len, 10), text)
+
+    def test_hebrew_wraps_in_reading_order(self):
+        """La première ligne découpée doit contenir le PREMIER mot logique
+        (le début de la phrase), pas la fin : c'est ce qui garantit que
+        l'ordre d'affichage haut en bas reste l'ordre de lecture."""
+        words = ["בְּרֵאשִׁית", "בָּרָא", "אֱלֹהִים", "שָׁמַיִם", "וְאֵת"]
+        line = " ".join(words)
+        wrapped = logical_wrap(line, len, 12)
+        out_lines = wrapped.split("\n")
+        self.assertGreater(len(out_lines), 1)
+        for l in out_lines:
+            self.assertLessEqual(len(l), 12)
+        # Le premier mot logique est sur la première ligne...
+        self.assertIn(words[0], out_lines[0])
+        # ... et le dernier mot logique sur la dernière ligne.
+        self.assertIn(words[-1], out_lines[-1])
+
+    def test_round_trip_preserved(self):
+        """Le texte découpé puis visuel reste réversible en logique."""
+        wrapped = logical_wrap(GEN11 + " אֱלֹהִים שָׁמַיִם", len, 8)
+        # les fragments portent un marqueur de base (RLM) ; la copie
+        # doit redonner le texte SANS les marqueurs, ligne par ligne.
+        expected = "\n".join(
+            l.lstrip(bidi_display.RLM + bidi_display.LRM)
+            for l in wrapped.split("\n"))
+        self.assertEqual(to_logical(to_visual(wrapped)), expected)
+
+    def test_wrapped_ltr_line_keeps_suffix_at_end(self):
+        """Fragment replié d'une ligne à base LTR : le suffixe neutre
+        (« === ») reste en FIN de fragment, pas rejeté à gauche (la base
+        de la ligne d'origine est préservée par le marqueur)."""
+        line = ("=== Phrase analysée : מֵאֵימָתַי קוֹרִין "
+                "אֶת שְׁמַע בְּעַרְבִית ===")
+        wrapped = logical_wrap(line, len, 40)
+        lines = wrapped.split("\n")
+        self.assertGreater(len(lines), 1)
+        self.assertTrue(lines[-1].endswith("==="))
+        self.assertEqual(to_logical(to_visual(wrapped)),
+                         "\n".join(
+                             l.lstrip(bidi_display.RLM + bidi_display.LRM)
+                             for l in lines))
+
+    def test_hebrew_segment_in_ltr_line_reads_rtl(self):
+        """Dans une ligne à base LTR, le segment hébreu multi-mots est
+        inversé d'un bloc : le DERNIER mot logique est le plus à GAUCHE
+        (premier dans la chaîne visuelle) — la phrase se lit de droite
+        à gauche, pas mot à mot de gauche à droite."""
+        line = "=== Phrase analysée : מֵאֵימָתַי קוֹרִין אֶת שְׁמַע ==="
+        visual = to_visual(line).lstrip(LRM + bidi_display.RLM)
+        seg = visual[visual.find("אֵים") if "אֵים" in visual else 0:]
+        # le segment hébreu est inversé cluster par cluster : la 1re
+        # lettre hébreu stockée est la DERNIÈRE lettre du DERNIER mot
+        # logique (ע de שְׁמַע) — la phrase se lit de droite à gauche.
+        first_heb = next(c for c in visual if "\u05D0" <= c <= "\u05EA")
+        self.assertEqual(first_heb, "ע")  # ayin final de שְׁמַע
+        self.assertEqual(to_logical(to_visual(line)), line)
+
+    def test_sof_pasuq_attached_to_hebrew_end(self):
+        """Le sof pasuq « : » collé au dernier mot hébreu (Sefaria l'écrit
+        en deux-points ASCII, neutres) prend la direction du mot : il
+        s'inverse avec le bloc et s'affiche à la FIN de lecture (bord
+        gauche du bloc), pas détaché au bord droit."""
+        line = "=== Phrase analysée : וּפְטוּרוֹת מִן הַמַּעַשְׂרוֹת: ==="
+        visual = to_visual(line).lstrip(LRM + bidi_display.RLM)
+        # le segment hébreu inversé commence par ':' (sof pasuq = fin de
+        # lecture = bord gauche du bloc), PUIS la dernière lettre du
+        # dernier mot (ת de רוֹת).
+        # le sof pasuq du verset est le DERNIER ':' de la ligne ; il
+        # précède immédiatement la dernière lettre du dernier mot (ת)
+        # dans le stockage visuel du bloc hébreu inversé.
+        seg_start = visual.rindex(":")
+        self.assertLess(seg_start, visual.rindex("ת"))
+        seg = visual[seg_start:seg_start + 8]
+        self.assertTrue(seg.startswith(":" + LRM + "ת"))
+        self.assertEqual(to_logical(to_visual(line)), line)
+
+    def test_wide_word_split_by_clusters(self):
+        """Un mot plus large qu'une ligne est coupé entre clusters, jamais
+        au milieu d'une lettre + nikkud."""
+        word = "וּפְטוּרוֹת"
+        parts = bidi_display._split_wide_word(word, len, 3)
+        self.assertGreater(len(parts), 1)
+        joined = "".join(parts)
+        # chaque fragment reste un préfixe/suffixe du mot (clusters intacts)
+        self.assertEqual(sorted(parts[0]), sorted(word[:len(parts[0])]))
+        self.assertEqual(to_logical(to_visual(joined)), joined)
+
+    def test_empty_and_zero_width(self):
+        self.assertEqual(logical_wrap("", len, 80), "")
+        self.assertEqual(logical_wrap(GEN11, len, 0), GEN11)
 
 
 if __name__ == "__main__":
