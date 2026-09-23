@@ -13,6 +13,9 @@ from bidi_display import (
     logical_wrap,
     visual_cluster_bounds,
     visual_hebrew_word_range,
+    consonant_skeleton,
+    find_line_matches,
+    normalize_query,
     LRM,
 )
 
@@ -260,6 +263,82 @@ class TestLogicalWrap(unittest.TestCase):
     def test_empty_and_zero_width(self):
         self.assertEqual(logical_wrap("", len, 80), "")
         self.assertEqual(logical_wrap(GEN11, len, 0), GEN11)
+
+
+class TestConsonantSearch(unittest.TestCase):
+    """Recherche Ctrl-F : squelette consonantique (sans nikkud ni teamim)
+    sur le texte stocké en ordre visuel."""
+
+    def test_skeleton_strips_vowels_and_accents(self):
+        self.assertEqual(consonant_skeleton(GEN11), "בראשיתבראאלהים")
+        self.assertEqual(consonant_skeleton("Louis Segond 1910"), "")
+        # shin/sin : le point (U+05C1/U+05C2) n'est pas une consonne.
+        self.assertEqual(consonant_skeleton("שָׁלוֹם שָׂם"), "שלוםשם")
+
+    def test_find_word_reading_order(self):
+        """Genèse 1:1 : la requête ברא (sans nikkud) trouve le ברא
+        intérieur à בראשית (premier en lecture) PUIS le mot ברא,
+        et chaque correspondance reconvertie en logique donne bien le
+        texte vocalisé d'origine."""
+        visual = to_visual(GEN11)
+        matches = find_line_matches(visual, "ברא")
+        self.assertEqual(len(matches), 2)
+        texts = [to_logical(visual[a:b]) for a, b in matches]
+        self.assertEqual(texts, ["בְּרֵא", "בָּרָא"])
+
+    def test_find_word_with_nikkud_in_query(self):
+        """Une requête saisie AVEC nikkud (clavier virtuel) doit trouver
+        les mêmes occurrences que la requête consonantique."""
+        visual = to_visual(GEN11)
+        q = normalize_query("בְּרֵאשִׁית")
+        self.assertEqual(q, "בראשית")
+        matches = find_line_matches(visual, q)
+        self.assertEqual(len(matches), 1)
+        a, b = matches[0]
+        self.assertEqual(to_logical(visual[a:b]), "בְּרֵאשִׁית")
+
+    def test_find_from_visual_selection(self):
+        """Une sélection copiée depuis la zone de résultat (ordre visuel,
+        marques comprises) est normalisable en requête."""
+        visual = to_visual(GEN11)
+        matches = find_line_matches(visual, "ברא")
+        a, b = matches[1]
+        selected = visual[a:b]
+        self.assertEqual(normalize_query(selected, visual=True), "ברא")
+
+    def test_find_multiline_each_line_searched(self):
+        text = ("Phrase 1 : בְּרֵאשִׁית בָּרָא\n"
+                "Phrase 2 : אֵת הַשָׁמַיִם")
+        visual = to_visual(text)
+        line1, line2 = visual.split("\n")
+        self.assertEqual(len(find_line_matches(line1, "ברא")), 2)
+        self.assertEqual(find_line_matches(line2, "ברא"), [])
+        self.assertEqual(len(find_line_matches(line2, "שמים")), 1)
+
+    def test_find_in_mixed_ltr_line(self):
+        """Ligne à base LTR (préfixe latin + hébreu) : les bornes restent
+        exactement sur le mot trouvé (le marqueur de base double-LRM
+        ne décale pas les indices)."""
+        line = "=== Phrase analysée : בְּרֵאשִׁית בָּרָא ==="
+        visual = to_visual(line)
+        matches = find_line_matches(visual, "ברא")
+        self.assertEqual(len(matches), 2)
+        texts = [to_logical(visual[a:b]) for a, b in matches]
+        self.assertIn("בְּרֵא", texts)
+        self.assertIn("בָּרָא", texts)
+
+    def test_wrapped_line_fragments_searched(self):
+        """Après découpe (logical_wrap), chaque fragment visuel est
+        cherché indépendamment — un mot coupé n'est pas trouvé à cheval
+        sur deux lignes (les fragments sont indépendants)."""
+        wrapped = logical_wrap(GEN11, len, 12)
+        fragments = to_visual(wrapped).split("\n")
+        total = sum(len(find_line_matches(f, "אלהים")) for f in fragments)
+        self.assertEqual(total, 1)
+
+    def test_no_query_no_match(self):
+        self.assertEqual(find_line_matches(to_visual(GEN11), ""), [])
+        self.assertEqual(find_line_matches("Louis Segond 1910", "ברא"), [])
 
 
 if __name__ == "__main__":

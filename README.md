@@ -133,6 +133,39 @@ souris devient stable — clic et glissement s'alignent sur les lettres
 pointées (lettre + voyelles/accents inséparables), double-clic : mot entier,
 triple-clic : ligne. La copie (Ctrl+C) restitue l'ordre logique d'origine.
 
+#### Recherche dans la zone de résultat (Ctrl-F)
+
+Chaque zone de résultat dispose d'une recherche déclenchée par **Ctrl-F**
+(ou **F3** pour aller directement à l'occurrence suivante). Une barre
+flottante s'ouvre en haut de la zone : champ de saisie (clavier hébreu
+virtuel ou physique, nikkud accepté), compteur `n / total`, boutons
+occurrence précédente/suivante et fermeture (**Échap**).
+
+- **Pré-remplissage depuis la sélection** : si du texte est sélectionné
+dans la zone de résultat au moment du Ctrl-F, il devient la requête —
+sélectionner un mot vocalisé (double-clic) puis Ctrl-F recherche ce mot.
+- **Hébreu : match sur les consonnes seules** — quand la requête contient
+des lettres hébraïques, la recherche porte sur le squelette consonantique
+(sans nikkud, sans teamim, sans daguesh ni point shin/sin) : `ברא`
+trouve `בָּרָא` et `בְּרֵאשִׁית`, et réciproquement une requête saisie
+avec nikkud via le clavier virtuel trouve les formes non vocalisées. La
+recherche se fait dans l'**ordre de lecture** : une requête de plusieurs
+mots (`ברא אלהים`) est trouvée même si l'affichage visuel inverse les
+mots. Toutes les occurrences sont surlignées, la courante dans une teinte
+plus soutenue ; **Entrée**/**F3** passent à la suivante, **Maj+Entrée** à
+la précédente, la frappe actualise en direct.
+- **Texte non hébreu** (traductions, labels) : recherche littérale
+insensible à la casse.
+
+La recherche opère sur le texte affiché en ordre visuel : le module
+`bidi_display.py` fournit la projection des correspondances (calculées
+en ordre logique) vers les indices du widget (`find_line_matches`),
+surlignables directement.
+
+La recherche est disponible dans les onglets Livre, Mot, Phrase, ainsi que
+dans chaque sous-onglet de l'onglet Binyanim (Verbe, chaque binyan,
+Sortie complète).
+
 #### Traductions française et anglaise
 
 L'onglet **Livre** (mode Bible) affiche, en tête du résultat, une ou deux

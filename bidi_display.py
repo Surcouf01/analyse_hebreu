@@ -393,6 +393,145 @@ def visual_hebrew_word_range(line, col):
     return None
 
 
+# --- Recherche consonantique (Ctrl-F dans la zone de résultat) ---------
+
+
+def consonant_skeleton(text):
+    """Squelette consonantique : lettres hébraïques nues (U+05D0..U+05EA),
+    sans nikkud, sans teamim, sans daguesh, sans point shin/sin ; les
+    autres caractères (latin, chiffres, ponctuation, espaces, marques
+    bidi) sont ignorés."""
+    return "".join(c for c in text if 0x05D0 <= ord(c) <= 0x05EA)
+
+
+def has_hebrew_letters(text):
+    """Vrai si le texte contient au moins une lettre hébraïque (les
+    seules consonnes, voyelles-point et accents ne comptent pas)."""
+    return any(0x05D0 <= ord(c) <= 0x05EA for c in text)
+
+
+def _visual_cluster_indices(clusters, base_rtl=True):
+    """Permutation associée à :code:`_visual_clusters` : renvoie ``perm``
+    tel que le cluster en position logique (de lecture) ``k`` est
+    ``clusters[perm[k]]``. Même calcul (runs de direction, inversion des
+    runs RTL, empilement des segments), mais sur les INDICES — les
+    clusters de contenu identique (deux « א » sans nikkud) ne sont pas
+    confondus.
+    """
+    resolved = _resolve_dirs(clusters, base_rtl)
+    runs = []
+    for i, d in enumerate(resolved):
+        if runs and runs[-1][0] == d:
+            runs[-1][1].append(i)
+        else:
+            runs.append((d, [i]))
+    ordered = list(reversed(runs)) if base_rtl else runs
+    perm = []
+    for d, run in ordered:
+        perm.extend(reversed(run) if d == "R" else run)
+    return perm
+
+
+def _stored_clusters(visual_line):
+    """Clusters réels (hors marques bidi LRM/RLM) d'une ligne stockée en
+    ordre visuel : liste ``[(début, fin, texte)]`` en coordonnées du texte
+    STOCKÉ (marques comprises) — directement utilisables comme indices de
+    colonne Tk. Renvoie ``(clusters, base_rtl)`` ; ``base_rtl`` suit la
+    même déduction que :code:`to_logical` (marque en tête, sinon contenu).
+    """
+    marked, stripped = _split_base_marker(visual_line)
+    out = []
+    # Positions dans la ligne TELLE QUE STOCKÉE : le marqueur de base en
+    # tête (RLM ou double LRM) compte dans les indices Tk.
+    pos = len(visual_line) - len(stripped)
+    for cl in _clusters(stripped):
+        if all(unicodedata.category(ch) == "Cf" for ch in cl):
+            pos += len(cl)
+            continue
+        out.append((pos, pos + len(cl), cl))
+        pos += len(cl)
+    clean = _BIDI_MARKS_RE.sub("", stripped)
+    if not any(_cluster_is_rtl(c) for c in _clusters(clean)):
+        return out, None
+    if marked is None:
+        marked = not _has_ltr_strong(clean)
+    return out, marked
+
+
+def find_line_matches(visual_line, query_skeleton):
+    """Recherche le squelette consonantique ``query_skeleton`` dans une
+    ligne stockée en ordre visuel, et renvoie les correspondances en
+    indices du texte STOCKÉ (marques LRM/RLM comprises) — directement
+    surlignables dans le widget.
+
+    La zone de résultat affiche l'hébreu en ordre VISUEL (mots inversés
+    entre eux, chaque mot gardant l'ordre de ses lettres) avec des marques
+    bidi invisibles. Chercher la sous-chaîne directement échouerait : les
+    marques pollueraient le texte et l'ordre visuel des mots est l'inverse
+    de l'ordre de lecture. On cherche donc sur le squelette consonantique
+    — consonnes hébraïques seules, nikkud/teamim/daguesh ignorés — en
+    ordre LOGIQUE de lecture (les consonnes de la requête se lisent dans
+    le même sens que celles de la ligne), puis on projette chaque
+    correspondance sur les clusters stockés via la permutation bidi
+    (cf. _visual_cluster_indices).
+
+    Renvoie ``[(début, fin), …]`` en indices du texte stocké, en ordre de
+    LECTURE (ordre logique : droite à gauche à l'écran pour l'hébreu) —
+    l'ordre naturel pour naviguer d'occurrence en occurrence. L'étendue
+    couvre la première à la dernière consonne de l'occurrence, marques
+    combinantes (nikkud/teamim) et caractères intercalés (espace, maqaf)
+    inclus.
+    """
+    if not query_skeleton:
+        return []
+    stored, base_rtl = _stored_clusters(visual_line)
+    if not stored or base_rtl is None:
+        return []
+    perm = _visual_cluster_indices([c for _s, _e, c in stored], base_rtl)
+    if len(perm) != len(stored):
+        return []
+    # Entrées en ordre de lecture : une par cluster portant des lettres
+    # hébraïques (les espaces/latin/ponctuation ne comptent pas).
+    entries = []
+    for k in perm:
+        start, end, text = stored[k]
+        letters = consonant_skeleton(text)
+        if letters:
+            entries.append((letters, start, end))
+    if not entries:
+        return []
+    skel = "".join(e[0] for e in entries)
+    matches = []
+    begin = 0
+    while True:
+        j = skel.find(query_skeleton, begin)
+        if j < 0:
+            break
+        covered = entries[j:j + len(query_skeleton)]
+        spans = [(s, e) for _l, s, e in covered]
+        vis_start = min(s for s, _e in spans)
+        vis_end = max(e for _s, e in spans)
+        matches.append((vis_start, vis_end))
+        begin = j + 1
+    return matches
+
+
+def normalize_query(text, visual=False):
+    """Normalise une requête de recherche en squelette consonantique :
+    retire nikkud, teamim, daguesh, points shin/sin et marques bidi — il
+    ne reste que les consonnes hébraïques, en ordre de lecture.
+
+    ``visual=True`` pour un texte issu de la zone de résultat (sélection
+    en ordre visuel, convertie ici via :code:`to_logical`, comme le fait
+    Ctrl+C) ; une saisie au clavier (virtuel ou physique) est déjà en
+    ordre logique et passe avec ``visual=False``.
+    """
+    if visual:
+        text = to_logical(text)
+    return consonant_skeleton(text)
+
+
+
 def visual_cluster_bounds(line):
     """Bornes ``(début, fin)`` de chaque cluster hébreu (LRM + lettre +
     voyelles/accents) d'une ligne en ordre visuel.

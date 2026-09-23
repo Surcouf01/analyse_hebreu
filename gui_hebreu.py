@@ -30,7 +30,14 @@ import unicodedata
 import tkinter as tk
 from tkinter import ttk, messagebox, font as tkfont
 
-from bidi_display import to_visual, to_logical, logical_wrap
+from bidi_display import (
+    to_visual,
+    to_logical,
+    logical_wrap,
+    normalize_query,
+    find_line_matches,
+    has_hebrew_letters,
+)
 
 from bhsa_grammar import (
     load_corpus,
@@ -655,11 +662,29 @@ class ResultText(tk.Text):
                         if font is not None else None)
         self._autowrap = kwargs.get("wrap") != "none"
         self.bind("<Configure>", self.on_resize)
+        # Recherche Ctrl-F dans la zone (cf. _open_find_bar) : occurrences
+        # surlignées, la courante dans une teinte plus soutenue.
+        self.tag_configure("find", background="#ffe08a")
+        self.tag_configure("find_cur", background="#ffb74d")
+        # La sélection native doit rester visible sur le surlignage.
+        self.tag_raise("sel")
+        self._find_bar = None
+        self._find_entry = None
+        self._find_count = None
+        self._find_var = tk.StringVar(self)
+        self._find_matches = []
+        self._find_pos = -1
+        self._find_job = None
+        self._find_focus_notifier = None
+        self.bind("<Control-f>", self._on_find)
+        self.bind("<Control-F>", self._on_find)
+        self.bind("<F3>", self._on_f3)
 
     def set_text(self, text):
         """Mémorise le texte logique et affiche (découpe + ordre visuel)."""
         self._logical_text = text
         self._wrap_width = 0
+        self._clear_find()
         self._redisplay()
 
     def _display_width(self):
@@ -682,6 +707,11 @@ class ResultText(tk.Text):
             self.insert("1.0", to_visual(
                 logical_wrap(self._logical_text, self._measure, width)))
         self.configure(state="disabled")
+        # Le contenu affiché a changé : les occurrences surlignées ne sont
+        # plus valides (les barres de recherche restent ouvertes).
+        self._clear_find()
+        if self._find_bar is not None:
+            self._find_job = self.after_idle(self._refresh_find)
 
     def _measure(self, s):
         if self._tkfont is None:
@@ -722,6 +752,210 @@ class ResultText(tk.Text):
         self.clipboard_append(to_logical(text))
         return "break"
 
+    # --- Recherche Ctrl-F -------------------------------------------------
+    def _on_find(self, event=None):
+        """Ouvre la barre de recherche, pré-remplie depuis la sélection."""
+        self._open_find_bar()
+        return "break"
+
+    def _on_f3(self, event=None):
+        """Occurrence suivante (barre ouverte ou non)."""
+        if self._find_matches:
+            self._find_next()
+            return "break"
+        self._open_find_bar()
+        return "break"
+
+    def _open_find_bar(self):
+        if self._find_entry is not None:
+            try:
+                if self.focus_get() is self._find_entry:
+                    # Focus déjà dans le champ : tout sélectionner (comme
+                    # les navigateurs), sans écraser la saisie.
+                    self._find_entry.select_range(0, "end")
+                    return
+            except KeyError:
+                pass
+        if self._find_bar is None:
+            bar = ttk.Frame(self)
+            entry = ttk.Entry(bar, textvariable=self._find_var, width=18,
+                              font=HEBREW_FONT, justify="right")
+            entry.pack(side="left", padx=(0, 4))
+            self._find_count = ttk.Label(bar, text="", width=12, anchor="w")
+            self._find_count.pack(side="left")
+            btn_next = ttk.Button(bar, text="\u25b6", width=2,
+                                  command=self._find_next)
+            btn_next.pack(side="left", padx=1)
+            btn_prev = ttk.Button(bar, text="\u25c0", width=2,
+                                  command=self._find_prev)
+            btn_prev.pack(side="left", padx=(1, 4))
+            btn_close = ttk.Button(bar, text="\u2715", width=2,
+                                   command=self._close_find_bar)
+            btn_close.pack(side="left")
+            # En haut à gauche : pour l'hébreu (droite-à-gauche), le bord
+            # gauche est la FIN de lecture — la barre couvre le moins
+            # possible le début des lignes.
+            bar.place(in_=self, relx=0.0, x=6, y=4, anchor="nw")
+            self._find_bar = bar
+            self._find_entry = entry
+            entry.bind("<Return>", self._find_next)
+            entry.bind("<KP_Enter>", self._find_next)
+            entry.bind("<Shift-Return>", self._find_prev)
+            entry.bind("<Escape>", self._close_find_bar)
+            entry.bind("<KeyRelease>", self._on_find_typed)
+            entry.bind("<FocusIn>", self._on_find_entry_focus)
+        # Pré-remplissage depuis la sélection courante (ordre logique).
+        try:
+            sel = self.get("sel.first", "sel.last")
+        except tk.TclError:
+            sel = ""
+        if sel:
+            # Une sélection multi-lignes devient une requête sur une
+            # seule ligne (les sauts de ligne ne sont pas cherchés).
+            self._find_var.set(to_logical(sel).replace("\n", " "))
+        self._find_bar.lift()
+        self._refresh_find()
+        self._find_entry.focus_set()
+        self._find_entry.icursor("end")
+        self._find_entry.select_range(0, "end")
+
+    def _on_find_entry_focus(self, event):
+        # Le clavier virtuel (qui tape dans le dernier widget ciblé) doit
+        # pouvoir remplir le champ de recherche.
+        if self._find_focus_notifier is not None:
+            self._find_focus_notifier(event)
+
+    def _close_find_bar(self, event=None):
+        if self._find_job is not None:
+            try:
+                self.after_cancel(self._find_job)
+            except tk.TclError:
+                pass
+            self._find_job = None
+        self._clear_find()
+        if self._find_bar is not None:
+            try:
+                self._find_bar.destroy()
+            except tk.TclError:
+                pass
+        self._find_bar = None
+        self._find_entry = None
+        self._find_count = None
+        self.focus_set()
+
+    def _on_find_typed(self, event=None):
+        # Les touches de validation/navigation ne changent pas la requête
+        # (sinon le refresh réinitialiserait la position courante).
+        if event is not None and event.keysym in (
+                "Return", "KP_Enter", "Escape", "Left", "Right",
+                "Home", "End"):
+            return
+        if self._find_job is not None:
+            try:
+                self.after_cancel(self._find_job)
+            except tk.TclError:
+                pass
+        self._find_job = self.after(150, self._refresh_find)
+
+    def _clear_find(self):
+        self.tag_remove("find", "1.0", "end")
+        self.tag_remove("find_cur", "1.0", "end")
+        self._find_matches = []
+        self._find_pos = -1
+        if self._find_count is not None:
+            try:
+                self._find_count.configure(text="")
+            except tk.TclError:
+                pass
+
+    def _refresh_find(self):
+        """Recalcule les occurrences de la requête courante.
+
+        Si la requête contient des lettres hébraïques, la recherche se fait
+        sur les consonnes seules (sans nikkud ni teamim) dans l'ordre de
+        lecture, via le module bidi_display ; sinon la recherche est
+        littérale insensible à la casse (texte latin, chiffres).
+        """
+        self._find_job = None
+        self._clear_find()
+        query = self._find_var.get()
+        if not query:
+            return
+        matches = self._compute_find_matches(query)
+        self._find_matches = matches
+        for line, a, b in matches:
+            self.tag_add("find", f"{line}.{a}", f"{line}.{b}")
+        if matches:
+            self._find_pos = 0
+            line, a, b = matches[0]
+            self.tag_add("find_cur", f"{line}.{a}", f"{line}.{b}")
+            self.see(f"{line}.{a}")
+        self._update_find_count()
+
+    def _compute_find_matches(self, query):
+        """Occurrences ``[(ligne, début, fin), …]`` en indices du texte
+        stocké (ordre visuel + marques bidi), en ordre de lecture."""
+        n_lines = int(self.index("end - 1c").split(".")[0])
+        matches = []
+        if has_hebrew_letters(query):
+            skeleton = normalize_query(query)
+            if not skeleton:
+                return []
+            for line_no in range(1, n_lines + 1):
+                line = self.get(f"{line_no}.0", f"{line_no}.0 lineend")
+                if not line:
+                    continue
+                for a, b in find_line_matches(line, skeleton):
+                    matches.append((line_no, a, b))
+        else:
+            needle = query.casefold()
+            for line_no in range(1, n_lines + 1):
+                line = self.get(f"{line_no}.0", f"{line_no}.0 lineend")
+                if not line:
+                    continue
+                hay = line.casefold()
+                start = 0
+                while True:
+                    j = hay.find(needle, start)
+                    if j < 0:
+                        break
+                    matches.append((line_no, j, j + len(needle)))
+                    start = j + 1
+        return matches
+
+    def _find_next(self, event=None):
+        if not self._find_matches:
+            self._refresh_find()
+            return "break"
+        self._find_pos = (self._find_pos + 1) % len(self._find_matches)
+        self._show_find_current()
+        return "break"
+
+    def _find_prev(self, event=None):
+        if not self._find_matches:
+            self._refresh_find()
+            return "break"
+        self._find_pos = (self._find_pos - 1) % len(self._find_matches)
+        self._show_find_current()
+        return "break"
+
+    def _show_find_current(self):
+        self.tag_remove("find_cur", "1.0", "end")
+        line, a, b = self._find_matches[self._find_pos]
+        self.tag_add("find_cur", f"{line}.{a}", f"{line}.{b}")
+        self.see(f"{line}.{a}")
+        self._update_find_count()
+
+    def _update_find_count(self):
+        if self._find_count is None:
+            return
+        n = len(self._find_matches)
+        if not n:
+            self._find_count.configure(text="0 / 0")
+        else:
+            self._find_count.configure(
+                text=f"{self._find_pos + 1} / {n}")
+
 
 class AnalyseurGUI:
     """Fenêtre principale de l'analyseur grammatical."""
@@ -740,8 +974,50 @@ class AnalyseurGUI:
         self._build_widgets()
         self._start_loading()
 
+        # Recherche Ctrl-F : routée vers la zone de résultat de l'onglet
+        # actif (le widget focusé peut être une Entry de saisie ; les
+        # ResultText gèrent aussi leur propre <Control-f>/<F3>).
+        root.bind("<Control-f>", self._on_global_find)
+        root.bind("<F3>", self._on_global_find_next)
+
         # Polling des résultats des travaux en arrière-plan.
         root.after(120, self._poll_queue)
+
+    def _active_result_widget(self):
+        """Zone de résultat visible de l'onglet actif, ou None.
+
+        Livre/Mot/Phrase : la zone unique de l'onglet. Binyanim : la zone
+        du sous-onglet affiché (Verbe, binyan ou Sortie complète)."""
+        idx = self.notebook.select()
+        if not idx:
+            return None
+        tab = self.notebook.tab(idx, "text")
+        if tab in ("Livre", "Mot", "Phrase"):
+            return getattr(self.notebook.nametowidget(idx), "_output", None)
+        if tab == "Binyanim":
+            sel = self.binyanim_notebook._selected
+            if sel is None:
+                return None
+            for t in self.binyanim_notebook._tabs:
+                if t["id"] == sel:
+                    for child in t["widget"].winfo_children():
+                        if isinstance(child, ResultText):
+                            return child
+            return None
+        return None
+
+    def _on_global_find(self, event):
+        w = self._active_result_widget()
+        if w is not None:
+            w._on_find(event)
+            return "break"
+        return None
+
+    def _on_global_find_next(self, event):
+        w = self._active_result_widget()
+        if w is not None:
+            return w._on_f3(event)
+        return None
 
     # --- Construction de l'interface -------------------------------------
     def _build_widgets(self):
@@ -926,6 +1202,8 @@ class AnalyseurGUI:
         frame.pack(fill="both", expand=True, padx=8, pady=(0, 8))
         self.output_text = ResultText(frame, font=HEBREW_FONT_MONO,
                                       wrap="word", height=10, width=40)
+        # Le clavier virtuel doit cibler le champ de la barre Ctrl-F.
+        self.output_text._find_focus_notifier = self._remember_target
         self.output_text.grid(row=0, column=0, sticky="nsew")
         yscroll = ttk.Scrollbar(frame, orient="vertical",
                                command=self.output_text.yview)
@@ -1189,6 +1467,8 @@ class AnalyseurGUI:
         """Zone de texte défilable (ascenseurs vertical + horizontal)."""
         text = ResultText(parent, font=HEBREW_FONT_MONO, wrap="none",
                           height=10, width=40)
+        # Le clavier virtuel doit cibler le champ de la barre Ctrl-F.
+        text._find_focus_notifier = self._remember_target
         text.grid(row=0, column=0, sticky="nsew")
         yscroll = ttk.Scrollbar(parent, orient="vertical", command=text.yview)
         yscroll.grid(row=0, column=1, sticky="ns")
