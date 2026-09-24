@@ -23,6 +23,7 @@ La base BHSA est chargée en arrière-plan au démarrage (cf. ``bhsa_grammar``).
 
 import os
 import queue
+import re
 import signal
 import sys
 import threading
@@ -89,6 +90,7 @@ def _load_properties():
     }
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                         "gui.properties")
+    defaults["_path"] = path
     try:
         with open(path, encoding="utf-8") as fh:
             for raw in fh:
@@ -103,6 +105,63 @@ def _load_properties():
 
 
 _PROPS = _load_properties()
+
+# Géométrie par défaut de la fenêtre principale.
+DEFAULT_GEOMETRY = "1200x1000"
+
+
+def _saved_geometry():
+    """Géométrie sauvegardée dans gui.properties, si elle est valide.
+
+    Formats acceptés : « largeurxhauteur » ou « largeurxhauteur+X+Y »
+    (coordonnées éventuellement négatives, écran multi-moniteurs).
+    """
+    geo = _PROPS.get("window.geometry", "").strip()
+    if re.fullmatch(r"\d+x\d+(?:[+-]-?\d+[+-]-?\d+)?", geo):
+        return geo
+    return ""
+
+
+def _save_geometry(root):
+    """Écrit la géométrie actuelle dans gui.properties (clé window.geometry).
+
+    Préserve le reste du fichier (commentaires, polices). En cas
+    d'erreur d'E/S, l'échec est silencieux : la préférence est
+    perdue mais l'application continue.
+    """
+    path = _PROPS.get("_path")
+    if not path:
+        return
+    try:
+        geo = root.geometry()
+    except tk.TclError:
+        return
+    try:
+        with open(path, encoding="utf-8") as fh:
+            lines = fh.readlines()
+    except OSError:
+        lines = []
+    key = "window.geometry"
+    updated = False
+    for i, raw in enumerate(lines):
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, _, _ = line.partition("=")
+        if k.strip() == key:
+            lines[i] = f"{key} = {geo}\n"
+            updated = True
+    if not updated:
+        if lines and lines[-1].strip():
+            lines.append("\n")
+        lines.append("# Position et taille de la fenêtre principale "
+                     "(sauvegardées à la fermeture).\n")
+        lines.append(f"{key} = {geo}\n")
+    try:
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.writelines(lines)
+    except OSError:
+        pass
 
 
 def _font(prop_family, prop_size):
@@ -996,8 +1055,8 @@ class AnalyseurGUI:
         self._target_widget = None  # widget actuellement ciblé par le clavier
 
         root.title("Analyseur grammatical de l'hébreu biblique")
-        root.geometry("1200x1000")
         root.minsize(1000, 760)
+        root.geometry(_saved_geometry() or DEFAULT_GEOMETRY)
 
         self._build_widgets()
         self._start_loading()
@@ -1865,14 +1924,16 @@ class AnalyseurGUI:
 def _quit_from_signal(root, signum, frame):
     """Fermeture demandée par Ctrl-C (SIGINT) en ligne de commande.
 
+    La géométrie de la fenêtre principale est sauvegardée avant l'arrêt.
     Le mainloop() de Tk bloque le thread principal dans la boucle
     d'événements Tcl : un SIGINT peut y être délivré au milieu d'un
     callback Tkinter, et l'exception KeyboardInterrupt est alors avalée
     par le rapport d'exception de Tkinter (la boucle continue) — la
     fermeture semble aléatoire. On replane donc l'arrêt via
-    after_idle : destroy() s'exécute dans le thread principal, depuis la
-    boucle d'événements, et mainloop() rend la main proprement.
+    after_idle : destroy() s'exécutera dans le thread principal, depuis
+    la boucle d'événements, et mainloop() rend la main proprement.
     """
+    _save_geometry(root)
     try:
         root.after_idle(root.destroy)
     except tk.TclError:
@@ -1892,10 +1953,20 @@ def _report_callback_exception(self, exc, val, tb):
     traceback.print_exception(exc, val, tb)
 
 
+def _close_from_window(root):
+    """Fermeture demandée par le gestionnaire de fenêtres (bouton ✕).
+
+    Sauvegarde la géométrie avant la destruction.
+    """
+    _save_geometry(root)
+    root.destroy()
+
+
 def main():
     root = tk.Tk()
     tk.Tk.report_callback_exception = _report_callback_exception
     AnalyseurGUI(root)
+    root.protocol("WM_DELETE_WINDOW", lambda: _close_from_window(root))
     signal.signal(signal.SIGINT, lambda s, f: _quit_from_signal(root, s, f))
     try:
         root.mainloop()
