@@ -992,7 +992,18 @@ def identify_verb(F, form):
         }
 
     # 2) Forme conjuguée : recherche BHSA (cf. word_analyzer.search_word).
-    from .word_analyzer import search_word
+    # Un match dont le squelette consonantique est un PRÉFIXE STRICT de la
+    # racine trouvée est refusé : c'est la forme courte d'un verbe double
+    # (ex. מר -> מרר, la 3e radicale absorbée dans le daguesh fort) ou
+    # lamed-he (גל -> גלה). L'utilisateur qui saisit une racine inexistante
+    # reçoit une erreur avec la racine complète suggérée, pas une
+    # conjugaison surprise. Les formes légitimes restent identifiées :
+    # verbe creux (קָם de קום : le squelette n'est pas un préfixe de la
+    # racine), pe-nun assimilé (יפל de נפל : 3 lettres après le préfixe),
+    # forme pleine d'un verbe double (מָרַר de מרר).
+    from .word_analyzer import search_word, _strip_nikkud
+    cons = _strip_nikkud(norm)
+    truncated = []
     seen_lex = set()
     for method, w, pfx in search_word(F, form):
         if F.sp.v(w) != "verb":
@@ -1005,6 +1016,13 @@ def identify_verb(F, form):
         rletters = _root_letters(lex_utf8)
         if len(rletters) != 3:
             continue
+        skel = cons[len(pfx):] if pfx else cons
+        skel_letters = _root_letters(skel)
+        if (len(skel_letters) < len(rletters)
+                and list(rletters[:len(skel_letters)])
+                == list(skel_letters)):
+            truncated.append("".join(rletters))
+            continue
         return {
             "found": True,
             "lex": lex,
@@ -1015,6 +1033,27 @@ def identify_verb(F, form):
             "binyan_attested": F.vs.v(w),
             "method": "form",
         }
+    if truncated:
+        return {"found": False, "reason": "root_truncated",
+                "suggestions": sorted(set(truncated)), "input": form}
+    # Racine nue trop courte (ex. מר) : aucune forme ne matche, mais des
+    # racines verbales étendent la saisie — les suggérer.
+    if 0 < len(letters) < 3:
+        suggestions = set()
+        for w in F.otype.s("word"):
+            if F.sp.v(w) != "verb":
+                continue
+            rletters = _root_letters(F.lex_utf8.v(w) or "")
+            if (len(rletters) == 3
+                    and list(rletters[:len(letters)]) == list(letters)):
+                suggestions.add("".join(rletters))
+        if suggestions:
+            # Racines doubles en premier (extension naturelle d'une
+            # racine courte : מר -> מרר), puis les autres par ordre.
+            ordered = sorted(suggestions, key=lambda r: (len(r), r))
+            return {"found": False, "reason": "no_match",
+                    "suggestions": ordered[:8],
+                    "input": form}
     return {"found": False, "reason": "no_match", "input": form}
 
 

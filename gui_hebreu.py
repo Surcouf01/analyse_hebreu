@@ -1585,10 +1585,12 @@ class AnalyseurGUI:
         def worker():
             analysis = analyze_binyanim(F, form, use_mishnah=use_mishnah)
             if not analysis.get("found"):
-                reason = analysis.get("verb", {}).get("reason") \
-                    or analysis.get("reason")
+                verb = analysis.get("verb", {})
+                reason = verb.get("reason") or analysis.get("reason")
+                suggestions = verb.get("suggestions") \
+                    or analysis.get("suggestions") or []
                 self._work_queue.put(("binyanim_not_found",
-                                      (form, reason)))
+                                      (form, reason, suggestions)))
                 return
             if fmt == "json":
                 result = format_binyanim_json(analysis)
@@ -1644,7 +1646,7 @@ class AnalyseurGUI:
 
     def _show_binyanim_not_found(self, payload):
         """Forme non identifiable : message, résultat précédent conservé."""
-        form, reason = payload
+        form, reason, suggestions = payload
         msg = (f"Aucun verbe trouvé pour « {form} » dans la base BHSA.\n\n"
                "La fenêtre résultat n'a pas été modifiée.")
         if reason == "orphan_shin_dot":
@@ -1653,6 +1655,17 @@ class AnalyseurGUI:
                    "Saisissez la lettre ש, puis son point (שׁ ou שׂ) — "
                    "ou la racine sans point.\n\n"
                    "La fenêtre résultat n'a pas été modifiée.")
+        elif suggestions:
+            hint = ", ".join(suggestions)
+            if reason == "root_truncated":
+                msg = (f"« {form} » est la forme courte d'un verbe faible "
+                       f"(racine probable : {hint}).\n\n"
+                       "Saisissez la racine complète pour la conjuguer.\n\n"
+                       "La fenêtre résultat n'a pas été modifiée.")
+            else:
+                msg = (f"Aucun verbe trouvé pour « {form} » dans la base "
+                       f"BHSA. Racines proches : {hint}.\n\n"
+                       "La fenêtre résultat n'a pas été modifiée.")
         messagebox.showwarning("Binyanim", msg)
         self.status.configure(text="Prêt.")
         self._enable_buttons()
