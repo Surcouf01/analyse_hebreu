@@ -271,6 +271,23 @@ def main():
           f"{mismatch}/{checked}")
 
     print(f"Cellules vérifiées contre la base BHSA : {checked}")
+    # Point shin/sin orphelin (sans lettre ש) : la forme doit être refusée
+    # avec la raison orphan_shin_dot, pas identifiée comme un autre verbe
+    # (ex. ׁמר lu comme מר → racine מרר).
+    for bad in ("\u05C1\u05DE\u05E8", "\u05C2\u05DE\u05E8", "\u05DE\u05C1\u05E8"):
+        r_bad = analyze_binyanim(F, bad)
+        reason = r_bad["verb"].get("reason") or r_bad.get("reason")
+        if r_bad["found"] or reason != "orphan_shin_dot":
+            failures.append(
+                f"{bad!r}: attendu found=False/orphan_shin_dot, "
+                f"obtenu found={r_bad['found']}/{reason!r}")
+    # Les formes correctes avec point shin restent identifiées (le point
+    # suit le ש, éventuellement après la voyelle — convention BHSA).
+    for good in ("\u05E9\u05C1\u05DE\u05E8", "\u05E9\u05C2\u05DE\u05E8", "\u05E9\u05B8\u05C1\u05DE\u05B7\u05E8",
+                 "\u05E9\u05B0\u05C1\u05DE\u05B7\u05E8"):
+        r_good = analyze_binyanim(F, good)
+        if not r_good["found"]:
+            failures.append(f"{good!r}: devrait être identifié")
     if failures:
         print(f"ÉCHECS ({len(failures)}) :")
         for f in failures:

@@ -947,6 +947,22 @@ def identify_verb(F, form):
     norm = _normalize(form)
     letters = _root_letters(norm)
 
+    # Point shin/sin orphelin : la saisie a probablement inséré le point
+    # sans la lettre ש (touche shin_dot du clavier virtuel seule). Sans
+    # cette garde, le point serait ignoré et la recherche se ferait sur
+    # les consonnes restantes, avec un verbe sans rapport (ex. ׁמר lu
+    # comme מר → מרר). On refuse plutôt la forme. Le point suit le ש
+    # immédiatement ou après les signes vocaliques (convention BHSA :
+    # ש + qamats + point shin).
+    for i, ch in enumerate(norm):
+        if ch in ("\u05C1", "\u05C2"):
+            j = i - 1
+            while j >= 0 and 0x05B0 <= ord(norm[j]) <= 0x05BC:
+                j -= 1
+            if j < 0 or norm[j] != "\u05E9":
+                return {"found": False, "reason": "orphan_shin_dot",
+                        "input": form}
+
     # 1) Racine trilitaire nue (ex. שמר, קטל, שׂמר) : lemme BHSA ou racine
     #    théorique si la racine n'existe pas dans la base.
     if len(letters) == 3 and _is_consonantal(norm):

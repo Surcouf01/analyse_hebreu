@@ -1584,6 +1584,12 @@ class AnalyseurGUI:
 
         def worker():
             analysis = analyze_binyanim(F, form, use_mishnah=use_mishnah)
+            if not analysis.get("found"):
+                reason = analysis.get("verb", {}).get("reason") \
+                    or analysis.get("reason")
+                self._work_queue.put(("binyanim_not_found",
+                                      (form, reason)))
+                return
             if fmt == "json":
                 result = format_binyanim_json(analysis)
                 self._work_queue.put(("binyanim_raw", result))
@@ -1635,6 +1641,21 @@ class AnalyseurGUI:
             self.binyanim_notebook.forget(tab_id)
         self.binyanim_rules_tab = None
         self.binyanim_rules_text = None
+
+    def _show_binyanim_not_found(self, payload):
+        """Forme non identifiable : message, résultat précédent conservé."""
+        form, reason = payload
+        msg = (f"Aucun verbe trouvé pour « {form} » dans la base BHSA.\n\n"
+               "La fenêtre résultat n'a pas été modifiée.")
+        if reason == "orphan_shin_dot":
+            msg = (f"Saisie invalide : « {form} » contient un point "
+                   "shin/sin sans la lettre ש.\n\n"
+                   "Saisissez la lettre ש, puis son point (שׁ ou שׂ) — "
+                   "ou la racine sans point.\n\n"
+                   "La fenêtre résultat n'a pas été modifiée.")
+        messagebox.showwarning("Binyanim", msg)
+        self.status.configure(text="Prêt.")
+        self._enable_buttons()
 
     def _show_binyanim_raw(self, text):
         """Affiche la sortie brute (texte marqué ou JSON)."""
@@ -1961,6 +1982,8 @@ class AnalyseurGUI:
                     self._show_binyanim_raw(payload)
                 elif kind == "binyanim_parsed":
                     self._show_binyanim_parsed(payload)
+                elif kind == "binyanim_not_found":
+                    self._show_binyanim_not_found(payload)
         except queue.Empty:
             pass
         self.root.after(120, self._poll_queue)
