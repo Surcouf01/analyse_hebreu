@@ -56,6 +56,7 @@ from bhsa_grammar import (
     format_binyanim,
     format_binyanim_json,
     parse_binyanim_text,
+    WEAK_CONJ_RULES,
     book_french,
     DataNotFoundError,
     load_translation,
@@ -1541,6 +1542,12 @@ class AnalyseurGUI:
         self.binyanim_verb_tab = ttk.Frame(self.binyanim_notebook.body)
         self.binyanim_notebook.add(self.binyanim_verb_tab, text="Verbe")
         self.binyanim_verb_text = self._make_binyanim_output(self.binyanim_verb_tab)
+        # Onglet « Règles » : règles de conjugaison du verbe faible
+        # (créé d'emblée pour garder sa position ; rempli si le verbe est
+        # faible, sinon il affiche un message).
+        self.binyanim_rules_tab = ttk.Frame(self.binyanim_notebook.body)
+        self.binyanim_notebook.add(self.binyanim_rules_tab, text="Règles")
+        self.binyanim_rules_text = self._make_binyanim_output(self.binyanim_rules_tab)
         # Onglet « Sortie complète » : texte marqué brut du CLI.
         self.binyanim_raw_tab = ttk.Frame(self.binyanim_notebook.body)
         self.binyanim_notebook.add(self.binyanim_raw_tab, text="Sortie complète")
@@ -1594,6 +1601,36 @@ class AnalyseurGUI:
 
         threading.Thread(target=worker, daemon=True).start()
 
+    def _fill_binyanim_rules_tab(self, parsed, weak):
+        """Remplit l'onglet « Règles » du verbe faible.
+
+        Affiche les règles de conjugaison caractéristiques de la
+        catégorie du verbe (assimilation du nun, élision du ה final,
+        refus du sheva des gutturales, etc.). Pour un verbe fort,
+        l'onglet reste explicatif.
+        """
+        lines = []
+        code = weak.get("code")
+        label = weak.get("label", "")
+        desc = weak.get("desc", "")
+        if code and code in WEAK_CONJ_RULES:
+            lines.append(f"Verbe faible : {label}")
+            if desc:
+                lines.append(f"  {desc}")
+            lines.append("")
+            lines.append("Règles de conjugaison caractéristiques :")
+            lines.append("")
+            for title, rule in WEAK_CONJ_RULES[code]:
+                lines.append(f"• {title}")
+                lines.append(f"  {rule}")
+                lines.append("")
+        else:
+            lines.append("Verbe fort (shalem) : conjugaison régulière.")
+            lines.append("")
+            lines.append("Aucune règle particulière : les paradigmes des "
+                         "7 binyanim s'appliquent sans modification.")
+        self._set_output(self.binyanim_rules_text, "\n".join(lines))
+
     def _show_binyanim_raw(self, text):
         """Affiche la sortie brute (texte marqué ou JSON)."""
         self._set_output(self.binyanim_raw_text, text)
@@ -1645,6 +1682,8 @@ class AnalyseurGUI:
                 lines.append("")
                 lines.append("Verbe fort (shalem) : conjugaison régulière.")
         self._set_output(self.binyanim_verb_text, "\n".join(lines))
+
+        self._fill_binyanim_rules_tab(parsed, weak)
 
         raw_index = self.binyanim_notebook.index(self.binyanim_raw_tab)
         for b in parsed.get("binyanim", []):

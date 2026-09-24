@@ -29,6 +29,7 @@ from .binyan_gen import (
     binyanim_to_text,
     binyanim_to_json,
     parse_binyanim_text,
+    WEAK_CONJ_RULES,
 )
 
 __all__ = [
@@ -63,6 +64,7 @@ __all__ = [
     "format_binyanim",
     "format_binyanim_json",
     "parse_binyanim_text",
+    "WEAK_CONJ_RULES",
 ]
 
 __version__ = "1.0.0"

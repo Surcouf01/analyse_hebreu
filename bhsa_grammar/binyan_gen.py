@@ -803,6 +803,115 @@ WEAK_CATEGORIES = (
 
 _WEAK_LABELS = {code: (label, desc) for code, label, desc in WEAK_CATEGORIES}
 
+# Règles de conjugaison caractéristiques de chaque catégorie de verbe faible.
+# Chaque entrée : liste de (titre, description) affichée par le GUI dans
+# l'onglet « Règles du verbe faible » du mode binyanim.
+WEAK_CONJ_RULES = {
+    "pe_alef": [
+        ("Alef quiescent", 
+         "1re radicale א : l'alef ne se prononce qu'avec une voyelle ; "
+         "après un préfixe (יִ, תִּ, נִ), le sheva attendu devient un "
+         "hatef-patah (אֲ) ou une voyelle brève pleine."),
+        ("Préfixes voyellés",
+         "Imparfait : le préfixe porte une voyelle pleine au lieu du sheva "
+         "(יָאמִין « il croira », pas *יְאמִין)."),
+    ],
+    "pe_guttural": [
+        ("Refus du sheva",
+         "1re radicale gutturale (ה/ח/ע) : la gutturale refuse le sheva, "
+         "remplacé par une voyelle brève (hatef) — אֶחֱזֶק הַח֖וֹק plutôt "
+         "que *יַחְזִיק."),
+        ("Voyelles de compensation",
+         "La voyelle du préfixe s'allonge parfois (a → e long) pour "
+         "compenser l'impossibilité de doubler la gutturale."),
+    ],
+    "pe_nun": [
+        ("Assimilation du nun",
+         "1re radicale נ : dans les formes à préfixe (imparfait, "
+         "impératif, participe), le נ s'assimile à la 2e radicale et "
+         "apparaît comme daguesh fort : יִפֹּל « il tombera » (racine "
+         "נפל), et non *יִנפֹּל."),
+        ("Formes à suffixe",
+         "Au parfait et dans les formes où le nun reste en position "
+         "initiale de syllabe, il est conservé : נָפַל « il est tombé »."),
+    ],
+    "pe_yod": [
+        ("Assimilation du yod",
+         "1re radicale י : le yod s'assimile en voyelle longue, la forme "
+         "commence par une consonne à daguesh (יֵשֵׁב « il habitera », "
+         "racine ישׁב)."),
+        ("Verbes mi",
+         "Au qal imparfait, plusieurs verbes pe-yod présentent un "
+         "préfixe en voyelle longue au lieu de la forme attendue."),
+    ],
+    "ayin_guttural": [
+        ("Refus du daguesh fort",
+         "2e radicale gutturale : la gutturale refuse le daguesh fort "
+         "(caractéristique du piel/pual), la voyelle précédente "
+         "s'allonge en compensation."),
+        ("Voyelle de compensation",
+         "Piel : le hatef du préfixe s'allonge (chariq → ségol/hireq "
+         "long) pour compenser le redoublement impossible."),
+    ],
+    "ayin_vav": [
+        ("Verbe creux",
+         "2e radicale ו/י consonantique : la voyelle entre P2 et P3 "
+         "s'allonge (qamats/holam) et la radicale médiane n'est jamais "
+         "syllabée — קָם « il s'est levé », יָקֻם (hofal), etc."),
+        ("Métaphonie de qamets",
+         "Au qal imparfait, la voyelle radicale se réduit souvent à une "
+         "voyelle de type (o/u) : יָקם → יָקֻם au hofal ; au qal, "
+         "la voyelle « a » se conserve longue."),
+    ],
+    "lamed_he": [
+        ("Terminaison vocalique",
+         "3e radicale ה : le ה final n'est pas une vraie consonne mais "
+         "une mater lectionis ; les formes se terminent par une voyelle "
+         "longue ou une terminaison vocalique (ה/ת/י/נוּ)."),
+        ("Élision du ה final",
+         "Aux formes à suffixe (suffixe pronominal ou terminaison de "
+         "personne), le ה s'élide et la voyelle se contracte : "
+         "בָּנָה + תִּי → בָּנִיתִי (pas *בָּנָהְתִי)."),
+        ("Jussif et cohortatif",
+         "La forme courte (jussif) élide le ה avec sa voyelle : יִּבֶן ; "
+         "le cohortatif 1re personne est identique à l'imparfait (אֶבְנֶה) "
+         "— le ה paragogique s'agglutine à une forme déjà vocalique."),
+        ("Impératif",
+         "L'impératif construit sur l'imparfait sans préfixe : בְּנֵה « bâtis », "
+         "avec tsere (voyelle-longue) car le ה élité laisse une syllabe "
+         "ouverte."),
+    ],
+    "lamed_alef": [
+        ("Alef quiescent",
+         "3e radicale א : en syllabe ouverte finale, l'alef quiescent "
+         "s'élide (מָצָא → מָצָה) ; en position initiale de syllabe, "
+         "il est conservé."),
+        ("Impératif",
+         "La voyelle de l'impératif s'allonge pour compenser "
+         "l'élision : מְצָא-מָצָה."),
+    ],
+    "lamed_guttural": [
+        ("Patah furtif",
+         "3e radicale gutturale : après une voyelle non-patah, un patah "
+         "furtif s'insère avant la gutturale finale (שָׁמַע, גָּדַלְתָּ) ; "
+         "la gutturale ne se redouble pas."),
+        ("Voyelles de compensation",
+         "Les voyelles de la racine s'adaptent à la gutturale : ségol "
+         "fréquent en finale (שָׁמַע → impératif שְׁמַע) et refus "
+         "du daguesh fort."),
+    ],
+    "double": [
+        ("Redoublement",
+         "2e et 3e radicales identiques : la 3e radicale se redouble "
+         "avec daguesh fort dans les formes à préfixe — יְסֻבֵּב « il "
+         "sera entouré » (racine סבב)."),
+        ("Qal défectif",
+         "Au qal parfait, la voyelle entre P2 et P3 s'allonge souvent "
+         "(סָבַב comme un verbe fort, ou עִפֵּל־סָבֵב « doublement » "
+         "au piel/pual)."),
+    ],
+}
+
 
 def classify_root(p1, p2, p3):
     """Classe une racine trilitaire : renvoie le code de la catégorie."""
