@@ -159,6 +159,18 @@ def _cluster_dir(cluster):
 # ses guillemets échangés (« ouvrant/fermant inversés systématiquement »).
 _QUOTE_PAIRS = {"\u00ab": "\u00bb"}
 
+# Crochets ouvrants (sous-ensemble de _MIRROR_PAIRS) : pour la règle N0
+# de UAX #9, une paire ouvrant/fermant dont le contenu contient un fort de
+# la direction de base prend cette direction (cf. _resolve_bracket_pairs).
+_BRACKET_OPENERS = {
+    "(": ")",
+    "[": "]",
+    "{": "}",
+    "<": ">",
+    "\u2039": "\u203a",
+    "\u27e8": "\u27e9",
+}
+
 
 def _resolve_quote_pairs(clusters, raw):
     """Passe préalable à la résolution N1/N2 : les paires « … » dont le
@@ -194,9 +206,59 @@ def _resolve_quote_pairs(clusters, raw):
     return raw
 
 
+def _resolve_bracket_pairs(clusters, raw, base):
+    """Règle N0 de UAX #9 pour les crochets miroirables : une paire
+    ouvrant/fermant prend la direction de base si le premier fort de son
+    contenu l'a (N0a) ; sinon, si le fort qui précède l'ouvrant a la même
+    direction que ce premier fort, cette direction (N0b) ; sinon la
+    direction de base (N0c). Sans cette règle, la fermante de la ligne
+    « === Mot analysé : (lemme : על)עָלַ֗י === » était prise entre
+    deux segments RTL (N1) et s'affichait miroitée. Modifie ``raw`` en
+    place et le renvoie."""
+    n = len(clusters)
+    i = 0
+    while i < n:
+        first = clusters[i] if len(clusters[i]) == 1 else None
+        if first not in _BRACKET_OPENERS:
+            i += 1
+            continue
+        closer = _BRACKET_OPENERS[first]
+        j = i + 1
+        depth = 1
+        while j < n:
+            c = clusters[j]
+            if len(c) == 1 and c == closer:
+                depth -= 1
+                if depth == 0:
+                    break
+            elif len(c) == 1 and c == first:
+                depth += 1
+            j += 1
+        if j >= n:
+            i += 1
+            continue
+        inner = [raw[k] for k in range(i + 1, j) if raw[k] in ("L", "R")]
+        if not inner:
+            i = j + 1
+            continue
+        if inner[0] == base:
+            raw[i] = raw[j] = base
+        else:
+            prev = None
+            k = i - 1
+            while k >= 0:
+                if raw[k] in ("L", "R"):
+                    prev = raw[k]
+                    break
+                k -= 1
+            raw[i] = raw[j] = inner[0] if prev == inner[0] else base
+        i = j + 1
+    return raw
+
+
 def _resolve_dirs(clusters, base_rtl):
     """Résout la direction de chaque cluster (simplification de l'algorithme
-    bidi Unicode, règles W4/N1/N2 + attache des ponctuations) :
+    bidi Unicode, règles W4/N0/N1/N2 + attache des ponctuations) :
 
     - un séparateur de nombres (ex. « : » de « 1:1 ») entre deux chiffres
       est un nombre (règle W4) ; les chiffres (EN) forment leur propre
@@ -227,6 +289,7 @@ def _resolve_dirs(clusters, base_rtl):
     """
     raw = [_cluster_dir(c) for c in clusters]
     raw = _resolve_quote_pairs(clusters, raw)
+    raw = _resolve_bracket_pairs(clusters, raw, "R" if base_rtl else "L")
     dirs = list(raw)
     n = len(dirs)
     for i in range(1, n - 1):

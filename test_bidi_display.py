@@ -399,6 +399,28 @@ class TestQuotePairs(unittest.TestCase):
         visual_rtl = to_visual(line_rtl)
         self.assertEqual(to_logical(visual_rtl), line_rtl)
 
+    def test_paren_pair_between_hebrew_segments_n0(self):
+        """Mode mot : la recherche « (lemme : על)עָלַ֗י » (collée depuis un
+        résultat) remonte telle quelle dans l'en-tête « === Mot analysé :
+        … === ». La fermante, entre le lemme hébreu et la forme hébraïque,
+        était prise entre deux segments RTL (N1) et s'affichait miroitée.
+        La règle N0 (paires de crochets) donne à la paire la direction de
+        base : le contenu « lemme : על » commence par du latin, la paire
+        reste latine, glyphe intact."""
+        line = "=== Mot analys\u00e9 : (lemme : \u05e2\u05dc)\u05e2\u05b8\u05dc\u05b7\u0597\u05d9 ==="
+        visual = to_visual(line)
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        self.assertIn("(lemme : \u05dc\u05e2)", clean)
+        self.assertNotIn("(lemme : (\u05dc", clean)
+        self.assertEqual(to_logical(visual), line)
+
+        # Base RTL : la paire dont le contenu commence par de l'hébreu
+        # garde la direction RTL (N0b) — pas de régression des crochets
+        # entre mots hébreux.
+        line_rtl = "\u05d0\u05d1\u05d2 (\u05d3\u05d5\u05d3) \u05d4\u05d5\u05d2\u05d4"
+        visual_rtl = to_visual(line_rtl)
+        self.assertEqual(to_logical(visual_rtl), line_rtl)
+
 
 class TestConsonantSearch(unittest.TestCase):
     """Recherche Ctrl-F : squelette consonantique (sans nikkud ni teamim)
