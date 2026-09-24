@@ -368,6 +368,37 @@ class TestQuotePairs(unittest.TestCase):
                      '«», «», »'):
             self.assertEqual(to_logical(to_visual(line)), line)
 
+    def test_paren_after_hebrew_in_ltr_line(self):
+        """Mode mot : « Forme en base : לֹ֥ו  (lemme : ל) » — la
+        parenthèse fermante collée à l'hébreu mais suivie du latin ne
+        doit PAS être attachée au run RTL : elle serait miroitée (L4)
+        et s'affichait « (lemme : (ל ». Elle reste dans le segment de
+        base (latin), glyphe intact."""
+        line = "Forme en base : \u05dc\u05b9\u0591\u05d5  (lemme : \u05dc)"
+        visual = to_visual(line)
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        self.assertTrue(clean.endswith("(lemme : \u05dc)"), clean)
+        self.assertNotIn("(lemme : (\u05dc", clean)
+        self.assertEqual(to_logical(visual), line)
+
+    def test_mirrored_brackets_never_attached(self):
+        """Tout crochet miroirable ( ) [ ] { } échappe à l'attache, même
+        collé à un mot hébreu : il suit uniquement N1/N2 + base. Entre
+        deux mots hébreux, il reste RTL (N1) et miroité, comme UAX #9."""
+        # Base LTR : parenthèse ouvrante latine + contenu hébreu +
+        # fermante latine (le lemme d'une ligne de résultat).
+        line = "Racine : \u05e9\u05c1\u05de\u05e8  (lemme BHSA : CMR[)"
+        visual = to_visual(line)
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        self.assertTrue(clean.endswith("(lemme BHSA : CMR[)"), clean)
+        self.assertEqual(to_logical(visual), line)
+
+        # Crochets entre deux mots hébreux (base RTL) : N1 s'applique,
+        # ils s'inversent avec le bloc — comportement inchangé.
+        line_rtl = "\u05d0 (\u05e9\u05dc\u05d5\u05dd) \u05d1"
+        visual_rtl = to_visual(line_rtl)
+        self.assertEqual(to_logical(visual_rtl), line_rtl)
+
 
 class TestConsonantSearch(unittest.TestCase):
     """Recherche Ctrl-F : squelette consonantique (sans nikkud ni teamim)

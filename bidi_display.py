@@ -252,7 +252,14 @@ def _resolve_dirs(clusters, base_rtl):
             continue
         c = clusters[i]
         # Attache : ponctuation collée à un mot fort (pas une espace).
-        if not c.isspace():
+        # Les crochets miroirables ( ) [ ] { } n'entrent pas dans ce mécanisme :
+        # attachés à l'hébreu, ils seraient miroités (règle L4) et la paire
+        # s'affichait inversée — « (lemme : ל) » devenait « (lemme : (ל ».
+        # Ils suivent uniquement N1/N2 + direction de base : collés à un
+        # mot hébreu d'un côté et au texte latin de l'autre, ils restent
+        # dans le segment de base et gardent leur glyphe.
+        if (not c.isspace()
+                and not (len(c) == 1 and c in _MIRROR_PAIRS)):
             left_d = raw[i - 1] if i > 0 else None
             right_d = raw[i + 1] if i < n - 1 else None
             if left_d is not None and right_d is None:
