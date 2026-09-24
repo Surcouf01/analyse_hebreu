@@ -1542,12 +1542,6 @@ class AnalyseurGUI:
         self.binyanim_verb_tab = ttk.Frame(self.binyanim_notebook.body)
         self.binyanim_notebook.add(self.binyanim_verb_tab, text="Verbe")
         self.binyanim_verb_text = self._make_binyanim_output(self.binyanim_verb_tab)
-        # Onglet « Règles » : règles de conjugaison du verbe faible
-        # (créé d'emblée pour garder sa position ; rempli si le verbe est
-        # faible, sinon il affiche un message).
-        self.binyanim_rules_tab = ttk.Frame(self.binyanim_notebook.body)
-        self.binyanim_notebook.add(self.binyanim_rules_tab, text="Règles")
-        self.binyanim_rules_text = self._make_binyanim_output(self.binyanim_rules_tab)
         # Onglet « Sortie complète » : texte marqué brut du CLI.
         self.binyanim_raw_tab = ttk.Frame(self.binyanim_notebook.body)
         self.binyanim_notebook.add(self.binyanim_raw_tab, text="Sortie complète")
@@ -1602,37 +1596,49 @@ class AnalyseurGUI:
         threading.Thread(target=worker, daemon=True).start()
 
     def _fill_binyanim_rules_tab(self, parsed, weak):
-        """Remplit l'onglet « Règles » du verbe faible.
+        """Crée l'onglet « Règles » si le verbe est faible, sinon le retire.
 
-        Affiche les règles de conjugaison caractéristiques de la
-        catégorie du verbe (assimilation du nun, élision du ה final,
-        refus du sheva des gutturales, etc.). Pour un verbe fort,
-        l'onglet reste explicatif.
+        L'onglet, inséré avant « Sortie complète », affiche les règles de
+        conjugaison caractéristiques de la catégorie du verbe
+        (assimilation du nun, élision du ה final, refus du sheva des
+        gutturales, etc.). Il n'existe que pour un verbe faible.
         """
-        lines = []
+        self._remove_binyanim_rules_tab()
         code = weak.get("code")
-        label = weak.get("label", "")
-        desc = weak.get("desc", "")
-        if code and code in WEAK_CONJ_RULES:
-            lines.append(f"Verbe faible : {label}")
-            if desc:
-                lines.append(f"  {desc}")
+        if not code or code == "strong" or code not in WEAK_CONJ_RULES:
+            return
+        self.binyanim_rules_tab = ttk.Frame(self.binyanim_notebook.body)
+        raw_index = self.binyanim_notebook.index(self.binyanim_raw_tab)
+        self.binyanim_notebook.insert(raw_index, self.binyanim_rules_tab,
+                                      text="Règles")
+        self.binyanim_rules_text = self._make_binyanim_output(
+            self.binyanim_rules_tab)
+        lines = [f"Verbe faible : {weak.get('label', '')}"]
+        if weak.get("desc"):
+            lines.append(f"  {weak['desc']}")
+        lines.append("")
+        lines.append("Règles de conjugaison caractéristiques :")
+        lines.append("")
+        for title, rule in WEAK_CONJ_RULES[code]:
+            lines.append(f"• {title}")
+            lines.append(f"  {rule}")
             lines.append("")
-            lines.append("Règles de conjugaison caractéristiques :")
-            lines.append("")
-            for title, rule in WEAK_CONJ_RULES[code]:
-                lines.append(f"• {title}")
-                lines.append(f"  {rule}")
-                lines.append("")
-        else:
-            lines.append("Verbe fort (shalem) : conjugaison régulière.")
-            lines.append("")
-            lines.append("Aucune règle particulière : les paradigmes des "
-                         "7 binyanim s'appliquent sans modification.")
         self._set_output(self.binyanim_rules_text, "\n".join(lines))
+
+    def _remove_binyanim_rules_tab(self):
+        """Retire l'onglet « Règles » s'il existe (verbe fort ou sortie brute)."""
+        tab = getattr(self, "binyanim_rules_tab", None)
+        if tab is None:
+            return
+        tab_id = self.binyanim_notebook._resolve(tab)
+        if tab_id is not None:
+            self.binyanim_notebook.forget(tab_id)
+        self.binyanim_rules_tab = None
+        self.binyanim_rules_text = None
 
     def _show_binyanim_raw(self, text):
         """Affiche la sortie brute (texte marqué ou JSON)."""
+        self._remove_binyanim_rules_tab()
         self._set_output(self.binyanim_raw_text, text)
         self.binyanim_notebook.select(self.binyanim_raw_tab)
         self.status.configure(text="Prêt.")
@@ -1683,8 +1689,6 @@ class AnalyseurGUI:
                 lines.append("Verbe fort (shalem) : conjugaison régulière.")
         self._set_output(self.binyanim_verb_text, "\n".join(lines))
 
-        self._fill_binyanim_rules_tab(parsed, weak)
-
         raw_index = self.binyanim_notebook.index(self.binyanim_raw_tab)
         for b in parsed.get("binyanim", []):
             tab = ttk.Frame(self.binyanim_notebook.body)
@@ -1727,6 +1731,8 @@ class AnalyseurGUI:
                             "par analogie.\n\n")
                     content = warn + content
             self._set_output(text, content)
+
+        self._fill_binyanim_rules_tab(parsed, weak)
 
         if parsed.get("binyanim"):
             # Sélectionner le premier binyan.
