@@ -120,11 +120,15 @@ HEBREW_FONT = _font("font.input.family", "font.input.size")
 HEBREW_FONT_MONO = _font("font.output.family", "font.output.size")
 # Police du clavier virtuel : reprend la police/ taille de sortie (output).
 KEYBOARD_FONT = HEBREW_FONT_MONO
-# Police des touches de voyelles (nikkud/dagesh/ratafim) : 5 points plus
-# petite que celle des consonnes, afin que la rangée de voyelles tienne sur
-# une largeur d'écran ordinaire.
+# Police des touches de voyelles (nikkud/dagesh/ratafim) : reprend la police/
+# taille de sortie, touche plus grande que les consonnes. La rangée des
+# voyelles est répartie sur deux lignes afin de tenir sur une largeur
+# d'écran ordinaire.
 _v_fam, _v_size = KEYBOARD_FONT
-KEYBOARD_FONT_VOWELS = (_v_fam, max(6, _v_size - 5))
+KEYBOARD_FONT_VOWELS = (_v_fam, _v_size)
+# Police des touches de consonnes : 5 points plus petite que celle des
+# voyelles.
+KEYBOARD_FONT_CONSONANTS = (_v_fam, max(6, _v_size - 5))
 
 # Police des titres d'onglets (binyanim) : configurable via gui.properties
 # (clés font.tabs.family / font.tabs.size), avec repli sur la police de
@@ -396,6 +400,15 @@ NIKKUD_LABELS = {
     "hateph_qamats": _CARRIER + "\u05B3",
 }
 
+# Points-voyelles répartis sur deux rangées : voyelles principales, puis
+# sheva/dagesh/qamats qatan, points shin-sin et ratafim.
+NIKKUD_ROWS = (
+    ("qamats", "patach", "segol", "tsere", "hireq", "holem", "qubuts",
+     "sheva"),
+    ("dagesh", "qamats_qatan", "shin_dot", "sin_dot",
+     "hateph_segol", "hateph_patach", "hateph_qamats"),
+)
+
 
 # Disposition du clavier hébreu standard (Israel), par rangée.
 # Chaque rangée correspond à une rangée physique d'un vrai clavier.
@@ -566,8 +579,8 @@ class HebrewKeyboard(ttk.Frame):
     texte ciblé (Entry ou Text).
 
     La disposition des consonnes reproduit celle d'un vrai clavier hébreu
-    (3 rangées), suivie d'une rangée de points-voyelles (nikkud) et dagesh,
-    puis d'une rangée de contrôles (espace, sof pasuq, retour).
+    (3 rangées), suivie de deux rangées de points-voyelles (nikkud) et
+    dagesh, puis d'une rangée de contrôles (espace, sof pasuq, retour).
     """
 
     def __init__(self, master, target_getter):
@@ -579,9 +592,11 @@ class HebrewKeyboard(ttk.Frame):
         # Padding vertical accru pour que les diacritiques hauts (ex. hateph
         # qamats U+05B3) portés par le cercle ◌ ne soient pas tronqués.
         self._style = ttk.Style(self)
-        self._style.configure("HebKey.TButton", font=KEYBOARD_FONT,
+        # Style des touches de consonnes : police plus petite (5 points de
+        # moins), style par défaut.
+        self._style.configure("HebKey.TButton", font=KEYBOARD_FONT_CONSONANTS,
                               padding=(2, 10))
-        # Style des touches de voyelles : police plus petite (5 points de moins).
+        # Style des touches de voyelles : police de sortie, taille pleine.
         self._style.configure("HebKeyVowel.TButton", font=KEYBOARD_FONT_VOWELS,
                               padding=(2, 10))
 
@@ -592,12 +607,14 @@ class HebrewKeyboard(ttk.Frame):
             for ch in row:
                 self._make_key(row_frame, ch, ch)
 
-        # Rangée de points-voyelles (nikkud) + dagesh.
-        nik_frame = ttk.Frame(self)
-        nik_frame.pack(fill="x", pady=(4, 2))
-        for key, label in NIKKUD_LABELS.items():
-            self._make_key(nik_frame, _NIKKUD[key], label,
-                           style="HebKeyVowel.TButton")
+        # Rangées de points-voyelles (nikkud) + dagesh : deux lignes pour
+        # garder des touches de taille pleine.
+        for row in NIKKUD_ROWS:
+            nik_frame = ttk.Frame(self)
+            nik_frame.pack(fill="x", pady=(4, 2))
+            for key in row:
+                self._make_key(nik_frame, _NIKKUD[key], NIKKUD_LABELS[key],
+                               style="HebKeyVowel.TButton")
 
         # Rangée de contrôles.
         ctrl = ttk.Frame(self)
