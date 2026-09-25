@@ -271,6 +271,52 @@ def main():
           f"{mismatch}/{checked}")
 
     print(f"Cellules vérifiées contre la base BHSA : {checked}")
+    # Point shin/sin orphelin (sans lettre ש) : la forme doit être refusée
+    # avec la raison orphan_shin_dot, pas identifiée comme un autre verbe
+    # (ex. ׁמר lu comme מר → racine מרר).
+    for bad in ("\u05C1\u05DE\u05E8", "\u05C2\u05DE\u05E8", "\u05DE\u05C1\u05E8"):
+        r_bad = analyze_binyanim(F, bad)
+        reason = r_bad["verb"].get("reason") or r_bad.get("reason")
+        if r_bad["found"] or reason != "orphan_shin_dot":
+            failures.append(
+                f"{bad!r}: attendu found=False/orphan_shin_dot, "
+                f"obtenu found={r_bad['found']}/{reason!r}")
+    # Les formes correctes avec point shin restent identifiées (le point
+    # suit le ש, éventuellement après la voyelle — convention BHSA).
+    for good in ("\u05E9\u05C1\u05DE\u05E8", "\u05E9\u05C2\u05DE\u05E8", "\u05E9\u05B8\u05C1\u05DE\u05B7\u05E8",
+                 "\u05E9\u05B0\u05C1\u05DE\u05B7\u05E8"):
+        r_good = analyze_binyanim(F, good)
+        if not r_good["found"]:
+            failures.append(f"{good!r}: devrait être identifié")
+    # Forme courte d'un verbe double (מר de מרר) : refusée avec la racine
+    # complète suggérée, pas identifiée comme un autre verbe.
+    r_mr = analyze_binyanim(F, "\u05DE\u05B7\u05E8")
+    reason_mr = r_mr["verb"].get("reason")
+    sugg_mr = r_mr["verb"].get("suggestions") or []
+    if r_mr["found"] or reason_mr != "root_truncated":
+        failures.append(f"מַר: attendu found=False/root_truncated, "
+                        f"obtenu {r_mr['found']}/{reason_mr!r}")
+    elif "\u05DE\u05E8\u05E8" not in sugg_mr:
+        failures.append(f"מַר: מרר devrait être suggéré : {sugg_mr!r}")
+    # Racine nue trop courte (מר) : refusée, racines proches suggérées
+    # dont מרר.
+    r_nu = analyze_binyanim(F, "\u05DE\u05E8")
+    sugg_nu = r_nu["verb"].get("suggestions") or []
+    if r_nu["found"]:
+        failures.append("מר nu: devrait être refusé")
+    elif "\u05DE\u05E8\u05E8" not in sugg_nu:
+        failures.append(f"מר nu: מרר devrait être suggéré : {sugg_nu!r}")
+    # Les formes légitimes restent identifiées : creux, pe-nun assimilé,
+    # forme pleine d'un double, forme avec préfixe.
+    for good, want_root in (("\u05E7\u05B8\u05DD", "\u05E7\u05D5\u05DD"),
+                            ("\u05D9\u05B4\u05E4\u05BC\u05D5\u05B9\u05DC", "\u05E0\u05E4\u05DC"),
+                            ("\u05D9\u05B0\u05DE\u05B8\u05E8\u05B0\u05E8\u05D5\u05BC", "\u05DE\u05E8\u05E8"),
+                            ("\u05D2\u05B8\u05DC\u05B7\u05DC", "\u05D2\u05DC\u05DC")):
+        r_legit = analyze_binyanim(F, good)
+        root_legit = "".join(r_legit["verb"].get("root") or ())
+        if not r_legit["found"] or root_legit != want_root:
+            failures.append(f"{good!r}: attendu racine {want_root!r}, "
+                            f"obtenu {r_legit['found']}/{root_legit!r}")
     if failures:
         print(f"ÉCHECS ({len(failures)}) :")
         for f in failures:

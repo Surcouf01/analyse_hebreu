@@ -75,6 +75,34 @@ _BIDI_MARKS_RE = re.compile(
     "\u2066\u2067\u2068\u2069]"
 )
 
+# Paires de caractères miroir (règle UAX #9 L4) : en contexte RTL, une
+# parenthèse ouvrante est rendue avec le glyphe de sa fermante (et
+# réciproquement) pour que les parenthèses ENTOURENT visuellement le mot
+# qu'elles encadrent. Tk rend le texte stocké tel quel (le stockage visuel
+# court-circuite son moteur bidi) : le miroir doit donc être appliqué
+# explicitement, au moment du réordonnancement. Les guillemets français
+# « » ne sont PAS Bidi_Mirrored (U+00AB/U+00BB) : ils ne sont pas miroités.
+_MIRROR_PAIRS = {
+    "(": ")", ")": "(",
+    "[": "]", "]": "[",
+    "{": "}", "}": "{",
+    "<": ">", ">": "<",
+    "\u2039": "\u203a", "\u203a": "\u2039",  # guillemets simples ‹ ›
+    "\u27e8": "\u27e9", "\u27e9": "\u27e8",  # chevrons ⟨ ⟩
+}
+
+
+def _mirror_char(ch):
+    """Glyphe miroir d'un caractère (cf. _MIRROR_PAIRS), ou lui-même."""
+    return _MIRROR_PAIRS.get(ch, ch)
+
+
+def _mirror_cluster(cluster):
+    """Miroite les caractères miroirables d'un cluster (règle UAX #9 L4)."""
+    if not any(ch in _MIRROR_PAIRS for ch in cluster):
+        return cluster
+    return "".join(_mirror_char(ch) for ch in cluster)
+
 
 def _is_hebrew_char(ch):
     """Vrai pour tout caractère du bloc hébreu (lettres, voyelles/nikkud,
@@ -123,9 +151,114 @@ def _cluster_dir(cluster):
     return None
 
 
+# Paires de guillemets encadrantes. Contrairement aux crochets () [] {},
+# les guillemets français « » ne sont pas Bidi_Mirrored, mais ils encadrent
+# visuellement une citation : une paire dont le CONTENU a une direction
+# forte homogène prend cette direction (esprit de la règle N0 de UAX #9) —
+# sinon, en base RTL, une glosse française « renverser » s'affichait avec
+# ses guillemets échangés (« ouvrant/fermant inversés systématiquement »).
+_QUOTE_PAIRS = {"\u00ab": "\u00bb"}
+
+# Crochets ouvrants (sous-ensemble de _MIRROR_PAIRS) : pour la règle N0
+# de UAX #9, une paire ouvrant/fermant dont le contenu contient un fort de
+# la direction de base prend cette direction (cf. _resolve_bracket_pairs).
+_BRACKET_OPENERS = {
+    "(": ")",
+    "[": "]",
+    "{": "}",
+    "<": ">",
+    "\u2039": "\u203a",
+    "\u27e8": "\u27e9",
+}
+
+
+def _resolve_quote_pairs(clusters, raw):
+    """Passe préalable à la résolution N1/N2 : les paires « … » dont le
+    contenu est de direction forte homogène prennent la direction du
+    contenu. Modifie ``raw`` en place et le renvoie."""
+    n = len(clusters)
+    i = 0
+    while i < n:
+        first = clusters[i] if len(clusters[i]) == 1 else None
+        if first not in _QUOTE_PAIRS:
+            i += 1
+            continue
+        closer = _QUOTE_PAIRS[first]
+        j = i + 1
+        depth = 1
+        while j < n:
+            c = clusters[j]
+            if len(c) == 1 and c == closer:
+                depth -= 1
+                if depth == 0:
+                    break
+            elif len(c) == 1 and c == first:
+                depth += 1
+            j += 1
+        if j >= n:
+            i += 1
+            continue
+        inner = [raw[k] for k in range(i + 1, j) if raw[k] is not None]
+        if inner and all(d == inner[0] for d in inner):
+            raw[i] = inner[0]
+            raw[j] = inner[0]
+        i = j + 1
+    return raw
+
+
+def _resolve_bracket_pairs(clusters, raw, base):
+    """Règle N0 de UAX #9 pour les crochets miroirables : une paire
+    ouvrant/fermant prend la direction de base si le premier fort de son
+    contenu l'a (N0a) ; sinon, si le fort qui précède l'ouvrant a la même
+    direction que ce premier fort, cette direction (N0b) ; sinon la
+    direction de base (N0c). Sans cette règle, la fermante de la ligne
+    « === Mot analysé : (lemme : על)עָלַ֗י === » était prise entre
+    deux segments RTL (N1) et s'affichait miroitée. Modifie ``raw`` en
+    place et le renvoie."""
+    n = len(clusters)
+    i = 0
+    while i < n:
+        first = clusters[i] if len(clusters[i]) == 1 else None
+        if first not in _BRACKET_OPENERS:
+            i += 1
+            continue
+        closer = _BRACKET_OPENERS[first]
+        j = i + 1
+        depth = 1
+        while j < n:
+            c = clusters[j]
+            if len(c) == 1 and c == closer:
+                depth -= 1
+                if depth == 0:
+                    break
+            elif len(c) == 1 and c == first:
+                depth += 1
+            j += 1
+        if j >= n:
+            i += 1
+            continue
+        inner = [raw[k] for k in range(i + 1, j) if raw[k] in ("L", "R")]
+        if not inner:
+            i = j + 1
+            continue
+        if inner[0] == base:
+            raw[i] = raw[j] = base
+        else:
+            prev = None
+            k = i - 1
+            while k >= 0:
+                if raw[k] in ("L", "R"):
+                    prev = raw[k]
+                    break
+                k -= 1
+            raw[i] = raw[j] = inner[0] if prev == inner[0] else base
+        i = j + 1
+    return raw
+
+
 def _resolve_dirs(clusters, base_rtl):
     """Résout la direction de chaque cluster (simplification de l'algorithme
-    bidi Unicode, règles W4/N1/N2 + attache des ponctuations) :
+    bidi Unicode, règles W4/N0/N1/N2 + attache des ponctuations) :
 
     - un séparateur de nombres (ex. « : » de « 1:1 ») entre deux chiffres
       est un nombre (règle W4) ; les chiffres (EN) forment leur propre
@@ -155,6 +288,8 @@ def _resolve_dirs(clusters, base_rtl):
       bloc hébreu.
     """
     raw = [_cluster_dir(c) for c in clusters]
+    raw = _resolve_quote_pairs(clusters, raw)
+    raw = _resolve_bracket_pairs(clusters, raw, "R" if base_rtl else "L")
     dirs = list(raw)
     n = len(dirs)
     for i in range(1, n - 1):
@@ -180,7 +315,14 @@ def _resolve_dirs(clusters, base_rtl):
             continue
         c = clusters[i]
         # Attache : ponctuation collée à un mot fort (pas une espace).
-        if not c.isspace():
+        # Les crochets miroirables ( ) [ ] { } n'entrent pas dans ce mécanisme :
+        # attachés à l'hébreu, ils seraient miroités (règle L4) et la paire
+        # s'affichait inversée — « (lemme : ל) » devenait « (lemme : (ל ».
+        # Ils suivent uniquement N1/N2 + direction de base : collés à un
+        # mot hébreu d'un côté et au texte latin de l'autre, ils restent
+        # dans le segment de base et gardent leur glyphe.
+        if (not c.isspace()
+                and not (len(c) == 1 and c in _MIRROR_PAIRS)):
             left_d = raw[i - 1] if i > 0 else None
             right_d = raw[i + 1] if i < n - 1 else None
             if left_d is not None and right_d is None:
@@ -223,7 +365,14 @@ def _visual_clusters(clusters, base_rtl=True):
     ordered = list(reversed(runs)) if base_rtl else runs
     out = []
     for d, run in ordered:
-        out.extend(reversed(run) if d == "R" else run)
+        if d == "R":
+            # Règle UAX #9 L4 : un caractère miroir résolu RTL est rendu avec
+            # son glyphe miroir. La transformation est involutive : to_logical
+            # re-résout les directions et re-miroite, ce qui restitue
+            # l'original à la copie.
+            out.extend(_mirror_cluster(c) for c in reversed(run))
+        else:
+            out.extend(run)
     return out
 
 
@@ -391,6 +540,172 @@ def visual_hebrew_word_range(line, col):
         if m.start() <= col < m.end():
             return m.start(), m.end()
     return None
+
+
+# --- Recherche consonantique (Ctrl-F dans la zone de résultat) ---------
+
+# Lettres finales (sofit) et leur forme médiale/institiale équivalente :
+# une recherche « insensible au sofit » plie ך→כ, ם→מ, ן→נ, ף→פ, ץ→צ
+# des deux côtés (requête et texte).
+_SOFIT_FOLD = {
+    "\u05DA": "\u05DB",  # ך -> כ
+    "\u05DD": "\u05DE",  # ם -> מ
+    "\u05DF": "\u05E0",  # ן -> נ
+    "\u05E3": "\u05E4",  # ף -> פ
+    "\u05E5": "\u05E6",  # ץ -> צ
+}
+
+
+def fold_sofit(text):
+    """Remplace chaque lettre finale (sofit) par sa forme médiale
+    équivalente (ך→כ, ם→מ, ן→נ, ף→פ, ץ→צ) ; les autres caractères
+    sont inchangés."""
+    return "".join(_SOFIT_FOLD.get(c, c) for c in text)
+
+
+def consonant_skeleton(text):
+    """Squelette consonantique : lettres hébraïques nues (U+05D0..U+05EA),
+    sans nikkud, sans teamim, sans daguesh, sans point shin/sin ; les
+    autres caractères (latin, chiffres, ponctuation, espaces, marques
+    bidi) sont ignorés."""
+    return "".join(c for c in text if 0x05D0 <= ord(c) <= 0x05EA)
+
+
+def has_hebrew_letters(text):
+    """Vrai si le texte contient au moins une lettre hébraïque (les
+    seules consonnes, voyelles-point et accents ne comptent pas)."""
+    return any(0x05D0 <= ord(c) <= 0x05EA for c in text)
+
+
+def _visual_cluster_indices(clusters, base_rtl=True):
+    """Permutation associée à :code:`_visual_clusters` : renvoie ``perm``
+    tel que le cluster en position logique (de lecture) ``k`` est
+    ``clusters[perm[k]]``. Même calcul (runs de direction, inversion des
+    runs RTL, empilement des segments), mais sur les INDICES — les
+    clusters de contenu identique (deux « א » sans nikkud) ne sont pas
+    confondus.
+    """
+    resolved = _resolve_dirs(clusters, base_rtl)
+    runs = []
+    for i, d in enumerate(resolved):
+        if runs and runs[-1][0] == d:
+            runs[-1][1].append(i)
+        else:
+            runs.append((d, [i]))
+    ordered = list(reversed(runs)) if base_rtl else runs
+    perm = []
+    for d, run in ordered:
+        perm.extend(reversed(run) if d == "R" else run)
+    return perm
+
+
+def _stored_clusters(visual_line):
+    """Clusters réels (hors marques bidi LRM/RLM) d'une ligne stockée en
+    ordre visuel : liste ``[(début, fin, texte)]`` en coordonnées du texte
+    STOCKÉ (marques comprises) — directement utilisables comme indices de
+    colonne Tk. Renvoie ``(clusters, base_rtl)`` ; ``base_rtl`` suit la
+    même déduction que :code:`to_logical` (marque en tête, sinon contenu).
+    """
+    marked, stripped = _split_base_marker(visual_line)
+    out = []
+    # Positions dans la ligne TELLE QUE STOCKÉE : le marqueur de base en
+    # tête (RLM ou double LRM) compte dans les indices Tk.
+    pos = len(visual_line) - len(stripped)
+    for cl in _clusters(stripped):
+        if all(unicodedata.category(ch) == "Cf" for ch in cl):
+            pos += len(cl)
+            continue
+        out.append((pos, pos + len(cl), cl))
+        pos += len(cl)
+    clean = _BIDI_MARKS_RE.sub("", stripped)
+    if not any(_cluster_is_rtl(c) for c in _clusters(clean)):
+        return out, None
+    if marked is None:
+        marked = not _has_ltr_strong(clean)
+    return out, marked
+
+
+def find_line_matches(visual_line, query_skeleton, sofit_insensitive=True):
+    """Recherche le squelette consonantique ``query_skeleton`` dans une
+    ligne stockée en ordre visuel, et renvoie les correspondances en
+    indices du texte STOCKÉ (marques LRM/RLM comprises) — directement
+    surlignables dans le widget.
+
+    La zone de résultat affiche l'hébreu en ordre VISUEL (mots inversés
+    entre eux, chaque mot gardant l'ordre de ses lettres) avec des marques
+    bidi invisibles. Chercher la sous-chaîne directement échouerait : les
+    marques pollueraient le texte et l'ordre visuel des mots est l'inverse
+    de l'ordre de lecture. On cherche donc sur le squelette consonantique
+    — consonnes hébraïques seules, nikkud/teamim/daguesh ignorés — en
+    ordre LOGIQUE de lecture (les consonnes de la requête se lisent dans
+    le même sens que celles de la ligne), puis on projette chaque
+    correspondance sur les clusters stockés via la permutation bidi
+    (cf. _visual_cluster_indices).
+
+    ``sofit_insensitive`` (défaut True) plie les lettres finales des deux
+    côtés (ך→כ, ם→מ, ן→נ, ף→פ, ץ→צ) : « המלך » trouve « המלך » et
+    « מלכם » ; à False, seules les formes exactes correspondent (ך ne
+    matche que ך).
+
+    Renvoie ``[(début, fin), …]`` en indices du texte stocké, en ordre de
+    LECTURE (ordre logique : droite à gauche à l'écran pour l'hébreu) —
+    l'ordre naturel pour naviguer d'occurrence en occurrence. L'étendue
+    couvre la première à la dernière consonne de l'occurrence, marques
+    combinantes (nikkud/teamim) et caractères intercalés (espace, maqaf)
+    inclus.
+    """
+    if not query_skeleton:
+        return []
+    if sofit_insensitive:
+        query_skeleton = fold_sofit(query_skeleton)
+    stored, base_rtl = _stored_clusters(visual_line)
+    if not stored or base_rtl is None:
+        return []
+    perm = _visual_cluster_indices([c for _s, _e, c in stored], base_rtl)
+    if len(perm) != len(stored):
+        return []
+    # Entrées en ordre de lecture : une par cluster portant des lettres
+    # hébraïques (les espaces/latin/ponctuation ne comptent pas).
+    entries = []
+    for k in perm:
+        start, end, text = stored[k]
+        letters = consonant_skeleton(text)
+        if sofit_insensitive:
+            letters = fold_sofit(letters)
+        if letters:
+            entries.append((letters, start, end))
+    if not entries:
+        return []
+    skel = "".join(e[0] for e in entries)
+    matches = []
+    begin = 0
+    while True:
+        j = skel.find(query_skeleton, begin)
+        if j < 0:
+            break
+        covered = entries[j:j + len(query_skeleton)]
+        spans = [(s, e) for _l, s, e in covered]
+        vis_start = min(s for s, _e in spans)
+        vis_end = max(e for _s, e in spans)
+        matches.append((vis_start, vis_end))
+        begin = j + 1
+    return matches
+
+
+def normalize_query(text, visual=False):
+    """Normalise une requête de recherche en squelette consonantique :
+    retire nikkud, teamim, daguesh, points shin/sin et marques bidi — il
+    ne reste que les consonnes hébraïques, en ordre de lecture.
+
+    ``visual=True`` pour un texte issu de la zone de résultat (sélection
+    en ordre visuel, convertie ici via :code:`to_logical`, comme le fait
+    Ctrl+C) ; une saisie au clavier (virtuel ou physique) est déjà en
+    ordre logique et passe avec ``visual=False``.
+    """
+    if visual:
+        text = to_logical(text)
+    return consonant_skeleton(text)
+
 
 
 def visual_cluster_bounds(line):

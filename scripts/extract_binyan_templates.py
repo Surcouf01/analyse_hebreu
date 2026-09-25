@@ -35,6 +35,24 @@ TENSES = ("perf", "impf", "impv")
 NON_FINITE = ("infa", "infc")
 PARTICIPLES = ("ptca", "ptcp")
 
+# Volitifs (modes du yiqtol) : la BHSA les code comme des impf/wayq ; ils
+# sont identifiés ici par des critères morphologiques.
+#   - cohortatif : impf 1re personne + finale \u05b8\u05d4 (« que je ... ») ;
+#   - jussif : wayq 2e/3e personne — le wayyiqtol a exactement la
+#     morphologie de la forme courte du yiqtol (le \u05d5\u05b7 est un mot
+#     séparé dans la BHSA) ; reprise pour les personnes 2/3.
+QAMATS = "\u05B8"
+HE = "\u05D4"
+
+# Cellules volitives (ps, gn, nu).
+COHORT_CELLS = (
+    ("p1", "c", "sg"), ("p1", "c", "pl"),
+)
+JUSSIVE_CELLS = (
+    ("p3", "m", "sg"), ("p3", "f", "sg"), ("p2", "m", "sg"), ("p2", "f", "sg"),
+    ("p3", "m", "pl"), ("p3", "f", "pl"), ("p2", "m", "pl"), ("p2", "f", "pl"),
+)
+
 # Cellules par temps (ps, gn, nu).
 PERF_CELLS = (
     ("p3", "m", "sg"), ("p3", "f", "sg"), ("p2", "m", "sg"), ("p2", "f", "sg"),
@@ -51,7 +69,27 @@ CELLS_BY_TENSE = {
     "perf": PERF_CELLS,
     "impf": IMPF_CELLS,
     "impv": IMPV_CELLS,
+    "juss": JUSSIVE_CELLS,
+    "coh": COHORT_CELLS,
 }
+
+# Finale cohortative : qamats + he. Les paragogiques (\u05e0\u05b8\u05bc\u05d4) sont
+# des imparfaits longs ordinaires, pas des cohortatifs.
+_COH_END = QAMATS + HE
+_PARAGOGIC_NUN = ("\u05E0",)
+
+
+def _is_cohortative(form, nu):
+    """Vrai si la forme est un cohortatif (imparfait + \u05b8\u05d4)."""
+    if not form.endswith(_COH_END):
+        return False
+    if nu == "pl":
+        return True
+    # Au singulier, la finale \u05e0\u05b8\u05d4 (nun paragogique) est un imparfait long,
+    # pas un cohortatif.
+    base = form[:-len(_COH_END)]
+    cons = [c for c in base if 0x05D0 <= ord(c) <= 0x05EA]
+    return not (cons and cons[-1] in _PARAGOGIC_NUN)
 
 # Correspondance BHSA : les 1res personnes ont gn=unknown (parfois "NA").
 _GN_FALLBACK = {"c": ("unknown", "NA", None)}
@@ -115,11 +153,28 @@ def _to_template(form, root, assimilate=False):
         matched = False
         if idx < len(letters):
             cand = ch
+            pending = ""
             if ch == "\u05E9" and i + 1 < len(form) and form[i + 1] in ("\u05C1", "\u05C2"):
                 cand = ch + form[i + 1]
                 i += 1
+            elif (ch == "\u05E9" and len(letters[idx]) == 2
+                    and letters[idx][0] == "\u05E9"):
+                # Point shin/sin : le point peut suivre un signe vocalique
+                # (\u05e9\u05b0\u05c1) ; on l'associe au \u05e9 en
+                # conservant les signes interm\u00e9diaires dans le gabarit.
+                j = i + 1
+                while j < len(form) and 0x05B0 <= ord(form[j]) <= 0x05C2:
+                    if form[j] in ("\u05C1", "\u05C2"):
+                        if form[j] == letters[idx][1]:
+                            cand = ch + form[j]
+                            pending = form[i + 1:j]
+                            i = j
+                        break
+                    j += 1
             if cand == letters[idx]:
                 out.append(f"P{idx + offset}")
+                if pending:
+                    out.append(pending)
                 idx += 1
                 matched = True
         if not matched:
@@ -191,7 +246,7 @@ def main():
         if vs not in BINYANIM:
             continue
         vt = F.vt.v(w)
-        if vt not in TENSES + NON_FINITE + PARTICIPLES:
+        if vt not in TENSES + NON_FINITE + PARTICIPLES + ("wayq",):
             continue
         prs = F.prs.v(w)
         if prs not in (None, "n/a", "NA", "unknown", "absent"):
@@ -204,6 +259,17 @@ def main():
             # Cellule (vt, gn, nu) : ps est unknown pour les non finis.
             key = (gn or "unknown", nu or "unknown")
             record(cat, vs, vt, key, form, root, lex)
+            continue
+        if vt == "wayq":
+            # Jussif : le wayyiqtol a la morphologie de la forme courte du
+            # yiqtol (le \u05d5\u05b7 conversif est un mot séparé). On enregistre la
+            # forme courte pour les personnes 2/3 du paradigme volitif.
+            if ps in ("p2", "p3"):
+                record(cat, vs, "juss", (ps, gn, nu), form, root, lex)
+            continue
+        if vt == "impf" and ps == "p1" and _is_cohortative(form, nu):
+            # Cohortatif : impf 1re personne + finale \u05b8\u05d4.
+            record(cat, vs, "coh", (ps, "c", nu), form, root, lex)
             continue
         if vt == "impv":
             if ps != "p2":

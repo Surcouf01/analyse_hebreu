@@ -13,6 +13,10 @@ from bidi_display import (
     logical_wrap,
     visual_cluster_bounds,
     visual_hebrew_word_range,
+    consonant_skeleton,
+    find_line_matches,
+    fold_sofit,
+    normalize_query,
     LRM,
 )
 
@@ -260,6 +264,291 @@ class TestLogicalWrap(unittest.TestCase):
     def test_empty_and_zero_width(self):
         self.assertEqual(logical_wrap("", len, 80), "")
         self.assertEqual(logical_wrap(GEN11, len, 0), GEN11)
+
+
+class TestMirrorParens(unittest.TestCase):
+    """Règle UAX #9 L4 : en contexte RTL, une parenthèse est rendue avec
+    son glyphe miroir — sinon les parenthèses autour d'une racine hébraïque
+    s'affichent « inversées » (ouvertures vers l'extérieur du mot)."""
+
+    def test_parens_around_hebrew_root(self):
+        """(בלהה) dans une ligne à base RTL : à l'écran (ordre du stockage,
+        gauche-à-droite), la racine inversée doit être PRÉCÉDÉE du glyphe
+        miroir de « ( » et SUIVIE de celui de « ) » — les parenthèses
+        encadrent le mot, elles ne s'ouvrent pas vers l'extérieur."""
+        line = "‣ בַּלָּ֫הֹ֥ות  (בלהה)  « Bilha »"
+        visual = to_visual(line)
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        self.assertIn("(ההלב)", clean)
+        self.assertNotIn(")ההלב(", clean)
+        # La copie restitue la ligne logique d'origine (involutivité :
+        # to_logical re-miroite dans l'autre sens).
+        self.assertEqual(to_logical(visual), line)
+
+    def test_parens_around_hebrew_in_ltr_line(self):
+        """A (בלהה) B : les parenthèses encadrent le mot hébreu inversé."""
+        visual = to_visual("A (בלהה) B")
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        self.assertIn("(ההלב)", clean)
+        self.assertEqual(to_logical(visual), "A (בלהה) B")
+
+    def test_latin_parens_not_mirrored(self):
+        """Une parenthèse en contexte LTR (latin) garde son glyphe."""
+        line = "Bilha : « servante » (nom propre)"
+        self.assertEqual(to_visual(line), line)
+        self.assertEqual(to_logical(line), line)
+
+    def test_brackets_and_braces_mirrored(self):
+        """Crochets et accolades autour d'une racine : idem parenthèses."""
+        line = "Racine [בלהה] et {בלהה}"
+        clean = (to_visual(line)
+                 .replace(LRM, "").replace(bidi_display.RLM, ""))
+        self.assertIn("[ההלב]", clean)
+        self.assertIn("{ההלב}", clean)
+        self.assertEqual(to_logical(to_visual(line)), line)
+
+    def test_guillemets_francais_not_mirrored(self):
+        """« » ne sont pas Bidi_Mirrored : leur glyphe ne change jamais
+        (seul l'ordre d'affichage suit le bidi, comme pour un navigateur)."""
+        line = "בלהה « Bilha »"
+        visual = to_visual(line)
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        self.assertIn("«", clean)
+        self.assertIn("»", clean)
+        self.assertEqual(clean.count("«"), 1)
+        self.assertEqual(clean.count("»"), 1)
+        self.assertEqual(to_logical(visual), line)
+
+
+class TestQuotePairs(unittest.TestCase):
+    """Paires « … » : une paire dont le contenu a une direction forte
+    homogène prend la direction du contenu (esprit UAX #9 N0) — sinon une
+    glosse française en ligne à base RTL s'affichait avec ses guillemets
+    ouvrant/fermant échangés."""
+
+    def test_french_gloss_in_rtl_line(self):
+        """Job 30:15 : « renverser » doit s'afficher INTACT (à gauche de
+        la ligne), guillemets dans l'ordre ouvrant-fermant."""
+        line = "‣ הָהְפַ֥ךְ  (הפך)  « renverser »"
+        visual = to_visual(line)
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        self.assertTrue(clean.startswith("« renverser »"), clean)
+        self.assertEqual(to_logical(visual), line)
+
+    def test_french_gloss_after_lemma(self):
+        """« Dieu » après un lemme hébreu : segment intact."""
+        line = "· וַיֹּאמֶר אֱלֹהִים « Dieu »"
+        visual = to_visual(line)
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        self.assertIn("« Dieu »", clean)
+        self.assertEqual(to_logical(visual), line)
+
+    def test_hebrew_content_keeps_rtl(self):
+        """Un contenu hébreu dans les guillemets reste inversé avec le bloc
+        RTL : la paire prend la direction du contenu (R), pas du latin."""
+        line = "א « שלום » ב"
+        visual = to_visual(line)
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        # Le bloc entier est inversé : ב … א avec « שלום » au milieu,
+        # guillemets échangés par l'inversion du run RTL.
+        self.assertTrue(clean.startswith("ב "), clean)
+        self.assertEqual(to_logical(visual), line)
+
+    def test_mixed_content_not_paired(self):
+        """Contenu mixte (hébreu + latin) : la paire ne prend pas de
+        direction du contenu (comportement N1/N2 inchangé), round-trip OK."""
+        line = "« המלך roi » mixte"
+        visual = to_visual(line)
+        self.assertEqual(to_logical(visual), line)
+
+    def test_nested_and_unbalanced_pairs(self):
+        """Paires imbriquées et guillemet non fermé : pas de crash, le
+        round-trip est préservé."""
+        for line in ('a « b « c » d » e', '« pas de fermant',
+                     '«», «», »'):
+            self.assertEqual(to_logical(to_visual(line)), line)
+
+    def test_paren_after_hebrew_in_ltr_line(self):
+        """Mode mot : « Forme en base : לֹ֥ו  (lemme : ל) » — la
+        parenthèse fermante collée à l'hébreu mais suivie du latin ne
+        doit PAS être attachée au run RTL : elle serait miroitée (L4)
+        et s'affichait « (lemme : (ל ». Elle reste dans le segment de
+        base (latin), glyphe intact."""
+        line = "Forme en base : \u05dc\u05b9\u0591\u05d5  (lemme : \u05dc)"
+        visual = to_visual(line)
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        self.assertTrue(clean.endswith("(lemme : \u05dc)"), clean)
+        self.assertNotIn("(lemme : (\u05dc", clean)
+        self.assertEqual(to_logical(visual), line)
+
+    def test_mirrored_brackets_never_attached(self):
+        """Tout crochet miroirable ( ) [ ] { } échappe à l'attache, même
+        collé à un mot hébreu : il suit uniquement N1/N2 + base. Entre
+        deux mots hébreux, il reste RTL (N1) et miroité, comme UAX #9."""
+        # Base LTR : parenthèse ouvrante latine + contenu hébreu +
+        # fermante latine (le lemme d'une ligne de résultat).
+        line = "Racine : \u05e9\u05c1\u05de\u05e8  (lemme BHSA : CMR[)"
+        visual = to_visual(line)
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        self.assertTrue(clean.endswith("(lemme BHSA : CMR[)"), clean)
+        self.assertEqual(to_logical(visual), line)
+
+        # Crochets entre deux mots hébreux (base RTL) : N1 s'applique,
+        # ils s'inversent avec le bloc — comportement inchangé.
+        line_rtl = "\u05d0 (\u05e9\u05dc\u05d5\u05dd) \u05d1"
+        visual_rtl = to_visual(line_rtl)
+        self.assertEqual(to_logical(visual_rtl), line_rtl)
+
+    def test_paren_pair_between_hebrew_segments_n0(self):
+        """Mode mot : la recherche « (lemme : על)עָלַ֗י » (collée depuis un
+        résultat) remonte telle quelle dans l'en-tête « === Mot analysé :
+        … === ». La fermante, entre le lemme hébreu et la forme hébraïque,
+        était prise entre deux segments RTL (N1) et s'affichait miroitée.
+        La règle N0 (paires de crochets) donne à la paire la direction de
+        base : le contenu « lemme : על » commence par du latin, la paire
+        reste latine, glyphe intact."""
+        line = "=== Mot analys\u00e9 : (lemme : \u05e2\u05dc)\u05e2\u05b8\u05dc\u05b7\u0597\u05d9 ==="
+        visual = to_visual(line)
+        clean = visual.replace(LRM, "").replace(bidi_display.RLM, "")
+        self.assertIn("(lemme : \u05dc\u05e2)", clean)
+        self.assertNotIn("(lemme : (\u05dc", clean)
+        self.assertEqual(to_logical(visual), line)
+
+        # Base RTL : la paire dont le contenu commence par de l'hébreu
+        # garde la direction RTL (N0b) — pas de régression des crochets
+        # entre mots hébreux.
+        line_rtl = "\u05d0\u05d1\u05d2 (\u05d3\u05d5\u05d3) \u05d4\u05d5\u05d2\u05d4"
+        visual_rtl = to_visual(line_rtl)
+        self.assertEqual(to_logical(visual_rtl), line_rtl)
+
+
+class TestConsonantSearch(unittest.TestCase):
+    """Recherche Ctrl-F : squelette consonantique (sans nikkud ni teamim)
+    sur le texte stocké en ordre visuel."""
+
+    def test_skeleton_strips_vowels_and_accents(self):
+        self.assertEqual(consonant_skeleton(GEN11), "בראשיתבראאלהים")
+        self.assertEqual(consonant_skeleton("Louis Segond 1910"), "")
+        # shin/sin : le point (U+05C1/U+05C2) n'est pas une consonne.
+        self.assertEqual(consonant_skeleton("שָׁלוֹם שָׂם"), "שלוםשם")
+
+    def test_find_word_reading_order(self):
+        """Genèse 1:1 : la requête ברא (sans nikkud) trouve le ברא
+        intérieur à בראשית (premier en lecture) PUIS le mot ברא,
+        et chaque correspondance reconvertie en logique donne bien le
+        texte vocalisé d'origine."""
+        visual = to_visual(GEN11)
+        matches = find_line_matches(visual, "ברא")
+        self.assertEqual(len(matches), 2)
+        texts = [to_logical(visual[a:b]) for a, b in matches]
+        self.assertEqual(texts, ["בְּרֵא", "בָּרָא"])
+
+    def test_find_word_with_nikkud_in_query(self):
+        """Une requête saisie AVEC nikkud (clavier virtuel) doit trouver
+        les mêmes occurrences que la requête consonantique."""
+        visual = to_visual(GEN11)
+        q = normalize_query("בְּרֵאשִׁית")
+        self.assertEqual(q, "בראשית")
+        matches = find_line_matches(visual, q)
+        self.assertEqual(len(matches), 1)
+        a, b = matches[0]
+        self.assertEqual(to_logical(visual[a:b]), "בְּרֵאשִׁית")
+
+    def test_find_from_visual_selection(self):
+        """Une sélection copiée depuis la zone de résultat (ordre visuel,
+        marques comprises) est normalisable en requête."""
+        visual = to_visual(GEN11)
+        matches = find_line_matches(visual, "ברא")
+        a, b = matches[1]
+        selected = visual[a:b]
+        self.assertEqual(normalize_query(selected, visual=True), "ברא")
+
+    def test_find_multiline_each_line_searched(self):
+        text = ("Phrase 1 : בְּרֵאשִׁית בָּרָא\n"
+                "Phrase 2 : אֵת הַשָׁמַיִם")
+        visual = to_visual(text)
+        line1, line2 = visual.split("\n")
+        self.assertEqual(len(find_line_matches(line1, "ברא")), 2)
+        self.assertEqual(find_line_matches(line2, "ברא"), [])
+        self.assertEqual(len(find_line_matches(line2, "שמים")), 1)
+
+    def test_find_in_mixed_ltr_line(self):
+        """Ligne à base LTR (préfixe latin + hébreu) : les bornes restent
+        exactement sur le mot trouvé (le marqueur de base double-LRM
+        ne décale pas les indices)."""
+        line = "=== Phrase analysée : בְּרֵאשִׁית בָּרָא ==="
+        visual = to_visual(line)
+        matches = find_line_matches(visual, "ברא")
+        self.assertEqual(len(matches), 2)
+        texts = [to_logical(visual[a:b]) for a, b in matches]
+        self.assertIn("בְּרֵא", texts)
+        self.assertIn("בָּרָא", texts)
+
+    def test_wrapped_line_fragments_searched(self):
+        """Après découpe (logical_wrap), chaque fragment visuel est
+        cherché indépendamment — un mot coupé n'est pas trouvé à cheval
+        sur deux lignes (les fragments sont indépendants)."""
+        wrapped = logical_wrap(GEN11, len, 12)
+        fragments = to_visual(wrapped).split("\n")
+        total = sum(len(find_line_matches(f, "אלהים")) for f in fragments)
+        self.assertEqual(total, 1)
+
+    def test_sofit_fold_pairs(self):
+        """fold_sofit plie les cinq lettres finales vers leur forme
+        médiale, sans toucher au reste."""
+        self.assertEqual(fold_sofit("ךםןףץ"), "כמנפצ")
+        self.assertEqual(fold_sofit("ךְ"), "כְ")
+        self.assertEqual(fold_sofit("Bilha"), "Bilha")
+        self.assertEqual(fold_sofit(""), "")
+
+    def test_find_sofit_insensitive_default(self):
+        """Par défaut, ך et כ sont équivalentes : la requête המלך (avec
+        kaf sofit) ET המלכ (avec kaf normal) trouvent le mot הַמֶּלֶךְ."""
+        line = "וַיֹּאמֶר הַמֶּלֶךְ אֶל־מַלְכֵי"
+        visual = to_visual(line)
+        for q in ("המלך", "המלכ"):
+            matches = find_line_matches(visual, q)
+            self.assertEqual(len(matches), 1, q)
+            a, b = matches[0]
+            self.assertEqual(to_logical(visual[a:b]), "הַמֶּלֶךְ")
+
+    def test_find_sofit_sensitive_exact(self):
+        """sofit_insensitive=False : seules les formes EXACTES
+        correspondent — המלכ ne trouve plus הַמֶּלֶךְ (ך final)."""
+        line = "וַיֹּאמֶר הַמֶּלֶךְ אֶל־מַלְכֵי"
+        visual = to_visual(line)
+        self.assertEqual(find_line_matches(visual, "המלך",
+                                           sofit_insensitive=False),
+                         find_line_matches(visual, "המלך"))
+        self.assertEqual(
+            find_line_matches(visual, "המלכ", sofit_insensitive=False),
+            [])
+
+    def test_find_sofit_query_side_folded_too(self):
+        """Le pliage s'applique aussi à la requête — cas réel du GUI : les
+        racines affichées entre parenthèses sont écrites SANS sofit
+        (ex. « הַמֶּלֶךְ (מלכ) »). En mode insensible, la requête מלך (kaf
+        sofit) trouve le mot ET la racine ; en mode exact, seulement le
+        mot (la racine מלכ a un kaf normal)."""
+        line = "הַמֶּלֶךְ (מלכ) « roi »"
+        visual = to_visual(line)
+        matches = find_line_matches(visual, "מלך")  # kaf sofit en requête
+        self.assertEqual(len(matches), 2)
+        found = [to_logical(visual[a:b]) for a, b in matches]
+        # Le mot biblique contient מלך (kaf sofit) : trouvé au kaf près ;
+        # la racine entre parenthèses est écrite מלכ (kaf normal) : trouvée
+        # aussi en mode insensible.
+        self.assertIn("מֶּלֶךְ", found)
+        self.assertIn("מלכ", found)
+        exact = find_line_matches(visual, "מלך",
+                                  sofit_insensitive=False)
+        self.assertEqual(len(exact), 1)
+        a, b = exact[0]
+        self.assertEqual(to_logical(visual[a:b]), "מֶּלֶךְ")
+
+    def test_no_query_no_match(self):
+        self.assertEqual(find_line_matches(to_visual(GEN11), ""), [])
+        self.assertEqual(find_line_matches("Louis Segond 1910", "ברא"), [])
 
 
 if __name__ == "__main__":

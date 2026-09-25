@@ -23,6 +23,7 @@ La base BHSA est chargée en arrière-plan au démarrage (cf. ``bhsa_grammar``).
 
 import os
 import queue
+import re
 import signal
 import sys
 import threading
@@ -30,7 +31,14 @@ import unicodedata
 import tkinter as tk
 from tkinter import ttk, messagebox, font as tkfont
 
-from bidi_display import to_visual, to_logical, logical_wrap
+from bidi_display import (
+    to_visual,
+    to_logical,
+    logical_wrap,
+    normalize_query,
+    find_line_matches,
+    has_hebrew_letters,
+)
 
 from bhsa_grammar import (
     load_corpus,
@@ -48,6 +56,7 @@ from bhsa_grammar import (
     format_binyanim,
     format_binyanim_json,
     parse_binyanim_text,
+    WEAK_CONJ_RULES,
     book_french,
     DataNotFoundError,
     load_translation,
@@ -82,6 +91,7 @@ def _load_properties():
     }
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                         "gui.properties")
+    defaults["_path"] = path
     try:
         with open(path, encoding="utf-8") as fh:
             for raw in fh:
@@ -96,6 +106,63 @@ def _load_properties():
 
 
 _PROPS = _load_properties()
+
+# Géométrie par défaut de la fenêtre principale.
+DEFAULT_GEOMETRY = "1200x1000"
+
+
+def _saved_geometry():
+    """Géométrie sauvegardée dans gui.properties, si elle est valide.
+
+    Formats acceptés : « largeurxhauteur » ou « largeurxhauteur+X+Y »
+    (coordonnées éventuellement négatives, écran multi-moniteurs).
+    """
+    geo = _PROPS.get("window.geometry", "").strip()
+    if re.fullmatch(r"\d+x\d+(?:[+-]-?\d+[+-]-?\d+)?", geo):
+        return geo
+    return ""
+
+
+def _save_geometry(root):
+    """Écrit la géométrie actuelle dans gui.properties (clé window.geometry).
+
+    Préserve le reste du fichier (commentaires, polices). En cas
+    d'erreur d'E/S, l'échec est silencieux : la préférence est
+    perdue mais l'application continue.
+    """
+    path = _PROPS.get("_path")
+    if not path:
+        return
+    try:
+        geo = root.geometry()
+    except tk.TclError:
+        return
+    try:
+        with open(path, encoding="utf-8") as fh:
+            lines = fh.readlines()
+    except OSError:
+        lines = []
+    key = "window.geometry"
+    updated = False
+    for i, raw in enumerate(lines):
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, _, _ = line.partition("=")
+        if k.strip() == key:
+            lines[i] = f"{key} = {geo}\n"
+            updated = True
+    if not updated:
+        if lines and lines[-1].strip():
+            lines.append("\n")
+        lines.append("# Position et taille de la fenêtre principale "
+                     "(sauvegardées à la fermeture).\n")
+        lines.append(f"{key} = {geo}\n")
+    try:
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.writelines(lines)
+    except OSError:
+        pass
 
 
 def _font(prop_family, prop_size):
@@ -113,11 +180,15 @@ HEBREW_FONT = _font("font.input.family", "font.input.size")
 HEBREW_FONT_MONO = _font("font.output.family", "font.output.size")
 # Police du clavier virtuel : reprend la police/ taille de sortie (output).
 KEYBOARD_FONT = HEBREW_FONT_MONO
-# Police des touches de voyelles (nikkud/dagesh/ratafim) : 5 points plus
-# petite que celle des consonnes, afin que la rangée de voyelles tienne sur
-# une largeur d'écran ordinaire.
+# Police des touches de voyelles (nikkud/dagesh/ratafim) : reprend la police/
+# taille de sortie, touche plus grande que les consonnes. La rangée des
+# voyelles est répartie sur deux lignes afin de tenir sur une largeur
+# d'écran ordinaire.
 _v_fam, _v_size = KEYBOARD_FONT
-KEYBOARD_FONT_VOWELS = (_v_fam, max(6, _v_size - 5))
+KEYBOARD_FONT_VOWELS = (_v_fam, _v_size)
+# Police des touches de consonnes : 5 points plus petite que celle des
+# voyelles.
+KEYBOARD_FONT_CONSONANTS = (_v_fam, max(6, _v_size - 5))
 
 # Police des titres d'onglets (binyanim) : configurable via gui.properties
 # (clés font.tabs.family / font.tabs.size), avec repli sur la police de
@@ -389,6 +460,15 @@ NIKKUD_LABELS = {
     "hateph_qamats": _CARRIER + "\u05B3",
 }
 
+# Points-voyelles répartis sur deux rangées : voyelles principales, puis
+# sheva/dagesh/qamats qatan, points shin-sin et ratafim.
+NIKKUD_ROWS = (
+    ("qamats", "patach", "segol", "tsere", "hireq", "holem", "qubuts",
+     "sheva"),
+    ("dagesh", "qamats_qatan", "shin_dot", "sin_dot",
+     "hateph_segol", "hateph_patach", "hateph_qamats"),
+)
+
 
 # Disposition du clavier hébreu standard (Israel), par rangée.
 # Chaque rangée correspond à une rangée physique d'un vrai clavier.
@@ -559,8 +639,8 @@ class HebrewKeyboard(ttk.Frame):
     texte ciblé (Entry ou Text).
 
     La disposition des consonnes reproduit celle d'un vrai clavier hébreu
-    (3 rangées), suivie d'une rangée de points-voyelles (nikkud) et dagesh,
-    puis d'une rangée de contrôles (espace, sof pasuq, retour).
+    (3 rangées), suivie de deux rangées de points-voyelles (nikkud) et
+    dagesh, puis d'une rangée de contrôles (espace, sof pasuq, retour).
     """
 
     def __init__(self, master, target_getter):
@@ -572,9 +652,11 @@ class HebrewKeyboard(ttk.Frame):
         # Padding vertical accru pour que les diacritiques hauts (ex. hateph
         # qamats U+05B3) portés par le cercle ◌ ne soient pas tronqués.
         self._style = ttk.Style(self)
-        self._style.configure("HebKey.TButton", font=KEYBOARD_FONT,
+        # Style des touches de consonnes : police plus petite (5 points de
+        # moins), style par défaut.
+        self._style.configure("HebKey.TButton", font=KEYBOARD_FONT_CONSONANTS,
                               padding=(2, 10))
-        # Style des touches de voyelles : police plus petite (5 points de moins).
+        # Style des touches de voyelles : police de sortie, taille pleine.
         self._style.configure("HebKeyVowel.TButton", font=KEYBOARD_FONT_VOWELS,
                               padding=(2, 10))
 
@@ -585,12 +667,14 @@ class HebrewKeyboard(ttk.Frame):
             for ch in row:
                 self._make_key(row_frame, ch, ch)
 
-        # Rangée de points-voyelles (nikkud) + dagesh.
-        nik_frame = ttk.Frame(self)
-        nik_frame.pack(fill="x", pady=(4, 2))
-        for key, label in NIKKUD_LABELS.items():
-            self._make_key(nik_frame, _NIKKUD[key], label,
-                           style="HebKeyVowel.TButton")
+        # Rangées de points-voyelles (nikkud) + dagesh : deux lignes pour
+        # garder des touches de taille pleine.
+        for row in NIKKUD_ROWS:
+            nik_frame = ttk.Frame(self)
+            nik_frame.pack(fill="x", pady=(4, 2))
+            for key in row:
+                self._make_key(nik_frame, _NIKKUD[key], NIKKUD_LABELS[key],
+                               style="HebKeyVowel.TButton")
 
         # Rangée de contrôles.
         ctrl = ttk.Frame(self)
@@ -655,11 +739,33 @@ class ResultText(tk.Text):
                         if font is not None else None)
         self._autowrap = kwargs.get("wrap") != "none"
         self.bind("<Configure>", self.on_resize)
+        # Recherche Ctrl-F dans la zone (cf. _open_find_bar) : occurrences
+        # surlignées, la courante dans une teinte plus soutenue.
+        self.tag_configure("find", background="#ffe08a")
+        self.tag_configure("find_cur", background="#ffb74d")
+        # La sélection native doit rester visible sur le surlignage.
+        self.tag_raise("sel")
+        self._find_bar = None
+        self._find_entry = None
+        self._find_count = None
+        self._find_var = tk.StringVar(self)
+        self._find_matches = []
+        self._find_pos = -1
+        self._find_job = None
+        self._find_focus_notifier = None
+        # Insensible aux lettres finales (sofit) : cochée par défaut — ך/כ,
+        # ם/מ, ן/נ, ף/פ, ץ/צ sont équivalentes ; décochée, seules les
+        # formes exactes correspondent.
+        self._find_sofit_var = tk.BooleanVar(self, value=True)
+        self.bind("<Control-f>", self._on_find)
+        self.bind("<Control-F>", self._on_find)
+        self.bind("<F3>", self._on_f3)
 
     def set_text(self, text):
         """Mémorise le texte logique et affiche (découpe + ordre visuel)."""
         self._logical_text = text
         self._wrap_width = 0
+        self._clear_find()
         self._redisplay()
 
     def _display_width(self):
@@ -682,6 +788,11 @@ class ResultText(tk.Text):
             self.insert("1.0", to_visual(
                 logical_wrap(self._logical_text, self._measure, width)))
         self.configure(state="disabled")
+        # Le contenu affiché a changé : les occurrences surlignées ne sont
+        # plus valides (les barres de recherche restent ouvertes).
+        self._clear_find()
+        if self._find_bar is not None:
+            self._find_job = self.after_idle(self._refresh_find)
 
     def _measure(self, s):
         if self._tkfont is None:
@@ -722,6 +833,217 @@ class ResultText(tk.Text):
         self.clipboard_append(to_logical(text))
         return "break"
 
+    # --- Recherche Ctrl-F -------------------------------------------------
+    def _on_find(self, event=None):
+        """Ouvre la barre de recherche, pré-remplie depuis la sélection."""
+        self._open_find_bar()
+        return "break"
+
+    def _on_f3(self, event=None):
+        """Occurrence suivante (barre ouverte ou non)."""
+        if self._find_matches:
+            self._find_next()
+            return "break"
+        self._open_find_bar()
+        return "break"
+
+    def _open_find_bar(self):
+        if self._find_entry is not None:
+            try:
+                if self.focus_get() is self._find_entry:
+                    # Focus déjà dans le champ : tout sélectionner (comme
+                    # les navigateurs), sans écraser la saisie.
+                    self._find_entry.select_range(0, "end")
+                    return
+            except KeyError:
+                pass
+        if self._find_bar is None:
+            bar = ttk.Frame(self)
+            entry = ttk.Entry(bar, textvariable=self._find_var, width=18,
+                              font=HEBREW_FONT, justify="right")
+            entry.pack(side="left", padx=(0, 4))
+            sofit_box = ttk.Checkbutton(
+                bar, text="Sofit insensible",
+                variable=self._find_sofit_var,
+                command=self._refresh_find)
+            sofit_box.pack(side="left", padx=(0, 6))
+            self._find_count = ttk.Label(bar, text="", width=12, anchor="w")
+            self._find_count.pack(side="left")
+            btn_next = ttk.Button(bar, text="\u25b6", width=2,
+                                  command=self._find_next)
+            btn_next.pack(side="left", padx=1)
+            btn_prev = ttk.Button(bar, text="\u25c0", width=2,
+                                  command=self._find_prev)
+            btn_prev.pack(side="left", padx=(1, 4))
+            btn_close = ttk.Button(bar, text="\u2715", width=2,
+                                   command=self._close_find_bar)
+            btn_close.pack(side="left")
+            # En haut à gauche : pour l'hébreu (droite-à-gauche), le bord
+            # gauche est la FIN de lecture — la barre couvre le moins
+            # possible le début des lignes.
+            bar.place(in_=self, relx=0.0, x=6, y=4, anchor="nw")
+            self._find_bar = bar
+            self._find_entry = entry
+            entry.bind("<Return>", self._find_next)
+            entry.bind("<KP_Enter>", self._find_next)
+            entry.bind("<Shift-Return>", self._find_prev)
+            entry.bind("<Escape>", self._close_find_bar)
+            entry.bind("<KeyRelease>", self._on_find_typed)
+            entry.bind("<FocusIn>", self._on_find_entry_focus)
+        # Pré-remplissage depuis la sélection courante (ordre logique).
+        try:
+            sel = self.get("sel.first", "sel.last")
+        except tk.TclError:
+            sel = ""
+        if sel:
+            # Une sélection multi-lignes devient une requête sur une
+            # seule ligne (les sauts de ligne ne sont pas cherchés).
+            self._find_var.set(to_logical(sel).replace("\n", " "))
+        self._find_bar.lift()
+        self._refresh_find()
+        self._find_entry.focus_set()
+        self._find_entry.icursor("end")
+        self._find_entry.select_range(0, "end")
+
+    def _on_find_entry_focus(self, event):
+        # Le clavier virtuel (qui tape dans le dernier widget ciblé) doit
+        # pouvoir remplir le champ de recherche.
+        if self._find_focus_notifier is not None:
+            self._find_focus_notifier(event)
+
+    def _close_find_bar(self, event=None):
+        if self._find_job is not None:
+            try:
+                self.after_cancel(self._find_job)
+            except tk.TclError:
+                pass
+            self._find_job = None
+        self._clear_find()
+        if self._find_bar is not None:
+            try:
+                self._find_bar.destroy()
+            except tk.TclError:
+                pass
+        self._find_bar = None
+        self._find_entry = None
+        self._find_count = None
+        self.focus_set()
+
+    def _on_find_typed(self, event=None):
+        # Les touches de validation/navigation ne changent pas la requête
+        # (sinon le refresh réinitialiserait la position courante).
+        if event is not None and event.keysym in (
+                "Return", "KP_Enter", "Escape", "Left", "Right",
+                "Home", "End"):
+            return
+        if self._find_job is not None:
+            try:
+                self.after_cancel(self._find_job)
+            except tk.TclError:
+                pass
+        self._find_job = self.after(150, self._refresh_find)
+
+    def _clear_find(self):
+        self.tag_remove("find", "1.0", "end")
+        self.tag_remove("find_cur", "1.0", "end")
+        self._find_matches = []
+        self._find_pos = -1
+        if self._find_count is not None:
+            try:
+                self._find_count.configure(text="")
+            except tk.TclError:
+                pass
+
+    def _refresh_find(self):
+        """Recalcule les occurrences de la requête courante.
+
+        Si la requête contient des lettres hébraïques, la recherche se fait
+        sur les consonnes seules (sans nikkud ni teamim) dans l'ordre de
+        lecture, via le module bidi_display ; sinon la recherche est
+        littérale insensible à la casse (texte latin, chiffres).
+        """
+        self._find_job = None
+        self._clear_find()
+        query = self._find_var.get()
+        if not query:
+            return
+        matches = self._compute_find_matches(query)
+        self._find_matches = matches
+        for line, a, b in matches:
+            self.tag_add("find", f"{line}.{a}", f"{line}.{b}")
+        if matches:
+            self._find_pos = 0
+            line, a, b = matches[0]
+            self.tag_add("find_cur", f"{line}.{a}", f"{line}.{b}")
+            self.see(f"{line}.{a}")
+        self._update_find_count()
+
+    def _compute_find_matches(self, query):
+        """Occurrences ``[(ligne, début, fin), …]`` en indices du texte
+        stocké (ordre visuel + marques bidi), en ordre de lecture."""
+        n_lines = int(self.index("end - 1c").split(".")[0])
+        matches = []
+        if has_hebrew_letters(query):
+            skeleton = normalize_query(query)
+            if not skeleton:
+                return []
+            sofit_insensitive = bool(self._find_sofit_var.get())
+            for line_no in range(1, n_lines + 1):
+                line = self.get(f"{line_no}.0", f"{line_no}.0 lineend")
+                if not line:
+                    continue
+                for a, b in find_line_matches(line, skeleton,
+                                              sofit_insensitive=sofit_insensitive):
+                    matches.append((line_no, a, b))
+        else:
+            needle = query.casefold()
+            for line_no in range(1, n_lines + 1):
+                line = self.get(f"{line_no}.0", f"{line_no}.0 lineend")
+                if not line:
+                    continue
+                hay = line.casefold()
+                start = 0
+                while True:
+                    j = hay.find(needle, start)
+                    if j < 0:
+                        break
+                    matches.append((line_no, j, j + len(needle)))
+                    start = j + 1
+        return matches
+
+    def _find_next(self, event=None):
+        if not self._find_matches:
+            self._refresh_find()
+            return "break"
+        self._find_pos = (self._find_pos + 1) % len(self._find_matches)
+        self._show_find_current()
+        return "break"
+
+    def _find_prev(self, event=None):
+        if not self._find_matches:
+            self._refresh_find()
+            return "break"
+        self._find_pos = (self._find_pos - 1) % len(self._find_matches)
+        self._show_find_current()
+        return "break"
+
+    def _show_find_current(self):
+        self.tag_remove("find_cur", "1.0", "end")
+        line, a, b = self._find_matches[self._find_pos]
+        self.tag_add("find_cur", f"{line}.{a}", f"{line}.{b}")
+        self.see(f"{line}.{a}")
+        self._update_find_count()
+
+    def _update_find_count(self):
+        if self._find_count is None:
+            return
+        n = len(self._find_matches)
+        if not n:
+            self._find_count.configure(text="0 / 0")
+        else:
+            self._find_count.configure(
+                text=f"{self._find_pos + 1} / {n}")
+
 
 class AnalyseurGUI:
     """Fenêtre principale de l'analyseur grammatical."""
@@ -734,14 +1056,56 @@ class AnalyseurGUI:
         self._target_widget = None  # widget actuellement ciblé par le clavier
 
         root.title("Analyseur grammatical de l'hébreu biblique")
-        root.geometry("1200x1000")
         root.minsize(1000, 760)
+        root.geometry(_saved_geometry() or DEFAULT_GEOMETRY)
 
         self._build_widgets()
         self._start_loading()
 
+        # Recherche Ctrl-F : routée vers la zone de résultat de l'onglet
+        # actif (le widget focusé peut être une Entry de saisie ; les
+        # ResultText gèrent aussi leur propre <Control-f>/<F3>).
+        root.bind("<Control-f>", self._on_global_find)
+        root.bind("<F3>", self._on_global_find_next)
+
         # Polling des résultats des travaux en arrière-plan.
         root.after(120, self._poll_queue)
+
+    def _active_result_widget(self):
+        """Zone de résultat visible de l'onglet actif, ou None.
+
+        Livre/Mot/Phrase : la zone unique de l'onglet. Binyanim : la zone
+        du sous-onglet affiché (Verbe, binyan ou Sortie complète)."""
+        idx = self.notebook.select()
+        if not idx:
+            return None
+        tab = self.notebook.tab(idx, "text")
+        if tab in ("Livre", "Mot", "Phrase"):
+            return getattr(self.notebook.nametowidget(idx), "_output", None)
+        if tab == "Binyanim":
+            sel = self.binyanim_notebook._selected
+            if sel is None:
+                return None
+            for t in self.binyanim_notebook._tabs:
+                if t["id"] == sel:
+                    for child in t["widget"].winfo_children():
+                        if isinstance(child, ResultText):
+                            return child
+            return None
+        return None
+
+    def _on_global_find(self, event):
+        w = self._active_result_widget()
+        if w is not None:
+            w._on_find(event)
+            return "break"
+        return None
+
+    def _on_global_find_next(self, event):
+        w = self._active_result_widget()
+        if w is not None:
+            return w._on_f3(event)
+        return None
 
     # --- Construction de l'interface -------------------------------------
     def _build_widgets(self):
@@ -926,6 +1290,8 @@ class AnalyseurGUI:
         frame.pack(fill="both", expand=True, padx=8, pady=(0, 8))
         self.output_text = ResultText(frame, font=HEBREW_FONT_MONO,
                                       wrap="word", height=10, width=40)
+        # Le clavier virtuel doit cibler le champ de la barre Ctrl-F.
+        self.output_text._find_focus_notifier = self._remember_target
         self.output_text.grid(row=0, column=0, sticky="nsew")
         yscroll = ttk.Scrollbar(frame, orient="vertical",
                                command=self.output_text.yview)
@@ -1189,6 +1555,8 @@ class AnalyseurGUI:
         """Zone de texte défilable (ascenseurs vertical + horizontal)."""
         text = ResultText(parent, font=HEBREW_FONT_MONO, wrap="none",
                           height=10, width=40)
+        # Le clavier virtuel doit cibler le champ de la barre Ctrl-F.
+        text._find_focus_notifier = self._remember_target
         text.grid(row=0, column=0, sticky="nsew")
         yscroll = ttk.Scrollbar(parent, orient="vertical", command=text.yview)
         yscroll.grid(row=0, column=1, sticky="ns")
@@ -1216,6 +1584,14 @@ class AnalyseurGUI:
 
         def worker():
             analysis = analyze_binyanim(F, form, use_mishnah=use_mishnah)
+            if not analysis.get("found"):
+                verb = analysis.get("verb", {})
+                reason = verb.get("reason") or analysis.get("reason")
+                suggestions = verb.get("suggestions") \
+                    or analysis.get("suggestions") or []
+                self._work_queue.put(("binyanim_not_found",
+                                      (form, reason, suggestions)))
+                return
             if fmt == "json":
                 result = format_binyanim_json(analysis)
                 self._work_queue.put(("binyanim_raw", result))
@@ -1227,8 +1603,76 @@ class AnalyseurGUI:
 
         threading.Thread(target=worker, daemon=True).start()
 
+    def _fill_binyanim_rules_tab(self, parsed, weak):
+        """Crée l'onglet « Règles » si le verbe est faible, sinon le retire.
+
+        L'onglet, inséré avant « Sortie complète », affiche les règles de
+        conjugaison caractéristiques de la catégorie du verbe
+        (assimilation du nun, élision du ה final, refus du sheva des
+        gutturales, etc.). Il n'existe que pour un verbe faible.
+        """
+        self._remove_binyanim_rules_tab()
+        code = weak.get("code")
+        if not code or code == "strong" or code not in WEAK_CONJ_RULES:
+            return
+        self.binyanim_rules_tab = ttk.Frame(self.binyanim_notebook.body)
+        raw_index = self.binyanim_notebook.index(self.binyanim_raw_tab)
+        self.binyanim_notebook.insert(raw_index, self.binyanim_rules_tab,
+                                      text="Règles")
+        self.binyanim_rules_text = self._make_binyanim_output(
+            self.binyanim_rules_tab)
+        lines = [f"Verbe faible : {weak.get('label', '')}"]
+        if weak.get("desc"):
+            lines.append(f"  {weak['desc']}")
+        lines.append("")
+        lines.append("Règles de conjugaison caractéristiques :")
+        lines.append("")
+        for title, rule in WEAK_CONJ_RULES[code]:
+            lines.append(f"• {title}")
+            lines.append(f"  {rule}")
+            lines.append("")
+        self._set_output(self.binyanim_rules_text, "\n".join(lines))
+
+    def _remove_binyanim_rules_tab(self):
+        """Retire l'onglet « Règles » s'il existe (verbe fort ou sortie brute)."""
+        tab = getattr(self, "binyanim_rules_tab", None)
+        if tab is None:
+            return
+        tab_id = self.binyanim_notebook._resolve(tab)
+        if tab_id is not None:
+            self.binyanim_notebook.forget(tab_id)
+        self.binyanim_rules_tab = None
+        self.binyanim_rules_text = None
+
+    def _show_binyanim_not_found(self, payload):
+        """Forme non identifiable : message, résultat précédent conservé."""
+        form, reason, suggestions = payload
+        msg = (f"Aucun verbe trouvé pour « {form} » dans la base BHSA.\n\n"
+               "La fenêtre résultat n'a pas été modifiée.")
+        if reason == "orphan_shin_dot":
+            msg = (f"Saisie invalide : « {form} » contient un point "
+                   "shin/sin sans la lettre ש.\n\n"
+                   "Saisissez la lettre ש, puis son point (שׁ ou שׂ) — "
+                   "ou la racine sans point.\n\n"
+                   "La fenêtre résultat n'a pas été modifiée.")
+        elif suggestions:
+            hint = ", ".join(suggestions)
+            if reason == "root_truncated":
+                msg = (f"« {form} » est la forme courte d'un verbe faible "
+                       f"(racine probable : {hint}).\n\n"
+                       "Saisissez la racine complète pour la conjuguer.\n\n"
+                       "La fenêtre résultat n'a pas été modifiée.")
+            else:
+                msg = (f"Aucun verbe trouvé pour « {form} » dans la base "
+                       f"BHSA. Racines proches : {hint}.\n\n"
+                       "La fenêtre résultat n'a pas été modifiée.")
+        messagebox.showwarning("Binyanim", msg)
+        self.status.configure(text="Prêt.")
+        self._enable_buttons()
+
     def _show_binyanim_raw(self, text):
         """Affiche la sortie brute (texte marqué ou JSON)."""
+        self._remove_binyanim_rules_tab()
         self._set_output(self.binyanim_raw_text, text)
         self.binyanim_notebook.select(self.binyanim_raw_tab)
         self.status.configure(text="Prêt.")
@@ -1321,6 +1765,8 @@ class AnalyseurGUI:
                             "par analogie.\n\n")
                     content = warn + content
             self._set_output(text, content)
+
+        self._fill_binyanim_rules_tab(parsed, weak)
 
         if parsed.get("binyanim"):
             # Sélectionner le premier binyan.
@@ -1549,6 +1995,8 @@ class AnalyseurGUI:
                     self._show_binyanim_raw(payload)
                 elif kind == "binyanim_parsed":
                     self._show_binyanim_parsed(payload)
+                elif kind == "binyanim_not_found":
+                    self._show_binyanim_not_found(payload)
         except queue.Empty:
             pass
         self.root.after(120, self._poll_queue)
@@ -1557,14 +2005,16 @@ class AnalyseurGUI:
 def _quit_from_signal(root, signum, frame):
     """Fermeture demandée par Ctrl-C (SIGINT) en ligne de commande.
 
+    La géométrie de la fenêtre principale est sauvegardée avant l'arrêt.
     Le mainloop() de Tk bloque le thread principal dans la boucle
     d'événements Tcl : un SIGINT peut y être délivré au milieu d'un
     callback Tkinter, et l'exception KeyboardInterrupt est alors avalée
     par le rapport d'exception de Tkinter (la boucle continue) — la
     fermeture semble aléatoire. On replane donc l'arrêt via
-    after_idle : destroy() s'exécute dans le thread principal, depuis la
-    boucle d'événements, et mainloop() rend la main proprement.
+    after_idle : destroy() s'exécutera dans le thread principal, depuis
+    la boucle d'événements, et mainloop() rend la main proprement.
     """
+    _save_geometry(root)
     try:
         root.after_idle(root.destroy)
     except tk.TclError:
@@ -1584,10 +2034,20 @@ def _report_callback_exception(self, exc, val, tb):
     traceback.print_exception(exc, val, tb)
 
 
+def _close_from_window(root):
+    """Fermeture demandée par le gestionnaire de fenêtres (bouton ✕).
+
+    Sauvegarde la géométrie avant la destruction.
+    """
+    _save_geometry(root)
+    root.destroy()
+
+
 def main():
     root = tk.Tk()
     tk.Tk.report_callback_exception = _report_callback_exception
     AnalyseurGUI(root)
+    root.protocol("WM_DELETE_WINDOW", lambda: _close_from_window(root))
     signal.signal(signal.SIGINT, lambda s, f: _quit_from_signal(root, s, f))
     try:
         root.mainloop()

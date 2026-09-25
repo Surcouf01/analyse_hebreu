@@ -519,52 +519,82 @@ def _hit_meta(p1):
 
 
 def _hit_prefix(p1):
-    if p1 in ("\u05E9", "\u05E1", "\u05E6", "\u05D6", "\u05E9"):
-        return p1 + HIREQ + TAV + SHEVA   # ש ִ ת ְ  (métathèse : הִשְׁתְ...)
-    if p1 in ("\u05E0", "\u05EA", "\u05D8", "\u05E6"):
-        return p1 + HIREQ + TAV + SHEVA
-    return HE + HIREQ + TAV + SHEVA
+    """Préfixe hitpael et (pour la métathèse) segment ת initial du corps.
+
+    Sans métathèse : הִתְ + corps ; avec métathèse (P1 sifflante
+    ou dentale) : P1 + sheva, le ת (porteur du daguesh fort et du
+    patah) ouvre le corps (הִשְׁתַּמֵּר).
+    """
+    if _hit_meta(p1):
+        return p1 + SHEVA, TAV + DAGESH + PATAH
+    return HE + HIREQ + TAV + SHEVA, ""
 
 
 def _hit_perf(p1, p2, p3):
-    pre = _hit_prefix(p1)
-    if p1 in ("\u05E9", "\u05E1", "\u05E6", "\u05D6", "\u05E0", "\u05EA", "\u05D8", "\u05E6", "\u05E9"):
-        # métathèse : racine = P1-P2-P3 mais le ת s'infixe après P1 : הִפְעֵל
-        stem = p2 + PATAH + DAGESH + p3 + SHEVA
+    pre, tav = _hit_prefix(p1)
+    if tav:
+        # Métathèse : P1 précède le ת, le corps est P2-P3
+        # (הִשְׁתַּמֵּר, שָּׁמַרְתָּּ → הִשְׁתַּּמְרָה).
+        stem3 = HE + HIREQ + pre + tav + p2 + TSERE + DAGESH + p3
+        stem = HE + HIREQ + pre + tav + p2 + DAGESH + SHEVA + p3
     else:
-        stem = p1 + PATAH + DAGESH + p2 + HIREQ + DAGESH + p3 + SHEVA
+        stem3 = pre + p1 + PATAH + DAGESH + p2 + HIREQ + DAGESH + p3
+        stem = stem3 + SHEVA
     out = {}
     for key, end in S_PERF.items():
         if key == ("p3", "m", "sg"):
-            out[key] = pre + p1 + PATAH + DAGESH + p2 + HIREQ + DAGESH + p3
+            out[key] = stem3
         else:
-            out[key] = pre + stem + end
+            out[key] = stem + end
     return out
 
 
 def _hit_impf(p1, p2, p3):
-    pre = _hit_prefix(p1)
-    stem_sg = p1 + PATAH + DAGESH + p2 + HIREQ + DAGESH + p3
-    stem_pl = p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3
+    pre, tav = _hit_prefix(p1)
+    meta = _hit_meta(p1)
+    # M\u00e9tath\u00e8se : le \u05ea (daguesh fort + patah) ouvre le corps P2-P3,
+    # P1 reste en t\u00eate apr\u00e8s le pr\u00e9fixe personnel
+    # (\u05d0\u05b6\u05e9\u05b0\u05c1\u05ea\u05b7\u05bc\u05de\u05b5\u05bc\u05e8) ; sans m\u00e9tath\u00e8se le pr\u00e9fixe
+    # personnel s'attache directement \u00e0 \u05d4\u05b4\u05ea\u05b0 (\u05d9\u05b4\u05ea\u05b0\u05e7\u05b7\u05bc\u05d8\u05b5\u05bc\u05dc).
+    stem_sg = (tav + p2 + TSERE + DAGESH + p3
+               if meta else TAV + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3)
+    stem_pl = (tav + p2 + PATAH + DAGESH + p3 + SHEVA
+               if meta else TAV + SHEVA + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3)
     out = {}
     for key, (pref, _) in IMPF_PREF.items():
         if key[0] == "p1" and key[2] == "sg":
-            out[key] = ALEF + HIREQ + pre + stem_sg
+            out[key] = ALEF + SEGOL + pre + stem_sg if meta else ALEF + SEGOL + stem_sg
         elif key[0] == "p1" and key[2] == "pl":
-            out[key] = NUN + HIREQ + pre + stem_pl
+            out[key] = NUN + HIREQ + pre + stem_pl if meta else NUN + HIREQ + stem_pl
         elif key[0] == "p2" and key[1] == "f" and key[2] == "sg":
-            out[key] = TAV + HIREQ + pre + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + HIREQ + YOD
+            stem_fsg = (tav + p2 + PATAH + DAGESH + p3 + SHEVA + DAGESH
+                        if meta
+                        else TAV + SHEVA + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3)
+            out[key] = (TAV + HIREQ + pre + stem_fsg + HIREQ + YOD if meta
+                        else TAV + HIREQ + stem_fsg + HIREQ + YOD)
         elif key[0] in ("p2", "p3") and key[2] == "pl" and key[1] == "f":
-            out[key] = TAV + HIREQ + DAGESH + pre + p1 + PATAH + DAGESH + p2 + PATAH + p3 + SHEVA + NUN + QAMATS + HE
+            stem_fpl = (tav + p2 + PATAH + DAGESH + p3 + PATAH
+                        if meta
+                        else TAV + SHEVA + p1 + PATAH + DAGESH + p2 + PATAH + p3)
+            out[key] = (TAV + HIREQ + DAGESH + pre + stem_fpl + SHEVA + NUN + QAMATS + HE
+                        if meta
+                        else TAV + HIREQ + DAGESH + stem_fpl + SHEVA + NUN + QAMATS + HE)
         elif key[2] == "pl":
-            out[key] = pref + pre + stem_pl + SHUREQ
+            out[key] = pref + pre + stem_pl if meta else pref + stem_pl
         else:
-            out[key] = pref + pre + stem_sg
+            out[key] = pref + pre + stem_sg if meta else pref + stem_sg
     return out
 
 
 def _hit_impv(p1, p2, p3):
-    pre = _hit_prefix(p1)
+    pre, tav = _hit_prefix(p1)
+    if tav:
+        return {
+            ("p2", "m", "sg"): HE + HIREQ + pre + tav + p2 + TSERE + DAGESH + p3,
+            ("p2", "f", "sg"): HE + HIREQ + pre + tav + p2 + PATAH + DAGESH + p3 + SHEVA + DAGESH + HIREQ + YOD,
+            ("p2", "m", "pl"): HE + HIREQ + pre + tav + p2 + PATAH + DAGESH + p3 + SHEVA + SHUREQ,
+            ("p2", "f", "pl"): HE + HIREQ + pre + tav + p2 + PATAH + DAGESH + p3 + PATAH + SHEVA + NUN + QAMATS + HE,
+        }
     return {
         ("p2", "m", "sg"): pre + p1 + PATAH + DAGESH + p2 + HIREQ + DAGESH + p3,
         ("p2", "f", "sg"): pre + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + HIREQ + YOD,
@@ -577,7 +607,14 @@ HIT_INFC = HE + HIREQ + TAV + SHEVA + "P1" + PATAH + DAGESH + "P2" + HIREQ + DAG
 
 
 def _hit_ptc(p1, p2, p3):
-    pre = _hit_prefix(p1)
+    pre, tav = _hit_prefix(p1)
+    if tav:
+        return {
+            ("ptca", "m", "sg"): MEM + HIREQ + pre + tav + p2 + TSERE + DAGESH + p3,
+            ("ptca", "m", "pl"): MEM + HIREQ + pre + tav + p2 + PATAH + DAGESH + p3 + SHEVA + DAGESH + HIREQ + YOD + END_MEM,
+            ("ptca", "f", "sg"): MEM + HIREQ + pre + tav + p2 + PATAH + DAGESH + p3 + SEGOL + DAGESH + SEGOL + TAV,
+            ("ptca", "f", "pl"): MEM + HIREQ + pre + tav + p2 + PATAH + DAGESH + p3 + SHEVA + DAGESH + HOLAM + VAV + TSERE + TAV,
+        }
     return {
         ("ptca", "m", "sg"): MEM + HIREQ + pre + p1 + PATAH + DAGESH + p2 + HIREQ + DAGESH + p3,
         ("ptca", "m", "pl"): MEM + HIREQ + pre + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + HIREQ + YOD + END_MEM,
@@ -766,6 +803,115 @@ WEAK_CATEGORIES = (
 
 _WEAK_LABELS = {code: (label, desc) for code, label, desc in WEAK_CATEGORIES}
 
+# Règles de conjugaison caractéristiques de chaque catégorie de verbe faible.
+# Chaque entrée : liste de (titre, description) affichée par le GUI dans
+# l'onglet « Règles du verbe faible » du mode binyanim.
+WEAK_CONJ_RULES = {
+    "pe_alef": [
+        ("Alef quiescent", 
+         "1re radicale א : l'alef ne se prononce qu'avec une voyelle ; "
+         "après un préfixe (יִ, תִּ, נִ), le sheva attendu devient un "
+         "hatef-patah (אֲ) ou une voyelle brève pleine."),
+        ("Préfixes voyellés",
+         "Imparfait : le préfixe porte une voyelle pleine au lieu du sheva "
+         "(יָאמִין « il croira », pas *יְאמִין)."),
+    ],
+    "pe_guttural": [
+        ("Refus du sheva",
+         "1re radicale gutturale (ה/ח/ע) : la gutturale refuse le sheva, "
+         "remplacé par une voyelle brève (hatef) — אֶחֱזֶק הַח֖וֹק plutôt "
+         "que *יַחְזִיק."),
+        ("Voyelles de compensation",
+         "La voyelle du préfixe s'allonge parfois (a → e long) pour "
+         "compenser l'impossibilité de doubler la gutturale."),
+    ],
+    "pe_nun": [
+        ("Assimilation du nun",
+         "1re radicale נ : dans les formes à préfixe (imparfait, "
+         "impératif, participe), le נ s'assimile à la 2e radicale et "
+         "apparaît comme daguesh fort : יִפֹּל « il tombera » (racine "
+         "נפל), et non *יִנפֹּל."),
+        ("Formes à suffixe",
+         "Au parfait et dans les formes où le nun reste en position "
+         "initiale de syllabe, il est conservé : נָפַל « il est tombé »."),
+    ],
+    "pe_yod": [
+        ("Assimilation du yod",
+         "1re radicale י : le yod s'assimile en voyelle longue, la forme "
+         "commence par une consonne à daguesh (יֵשֵׁב « il habitera », "
+         "racine ישׁב)."),
+        ("Verbes mi",
+         "Au qal imparfait, plusieurs verbes pe-yod présentent un "
+         "préfixe en voyelle longue au lieu de la forme attendue."),
+    ],
+    "ayin_guttural": [
+        ("Refus du daguesh fort",
+         "2e radicale gutturale : la gutturale refuse le daguesh fort "
+         "(caractéristique du piel/pual), la voyelle précédente "
+         "s'allonge en compensation."),
+        ("Voyelle de compensation",
+         "Piel : le hatef du préfixe s'allonge (chariq → ségol/hireq "
+         "long) pour compenser le redoublement impossible."),
+    ],
+    "ayin_vav": [
+        ("Verbe creux",
+         "2e radicale ו/י consonantique : la voyelle entre P2 et P3 "
+         "s'allonge (qamats/holam) et la radicale médiane n'est jamais "
+         "syllabée — קָם « il s'est levé », יָקֻם (hofal), etc."),
+        ("Métaphonie de qamets",
+         "Au qal imparfait, la voyelle radicale se réduit souvent à une "
+         "voyelle de type (o/u) : יָקם → יָקֻם au hofal ; au qal, "
+         "la voyelle « a » se conserve longue."),
+    ],
+    "lamed_he": [
+        ("Terminaison vocalique",
+         "3e radicale ה : le ה final n'est pas une vraie consonne mais "
+         "une mater lectionis ; les formes se terminent par une voyelle "
+         "longue ou une terminaison vocalique (ה/ת/י/נוּ)."),
+        ("Élision du ה final",
+         "Aux formes à suffixe (suffixe pronominal ou terminaison de "
+         "personne), le ה s'élide et la voyelle se contracte : "
+         "בָּנָה + תִּי → בָּנִיתִי (pas *בָּנָהְתִי)."),
+        ("Jussif et cohortatif",
+         "La forme courte (jussif) élide le ה avec sa voyelle : יִּבֶן ; "
+         "le cohortatif 1re personne est identique à l'imparfait (אֶבְנֶה) "
+         "— le ה paragogique s'agglutine à une forme déjà vocalique."),
+        ("Impératif",
+         "L'impératif construit sur l'imparfait sans préfixe : בְּנֵה « bâtis », "
+         "avec tsere (voyelle-longue) car le ה élité laisse une syllabe "
+         "ouverte."),
+    ],
+    "lamed_alef": [
+        ("Alef quiescent",
+         "3e radicale א : en syllabe ouverte finale, l'alef quiescent "
+         "s'élide (מָצָא → מָצָה) ; en position initiale de syllabe, "
+         "il est conservé."),
+        ("Impératif",
+         "La voyelle de l'impératif s'allonge pour compenser "
+         "l'élision : מְצָא-מָצָה."),
+    ],
+    "lamed_guttural": [
+        ("Patah furtif",
+         "3e radicale gutturale : après une voyelle non-patah, un patah "
+         "furtif s'insère avant la gutturale finale (שָׁמַע, גָּדַלְתָּ) ; "
+         "la gutturale ne se redouble pas."),
+        ("Voyelles de compensation",
+         "Les voyelles de la racine s'adaptent à la gutturale : ségol "
+         "fréquent en finale (שָׁמַע → impératif שְׁמַע) et refus "
+         "du daguesh fort."),
+    ],
+    "double": [
+        ("Redoublement",
+         "2e et 3e radicales identiques : la 3e radicale se redouble "
+         "avec daguesh fort dans les formes à préfixe — יְסֻבֵּב « il "
+         "sera entouré » (racine סבב)."),
+        ("Qal défectif",
+         "Au qal parfait, la voyelle entre P2 et P3 s'allonge souvent "
+         "(סָבַב comme un verbe fort, ou עִפֵּל־סָבֵב « doublement » "
+         "au piel/pual)."),
+    ],
+}
+
 
 def classify_root(p1, p2, p3):
     """Classe une racine trilitaire : renvoie le code de la catégorie."""
@@ -801,6 +947,22 @@ def identify_verb(F, form):
     norm = _normalize(form)
     letters = _root_letters(norm)
 
+    # Point shin/sin orphelin : la saisie a probablement inséré le point
+    # sans la lettre ש (touche shin_dot du clavier virtuel seule). Sans
+    # cette garde, le point serait ignoré et la recherche se ferait sur
+    # les consonnes restantes, avec un verbe sans rapport (ex. ׁמר lu
+    # comme מר → מרר). On refuse plutôt la forme. Le point suit le ש
+    # immédiatement ou après les signes vocaliques (convention BHSA :
+    # ש + qamats + point shin).
+    for i, ch in enumerate(norm):
+        if ch in ("\u05C1", "\u05C2"):
+            j = i - 1
+            while j >= 0 and 0x05B0 <= ord(norm[j]) <= 0x05BC:
+                j -= 1
+            if j < 0 or norm[j] != "\u05E9":
+                return {"found": False, "reason": "orphan_shin_dot",
+                        "input": form}
+
     # 1) Racine trilitaire nue (ex. שמר, קטל, שׂמר) : lemme BHSA ou racine
     #    théorique si la racine n'existe pas dans la base.
     if len(letters) == 3 and _is_consonantal(norm):
@@ -830,7 +992,18 @@ def identify_verb(F, form):
         }
 
     # 2) Forme conjuguée : recherche BHSA (cf. word_analyzer.search_word).
-    from .word_analyzer import search_word
+    # Un match dont le squelette consonantique est un PRÉFIXE STRICT de la
+    # racine trouvée est refusé : c'est la forme courte d'un verbe double
+    # (ex. מר -> מרר, la 3e radicale absorbée dans le daguesh fort) ou
+    # lamed-he (גל -> גלה). L'utilisateur qui saisit une racine inexistante
+    # reçoit une erreur avec la racine complète suggérée, pas une
+    # conjugaison surprise. Les formes légitimes restent identifiées :
+    # verbe creux (קָם de קום : le squelette n'est pas un préfixe de la
+    # racine), pe-nun assimilé (יפל de נפל : 3 lettres après le préfixe),
+    # forme pleine d'un verbe double (מָרַר de מרר).
+    from .word_analyzer import search_word, _strip_nikkud
+    cons = _strip_nikkud(norm)
+    truncated = []
     seen_lex = set()
     for method, w, pfx in search_word(F, form):
         if F.sp.v(w) != "verb":
@@ -843,6 +1016,13 @@ def identify_verb(F, form):
         rletters = _root_letters(lex_utf8)
         if len(rletters) != 3:
             continue
+        skel = cons[len(pfx):] if pfx else cons
+        skel_letters = _root_letters(skel)
+        if (len(skel_letters) < len(rletters)
+                and list(rletters[:len(skel_letters)])
+                == list(skel_letters)):
+            truncated.append("".join(rletters))
+            continue
         return {
             "found": True,
             "lex": lex,
@@ -853,6 +1033,27 @@ def identify_verb(F, form):
             "binyan_attested": F.vs.v(w),
             "method": "form",
         }
+    if truncated:
+        return {"found": False, "reason": "root_truncated",
+                "suggestions": sorted(set(truncated)), "input": form}
+    # Racine nue trop courte (ex. מר) : aucune forme ne matche, mais des
+    # racines verbales étendent la saisie — les suggérer.
+    if 0 < len(letters) < 3:
+        suggestions = set()
+        for w in F.otype.s("word"):
+            if F.sp.v(w) != "verb":
+                continue
+            rletters = _root_letters(F.lex_utf8.v(w) or "")
+            if (len(rletters) == 3
+                    and list(rletters[:len(letters)]) == list(letters)):
+                suggestions.add("".join(rletters))
+        if suggestions:
+            # Racines doubles en premier (extension naturelle d'une
+            # racine courte : מר -> מרר), puis les autres par ordre.
+            ordered = sorted(suggestions, key=lambda r: (len(r), r))
+            return {"found": False, "reason": "no_match",
+                    "suggestions": ordered[:8],
+                    "input": form}
     return {"found": False, "reason": "no_match", "input": form}
 
 
@@ -884,6 +1085,13 @@ def _templates():
 
 def _cell_key(cat, vs, vt, ps, gn, nu):
     return f"{cat}|{vs}|{vt}|{ps}|{gn}|{nu}"
+
+
+def _exact_template(cat, vs, vt, cell):
+    """Gabarit de la catégorie exacte (sans repli « strong »)."""
+    t = _templates()
+    ps, gn, nu = cell
+    return t.get(f"{cat}|{vs}|{vt}|{ps}|{gn}|{nu}")
 
 
 def _lookup_template(cat, vs, vt, cell):
@@ -985,6 +1193,17 @@ def _render(template, root, category, vs=None):
         mapping = {"P1": p1, "P2": p2}
     else:
         mapping = {"P1": p1, "P2": p2, "P3": p3}
+    # Daguesh lene parasite : un gabarit dominant issu de racines
+    # begadkefat (ex. אֶקְבְּרָה) porte un daguesh lene après le
+    # sheva d'une radicale ; il n'est légitime que si la radicale
+    # effective est une begadkefat. En piel/pual, le daguesh après
+    # la voyelle de P2 marque le redoublement (forte) et concerne
+    # toute consonne : on ne le retire pas.
+    if vs not in ("piel", "pual"):
+        for ph, letter in mapping.items():
+            if letter not in BEGADKEFAT:
+                template = template.replace(ph + SHEVA + DAGESH,
+                                            ph + SHEVA)
     out = template
     for ph, letter in mapping.items():
         out = out.replace(ph, letter)
@@ -1076,9 +1295,102 @@ TENSE_LABELS = {
     "perf": "Parfait (qatal)",
     "impf": "Imparfait (yiqtol)",
     "impv": "Impératif",
+    "juss": "Jussif (forme courte)",
+    "coh": "Cohortatif (volutif)",
 }
 
-TENSE_PERSONS = {"perf": PERSONS, "impf": PERSONS, "impv": PERSONS_IMPV}
+# Personnes du jussif : 2e/3e (la 1re personne courte est un yiqtol
+# ordinaire, couvert par l'imparfait).
+PERSONS_JUSS = (
+    ("p3", "m", "sg", "3e pers. masc. sing. (qu'il)"),
+    ("p3", "f", "sg", "3e pers. fém. sing. (qu'elle)"),
+    ("p2", "m", "sg", "2e pers. masc. sing. (que tu)"),
+    ("p2", "f", "sg", "2e pers. fém. sing. (que tu)"),
+    ("p3", "m", "pl", "3e pers. masc. pl. (qu'ils)"),
+    ("p3", "f", "pl", "3e pers. fém. pl. (qu'elles)"),
+    ("p2", "m", "pl", "2e pers. masc. pl. (que vous)"),
+    ("p2", "f", "pl", "2e pers. fém. pl. (que vous)"),
+)
+PERSONS_COH = (
+    ("p1", "c", "sg", "1re pers. sing. (que je)"),
+    ("p1", "c", "pl", "1re pers. pl. (que nous)"),
+)
+
+TENSE_PERSONS = {"perf": PERSONS, "impf": PERSONS, "impv": PERSONS_IMPV,
+                 "juss": PERSONS_JUSS, "coh": PERSONS_COH}
+
+
+_COH_END = "\u05B8\u05D4"
+
+
+def _cohortative_fallback(vs, root, category, cell):
+    """Cohortatif : gabarit extrait des formes attestées, sinon dérivation
+    (imparfait 1re personne + finale \u05b8\u05d4).
+
+    Le gabarit cohortatif est extrait des impf 1re personne en \u05b8\u05d4 ;
+    à défaut (binyan rare), la forme courte est prise au gabarit jussif
+    (même voyelle radicale) ou à l'imparfait de la même personne.
+    """
+    ps, gn, nu = cell
+    # Verbes lamed-he : le ה final de la racine s'élide avec la
+    # finale paragogique ; le cohortatif est identique à l'imparfait
+    # 1re personne (אֶבְנֶה Gen 30:3, אֶמְצָא Gen 41:11). Le repli
+    # « strong » de _lookup_template est ici évité : son gabarit coh
+    # (אֶP1ְP2ְP3ָה) dupliquerait la radicale finale.
+    if category == "lamed_he":
+        tpl = _exact_template(category, vs, "impf", cell)
+        if tpl:
+            return _render(tpl["template"], root, category, vs)
+        return ""
+    # 0. gabarit cohortatif attesté (catégorie exacte, puis strong).
+    tpl = _lookup_template(category, vs, "coh", cell)
+    if tpl:
+        return _render(tpl, root, category, vs)
+    # 1. gabarit jussif de la même personne : forme courte commune.
+    tpl = _exact_template(category, vs, "juss", cell)
+    if not tpl and nu == "sg":
+        # La 2e pers. masc. sing. du jussif a le même schéma que la 1re
+        # personne (préfixe à part, même voyelle finale courte).
+        alt = _exact_template(category, vs, "juss", ("p2", "m", "sg"))
+        tpl = alt
+    if not tpl:
+        tpl = _exact_template(category, vs, "impf", cell)
+        if tpl:
+            tpl = tpl["template"]
+    if not tpl:
+        return ""
+    if nu == "pl":
+        # L'imparfait 1cp se termine en \u05b0\u05e0\u05bc\u05d5\u05bc ; la finale
+        # cohortative \u05b8\u05d4 la remplace ; sur les autres schémas
+        # (hif : \u05e0\u05b7\u05e7\u05b0\u05d8\u05b4\u05bc\u05d9\u05dc) elle s'ajoute
+        # (\u05e0\u05b7\u05d2\u05b0\u05bc\u05d1\u05b4\u05bc\u05d9\u05e8\u05b8\u05d4 Ps 35:25).
+        out = _render(tpl, root, category, vs)
+        if out.endswith("\u05B0\u05E0\u05BC\u05D5\u05BC"):
+            return out[:-3] + _COH_END
+        if out.endswith("\u05D5\u05BC"):
+            return out[:-1] + _COH_END
+        return out + _COH_END
+    out = _render(tpl, root, category, vs)
+    if out.endswith(_COH_END):
+        return out
+    return out + _COH_END
+
+
+def _jussive_fallback(vs, root, category, cell):
+    """Jussif par dérivation : la forme courte est identique au yiqtol
+    pour les verbes forts ; les verbes faibles l'obtiennent du gabarit
+    jussif de la catégorie, ou à défaut de l'imparfait de la même
+    catégorie (forme longue, meilleur que rien). Le repli « strong »
+    de _lookup_template est évité : appliqué à une racine réduite
+    (creuse, lamed-he…), il dupliquerait une radicale.
+    """
+    tpl = _exact_template(category, vs, "juss", cell)
+    if tpl:
+        return _render(tpl["template"], root, category, vs)
+    tpl = _exact_template(category, vs, "impf", cell)
+    if tpl:
+        return _render(tpl["template"], root, category, vs)
+    return ""
 
 
 def generate_binyan_paradigm(vs, root, category):
@@ -1086,19 +1398,42 @@ def generate_binyan_paradigm(vs, root, category):
 
     Chaque cellule utilise le gabarit BHSA de la catégorie du verbe ;
     à défaut, le gabarit du verbe fort ; à défaut, le générateur intégré.
+    Les volitifs (jussif, cohortatif) utilisent les gabarits extraits des
+    formes attestées (wayyiqtol pour le jussif, impf+\u05b8\u05d4 pour le
+    cohortatif) ; sans gabarit attesté, ils sont dérivés de l'imparfait.
     """
     out = {}
     builtin = None
     for tense, persons in TENSE_PERSONS.items():
         forms = {}
         for ps, gn, nu, _label in persons:
-            tpl = _lookup_template(category, vs, tense, (ps, gn, nu))
+            cell = (ps, gn, nu)
+            if tense == "juss":
+                form = _jussive_fallback(vs, root, category, cell)
+                if not form:
+                    # Dernier repli : le générateur intégré produit la
+                    # forme longue (imparfait), la mieux approchante pour
+                    # le jussif (ex. 3e fém. pl. \u05ea\u05b4\u05bc\u05e9\u05b0\u05c1\u05de\u05b7\u05bc\u05e8\u05b0\u05e0\u05b8\u05d4).
+                    if builtin is None:
+                        builtin = _builtin_paradigm(vs, root)
+                    form = builtin["impf"].get(cell, "")
+                forms[cell] = form
+                continue
+            if tense == "coh":
+                form = _cohortative_fallback(vs, root, category, cell)
+                if not form:
+                    if builtin is None:
+                        builtin = _builtin_paradigm(vs, root)
+                    form = builtin["impf"].get(cell, "")
+                forms[cell] = form
+                continue
+            tpl = _lookup_template(category, vs, tense, cell)
             if tpl:
-                forms[(ps, gn, nu)] = _render(tpl, root, category, vs)
+                forms[cell] = _render(tpl, root, category, vs)
             else:
                 if builtin is None:
                     builtin = _builtin_paradigm(vs, root)
-                forms[(ps, gn, nu)] = builtin[tense].get((ps, gn, nu), "")
+                forms[cell] = builtin[tense].get(cell, "")
         out[tense] = forms
     return out
 
@@ -1336,7 +1671,7 @@ def binyanim_to_text(analysis):
                              "aucune occurrence de ce binyan pour cette racine "
                              "dans la Bible hébraïque (paradigme théorique, "
                              "construit par analogie).")
-        for tense in ("perf", "impf", "impv"):
+        for tense in ("perf", "impf", "impv", "juss", "coh"):
             lines.append(f"  {TENSE_LABELS[tense]} :")
             for ps, gn, nu, label in TENSE_PERSONS[tense]:
                 form = b["paradigm"][tense].get((ps, gn, nu), "")
