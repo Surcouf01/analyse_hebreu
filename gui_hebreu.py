@@ -1043,26 +1043,40 @@ class ResultText(tk.Text):
         return "break"
 
     def _on_arrow_up(self, event=None):
-        """Déplace le curseur d'une ligne vers le haut et suit la vue."""
-        self._move_insert(-1)
+        """Fait défiler le texte d'une ligne vers le haut (réponse directe)."""
+        self._scroll_lines(-1)
         return "break"
 
     def _on_arrow_down(self, event=None):
-        """Déplace le curseur d'une ligne vers le bas et suit la vue."""
-        self._move_insert(1)
+        """Fait défiler le texte d'une ligne vers le bas (réponse directe)."""
+        self._scroll_lines(1)
         return "break"
 
-    def _move_insert(self, delta):
-        """Déplace la marque d'insertion de delta lignes affichées.
+    def _scroll_lines(self, delta):
+        """Fait défiler la vue de delta lignes, sans déplacer le curseur.
 
-        Le widget est en état « disabled » (lecture seule) : les liaisons
-        par défaut de Tk n'y déplacent ni curseur ni vue, on le fait donc
-        explicitement, en bornes respectées par l'indice Tk (clamp 1.0/end).
+        Contrairement à la navigation par marque d'insertion (see), le
+        défilement est immédiat à chaque KeyPress — pas de décalage entre
+        l'appui et le mouvement, y compris en répétition automatique (clé
+        maintenue). La marque d'insertion reste en cohérence : si elle sort
+        de la fenêtre, elle est ramenée à la ligne visible la plus proche.
         """
         try:
-            pos = self.index(f"insert {delta:+d} displaylines")
-            self.mark_set("insert", pos)
-            self.see("insert")
+            self.yview_scroll(delta, "units")
+            self._clamp_insert_to_view()
+        except tk.TclError:
+            pass
+
+    def _clamp_insert_to_view(self):
+        """Ramène la marque d'insertion dans la fenêtre visible si besoin."""
+        try:
+            first = self.index("@0,0")
+            last = self.index("@0,%d" % max(0, self.winfo_height() - 1))
+            ins = self.index("insert")
+            if self.compare(ins, "<", first):
+                self.mark_set("insert", first)
+            elif self.compare(ins, ">", last):
+                self.mark_set("insert", last)
         except tk.TclError:
             pass
 
