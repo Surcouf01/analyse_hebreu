@@ -114,6 +114,12 @@ def build_parser():
              "domaine public) du verset analysé.",
     )
     p.add_argument(
+        "--translation-es",
+        action="store_true",
+        help="Affiche aussi la traduction espagnole (Reina-Valera 1909, "
+             "dominio público) du verset analysé.",
+    )
+    p.add_argument(
         "--mishna",
         action="store_true",
         help="Affiche une mishna (argument = référence, ex. 'Bérakhot 1:1', "
@@ -361,6 +367,7 @@ def main(argv=None):
 
     _print_translation("fr", "Louis Segond 1910", args.translation)
     _print_translation("en", "King James Version 1611", args.translation_en)
+    _print_translation("es", "Reina-Valera 1909", args.translation_es)
 
     if args.format == "json":
         print(format_json(analysis))

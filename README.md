@@ -63,10 +63,10 @@ L'interface comporte quatre onglets :
   hébraïque** (Torah en tête : Genèse, Exode, Lévitique, Nombres,
   Deutéronome, …) et les listes sont **bornées aux limites réelles** de la
   base BHSA. Formats disponibles : texte, synthèse, JSON ; option
-  « masquer le détail mot à mot ». Des **traductions française et anglaise**
-  du verset (Louis Segond 1910, King James Version 1611, toutes deux
-  domaine public) sont affichées en tête du résultat ; elles sont
-  activables individuellement par cases à cocher.
+  « masquer le détail mot à mot ». Des **traductions française, anglaise et espagnole**
+  du verset (Louis Segond 1910, King James Version 1611, Reina-Valera
+  1909, toutes trois domaine public) sont affichées en tête du
+  résultat ; elles sont activables individuellement par cases à cocher.
 
   Pour la **Mishna**, les six *sedarim* (Zeraim, Moed, Nashim, Nezikin,
   Kodashim, Tahorot) et leurs 63 traités sont listés dans l'ordre canonique
@@ -171,23 +171,26 @@ La recherche est disponible dans les onglets Livre, Mot, Phrase, ainsi que
 dans chaque sous-onglet de l'onglet Binyanim (Verbe, chaque binyan,
 Sortie complète).
 
-#### Traductions française et anglaise
+#### Traductions française, anglaise et espagnole
 
-L'onglet **Livre** (mode Bible) affiche, en tête du résultat, une ou deux
-traductions du verset analysé, toutes deux **domaine public** :
+L'onglet **Livre** (mode Bible) affiche, en tête du résultat, une à trois
+traductions du verset analysé, toutes **domaine public** :
 
 - **Louis Segond 1910** (français) — fichier `data/louis_segond_1910.txt` ;
-- **King James Version 1611** (anglais) — fichier `data/kjv_1611.txt`.
+- **King James Version 1611** (anglais) — fichier `data/kjv_1611.txt` ;
+- **Reina-Valera 1909** (espagnol) — fichier `data/reina_valera_1909.txt`.
 
-Les deux fichiers sont fournis avec le projet (un verset par ligne, indexé
+Les trois fichiers sont fournis avec le projet (un verset par ligne, indexé
 par nom BHSA / chapitre / verset). Dans le GUI, chaque traduction est
 activable individuellement par une case à cocher. En ligne de commande,
-options `--translation` (français) et `--translation-en` (anglais).
+options `--translation` (français), `--translation-en` (anglais) et
+`--translation-es` (espagnol).
 
 Le chargement est automatique si les fichiers sont présents ; s'ils sont
 absents, l'analyse grammaticale fonctionne normalement (sans traduction). On
-peut forcer un autre chemin via les variables d'environnement `TRANSLATION_DATA`
-(français) et `TRANSLATION_EN_DATA` (anglais).
+peut forcer un autre chemin via les variables d'environnement
+`TRANSLATION_DATA` (français), `TRANSLATION_EN_DATA` (anglais) et
+`TRANSLATION_ES_DATA` (espagnol).
 
 > **Note sur la numérotation** : la numérotation des versets en Segond 1910
 > et en KJV diffère parfois de celle de la base BHSA (hébraïque). Par exemple

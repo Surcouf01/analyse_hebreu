@@ -22,11 +22,17 @@ Une seconde traduction (anglaise) est supportée : la **King James Version**
 (1611, domaine public), stockée au même format texte plat dans
 ``data/kjv_1611.txt``.
 
+Une troisième traduction (espagnole) est supportée : la **Reina-Valera**
+(1909, dominio público), stockée au même format texte plat dans
+``data/reina_valera_1909.txt``.
+
 Localisation du fichier (priorité) :
   - traduction française : variable d'env ``TRANSLATION_DATA`` puis
     ``data/louis_segond_1910.txt`` (ou ``.json``) à côté du paquet ;
   - traduction anglaise : variable d'env ``TRANSLATION_EN_DATA`` puis
-    ``data/kjv_1611.txt`` à côté du paquet.
+    ``data/kjv_1611.txt`` à côté du paquet ;
+  - traduction espagnole : variable d'env ``TRANSLATION_ES_DATA`` puis
+    ``data/reina_valera_1909.txt`` à côté du paquet.
 """
 
 import json
@@ -44,6 +50,9 @@ def _candidate_paths(language="fr"):
     if language == "fr":
         env = os.environ.get("TRANSLATION_DATA")
         names = ("louis_segond_1910.txt", "louis_segond_1910.json")
+    elif language == "es":
+        env = os.environ.get("TRANSLATION_ES_DATA")
+        names = ("reina_valera_1909.txt",)
     else:
         env = os.environ.get("TRANSLATION_EN_DATA")
         names = ("kjv_1611.txt",)
@@ -110,8 +119,12 @@ def load_translation(path=None, language="fr"):
             return _parse_json(cand)
         return _parse_flat(cand)
 
-    name = "louis_segond_1910.txt (fr)" if language == "fr" else "kjv_1611.txt (en)"
-    var = "TRANSLATION_DATA" if language == "fr" else "TRANSLATION_EN_DATA"
+    defaults = {
+        "fr": ("louis_segond_1910.txt", "TRANSLATION_DATA"),
+        "en": ("kjv_1611.txt", "TRANSLATION_EN_DATA"),
+        "es": ("reina_valera_1909.txt", "TRANSLATION_ES_DATA"),
+    }
+    name, var = defaults.get(language, defaults["en"])
     raise TranslationNotFoundError(
         f"Aucun fichier de traduction trouvé ({name}). Placez data/{name} "
         f"à côté du paquet, ou définissez la variable d'environnement {var}."
