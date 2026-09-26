@@ -943,7 +943,7 @@ class ResultText(tk.Text):
         # (sinon le refresh réinitialiserait la position courante).
         if event is not None and event.keysym in (
                 "Return", "KP_Enter", "Escape", "Left", "Right",
-                "Home", "End"):
+                "Home", "End", "F3"):
             return
         if self._find_job is not None:
             try:
