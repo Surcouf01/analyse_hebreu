@@ -32,7 +32,34 @@ L'objectif : que le fichier final soit **indexé selon la numérotation
 BHSA** (nom de livre BHSA, chapitre, verset), afin que le verset affiché
 par l'application pour `Deut 4:10` soit le bon texte espagnol.
 
-## 2. Méthode
+## 2. Sources du texte OCR
+
+Chaînon de la source au fichier final :
+
+1. **Fac-similé numérisé (édition 1882)** — *La Sagrada Biblia, nuevamente
+   traducida de la Vulgata latina al español*, Félix Torres Amat,
+   édition de 1882, jeu de quatre tomes conservé et numérisé par
+   Internet Archive :
+   [archive.org/details/la-sagrada-biblia-vulgata-tomo-iiv_202111](https://archive.org/details/la-sagrada-biblia-vulgata-tomo-iiv_202111)
+   (page du tome II ; les autres tomes sont accessibles depuis le même
+   compte Internet Archive). C'est le document qui a été traité par OCR.
+2. **Module SWORD TorresAmat** (v0.9.9) — reconstruction OCR du fac-similé
+   ci-dessus, produite et distribuée par le projet GPL
+   [OmarGonD/biblia-elim](https://github.com/OmarGonD/biblia-elim)
+   (arbre contenant `mods.d/torresamat.conf` et
+   `modules/texts/ztext/torresamat`). Le texte n'est **pas révisé** :
+   le module couvre 94,0 % des versets et un correcteur d'erratas
+   automatique a été appliqué ; les notes de Torres Amat ne sont pas
+   incluses (module séparé `TorresAmatNotas`).
+3. **Fichier du projet** — `data/torres_amat_1823.txt`, extrait du module
+   SWORD par `scripts/extract_torres_amat.py` (conversion de
+   versification Vulgate → massorétique documentée ci-après).
+
+Le fac-similé et la numérisation sont dans le domaine public (Torres
+Amat est mort en 1847) ; le module OCR est GPL-2.0-or-later ; le texte
+espagnol de 1823 lui-même reste dominio público.
+
+## 3. Méthode
 
 Chaque règle a été **calibrée verset par verset contre la base BHSA
 locale** (`bhsa_repo/tf`, feature `text-orig-full`) : pour chaque
@@ -54,13 +81,13 @@ La conversion distingue :
    Vulgate `(livre, chapitre, verset)` devient une référence BHSA
    `(livre, chapitre, verset + delta)` ;
 2. **Psaumes** (`_PSALMS_MAP`) : renumérotation complète des 150
-   psaumes (voir § 5) ;
+   psaumes (voir § 6) ;
 3. **exclusions** (`_EXCLUDE`) : versets Vulgate sans équivalent
    massorétique (additions) ou corrompus par l'OCR ;
 4. **troncatures ciblées** (`_TRIM`) : additions collées après le
    texte canonique, coupées au marqueur.
 
-## 3. Cas général : livres et chapitres identiques
+## 4. Cas général : livres et chapitres identiques
 
 Pour la grande majorité des versets (environ 95 % des versets
 convertis), la référence est inchangée : mêmes livres, mêmes chapitres,
@@ -91,7 +118,7 @@ mappés du nom OSIS SWORD vers le nom BHSA :
 Les livres deutérocanoniques du module (Tob, Jdt, Wis, Sir, 1Macc,
 2Macc, Bar, etc.) sont ignorés.
 
-## 4. Décalages de versets et de chapitres
+## 5. Décalages de versets et de chapitres
 
 Notation : `TA x:y → TM a:b` signifie que le verset x:y du fichier
 source (Torres Amat, versification Vulgate) est réécrit à la référence
@@ -197,7 +224,7 @@ puis fusionné différemment vers la fin :
 | Song 7:1 | laissé en TM 7:1 (fusion fin 7:1 + début 7:2) |
 | Song 7:2+ | Song 7:3+ |
 
-## 5. Psaumes
+## 6. Psaumes
 
 La versification Vulgate des Psaumes diffère profondément de la
 massorétique (fusions et décalages). La table `_PSALMS_MAP` convertit
@@ -223,7 +250,7 @@ couvertes par les exclusions ci-dessous. Les lacunes OCR des psaumes
 (ex. Ps 145:2-3 du module) laissent les versets correspondants en
 creux (Ps 146:2-3).
 
-## 6. Exclusions
+## 7. Exclusions
 
 Trois catégories, toutes absentes du fichier final.
 
@@ -267,7 +294,7 @@ espaces parasites, tirets conditionnels, « ¿¿ » doublés, et tronque les
 résidus « CAPITULO … » / « HASTA AQUÍ … » collés en fin de verset
 (ex. Neh 7:73, Josh 4:25).
 
-## 7. Résultat
+## 8. Résultat
 
 - **21 852 versets** écrits dans `data/torres_amat_1823.txt` (94,1 %
   des 23 213 versets de la BHSA ; les manquants sont des lacunes OCR
