@@ -753,6 +753,7 @@ class ResultText(tk.Text):
         self._find_pos = -1
         self._find_job = None
         self._find_last_query = None
+        self._find_anchor = None
         self._find_focus_notifier = None
         # Insensible aux lettres finales (sofit) : cochée par défaut — ך/כ,
         # ם/מ, ן/נ, ף/פ, ץ/צ sont équivalentes ; décochée, seules les
@@ -792,8 +793,10 @@ class ResultText(tk.Text):
             self.insert("1.0", to_visual(
                 logical_wrap(self._logical_text, self._measure, width)))
         self.configure(state="disabled")
-        # Le contenu affiché a changé : les occurrences surlignées ne sont
-        # plus valides (les barres de recherche restent ouvertes).
+        # Le contenu affiché a changé : les occurrences surlignées et la
+        # position mémorisée ne sont plus valides (les indices de ligne
+        # ne correspondent plus) ; les barres de recherche restent ouvertes.
+        self._find_anchor = None
         self._clear_find()
         if self._find_bar is not None:
             self._find_job = self.after_idle(self._refresh_find)
@@ -977,6 +980,7 @@ class ResultText(tk.Text):
         littérale insensible à la casse (texte latin, chiffres).
         """
         self._find_job = None
+        anchor = self._find_anchor
         self._clear_find()
         query = self._find_var.get()
         self._find_last_query = query
@@ -987,8 +991,14 @@ class ResultText(tk.Text):
         for line, a, b in matches:
             self.tag_add("find", f"{line}.{a}", f"{line}.{b}")
         if matches:
-            self._find_pos = 0
-            line, a, b = matches[0]
+            start = 0
+            if anchor is not None:
+                for i, (line, a, b) in enumerate(matches):
+                    if (line, a) >= anchor:
+                        start = i
+                        break
+            self._find_pos = start
+            line, a, b = matches[start]
             self.tag_add("find_cur", f"{line}.{a}", f"{line}.{b}")
             self.see(f"{line}.{a}")
         self._update_find_count()
@@ -1083,6 +1093,7 @@ class ResultText(tk.Text):
     def _show_find_current(self):
         self.tag_remove("find_cur", "1.0", "end")
         line, a, b = self._find_matches[self._find_pos]
+        self._find_anchor = (line, a)
         self.tag_add("find_cur", f"{line}.{a}", f"{line}.{b}")
         # Le curseur clavier suit le match : la marque d'insertion est
         # déplacée juste après, pour que la navigation F3/Maj+F3 suivie
