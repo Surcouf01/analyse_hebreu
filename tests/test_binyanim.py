@@ -288,6 +288,14 @@ def main():
         r_good = analyze_binyanim(F, good)
         if not r_good["found"]:
             failures.append(f"{good!r}: devrait être identifié")
+    # Point shin après un meteg réordonné par NFC (יֹושֵֽׁב) : la
+    # normalisation déplace le point shin après le meteg (U+05BD) ;
+    # la garde orphelin ne doit pas le prendre pour un point isolé.
+    r_ysb = analyze_binyanim(F, "\u05D9\u05B9\u05D5\u05E9\u05C1\u05B5\u05BD\u05D1")
+    if not r_ysb["found"] or r_ysb["verb"].get("reason") == "orphan_shin_dot":
+        failures.append(f"יֹושֵֽׁב: devrait être identifié (racine ישׁב), "
+                        f"obtenu {r_ysb['found']}/"
+                        f"{r_ysb['verb'].get('reason')!r}")
     # Forme courte d'un verbe double (מר de מרר) : refusée avec la racine
     # complète suggérée, pas identifiée comme un autre verbe.
     r_mr = analyze_binyanim(F, "\u05DE\u05B7\u05E8")
