@@ -152,7 +152,7 @@ avec nikkud via le clavier virtuel trouve les formes non vocalisées. La
 recherche se fait dans l'**ordre de lecture** : une requête de plusieurs
 mots (`ברא אלהים`) est trouvée même si l'affichage visuel inverse les
 mots. Toutes les occurrences sont surlignées, la courante dans une teinte
-plus soutenue ; **Entrée**/**F3** passent à la suivante, **Maj+Entrée** à
+plus soutenue ; **Entrée**/**F3** passent à la suivante, **Maj+Entrée**/**Maj+F3** à
 la précédente, la frappe actualise en direct.
 - **« Sofit insensible »** (case à cocher, cochée par défaut) : les
 lettres finales (ך ם ן ף ץ) sont équivalentes à leurs formes médiales

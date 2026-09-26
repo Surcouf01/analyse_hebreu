@@ -760,6 +760,7 @@ class ResultText(tk.Text):
         self.bind("<Control-f>", self._on_find)
         self.bind("<Control-F>", self._on_find)
         self.bind("<F3>", self._on_f3)
+        self.bind("<Shift-F3>", self._on_f3_prev)
 
     def set_text(self, text):
         """Mémorise le texte logique et affiche (découpe + ordre visuel)."""
@@ -843,6 +844,14 @@ class ResultText(tk.Text):
         """Occurrence suivante (barre ouverte ou non)."""
         if self._find_matches:
             self._find_next()
+            return "break"
+        self._open_find_bar()
+        return "break"
+
+    def _on_f3_prev(self, event=None):
+        """Occurrence précédente (barre ouverte ou non)."""
+        if self._find_matches:
+            self._find_prev()
             return "break"
         self._open_find_bar()
         return "break"
@@ -1067,6 +1076,7 @@ class AnalyseurGUI:
         # ResultText gèrent aussi leur propre <Control-f>/<F3>).
         root.bind("<Control-f>", self._on_global_find)
         root.bind("<F3>", self._on_global_find_next)
+        root.bind("<Shift-F3>", self._on_global_find_prev)
 
         # Polling des résultats des travaux en arrière-plan.
         root.after(120, self._poll_queue)
@@ -1105,6 +1115,12 @@ class AnalyseurGUI:
         w = self._active_result_widget()
         if w is not None:
             return w._on_f3(event)
+        return None
+
+    def _on_global_find_prev(self, event):
+        w = self._active_result_widget()
+        if w is not None:
+            return w._on_f3_prev(event)
         return None
 
     # --- Construction de l'interface -------------------------------------
