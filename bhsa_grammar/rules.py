@@ -139,6 +139,16 @@ def word_rules(F, L, w):
             rules.append("Infinitif absolu : accentuation/adverbe verbal, parfois indépendant.")
         if vt in ("ptca", "ptcp"):
             rules.append("Participe : forme nominale exprimant l'aspect inaccompli ou l'état.")
+        language = _clean(_fv(F, "language", w))
+        vbe = _clean(_fv(F, "vbe", w)) or ""
+        if language == "Hebrew" and vbe.endswith("N"):
+            rules.append(
+                "Nun paragogique (ן final, « nun energicum ») : terminaison "
+                "verbale ajoutée sans changement de personne/nombre ni de sens ; "
+                "fréquente dans la prose poétique et deutéronomiste. Le waw de "
+                "la terminaison וּן est un mater lectionis (holam/shureq), pas "
+                "un waw conjonctif."
+            )
 
     # Substantif / nom
     if sp in ("subs", "nmpr") or pdp in ("subs", "nmpr"):

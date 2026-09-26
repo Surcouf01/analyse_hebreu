@@ -13,3 +13,6 @@ dist/
 .venv/
 venv/
 .env
+
+# Clone local de la base BHSA (cache de données, ~2 Go)
+bhsa_repo/
