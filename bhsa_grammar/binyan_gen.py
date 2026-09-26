@@ -952,12 +952,13 @@ def identify_verb(F, form):
     # cette garde, le point serait ignoré et la recherche se ferait sur
     # les consonnes restantes, avec un verbe sans rapport (ex. ׁמר lu
     # comme מר → מרר). On refuse plutôt la forme. Le point suit le ש
-    # immédiatement ou après les signes vocaliques (convention BHSA :
-    # ש + qamats + point shin).
+    # immédiatement ou après les autres signes combinants (voyelles,
+    # daguesh, meteg…) — la normalisation NFC peut les réordonner
+    # (ex. ש + tsere + meteg + point shin, cf. יֹושֵֽׁב).
     for i, ch in enumerate(norm):
         if ch in ("\u05C1", "\u05C2"):
             j = i - 1
-            while j >= 0 and 0x05B0 <= ord(norm[j]) <= 0x05BC:
+            while j >= 0 and not ("\u05D0" <= norm[j] <= "\u05EA"):
                 j -= 1
             if j < 0 or norm[j] != "\u05E9":
                 return {"found": False, "reason": "orphan_shin_dot",
