@@ -762,6 +762,8 @@ class ResultText(tk.Text):
         self.bind("<Control-F>", self._on_find)
         self.bind("<F3>", self._on_f3)
         self.bind("<Shift-F3>", self._on_f3_prev)
+        self.bind("<Up>", self._on_arrow_up)
+        self.bind("<Down>", self._on_arrow_down)
 
     def set_text(self, text):
         """Mémorise le texte logique et affiche (découpe + ordre visuel)."""
@@ -897,6 +899,8 @@ class ResultText(tk.Text):
             entry.bind("<Return>", self._find_next)
             entry.bind("<KP_Enter>", self._find_next)
             entry.bind("<Shift-Return>", self._find_prev)
+            entry.bind("<Up>", self._on_arrow_up)
+            entry.bind("<Down>", self._on_arrow_down)
             entry.bind("<Escape>", self._close_find_bar)
             entry.bind("<KeyRelease>", self._on_find_typed)
             entry.bind("<FocusIn>", self._on_find_entry_focus)
@@ -1037,6 +1041,30 @@ class ResultText(tk.Text):
         self._find_pos = (self._find_pos - 1) % len(self._find_matches)
         self._show_find_current()
         return "break"
+
+    def _on_arrow_up(self, event=None):
+        """Déplace le curseur d'une ligne vers le haut et suit la vue."""
+        self._move_insert(-1)
+        return "break"
+
+    def _on_arrow_down(self, event=None):
+        """Déplace le curseur d'une ligne vers le bas et suit la vue."""
+        self._move_insert(1)
+        return "break"
+
+    def _move_insert(self, delta):
+        """Déplace la marque d'insertion de delta lignes affichées.
+
+        Le widget est en état « disabled » (lecture seule) : les liaisons
+        par défaut de Tk n'y déplacent ni curseur ni vue, on le fait donc
+        explicitement, en bornes respectées par l'indice Tk (clamp 1.0/end).
+        """
+        try:
+            pos = self.index(f"insert {delta:+d} displaylines")
+            self.mark_set("insert", pos)
+            self.see("insert")
+        except tk.TclError:
+            pass
 
     def _show_find_current(self):
         self.tag_remove("find_cur", "1.0", "end")
