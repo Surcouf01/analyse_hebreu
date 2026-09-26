@@ -1042,6 +1042,10 @@ class ResultText(tk.Text):
         self.tag_remove("find_cur", "1.0", "end")
         line, a, b = self._find_matches[self._find_pos]
         self.tag_add("find_cur", f"{line}.{a}", f"{line}.{b}")
+        # Le curseur clavier suit le match : la marque d'insertion est
+        # déplacée juste après, pour que la navigation F3/Maj+F3 suivie
+        # d'une flèche verticale reparte de la ligne du match.
+        self.mark_set("insert", f"{line}.{b}")
         self.see(f"{line}.{a}")
         self._update_find_count()
 
