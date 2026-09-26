@@ -64,8 +64,7 @@ L'interface comporte quatre onglets :
   Deutéronome, …) et les listes sont **bornées aux limites réelles** de la
   base BHSA. Formats disponibles : texte, synthèse, JSON ; option
   « masquer le détail mot à mot ». Des **traductions française, anglaise et espagnole**
-  du verset (Louis Segond 1910, King James Version 1611, Reina-Valera
-  1909, toutes trois domaine public) sont affichées en tête du
+  du verset (Louis Segond 1910, King James Version 1611, Torres Amat 1823, toutes trois domaine public) sont affichées en tête du
   résultat ; elles sont activables individuellement par cases à cocher.
 
   Pour la **Mishna**, les six *sedarim* (Zeraim, Moed, Nashim, Nezikin,
@@ -178,7 +177,7 @@ traductions du verset analysé, toutes **domaine public** :
 
 - **Louis Segond 1910** (français) — fichier `data/louis_segond_1910.txt` ;
 - **King James Version 1611** (anglais) — fichier `data/kjv_1611.txt` ;
-- **Reina-Valera 1909** (espagnol) — fichier `data/reina_valera_1909.txt`.
+- **Torres Amat 1823** (espagnol) — fichier `data/torres_amat_1823.txt`.
 
 Les trois fichiers sont fournis avec le projet (un verset par ligne, indexé
 par nom BHSA / chapitre / verset). Dans le GUI, chaque traduction est

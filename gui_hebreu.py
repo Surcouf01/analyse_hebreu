@@ -75,7 +75,7 @@ from bhsa_grammar.mishnah_analyzer import (
 TRANSLATIONS = (
     ("fr", "Louis Segond 1910 (fr)"),
     ("en", "King James Version 1611 (en)"),
-    ("es", "Reina-Valera 1909 (es)"),
+    ("es", "Torres Amat 1823 (es)"),
 )
 
 
@@ -1277,7 +1277,9 @@ class AnalyseurGUI:
         ttk.Label(trads, text="Traductions :").pack(side="left", padx=(0, 4))
         self.verse_trans = {}
         for lang, label in TRANSLATIONS:
-            var = tk.BooleanVar(value=True)
+            var = tk.BooleanVar(
+                value=_PROPS.get(f"translation.{lang}", "true").strip().lower()
+                not in ("0", "false", "no", "off"))
             ttk.Checkbutton(trads, text=label, variable=var).pack(side="left", padx=4)
             self.verse_trans[lang] = var
 
@@ -1878,7 +1880,7 @@ class AnalyseurGUI:
                             for lang, var in self.verse_trans.items()}
         blocks = []
         labels = {"fr": "Louis Segond 1910 (fr)", "en": "King James Version 1611 (en)",
-                  "es": "Reina-Valera 1909 (es)"}
+                  "es": "Torres Amat 1823 (es)"}
         for lang, _label in TRANSLATIONS:
             if not trans_enabled.get(lang):
                 continue
