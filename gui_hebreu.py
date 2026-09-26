@@ -752,6 +752,7 @@ class ResultText(tk.Text):
         self._find_matches = []
         self._find_pos = -1
         self._find_job = None
+        self._find_last_query = None
         self._find_focus_notifier = None
         # Insensible aux lettres finales (sofit) : cochée par défaut — ך/כ,
         # ם/מ, ן/נ, ף/פ, ץ/צ sont équivalentes ; décochée, seules les
@@ -939,11 +940,11 @@ class ResultText(tk.Text):
         self.focus_set()
 
     def _on_find_typed(self, event=None):
-        # Les touches de validation/navigation ne changent pas la requête
-        # (sinon le refresh réinitialiserait la position courante).
-        if event is not None and event.keysym in (
-                "Return", "KP_Enter", "Escape", "Left", "Right",
-                "Home", "End", "F3"):
+        # Seul un changement réel de la requête déclenche un rafraîchissement :
+        # les KeyRelease de navigation (F3, Entrée, flèches) ou de touche
+        # modificatrice (Maj, Ctrl) ne modifient pas le champ, alors que le
+        # refresh réinitialiserait la position courante.
+        if self._find_var.get() == self._find_last_query:
             return
         if self._find_job is not None:
             try:
@@ -974,6 +975,7 @@ class ResultText(tk.Text):
         self._find_job = None
         self._clear_find()
         query = self._find_var.get()
+        self._find_last_query = query
         if not query:
             return
         matches = self._compute_find_matches(query)
