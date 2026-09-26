@@ -75,6 +75,7 @@ from bhsa_grammar.mishnah_analyzer import (
 TRANSLATIONS = (
     ("fr", "Louis Segond 1910 (fr)"),
     ("en", "King James Version 1611 (en)"),
+    ("es", "Torres Amat 1823 (es)"),
 )
 
 
@@ -752,6 +753,8 @@ class ResultText(tk.Text):
         self._find_matches = []
         self._find_pos = -1
         self._find_job = None
+        self._find_last_query = None
+        self._find_anchor = None
         self._find_focus_notifier = None
         # Insensible aux lettres finales (sofit) : cochée par défaut — ך/כ,
         # ם/מ, ן/נ, ף/פ, ץ/צ sont équivalentes ; décochée, seules les
@@ -760,6 +763,9 @@ class ResultText(tk.Text):
         self.bind("<Control-f>", self._on_find)
         self.bind("<Control-F>", self._on_find)
         self.bind("<F3>", self._on_f3)
+        self.bind("<Shift-F3>", self._on_f3_prev)
+        self.bind("<Up>", self._on_arrow_up)
+        self.bind("<Down>", self._on_arrow_down)
 
     def set_text(self, text):
         """Mémorise le texte logique et affiche (découpe + ordre visuel)."""
@@ -788,8 +794,10 @@ class ResultText(tk.Text):
             self.insert("1.0", to_visual(
                 logical_wrap(self._logical_text, self._measure, width)))
         self.configure(state="disabled")
-        # Le contenu affiché a changé : les occurrences surlignées ne sont
-        # plus valides (les barres de recherche restent ouvertes).
+        # Le contenu affiché a changé : les occurrences surlignées et la
+        # position mémorisée ne sont plus valides (les indices de ligne
+        # ne correspondent plus) ; les barres de recherche restent ouvertes.
+        self._find_anchor = None
         self._clear_find()
         if self._find_bar is not None:
             self._find_job = self.after_idle(self._refresh_find)
@@ -847,6 +855,14 @@ class ResultText(tk.Text):
         self._open_find_bar()
         return "break"
 
+    def _on_f3_prev(self, event=None):
+        """Occurrence précédente (barre ouverte ou non)."""
+        if self._find_matches:
+            self._find_prev()
+            return "break"
+        self._open_find_bar()
+        return "break"
+
     def _open_find_bar(self):
         if self._find_entry is not None:
             try:
@@ -887,6 +903,8 @@ class ResultText(tk.Text):
             entry.bind("<Return>", self._find_next)
             entry.bind("<KP_Enter>", self._find_next)
             entry.bind("<Shift-Return>", self._find_prev)
+            entry.bind("<Up>", self._on_arrow_up)
+            entry.bind("<Down>", self._on_arrow_down)
             entry.bind("<Escape>", self._close_find_bar)
             entry.bind("<KeyRelease>", self._on_find_typed)
             entry.bind("<FocusIn>", self._on_find_entry_focus)
@@ -930,11 +948,11 @@ class ResultText(tk.Text):
         self.focus_set()
 
     def _on_find_typed(self, event=None):
-        # Les touches de validation/navigation ne changent pas la requête
-        # (sinon le refresh réinitialiserait la position courante).
-        if event is not None and event.keysym in (
-                "Return", "KP_Enter", "Escape", "Left", "Right",
-                "Home", "End"):
+        # Seul un changement réel de la requête déclenche un rafraîchissement :
+        # les KeyRelease de navigation (F3, Entrée, flèches) ou de touche
+        # modificatrice (Maj, Ctrl) ne modifient pas le champ, alors que le
+        # refresh réinitialiserait la position courante.
+        if self._find_var.get() == self._find_last_query:
             return
         if self._find_job is not None:
             try:
@@ -963,8 +981,10 @@ class ResultText(tk.Text):
         littérale insensible à la casse (texte latin, chiffres).
         """
         self._find_job = None
+        anchor = self._find_anchor
         self._clear_find()
         query = self._find_var.get()
+        self._find_last_query = query
         if not query:
             return
         matches = self._compute_find_matches(query)
@@ -972,8 +992,14 @@ class ResultText(tk.Text):
         for line, a, b in matches:
             self.tag_add("find", f"{line}.{a}", f"{line}.{b}")
         if matches:
-            self._find_pos = 0
-            line, a, b = matches[0]
+            start = 0
+            if anchor is not None:
+                for i, (line, a, b) in enumerate(matches):
+                    if (line, a) >= anchor:
+                        start = i
+                        break
+            self._find_pos = start
+            line, a, b = matches[start]
             self.tag_add("find_cur", f"{line}.{a}", f"{line}.{b}")
             self.see(f"{line}.{a}")
         self._update_find_count()
@@ -1027,10 +1053,53 @@ class ResultText(tk.Text):
         self._show_find_current()
         return "break"
 
+    def _on_arrow_up(self, event=None):
+        """Fait défiler le texte d'une ligne vers le haut (réponse directe)."""
+        self._scroll_lines(-1)
+        return "break"
+
+    def _on_arrow_down(self, event=None):
+        """Fait défiler le texte d'une ligne vers le bas (réponse directe)."""
+        self._scroll_lines(1)
+        return "break"
+
+    def _scroll_lines(self, delta):
+        """Fait défiler la vue de delta lignes, sans déplacer le curseur.
+
+        Contrairement à la navigation par marque d'insertion (see), le
+        défilement est immédiat à chaque KeyPress — pas de décalage entre
+        l'appui et le mouvement, y compris en répétition automatique (clé
+        maintenue). La marque d'insertion reste en cohérence : si elle sort
+        de la fenêtre, elle est ramenée à la ligne visible la plus proche.
+        """
+        try:
+            self.yview_scroll(delta, "units")
+            self._clamp_insert_to_view()
+        except tk.TclError:
+            pass
+
+    def _clamp_insert_to_view(self):
+        """Ramène la marque d'insertion dans la fenêtre visible si besoin."""
+        try:
+            first = self.index("@0,0")
+            last = self.index("@0,%d" % max(0, self.winfo_height() - 1))
+            ins = self.index("insert")
+            if self.compare(ins, "<", first):
+                self.mark_set("insert", first)
+            elif self.compare(ins, ">", last):
+                self.mark_set("insert", last)
+        except tk.TclError:
+            pass
+
     def _show_find_current(self):
         self.tag_remove("find_cur", "1.0", "end")
         line, a, b = self._find_matches[self._find_pos]
+        self._find_anchor = (line, a)
         self.tag_add("find_cur", f"{line}.{a}", f"{line}.{b}")
+        # Le curseur clavier suit le match : la marque d'insertion est
+        # déplacée juste après, pour que la navigation F3/Maj+F3 suivie
+        # d'une flèche verticale reparte de la ligne du match.
+        self.mark_set("insert", f"{line}.{b}")
         self.see(f"{line}.{a}")
         self._update_find_count()
 
@@ -1067,6 +1136,7 @@ class AnalyseurGUI:
         # ResultText gèrent aussi leur propre <Control-f>/<F3>).
         root.bind("<Control-f>", self._on_global_find)
         root.bind("<F3>", self._on_global_find_next)
+        root.bind("<Shift-F3>", self._on_global_find_prev)
 
         # Polling des résultats des travaux en arrière-plan.
         root.after(120, self._poll_queue)
@@ -1105,6 +1175,12 @@ class AnalyseurGUI:
         w = self._active_result_widget()
         if w is not None:
             return w._on_f3(event)
+        return None
+
+    def _on_global_find_prev(self, event):
+        w = self._active_result_widget()
+        if w is not None:
+            return w._on_f3_prev(event)
         return None
 
     # --- Construction de l'interface -------------------------------------
@@ -1201,7 +1277,9 @@ class AnalyseurGUI:
         ttk.Label(trads, text="Traductions :").pack(side="left", padx=(0, 4))
         self.verse_trans = {}
         for lang, label in TRANSLATIONS:
-            var = tk.BooleanVar(value=True)
+            var = tk.BooleanVar(
+                value=_PROPS.get(f"translation.{lang}", "true").strip().lower()
+                not in ("0", "false", "no", "off"))
             ttk.Checkbutton(trads, text=label, variable=var).pack(side="left", padx=4)
             self.verse_trans[lang] = var
 
@@ -1801,7 +1879,8 @@ class AnalyseurGUI:
             trans_enabled = {lang: var.get()
                             for lang, var in self.verse_trans.items()}
         blocks = []
-        labels = {"fr": "Louis Segond 1910 (fr)", "en": "King James Version 1611 (en)"}
+        labels = {"fr": "Louis Segond 1910 (fr)", "en": "King James Version 1611 (en)",
+                  "es": "Torres Amat 1823 (es)"}
         for lang, _label in TRANSLATIONS:
             if not trans_enabled.get(lang):
                 continue
