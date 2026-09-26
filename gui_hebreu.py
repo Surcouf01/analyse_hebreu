@@ -2043,9 +2043,27 @@ def _close_from_window(root):
     root.destroy()
 
 
+def _apply_window_icon(root):
+    """Applique icone.png comme icône de la fenêtre principale.
+
+    Le chemin est résolu relativement à ce script pour que l'icône
+    soit trouvée quel que soit le répertoire de lancement. En cas
+    d'absence ou d'erreur (fichier illisible, Tk indisponible), on
+    poursuit silencieusement avec l'icône par défaut.
+    """
+    icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "icone.png")
+    try:
+        icon = tk.PhotoImage(file=icon_path)
+        root.iconphoto(True, icon)
+        root._icon_image = icon
+    except (tk.TclError, OSError):
+        pass
+
+
 def main():
     root = tk.Tk()
     tk.Tk.report_callback_exception = _report_callback_exception
+    _apply_window_icon(root)
     AnalyseurGUI(root)
     root.protocol("WM_DELETE_WINDOW", lambda: _close_from_window(root))
     signal.signal(signal.SIGINT, lambda s, f: _quit_from_signal(root, s, f))
