@@ -21,6 +21,7 @@ Lancement :
 La base BHSA est chargée en arrière-plan au démarrage (cf. ``bhsa_grammar``).
 """
 
+import ctypes
 import os
 import queue
 import re
@@ -2122,20 +2123,42 @@ def _close_from_window(root):
     root.destroy()
 
 
+def _set_app_user_model_id():
+    """Déclare un AppUserModelID explicite pour le processus.
+
+    Sans AppUserModelID explicite, la barre des tâches Windows associe
+    la fenêtre au programme hôte (``python.exe``) et affiche son icône
+    au lieu de celle de la fenêtre. La déclaration d'un identifiant
+    propre à l'application fait retomber la barre des tâches sur
+    l'icône de la fenêtre elle-même. Sans effet hors Windows ; toute
+    erreur est ignorée.
+    """
+    if sys.platform != "win32":
+        return
+    try:
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(
+            "Surcouf01.analyse_hebreu"
+        )
+    except (AttributeError, OSError):
+        pass
+
+
 def _apply_window_icon(root):
     """Applique l'icône du projet comme icône de la fenêtre principale.
 
     Sur Windows, ``iconphoto`` avec un PNG est sans effet sur la barre de
     titre et la barre des tâches avec la plupart des versions de Tk :
     on utilise ``iconbitmap`` avec ``icone.ico`` (multi-résolutions,
-    généré depuis icone.png). Sur les autres plateformes, ``iconphoto``
-    avec ``icone.png``.
+    généré depuis icone.png, avec une marge blanche sur les petites
+    tailles pour rester lisible dans la barre des tâches). Sur les autres
+    plateformes, ``iconphoto`` avec ``icone.png``.
 
     Le chemin est résolu relativement à ce script pour que l'icône
     soit trouvée quel que soit le répertoire de lancement. En cas
     d'absence ou d'erreur (fichier illisible, Tk indisponible), on
     poursuit silencieusement avec l'icône par défaut.
     """
+    _set_app_user_model_id()
     here = os.path.dirname(os.path.abspath(__file__))
     try:
         if sys.platform == "win32":
