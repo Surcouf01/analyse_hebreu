@@ -398,6 +398,8 @@ gui_hebreu.py           # interface graphique Tkinter (mêmes fonctions que le C
 bidi_display.py        # ordre visuel de l'hébreu pour le GUI (sélection stable)
 test_bidi_display.py   # tests du module bidi_display
 gui.properties         # polices/tailles d'affichage du GUI (points)
+icone.png              # icône de la fenêtre GUI (source)
+icone.ico              # idem en format Windows multi-résolutions (barre de titre/tâches)
 data/
   louis_segond_1910.txt  # traduction française Louis Segond 1910 (domaine public)
   kjv_1611.txt          # traduction anglaise King James Version 1611 (domaine public)

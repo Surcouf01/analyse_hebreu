@@ -2123,15 +2123,27 @@ def _close_from_window(root):
 
 
 def _apply_window_icon(root):
-    """Applique icone.png comme icône de la fenêtre principale.
+    """Applique l'icône du projet comme icône de la fenêtre principale.
+
+    Sur Windows, ``iconphoto`` avec un PNG est sans effet sur la barre de
+    titre et la barre des tâches avec la plupart des versions de Tk :
+    on utilise ``iconbitmap`` avec ``icone.ico`` (multi-résolutions,
+    généré depuis icone.png). Sur les autres plateformes, ``iconphoto``
+    avec ``icone.png``.
 
     Le chemin est résolu relativement à ce script pour que l'icône
     soit trouvée quel que soit le répertoire de lancement. En cas
     d'absence ou d'erreur (fichier illisible, Tk indisponible), on
     poursuit silencieusement avec l'icône par défaut.
     """
-    icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "icone.png")
+    here = os.path.dirname(os.path.abspath(__file__))
     try:
+        if sys.platform == "win32":
+            ico_path = os.path.join(here, "icone.ico")
+            if os.path.isfile(ico_path):
+                root.iconbitmap(ico_path)
+                return
+        icon_path = os.path.join(here, "icone.png")
         icon = tk.PhotoImage(file=icon_path)
         root.iconphoto(True, icon)
         root._icon_image = icon
