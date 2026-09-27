@@ -1,0 +1,107 @@
+name: Build executables
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Mode de packaging"
+        required: false
+        default: "onedir"
+        type: choice
+        options: [onedir, onefile]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        include:
+          - os: windows-latest
+            platform: windows
+          - os: ubuntu-latest
+            platform: linux
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller text-fabric pytest
+
+      - name: Run tests
+        run: python -m pytest tests/ test_bidi_display.py -q
+
+      - name: Build GUI (onedir)
+        if: ${{ inputs.mode != 'onefile' }}
+        run: pyinstaller analyse_hebreu.spec --noconfirm
+        env:
+          SPEC_TARGET: gui
+          SPEC_MODE: onedir
+
+      - name: Build GUI (onefile)
+        if: ${{ inputs.mode == 'onefile' }}
+        run: pyinstaller analyse_hebreu.spec --noconfirm
+        env:
+          SPEC_TARGET: gui
+          SPEC_MODE: onefile
+
+      - name: Build CLI (onedir)
+        run: pyinstaller analyse_hebreu.spec --noconfirm
+        env:
+          SPEC_TARGET: cli
+          SPEC_MODE: onedir
+
+      - name: Smoke test CLI (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          if ($env:GITHUB_EVENT_INPUT_MODE -eq 'onefile') { $bin = "dist\analyse_hebreu-cli\analyse_hebreu-cli.exe" } else { $bin = "dist\analyse_hebreu-cli\analyse_hebreu-cli.exe" }
+          & $bin --help
+          if ($LASTEXITCODE -ne 0) { throw "CLI smoke test failed" }
+
+      - name: Smoke test CLI (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          chmod +x dist/analyse_hebreu-cli/analyse_hebreu-cli
+          ./dist/analyse_hebreu-cli/analyse_hebreu-cli --help
+          ./dist/analyse_hebreu-cli/analyse_hebreu-cli --mishna --list-books | head -5
+
+      - name: Package artifacts
+        shell: bash
+        run: |
+          mkdir -p release
+          if [ "${{ inputs.mode }}" = "onefile" ]; then
+            if [ "$RUNNER_OS" = "Windows" ]; then
+              cp dist/analyse_hebreu.exe release/
+            else
+              cp dist/analyse_hebreu release/
+            fi
+          else
+            if [ "$RUNNER_OS" = "Windows" ]; then
+              7z a release/analyse_hebreu-windows.zip dist/analyse_hebreu dist/analyse_hebreu-cli
+            else
+              tar czf release/analyse_hebreu-linux.tar.gz -C dist analyse_hebreu analyse_hebreu-cli
+            fi
+          fi
+          ls -lh release/
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: analyse_hebreu-${{ matrix.platform }}-${{ inputs.mode || 'onedir' }}
+          path: release/*

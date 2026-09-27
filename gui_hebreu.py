@@ -80,6 +80,20 @@ TRANSLATIONS = (
 )
 
 
+def _resource_dir():
+    """Dossier des ressources embarquées (PyInstaller ``sys._MEIPASS``)."""
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        return sys._MEIPASS
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+def _app_dir():
+    """Dossier de l'exécutable (données modifiables à côté du binaire)."""
+    if getattr(sys, "frozen", False):
+        return os.path.dirname(os.path.abspath(sys.executable))
+    return os.path.dirname(os.path.abspath(__file__))
+
+
 def _load_properties():
     """Charge les tailles de police depuis gui.properties (à côté du script).
 
@@ -91,8 +105,13 @@ def _load_properties():
         "font.output.family": "DejaVu Sans",
         "font.output.size": "24",
     }
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                        "gui.properties")
+    here = os.path.dirname(os.path.abspath(__file__))
+    path = os.path.join(here, "gui.properties")
+    if not os.path.isfile(path):
+        for alt in (_resource_dir(), _app_dir()):
+            path = os.path.join(alt, "gui.properties")
+            if os.path.isfile(path):
+                break
     defaults["_path"] = path
     try:
         with open(path, encoding="utf-8") as fh:
@@ -2160,6 +2179,13 @@ def _apply_window_icon(root):
     """
     _set_app_user_model_id()
     here = os.path.dirname(os.path.abspath(__file__))
+    if not any(
+        os.path.isfile(os.path.join(d, n))
+        for d in (here, _resource_dir(), _app_dir())
+        for n in (("icone.ico", "icone.png") if sys.platform == "win32"
+                  else ("icone.png",))
+    ):
+        here = _resource_dir()
     try:
         if sys.platform == "win32":
             ico_path = os.path.join(here, "icone.ico")

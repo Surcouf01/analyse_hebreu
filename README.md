@@ -40,6 +40,56 @@ git clone --branch data2021 https://github.com/ETCBC/bhsa.git bhsa_repo
 Le dossier `bhsa_repo/tf/c` est alors détecté automatiquement depuis le
 répertoire de travail courant ou depuis `/workspace`.
 
+## Exécutable auto-suffisant (packaging)
+
+L'application peut être distribuée sous forme d'**exécutable autonome** :
+l'utilisateur final n'a ni Python ni les dépendances à installer (Tkinter et
+text-fabric sont embarqués, ainsi que le lexique, les traductions Segond /
+KJV / Torres Amat, les binyanim et l'icône).
+
+### Build local (PyInstaller)
+
+```bash
+pip install pyinstaller text-fabric
+
+# GUI en mode onedir (recommandé : démarrage rapide, discret pour l'antivirus)
+SPEC_TARGET=gui SPEC_MODE=onedir pyinstaller analyse_hebreu.spec --noconfirm
+
+# GUI en fichier unique (plus lent au démarrage)
+SPEC_TARGET=gui SPEC_MODE=onefile pyinstaller analyse_hebreu.spec --noconfirm
+
+# CLI en mode onedir
+SPEC_TARGET=cli SPEC_MODE=onedir pyinstaller analyse_hebreu.spec --noconfirm
+```
+
+Le binaire GUI produit est `dist/analyse_hebreu/analyse_hebreu(.exe)`, le CLI
+`dist/analyse_hebreu-cli/analyse_hebreu-cli(.exe)`.
+
+### Build automatique (GitHub Actions)
+
+Le workflow [`.github/workflows/build-executables.yml`](.github/workflows/build-executables.yml)
+construit, à chaque push sur `main` (ou manuellement depuis l'onglet
+*Actions*), les exécutables **Windows** et **Linux** (GUI + CLI) et les publie
+comme artefacts téléchargeables. Déclenchement manuel avec le choix du mode
+`onedir` (défaut) ou `onefile`.
+
+### Base BHSA et exécutable
+
+La base BHSA (~2 Go) **n'est pas** embarquée dans l'exécutable : trop
+volumineuse et mise à jour indépendamment. L'exécutable la localise
+automatiquement, dans cet ordre :
+
+1. variable d'environnement `BHSA_DATA` (dossier des features `.tf`) ;
+2. un dossier `bhsa_repo/tf/c` **à côté de l'exécutable** (recommandé :
+   décompresser l'archive de l'exécutable puis, à côté, faire
+   `git clone --branch data2021 https://github.com/ETCBC/bhsa.git bhsa_repo`) ;
+3. un dossier `bhsa_data/tf/c` à côté de l'exécutable ;
+4. le chargement en ligne `tf.app.use('bhsa')` (réseau + quota GitHub).
+
+Les traductions (`data/`) et le lexique sont embarqués ; `gui.properties`
+placé à côté de l'exécutable reste pris en compte pour personnaliser les
+polices, sans toucher aux ressources internes.
+
 ## Utilisation
 
 ### En interface graphique

@@ -18,6 +18,8 @@ import sys
 
 from tf.fabric import Fabric
 
+from ._paths import resource_dir, app_dir
+
 
 class DataNotFoundError(RuntimeError):
     """Levée quand la base BHSA est introuvable."""
@@ -41,6 +43,9 @@ def _candidate_paths():
     here = os.path.dirname(os.path.abspath(__file__))
     paths.append(os.path.join(here, "bhsa_data"))
     paths.append(os.path.join(here, "bhsa_data", "tf", "c"))
+    # Dossier d'installation de l'exécutable PyInstaller
+    paths.append(os.path.join(app_dir(), "bhsa_repo", "tf", "c"))
+    paths.append(os.path.join(app_dir(), "bhsa_data", "tf", "c"))
     # Clone standard du tutoriel : /workspace/bhsa_repo/tf/c
     paths.append("/workspace/bhsa_repo/tf/c")
     # Relatif au répertoire de travail courant
