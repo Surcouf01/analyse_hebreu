@@ -9,10 +9,17 @@ Variables d'environnement :
     SPEC_TARGET=gui|cli        cible (défaut : gui)
     SPEC_MODE=onedir|onefile   mode (défaut : onedir, démarrage plus rapide
                                et moins lourd pour l'antivirus)
-    SPEC_BHSA_DIR=CHEMIN       embarque la base BHSA (dossier tf/c des
-                               features, ~150-240 Mo) dans l'exécutable :
-                               aucune installation manuelle n'est alors
-                               nécessaire. Défaut : non embarquée.
+    SPEC_BHSA_DIR=none         N'embarque PAS la base BHSA (build léger,
+                               ~50 Mo de moins ; la base devra être
+                               installée à côté de l'exécutable ou
+                               chargée en ligne).
+
+Comportement par défaut : la base BHSA (features tf/c, ~240 Mo) est
+automatiquement clonée depuis ETCBC/bhsa (branche data2021, clone sparse)
+si elle n'est pas déjà présente en local (bhsa_repo/tf/c ou BHSA_DATA),
+puis embarquée dans l'exécutable — l'utilisateur final n'a rien à
+installer et rien à télécharger au lancement. SPEC_BHSA_DIR peut aussi
+pointer vers un dossier tf/c existant pour fournir une base précise.
 
 Notes :
     analyse_hebreu.py (CLI) est inclus comme module importable, ce qui
@@ -27,7 +34,52 @@ import PyInstaller.utils.hooks as hooks
 target = os.environ.get("SPEC_TARGET", "gui")
 mode = os.environ.get("SPEC_MODE", "onedir")
 onefile = mode == "onefile"
-bhsa_dir = os.environ.get("SPEC_BHSA_DIR")
+bhsa_dir = os.environ.get("SPEC_BHSA_DIR", "")
+
+
+def _locate_bhsa():
+    """Renvoie le dossier tf/c des features BHSA, ou None si l'utilisateur
+    a explicitement demandé un build sans base (SPEC_BHSA_DIR=none).
+
+    Ordre de résolution :
+      1. SPEC_BHSA_DIR (chemin explicite ou "none") ;
+      2. un dossier tf/c déjà présent localement : BHSA_DATA, bhsa_repo/ ;
+      3. clonage automatique (clone sparse de ETCBC/bhsa, branche data2021)
+         dans bhsa_repo/ à côté du spec — la dernière version de la base
+         est ainsi embarquée à chaque build.
+    """
+    if bhsa_dir.lower() == "none":
+        return None
+    if bhsa_dir:
+        if not os.path.isfile(os.path.join(bhsa_dir, "otype.tf")):
+            raise SystemExit(
+                "SPEC_BHSA_DIR=%s ne contient pas otype.tf (attendu : dossier "
+                "tf/c du clone ETCBC/bhsa)" % bhsa_dir
+            )
+        return bhsa_dir
+    candidates = [
+        os.environ.get("BHSA_DATA"),
+        os.path.join("bhsa_repo", "tf", "c"),
+    ]
+    for cand in candidates:
+        if cand and os.path.isfile(os.path.join(cand, "otype.tf")):
+            return cand
+    import subprocess
+    repo = "https://github.com/ETCBC/bhsa.git"
+    dest = "bhsa_repo"
+    print("[spec] BHSA absente : clonage sparse de %s (branche data2021)..." % repo)
+    subprocess.check_call(
+        ["git", "clone", "--branch", "data2021", "--depth", "1",
+         "--filter=blob:none", "--sparse", repo, dest]
+    )
+    subprocess.check_call(["git", "-C", dest, "sparse-checkout", "set", "tf/c"])
+    tfc = os.path.join(dest, "tf", "c")
+    if not os.path.isfile(os.path.join(tfc, "otype.tf")):
+        raise SystemExit("Clonage de la BHSA échoué : %s incomplet" % tfc)
+    return tfc
+
+
+bhsa_tf_dir = _locate_bhsa()
 
 # Text-Fabric charge des données depuis son paquet (tf/*) : on embarque
 # tout le paquet tf pour garantir la disponibilité des resources.
@@ -43,13 +95,8 @@ datas = [
 
 # Base BHSA embarquée : les features tf/c sont installées sous
 # bhsa_data/tf/c dans le bundle, où loader.py les trouve automatiquement.
-if bhsa_dir:
-    if not os.path.isfile(os.path.join(bhsa_dir, "otype.tf")):
-        raise SystemExit(
-            "SPEC_BHSA_DIR=%s ne contient pas otype.tf (attendu : dossier "
-            "tf/c du clone ETCBC/bhsa)" % bhsa_dir
-        )
-    datas.append((bhsa_dir, "bhsa_data/tf/c"))
+if bhsa_tf_dir:
+    datas.append((bhsa_tf_dir, "bhsa_data/tf/c"))
 
 hiddenimports = [
     "tf",

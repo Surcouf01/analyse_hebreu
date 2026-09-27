@@ -13,11 +13,6 @@ on:
         default: "onedir"
         type: choice
         options: [onedir, onefile]
-      embed_bhsa:
-        description: "Embarquer la base BHSA (~240 Mo) dans l'exécutable"
-        required: false
-        default: false
-        type: boolean
 
 permissions:
   contents: write
@@ -51,35 +46,17 @@ jobs:
       - name: Run tests
         run: python -m pytest tests/ test_bidi_display.py -q
 
-      - name: Clone BHSA data (embedded build)
-        if: ${{ inputs.embed_bhsa }}
-        run: |
-          git clone --branch data2021 --depth 1 --filter=blob:none --sparse https://github.com/ETCBC/bhsa.git bhsa_repo
-          cd bhsa_repo && git sparse-checkout set tf/c
-          ls tf/c/otype.tf
-
-      - name: Build GUI (onedir)
-        if: ${{ inputs.mode != 'onefile' }}
+      - name: Build GUI
         run: pyinstaller analyse_hebreu.spec --noconfirm
         env:
           SPEC_TARGET: gui
-          SPEC_MODE: onedir
-          SPEC_BHSA_DIR: ${{ inputs.embed_bhsa && format('{0}/bhsa_repo/tf/c', github.workspace) || '' }}
+          SPEC_MODE: ${{ inputs.mode || 'onedir' }}
 
-      - name: Build GUI (onefile)
-        if: ${{ inputs.mode == 'onefile' }}
-        run: pyinstaller analyse_hebreu.spec --noconfirm
-        env:
-          SPEC_TARGET: gui
-          SPEC_MODE: onefile
-          SPEC_BHSA_DIR: ${{ inputs.embed_bhsa && format('{0}/bhsa_repo/tf/c', github.workspace) || '' }}
-
-      - name: Build CLI (onedir)
+      - name: Build CLI
         run: pyinstaller analyse_hebreu.spec --noconfirm
         env:
           SPEC_TARGET: cli
           SPEC_MODE: onedir
-          SPEC_BHSA_DIR: ${{ inputs.embed_bhsa && format('{0}/bhsa_repo/tf/c', github.workspace) || '' }}
 
       - name: Smoke test CLI (Windows)
         if: runner.os == 'Windows'
@@ -89,6 +66,10 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "CLI smoke test failed" }
           & dist\analyse_hebreu-cli\analyse_hebreu-cli.exe --mishna --list-books | Select-Object -First 3
           if ($LASTEXITCODE -ne 0) { throw "CLI mishna smoke test failed" }
+          # Analyse réelle : la base BHSA embarquée doit être trouvée sans
+          # aucune donnée externe (pas de clone à côté, pas de cache).
+          & dist\analyse_hebreu-cli\analyse_hebreu-cli.exe "Genèse 1:1" --no-words | Select-Object -First 3
+          if ($LASTEXITCODE -ne 0) { throw "Embedded BHSA smoke test failed" }
 
       - name: Smoke test CLI (Linux)
         if: runner.os == 'Linux'
@@ -96,21 +77,10 @@ jobs:
           chmod +x dist/analyse_hebreu-cli/analyse_hebreu-cli
           ./dist/analyse_hebreu-cli/analyse_hebreu-cli --help
           ./dist/analyse_hebreu-cli/analyse_hebreu-cli --mishna --list-books | head -3
-
-      - name: Smoke test analysis with embedded BHSA (Windows)
-        if: ${{ inputs.embed_bhsa && runner.os == 'Windows' }}
-        shell: pwsh
-        run: |
-          # Aucune BHSA externe : le binaire doit trouver la base embarquée.
-          & dist\analyse_hebreu-cli\analyse_hebreu-cli.exe "Genèse 1:1" --no-words | Select-Object -First 5
-          if ($LASTEXITCODE -ne 0) { throw "Embedded BHSA smoke test failed" }
-
-      - name: Smoke test analysis with embedded BHSA (Linux)
-        if: ${{ inputs.embed_bhsa && runner.os == 'Linux' }}
-        run: |
-          # Aucune BHSA externe : le binaire doit trouver la base embarquée.
+          # Analyse réelle : la base BHSA embarquée doit être trouvée sans
+          # aucune donnée externe (pas de clone à côté, pas de cache).
           rm -rf ~/text-fabric-data
-          ./dist/analyse_hebreu-cli/analyse_hebreu-cli "Genèse 1:1" --no-words | head -5
+          ./dist/analyse_hebreu-cli/analyse_hebreu-cli "Genèse 1:1" --no-words | head -3
 
       - name: Package artifacts
         shell: bash
@@ -135,5 +105,5 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: analyse_hebreu-${{ matrix.platform }}-${{ inputs.mode || 'onedir' }}${{ inputs.embed_bhsa && '-bhsa' || '' }}
+          name: analyse_hebreu-${{ matrix.platform }}-${{ inputs.mode || 'onedir' }}
           path: release/*

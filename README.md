@@ -47,26 +47,27 @@ l'utilisateur final n'a ni Python ni les dépendances à installer (Tkinter et
 text-fabric sont embarqués, ainsi que le lexique, les traductions Segond /
 KJV / Torres Amat, les binyanim et l'icône).
 
-### Embarquer la base BHSA (aucune installation manuelle)
+### Base BHSA embarquée par défaut
 
-Par défaut, la base BHSA n'est **pas** embarquée (voir ci-dessous). Pour un
-exécutable **totalement auto-suffisant** — l'utilisateur final n'a rien à
-installer, pas même la base — passez `SPEC_BHSA_DIR` pointant vers le
-dossier `tf/c` d'un clone de la base : il sera inclus dans le bundle
-(« onedir » : ~240 Mo de plus ; « onefile » : exécutable unique de
-~150-250 Mo) et trouvé automatiquement au lancement :
+Par défaut, le build **embarque la base BHSA** dans l'exécutable :
+l'utilisateur final n'a ni Python, ni dépendances, ni données à installer
+ou télécharger — l'analyse fonctionne dès le premier lancement, hors ligne.
+
+Au build, la base (features `tf/c`, ~240 Mo) est résolue ainsi :
+
+1. `SPEC_BHSA_DIR` s'il pointe vers un dossier `tf/c` existant ;
+2. une base déjà présente localement (`BHSA_DATA` ou `bhsa_repo/tf/c`) ;
+3. sinon, **clonage automatique** de la dernière version (clone sparse de
+   [ETCBC/bhsa](https://github.com/ETCBC/bhsa), branche `data2021`) dans
+   `bhsa_repo/` — chaque build embarque donc la version à jour.
+
+Pour un build **léger sans base** (~50 Mo de moins ; il faudra alors
+installer la base à côté de l'exécutable ou charger en ligne) :
 
 ```bash
-git clone --branch data2021 --depth 1 --filter=blob:none --sparse https://github.com/ETCBC/bhsa.git bhsa_repo
-cd bhsa_repo && git sparse-checkout set tf/c && cd ..
-
-SPEC_TARGET=gui SPEC_MODE=onedir SPEC_BHSA_DIR=bhsa_repo/tf/c \
+SPEC_TARGET=gui SPEC_MODE=onedir SPEC_BHSA_DIR=none \
   pyinstaller analyse_hebreu.spec --noconfirm
 ```
-
-Sans `SPEC_BHSA_DIR`, la base reste externe. Dans le workflow GitHub
-Actions, cocher l'option **« Embarquer la base BHSA »** au déclenchement
-manuel (artefacts suffixés `-bhsa`).
 
 ### Build local (PyInstaller)
 
@@ -105,19 +106,17 @@ construit, à chaque push sur `main` (ou manuellement depuis l'onglet
 comme artefacts téléchargeables. Déclenchement manuel avec le choix du mode
 `onedir` (défaut) ou `onefile`.
 
-### Base BHSA et exécutable
+### Base BHSA et exécutable (build sans base embarquée)
 
-Par défaut, la base BHSA n'est **pas** embarquée dans l'exécutable (build
-plus léger, base mise à jour indépendamment) ; l'embarquement reste
-possible via `SPEC_BHSA_DIR` (voir ci-dessus). L'exécutable la localise
-automatiquement, dans cet ordre :
+Avec un build `SPEC_BHSA_DIR=none`, l'exécutable localise la base BHSA
+dans l'environnement, dans cet ordre :
 
-1. variable d'environnement `BHSA_DATA` (dossier des features `.tf`) ;
-2. un dossier `bhsa_repo/tf/c` **à côté de l'exécutable** (recommandé :
-   décompresser l'archive de l'exécutable puis, à côté, faire
-   `git clone --branch data2021 https://github.com/ETCBC/bhsa.git bhsa_repo`) ;
-3. un dossier `bhsa_data/tf/c` à côté de l'exécutable ;
-4. le chargement en ligne `tf.app.use('bhsa')` (réseau + quota GitHub).
+1. la base **embarquée** (builds par défaut — inutile dans ce cas) ;
+2. variable d'environnement `BHSA_DATA` (dossier des features `.tf`) ;
+3. un dossier `bhsa_repo/tf/c` **à côté de l'exécutable** :
+   `git clone --branch data2021 https://github.com/ETCBC/bhsa.git bhsa_repo` ;
+4. un dossier `bhsa_data/tf/c` à côté de l'exécutable ;
+5. le chargement en ligne `tf.app.use('bhsa')` (réseau + quota GitHub).
 
 Les traductions (`data/`) et le lexique sont embarqués ; `gui.properties`
 placé à côté de l'exécutable reste pris en compte pour personnaliser les
