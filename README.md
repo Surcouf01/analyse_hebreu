@@ -49,6 +49,13 @@ KJV / Torres Amat, les binyanim et l'icône).
 
 ### Build local (PyInstaller)
 
+> **Prérequis Python** : utiliser **Python 3.10.1 ou plus récent** (3.12
+> recommandée, c'est la version des builds CI). Python **3.10.0** comporte un
+> bug dans le module standard `dis` (`IndexError: tuple index out of range`
+> dans `dis._get_const_info`) qui fait planter PyInstaller pendant l'analyse
+> du bytecode — voir [pyinstaller#6301](https://github.com/pyinstaller/pyinstaller/issues/6301).
+> Corrigé dans CPython 3.10.1 ; aucune autre modification n'est nécessaire.
+
 ```bash
 pip install pyinstaller text-fabric
 
@@ -64,6 +71,10 @@ SPEC_TARGET=cli SPEC_MODE=onedir pyinstaller analyse_hebreu.spec --noconfirm
 
 Le binaire GUI produit est `dist/analyse_hebreu/analyse_hebreu(.exe)`, le CLI
 `dist/analyse_hebreu-cli/analyse_hebreu-cli(.exe)`.
+
+Sous Windows, si plusieurs Pythons coexistent, cibler explicitement la bonne
+version, par exemple : `py -3.12 -m PyInstaller analyse_hebreu.spec --noconfirm`
+(avec `$env:SPEC_TARGET="gui"; $env:SPEC_MODE="onedir"` au préalable).
 
 ### Build automatique (GitHub Actions)
 
