@@ -47,6 +47,27 @@ l'utilisateur final n'a ni Python ni les dépendances à installer (Tkinter et
 text-fabric sont embarqués, ainsi que le lexique, les traductions Segond /
 KJV / Torres Amat, les binyanim et l'icône).
 
+### Embarquer la base BHSA (aucune installation manuelle)
+
+Par défaut, la base BHSA n'est **pas** embarquée (voir ci-dessous). Pour un
+exécutable **totalement auto-suffisant** — l'utilisateur final n'a rien à
+installer, pas même la base — passez `SPEC_BHSA_DIR` pointant vers le
+dossier `tf/c` d'un clone de la base : il sera inclus dans le bundle
+(« onedir » : ~240 Mo de plus ; « onefile » : exécutable unique de
+~150-250 Mo) et trouvé automatiquement au lancement :
+
+```bash
+git clone --branch data2021 --depth 1 --filter=blob:none --sparse https://github.com/ETCBC/bhsa.git bhsa_repo
+cd bhsa_repo && git sparse-checkout set tf/c && cd ..
+
+SPEC_TARGET=gui SPEC_MODE=onedir SPEC_BHSA_DIR=bhsa_repo/tf/c \
+  pyinstaller analyse_hebreu.spec --noconfirm
+```
+
+Sans `SPEC_BHSA_DIR`, la base reste externe. Dans le workflow GitHub
+Actions, cocher l'option **« Embarquer la base BHSA »** au déclenchement
+manuel (artefacts suffixés `-bhsa`).
+
 ### Build local (PyInstaller)
 
 > **Prérequis Python** : utiliser **Python 3.10.1 ou plus récent** (3.12
@@ -86,8 +107,9 @@ comme artefacts téléchargeables. Déclenchement manuel avec le choix du mode
 
 ### Base BHSA et exécutable
 
-La base BHSA (~2 Go) **n'est pas** embarquée dans l'exécutable : trop
-volumineuse et mise à jour indépendamment. L'exécutable la localise
+Par défaut, la base BHSA n'est **pas** embarquée dans l'exécutable (build
+plus léger, base mise à jour indépendamment) ; l'embarquement reste
+possible via `SPEC_BHSA_DIR` (voir ci-dessus). L'exécutable la localise
 automatiquement, dans cet ordre :
 
 1. variable d'environnement `BHSA_DATA` (dossier des features `.tf`) ;

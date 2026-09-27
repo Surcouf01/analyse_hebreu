@@ -9,6 +9,10 @@ Variables d'environnement :
     SPEC_TARGET=gui|cli        cible (défaut : gui)
     SPEC_MODE=onedir|onefile   mode (défaut : onedir, démarrage plus rapide
                                et moins lourd pour l'antivirus)
+    SPEC_BHSA_DIR=CHEMIN       embarque la base BHSA (dossier tf/c des
+                               features, ~150-240 Mo) dans l'exécutable :
+                               aucune installation manuelle n'est alors
+                               nécessaire. Défaut : non embarquée.
 
 Notes :
     analyse_hebreu.py (CLI) est inclus comme module importable, ce qui
@@ -23,6 +27,7 @@ import PyInstaller.utils.hooks as hooks
 target = os.environ.get("SPEC_TARGET", "gui")
 mode = os.environ.get("SPEC_MODE", "onedir")
 onefile = mode == "onefile"
+bhsa_dir = os.environ.get("SPEC_BHSA_DIR")
 
 # Text-Fabric charge des données depuis son paquet (tf/*) : on embarque
 # tout le paquet tf pour garantir la disponibilité des resources.
@@ -35,6 +40,16 @@ datas = [
     ("icone.ico", "."),
     ("gui.properties", "."),
 ] + tf_datas
+
+# Base BHSA embarquée : les features tf/c sont installées sous
+# bhsa_data/tf/c dans le bundle, où loader.py les trouve automatiquement.
+if bhsa_dir:
+    if not os.path.isfile(os.path.join(bhsa_dir, "otype.tf")):
+        raise SystemExit(
+            "SPEC_BHSA_DIR=%s ne contient pas otype.tf (attendu : dossier "
+            "tf/c du clone ETCBC/bhsa)" % bhsa_dir
+        )
+    datas.append((bhsa_dir, "bhsa_data/tf/c"))
 
 hiddenimports = [
     "tf",

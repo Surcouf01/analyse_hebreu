@@ -43,6 +43,9 @@ def _candidate_paths():
     here = os.path.dirname(os.path.abspath(__file__))
     paths.append(os.path.join(here, "bhsa_data"))
     paths.append(os.path.join(here, "bhsa_data", "tf", "c"))
+    # Base embarquée dans l'exécutable PyInstaller (option build SPEC_BHSA_DIR)
+    paths.append(os.path.join(resource_dir(), "bhsa_data", "tf", "c"))
+    paths.append(os.path.join(resource_dir(), "bhsa_repo", "tf", "c"))
     # Dossier d'installation de l'exécutable PyInstaller
     paths.append(os.path.join(app_dir(), "bhsa_repo", "tf", "c"))
     paths.append(os.path.join(app_dir(), "bhsa_data", "tf", "c"))
