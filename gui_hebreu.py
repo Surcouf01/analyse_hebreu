@@ -1144,7 +1144,7 @@ class AnalyseurGUI:
         self._work_queue = queue.Queue()
         self._target_widget = None  # widget actuellement ciblé par le clavier
 
-        root.title("Analyseur grammatical de l'hébreu biblique")
+        root.title("Analyseur grammatical de l'hébreu biblique — כָּבוֹד לַיהוָה")
         root.minsize(1000, 760)
         root.geometry(_saved_geometry() or DEFAULT_GEOMETRY)
 
@@ -1427,6 +1427,11 @@ class AnalyseurGUI:
 
     # --- Chargement de la base BHSA --------------------------------------
     def _start_loading(self):
+        # Sablier sur toute la fenêtre principale tant que la base BHSA
+        # est en cours de lecture : le mode verset (Bible) n'est pas
+        # encore disponible. Tk mappe « watch » sur le sablier Windows.
+        self.root.configure(cursor="watch")
+
         def worker():
             try:
                 api = load_corpus()
@@ -1449,12 +1454,14 @@ class AnalyseurGUI:
 
     def _on_corpus_loaded(self, api):
         self.api = api
+        self.root.configure(cursor="")
         self.status.configure(text="Base BHSA chargée. Prêt.")
         for btn in (self.btn_verse, self.btn_word, self.btn_phrase, self.btn_binyanim):
             btn.state(["!disabled"])
         self._populate_books()
 
     def _on_corpus_error(self, msg):
+        self.root.configure(cursor="")
         self.status.configure(text="Erreur de chargement de la base BHSA.")
         messagebox.showerror(
             "Base BHSA introuvable",
