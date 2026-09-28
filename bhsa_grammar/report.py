@@ -133,7 +133,13 @@ def word_to_json(word_analysis, indent=2, ensure_ascii=False):
 def phrase_to_text(phrase_analysis):
     """Formate le résultat de ``analyze_phrase`` en texte lisible."""
     lines = []
-    lines.append(f"=== Phrase analysée : {phrase_analysis['input']} ===")
+    # La phrase hébreue est mise sur sa propre ligne : une ligne mixte
+    # (« français : hébreu === ») n'est pas rendue à l'identique par le GUI
+    # (l'ordre visuel simplifié place mal les neutres autour de l'hébreu),
+    # alors qu'une ligne hébreue pure s'affiche exactement comme dans le
+    # champ de saisie.
+    lines.append("=== Phrase analysée ===")
+    lines.append(phrase_analysis["input"])
     lines.append("")
     # Traduction indicative (gloss français mot à mot, dans l'ordre des tokens)
     translation = phrase_analysis.get("translation_fr")
