@@ -94,9 +94,49 @@ SPEC_TARGET=cli SPEC_MODE=onedir pyinstaller analyse_hebreu.spec --noconfirm
 Le binaire GUI produit est `dist/analyse_hebreu/analyse_hebreu(.exe)`, le CLI
 `dist/analyse_hebreu-cli/analyse_hebreu-cli(.exe)`.
 
+À la fin d'un build GUI, une commande post-build exécutée par le spec :
+
+- copie le `README.md` à côté de l'exécutable ;
+- la version du projet (fichier `VERSION` à la racine des sources, ex. `1.0`)
+  est embarquée dans l'exécutable : elle apparaît dans le titre et la barre
+  d'état du GUI, via `--version` du CLI, et dans les Propriétés → Détails de
+  l'exécutable Windows (ressource de version) ;
+- génère un `gui.properties` avec les valeurs par défaut (polices,
+  traductions, géométrie) à côté de l'exécutable — l'utilisateur peut le
+  personnaliser sans toucher aux ressources internes ;
+- crée `dist/analyse_hebreu-<mode>-<plateforme>.zip` contenant tout le
+  répertoire du bundle GUI (`onedir`) ou l'exécutable unique avec le README
+  et le `gui.properties` (`onefile`).
+
 Sous Windows, si plusieurs Pythons coexistent, cibler explicitement la bonne
 version, par exemple : `py -3.12 -m PyInstaller analyse_hebreu.spec --noconfirm`
 (avec `$env:SPEC_TARGET="gui"; $env:SPEC_MODE="onedir"` au préalable).
+
+> **Icône « plume » dans la barre des tâches ?** La plume est le logo par
+> défaut de Tk (ou du bootloader PyInstaller d'un ancien build). Le build
+> actuel embarque bien `icone.ico` dans l'exécutable (barre de titre, barre
+> des tâches et Explorateur). Si vous voyez encore la plume :
+>
+> 1. **Cache d'icônes Windows périmé** (le cas le plus fréquent après avoir
+>    remplacé un exe au même emplacement) — forcer la reconstruction :
+>
+>    ```bat
+>    ie4uinit.exe -show
+>    ```
+>
+>    ou plus en profondeur (invite de commandes) :
+>
+>    ```bat
+>    taskkill /f /im explorer.exe
+>    del /f /q "%localappdata%\IconCache.db"
+>    del /f /q "%localappdata%\Microsoft\Windows\Explorer\iconcache*"
+>    start explorer.exe
+>    ```
+>
+> 2. **Icône épinglée obsolète** : détacher l'application de la barre des
+>    tâches (clic droit → Détacher), relancer l'exe, puis réépingler.
+> 3. **Vieux artefact** : vérifier que l'exe testé vient bien d'un build
+>    récent (l'icône s'affiche dans l'Explorateur sur le fichier .exe lui-même).
 
 ### Build automatique (GitHub Actions)
 
@@ -105,6 +145,25 @@ construit, à chaque push sur `main` (ou manuellement depuis l'onglet
 *Actions*), les exécutables **Windows** et **Linux** (GUI + CLI) et les publie
 comme artefacts téléchargeables. Déclenchement manuel avec le choix du mode
 `onedir` (défaut) ou `onefile`.
+
+### Publication d'une version téléchargeable (Release)
+
+Pour publier la version `X.Y` (le zip du build, téléchargeable publiquement
+depuis la page des *Releases* sans compte GitHub) :
+
+1. mettre à jour le fichier `VERSION` à la racine (ex. `1.0`) ;
+2. créer un tag au format `vX.Y` et le pousser :
+
+```bash
+git tag v1.0
+git push origin v1.0
+```
+
+Le workflow construit Windows + Linux puis crée la **Release GitHub** `v1.0`
+(« Version 1.0 ») avec le zip du bundle GUI (`analyse_hebreu-onedir-windows.zip`,
+`analyse_hebreu-onedir-linux.zip` — exécutable + `README.md` +
+`gui.properties`) et les archives complètes du build en pièces jointes.
+La page publique est `https://github.com/Surcouf01/analyse_hebreu/releases`.
 
 ### Base BHSA et exécutable (build sans base embarquée)
 
@@ -176,7 +235,10 @@ L'interface comporte quatre onglets :
   français et le nom hébreu (ex. « qal (paal) · פָּעַל ») ; un marqueur ✓
   signale le binyan attesté dans la BHSA pour la forme saisie. L'onglet
   « Verbe » affiche la racine, le lemme, la traduction et la **catégorie du
-  verbe** (fort, ou faible avec sa classe : lamed-he, creux, pe-nun, etc.).
+  verbe** (fort, ou faible avec sa classe : lamed-he, creux, pe-nun, etc.),
+  ainsi que, pour un verbe faible, les **règles de conjugaison
+  caractéristiques** de sa catégorie (assimilation du nun, élision du ה
+  final, etc.).
   Le GUI parse la sortie marquée du CLI (`###BINYAN|...###`). Formats :
   texte ou JSON.
 
@@ -480,8 +542,8 @@ gui_hebreu.py           # interface graphique Tkinter (mêmes fonctions que le C
 bidi_display.py        # ordre visuel de l'hébreu pour le GUI (sélection stable)
 test_bidi_display.py   # tests du module bidi_display
 gui.properties         # polices/tailles d'affichage du GUI (points)
-icone.png              # icône de la fenêtre GUI (source)
-icone.ico              # idem en format Windows multi-résolutions (barre de titre/tâches)
+icone.ico              # icône Windows multi-résolutions de la fenêtre GUI (barre de titre/tâches)
+scripts/generate_ico.py # (re)génère icone.ico depuis une fonte hébraïque (Pillow)
 data/
   louis_segond_1910.txt  # traduction française Louis Segond 1910 (domaine public)
   kjv_1611.txt          # traduction anglaise King James Version 1611 (domaine public)

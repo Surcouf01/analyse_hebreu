@@ -42,6 +42,7 @@ from bidi_display import (
 )
 
 from bhsa_grammar import (
+    __version__,
     load_corpus,
     analyze_verse_by_reference,
     analyze_word,
@@ -1144,7 +1145,10 @@ class AnalyseurGUI:
         self._work_queue = queue.Queue()
         self._target_widget = None  # widget actuellement ciblé par le clavier
 
-        root.title("Analyseur grammatical de l'hébreu biblique")
+        root.title(
+            "Analyseur grammatical de l'hébreu biblique — כָּבוֹד לַיהוָה"
+            + (f" (v{__version__})" if __version__ else "")
+        )
         root.minsize(1000, 760)
         root.geometry(_saved_geometry() or DEFAULT_GEOMETRY)
 
@@ -1223,7 +1227,8 @@ class AnalyseurGUI:
         self._build_binyanim_tab()
 
         # Barre d'état (chargement de la base / analyse en cours).
-        self.status = ttk.Label(self.root, text="Chargement de la base BHSA…",
+        self.status = ttk.Label(self.root,
+                                text=f"Chargement de la base BHSA… (v{__version__})",
                                 relief="sunken", anchor="w")
         self.status.pack(fill="x", side="bottom")
 
@@ -1427,6 +1432,11 @@ class AnalyseurGUI:
 
     # --- Chargement de la base BHSA --------------------------------------
     def _start_loading(self):
+        # Sablier sur toute la fenêtre principale tant que la base BHSA
+        # est en cours de lecture : le mode verset (Bible) n'est pas
+        # encore disponible. Tk mappe « watch » sur le sablier Windows.
+        self.root.configure(cursor="watch")
+
         def worker():
             try:
                 api = load_corpus()
@@ -1449,12 +1459,14 @@ class AnalyseurGUI:
 
     def _on_corpus_loaded(self, api):
         self.api = api
+        self.root.configure(cursor="")
         self.status.configure(text="Base BHSA chargée. Prêt.")
         for btn in (self.btn_verse, self.btn_word, self.btn_phrase, self.btn_binyanim):
             btn.state(["!disabled"])
         self._populate_books()
 
     def _on_corpus_error(self, msg):
+        self.root.configure(cursor="")
         self.status.configure(text="Erreur de chargement de la base BHSA.")
         messagebox.showerror(
             "Base BHSA introuvable",
@@ -1701,47 +1713,6 @@ class AnalyseurGUI:
 
         threading.Thread(target=worker, daemon=True).start()
 
-    def _fill_binyanim_rules_tab(self, parsed, weak):
-        """Crée l'onglet « Règles » si le verbe est faible, sinon le retire.
-
-        L'onglet, inséré avant « Sortie complète », affiche les règles de
-        conjugaison caractéristiques de la catégorie du verbe
-        (assimilation du nun, élision du ה final, refus du sheva des
-        gutturales, etc.). Il n'existe que pour un verbe faible.
-        """
-        self._remove_binyanim_rules_tab()
-        code = weak.get("code")
-        if not code or code == "strong" or code not in WEAK_CONJ_RULES:
-            return
-        self.binyanim_rules_tab = ttk.Frame(self.binyanim_notebook.body)
-        raw_index = self.binyanim_notebook.index(self.binyanim_raw_tab)
-        self.binyanim_notebook.insert(raw_index, self.binyanim_rules_tab,
-                                      text="Règles")
-        self.binyanim_rules_text = self._make_binyanim_output(
-            self.binyanim_rules_tab)
-        lines = [f"Verbe faible : {weak.get('label', '')}"]
-        if weak.get("desc"):
-            lines.append(f"  {weak['desc']}")
-        lines.append("")
-        lines.append("Règles de conjugaison caractéristiques :")
-        lines.append("")
-        for title, rule in WEAK_CONJ_RULES[code]:
-            lines.append(f"• {title}")
-            lines.append(f"  {rule}")
-            lines.append("")
-        self._set_output(self.binyanim_rules_text, "\n".join(lines))
-
-    def _remove_binyanim_rules_tab(self):
-        """Retire l'onglet « Règles » s'il existe (verbe fort ou sortie brute)."""
-        tab = getattr(self, "binyanim_rules_tab", None)
-        if tab is None:
-            return
-        tab_id = self.binyanim_notebook._resolve(tab)
-        if tab_id is not None:
-            self.binyanim_notebook.forget(tab_id)
-        self.binyanim_rules_tab = None
-        self.binyanim_rules_text = None
-
     def _show_binyanim_not_found(self, payload):
         """Forme non identifiable : message, résultat précédent conservé."""
         form, reason, suggestions = payload
@@ -1770,7 +1741,6 @@ class AnalyseurGUI:
 
     def _show_binyanim_raw(self, text):
         """Affiche la sortie brute (texte marqué ou JSON)."""
-        self._remove_binyanim_rules_tab()
         self._set_output(self.binyanim_raw_text, text)
         self.binyanim_notebook.select(self.binyanim_raw_tab)
         self.status.configure(text="Prêt.")
@@ -1810,12 +1780,25 @@ class AnalyseurGUI:
         if header:
             lines.append("  · ".join(header))
         if weak:
-            is_weak = weak.get("code") not in (None, "strong")
+            code = weak.get("code")
+            is_weak = code not in (None, "strong")
             if is_weak:
                 lines.append("")
                 lines.append(f"Verbe faible : {weak.get('label', '')}")
                 if weak.get("desc"):
                     lines.append(f"  {weak['desc']}")
+                # Règles de conjugaison caractéristiques de la catégorie,
+                # affichées à la suite de l'identification du verbe
+                # (assimilation du nun, élision du ה final, refus du sheva
+                # des gutturales, etc.).
+                if code in WEAK_CONJ_RULES:
+                    lines.append("")
+                    lines.append("Règles de conjugaison caractéristiques :")
+                    lines.append("")
+                    for title, rule in WEAK_CONJ_RULES[code]:
+                        lines.append(f"• {title}")
+                        lines.append(f"  {rule}")
+                        lines.append("")
             else:
                 lines.append("")
                 lines.append("Verbe fort (shalem) : conjugaison régulière.")
@@ -1863,8 +1846,6 @@ class AnalyseurGUI:
                             "par analogie.\n\n")
                     content = warn + content
             self._set_output(text, content)
-
-        self._fill_binyanim_rules_tab(parsed, weak)
 
         if parsed.get("binyanim"):
             # Sélectionner le premier binyan.
@@ -2167,23 +2148,40 @@ def _apply_window_icon(root):
 
     Sur Windows, ``iconphoto`` avec un PNG est sans effet sur la barre de
     titre et la barre des tâches avec la plupart des versions de Tk :
-    on utilise ``iconbitmap`` avec ``icone.ico`` (multi-résolutions,
-    généré depuis icone.png, avec une marge blanche sur les petites
-    tailles pour rester lisible dans la barre des tâches). Sur les autres
-    plateformes, ``iconphoto`` avec ``icone.png``.
+    on utilise ``iconbitmap`` avec ``icone.ico`` (multi-résolutions),
+    avec une marge blanche sur les petites tailles pour rester lisible
+    dans la barre des tâches. Sur les autres plateformes, ``iconphoto``
+    avec ``icone.png`` si présent (repli silencieux sinon).
 
-    Le chemin est résolu relativement à ce script pour que l'icône
-    soit trouvée quel que soit le répertoire de lancement. En cas
+    En mode exécutable PyInstaller (gelé), l'icône est d'abord chargée
+    **depuis l'exécutable lui-même** : le spec l'embarque comme ressource
+    Windows (RT_GROUP_ICON), et Tk sait lire l'icône d'un .exe via
+    ``iconbitmap(sys.executable)``. La fenêtre affiche donc toujours
+    l'icône du build, même si le répertoire courant ou les fichiers
+    externes sont inaccessibles — c'est aussi ce qui alimente la barre
+    des tâches (avec l'AppUserModelID explicite, cf. plus haut).
+
+    Le chemin des icônes externes est ensuite résolu relativement à ce
+    script, aux ressources embarquées et à l'exécutable. En cas
     d'absence ou d'erreur (fichier illisible, Tk indisponible), on
     poursuit silencieusement avec l'icône par défaut.
     """
     _set_app_user_model_id()
+    if sys.platform == "win32":
+        try:
+            if getattr(sys, "frozen", False):
+                # Icône embarquée dans l'exe (ressource Windows) : la
+                # source la plus fiable — elle ne dépend d'aucun chemin.
+                root.iconbitmap(sys.executable)
+                return
+        except (tk.TclError, OSError, AttributeError):
+            pass
     here = os.path.dirname(os.path.abspath(__file__))
     if not any(
         os.path.isfile(os.path.join(d, n))
         for d in (here, _resource_dir(), _app_dir())
-        for n in (("icone.ico", "icone.png") if sys.platform == "win32"
-                  else ("icone.png",))
+        for n in (("icone.ico",) if sys.platform == "win32"
+                  else ("icone.png", "icone.ico"))
     ):
         here = _resource_dir()
     try:
@@ -2193,6 +2191,8 @@ def _apply_window_icon(root):
                 root.iconbitmap(ico_path)
                 return
         icon_path = os.path.join(here, "icone.png")
+        if not os.path.isfile(icon_path):
+            return
         icon = tk.PhotoImage(file=icon_path)
         root.iconphoto(True, icon)
         root._icon_image = icon
@@ -2201,6 +2201,7 @@ def _apply_window_icon(root):
 
 
 def main():
+    _set_app_user_model_id()
     root = tk.Tk()
     tk.Tk.report_callback_exception = _report_callback_exception
     _apply_window_icon(root)
