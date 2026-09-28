@@ -325,7 +325,71 @@ def _nearest_cluster_index(w, x, y):
     return cstart
 
 
-def _make_stable_selection(text_widget):
+def _nearest_cluster_edge_pixel(w, x, y):
+    """Bord de cluster le plus proche du pixel (x, y), mesuré sur le rendu.
+
+    Contrairement à w.index("@x,y") — qui traduit un pixel en indice
+    LOGIQUE et oscille sur un texte stocké en ordre logique rendu bidi
+    (plusieurs indices logiques peuvent s'afficher au même endroit) —
+    on mesure la position réelle (bbox) de chaque bord de cluster et on
+    prend le plus proche : le résultat ne dépend que de ce qui est
+    affiché, pas de la correspondance pixel→indice de Tk.
+
+    Sens des bords : un cluster RTL (hébreu) s'affiche avec son début
+    logique à DROITE de sa boîte et sa fin à gauche ; un cluster LTR
+    (latin, chiffres) est dans l'ordre naturel. Les neutres prennent la
+    direction de base de la ligne (premier caractère fort, défaut RTL,
+    cf. bidi_display._base_rtl).
+    """
+    raw = w.index(f"@{x},{y}")
+    # Ligne logique entière (le wrap peut la couper en plusieurs lignes
+    # affichées) : on ne garde que les bords affichés sur la ligne visée.
+    first = w.index(f"{raw} linestart")
+    last = w.index(f"{raw} lineend")
+    # Direction de base de la ligne : premier caractère fort, défaut RTL
+    # (les neutrals — espaces, ponctuation — suivent la base).
+    base_rtl = True
+    probe = first
+    while w.compare(probe, "<", last):
+        ch = w.get(probe)
+        bd = unicodedata.bidirectional(ch)
+        if bd in ("R", "AL"):
+            break
+        if bd == "L":
+            base_rtl = False
+            break
+        probe = w.index(f"{probe} + 1 c")
+    best = None  # (distance, index)
+    idx = first
+    end = w.index(f"{last} + 1 c")
+    while w.compare(idx, "<", end):
+        ch = w.get(idx)
+        if not _is_mark(ch):
+            try:
+                bb = w.bbox(idx)
+            except tk.TclError:
+                bb = None
+            if bb:
+                bx, by, bw, bh = bb
+                if by - 1 <= y <= by + bh:
+                    rtl = (unicodedata.bidirectional(ch) in ("R", "AL")
+                           or (unicodedata.bidirectional(ch) not in ("L",)
+                               and base_rtl))
+                    left_edge = w.index(f"{idx} + 1 c") if rtl else idx
+                    right_edge = idx if rtl else w.index(f"{idx} + 1 c")
+                    for px, cand in ((bx, left_edge), (bx + bw, right_edge)):
+                        d = abs(px - x)
+                        if best is None or d < best[0]:
+                            best = (d, cand)
+        idx = w.index(f"{idx} + 1 c")
+    if best is not None:
+        return _cluster_start(w, best[1]) if best[1] == raw else best[1]
+    # Aucun bord mesuré (ligne vide, zone hors texte) : comportement
+    # standard arrimé aux clusters.
+    return _nearest_cluster_index(w, x, y)
+
+
+def _make_stable_selection(text_widget, pixel_hit=False):
     """Sélection à la souris stable sur l'hébreu vocalisé.
 
     Remplace la sélection par défaut de Tk (tk::TextButton1 /
@@ -349,13 +413,18 @@ def _make_stable_selection(text_widget):
     w._stable_sel_bound = True
     state = {"anchor": None}
 
+    def _hit(x, y):
+        if pixel_hit:
+            return _nearest_cluster_edge_pixel(w, x, y)
+        return _nearest_cluster_index(w, x, y)
+
     def _sel_apply(first, last):
         w.tag_remove("sel", "1.0", "end")
         if w.compare(first, "<", last):
             w.tag_add("sel", first, last)
 
     def press(event):
-        state["anchor"] = _nearest_cluster_index(w, event.x, event.y)
+        state["anchor"] = _hit(event.x, event.y)
         state["mode"] = "char"
         w.mark_set("insert", state["anchor"])
         w.tag_remove("sel", "1.0", "end")
@@ -365,7 +434,7 @@ def _make_stable_selection(text_widget):
     def drag(event):
         if state["anchor"] is None:
             return "break"
-        cur = _nearest_cluster_index(w, event.x, event.y)
+        cur = _hit(event.x, event.y)
         anchor = state["anchor"]
         if w.compare(cur, "<=", anchor):
             _sel_apply(cur, anchor)
@@ -386,7 +455,7 @@ def _make_stable_selection(text_widget):
         # Mot : bornes définies par les espaces (les wordbreaks de Tk
         # traitent chaque nikkud comme un mot isolé), arrimées aux
         # clusters.
-        pos = _nearest_cluster_index(w, event.x, event.y)
+        pos = _hit(event.x, event.y)
         first = pos
         while True:
             prev = w.index(f"{first} - 1 c")
@@ -407,7 +476,7 @@ def _make_stable_selection(text_widget):
         return "break"
 
     def triple_click(event):
-        pos = _nearest_cluster_index(w, event.x, event.y)
+        pos = _hit(event.x, event.y)
         first = w.index(f"{pos} linestart")
         last = w.index(f"{pos} lineend")
         state["anchor"] = first
@@ -422,7 +491,7 @@ def _make_stable_selection(text_widget):
             # Pas de drag en cours : ancre = position courante du curseur.
             anchor = w.index("insert")
             state["anchor"] = anchor
-        cur = _nearest_cluster_index(w, event.x, event.y)
+        cur = _hit(event.x, event.y)
         if w.compare(cur, "<=", anchor):
             _sel_apply(cur, anchor)
         else:
@@ -1360,9 +1429,13 @@ class AnalyseurGUI:
                                    wrap="word", padx=4, pady=4)
         self.phrase_text.pack(fill="x", padx=4, pady=4)
         self.phrase_text.bind("<FocusIn>", self._remember_target)
-        # Sélection à la souris stable sur l'hébreu vocalisé (même correctif
-        # que la zone de résultat : bornes arrimées aux clusters).
-        _make_stable_selection(self.phrase_text)
+        # Sélection à la souris stable sur l'hébreu vocalisé. Contrairement
+        # à la zone de résultat (stockée en ordre visuel), ce champ est en
+        # ordre logique et rendu par le moteur bidi de la plateforme :
+        # w.index("@x,y") y oscille entre indices logiques affichés au
+        # même endroit. Le hit-test pixel (_nearest_cluster_edge_pixel)
+        # mesure la position affichée de chaque bord de cluster.
+        _make_stable_selection(self.phrase_text, pixel_hit=True)
 
         hint = ttk.Label(form,
                          text="Séparez les mots par des espaces. L'analyse est indicative "
