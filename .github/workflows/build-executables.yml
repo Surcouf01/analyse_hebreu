@@ -3,6 +3,7 @@ name: Build executables
 on:
   push:
     branches: [main]
+    tags: ["v*"]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -114,3 +115,28 @@ jobs:
         with:
           name: analyse_hebreu-${{ matrix.platform }}-${{ inputs.mode || 'onedir' }}
           path: release/*
+
+      # Publication d'une Release GitHub téléchargeable (sans compte GitHub
+      # requis) pour les tags v*. Le zip post-build du bundle GUI (README +
+      # gui.properties + exécutable) y est attaché, ainsi que l'archive
+      # complète du build pour chaque plateforme.
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          MODE="${{ inputs.mode || 'onedir' }}"
+          # Le tag détermine le nom de la release (v1.0 -> « Version 1.0 »).
+          gh release create "${GITHUB_REF_NAME}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Version ${GITHUB_REF_NAME#v}" \
+            --notes "Analyseur grammatical de l'hébreu biblique — version ${GITHUB_REF_NAME#v}.
+
+          Contenu du zip analyse_hebreu-$MODE-<plateforme>.zip (exécutable GUI complet) :
+          - analyse_hebreu(.exe) + ressources embarquées (base BHSA, traductions) ;
+          - README.md ;
+          - gui.properties (valeurs par défaut, personnalisable).
+
+          Autres fichiers : archive complète du build (GUI + CLI) pour chaque plateforme." \
+            release/*
+        env:
+          GH_TOKEN: ${{ github.token }}
