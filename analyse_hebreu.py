@@ -222,6 +222,13 @@ def _run_mishna_cli(args):
 
 
 def main(argv=None):
+    # Windows : la console utilise souvent cp1252/cp850, incapable de
+    # représenter l'hébreu ; on force la sortie en UTF-8.
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError, OSError):
+            pass
     args = build_parser().parse_args(argv)
 
     # Mode Mishna : pas besoin de la base BHSA.

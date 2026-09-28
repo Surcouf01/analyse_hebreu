@@ -40,6 +40,88 @@ git clone --branch data2021 https://github.com/ETCBC/bhsa.git bhsa_repo
 Le dossier `bhsa_repo/tf/c` est alors détecté automatiquement depuis le
 répertoire de travail courant ou depuis `/workspace`.
 
+## Exécutable auto-suffisant (packaging)
+
+L'application peut être distribuée sous forme d'**exécutable autonome** :
+l'utilisateur final n'a ni Python ni les dépendances à installer (Tkinter et
+text-fabric sont embarqués, ainsi que le lexique, les traductions Segond /
+KJV / Torres Amat, les binyanim et l'icône).
+
+### Base BHSA embarquée par défaut
+
+Par défaut, le build **embarque la base BHSA** dans l'exécutable :
+l'utilisateur final n'a ni Python, ni dépendances, ni données à installer
+ou télécharger — l'analyse fonctionne dès le premier lancement, hors ligne.
+
+Au build, la base (features `tf/c`, ~240 Mo) est résolue ainsi :
+
+1. `SPEC_BHSA_DIR` s'il pointe vers un dossier `tf/c` existant ;
+2. une base déjà présente localement (`BHSA_DATA` ou `bhsa_repo/tf/c`) ;
+3. sinon, **clonage automatique** de la dernière version (clone sparse de
+   [ETCBC/bhsa](https://github.com/ETCBC/bhsa), branche `data2021`) dans
+   `bhsa_repo/` — chaque build embarque donc la version à jour.
+
+Pour un build **léger sans base** (~50 Mo de moins ; il faudra alors
+installer la base à côté de l'exécutable ou charger en ligne) :
+
+```bash
+SPEC_TARGET=gui SPEC_MODE=onedir SPEC_BHSA_DIR=none \
+  pyinstaller analyse_hebreu.spec --noconfirm
+```
+
+### Build local (PyInstaller)
+
+> **Prérequis Python** : utiliser **Python 3.10.1 ou plus récent** (3.12
+> recommandée, c'est la version des builds CI). Python **3.10.0** comporte un
+> bug dans le module standard `dis` (`IndexError: tuple index out of range`
+> dans `dis._get_const_info`) qui fait planter PyInstaller pendant l'analyse
+> du bytecode — voir [pyinstaller#6301](https://github.com/pyinstaller/pyinstaller/issues/6301).
+> Corrigé dans CPython 3.10.1 ; aucune autre modification n'est nécessaire.
+
+```bash
+pip install pyinstaller text-fabric
+
+# GUI en mode onedir (recommandé : démarrage rapide, discret pour l'antivirus)
+SPEC_TARGET=gui SPEC_MODE=onedir pyinstaller analyse_hebreu.spec --noconfirm
+
+# GUI en fichier unique (plus lent au démarrage)
+SPEC_TARGET=gui SPEC_MODE=onefile pyinstaller analyse_hebreu.spec --noconfirm
+
+# CLI en mode onedir
+SPEC_TARGET=cli SPEC_MODE=onedir pyinstaller analyse_hebreu.spec --noconfirm
+```
+
+Le binaire GUI produit est `dist/analyse_hebreu/analyse_hebreu(.exe)`, le CLI
+`dist/analyse_hebreu-cli/analyse_hebreu-cli(.exe)`.
+
+Sous Windows, si plusieurs Pythons coexistent, cibler explicitement la bonne
+version, par exemple : `py -3.12 -m PyInstaller analyse_hebreu.spec --noconfirm`
+(avec `$env:SPEC_TARGET="gui"; $env:SPEC_MODE="onedir"` au préalable).
+
+### Build automatique (GitHub Actions)
+
+Le workflow [`.github/workflows/build-executables.yml`](.github/workflows/build-executables.yml)
+construit, à chaque push sur `main` (ou manuellement depuis l'onglet
+*Actions*), les exécutables **Windows** et **Linux** (GUI + CLI) et les publie
+comme artefacts téléchargeables. Déclenchement manuel avec le choix du mode
+`onedir` (défaut) ou `onefile`.
+
+### Base BHSA et exécutable (build sans base embarquée)
+
+Avec un build `SPEC_BHSA_DIR=none`, l'exécutable localise la base BHSA
+dans l'environnement, dans cet ordre :
+
+1. la base **embarquée** (builds par défaut — inutile dans ce cas) ;
+2. variable d'environnement `BHSA_DATA` (dossier des features `.tf`) ;
+3. un dossier `bhsa_repo/tf/c` **à côté de l'exécutable** :
+   `git clone --branch data2021 https://github.com/ETCBC/bhsa.git bhsa_repo` ;
+4. un dossier `bhsa_data/tf/c` à côté de l'exécutable ;
+5. le chargement en ligne `tf.app.use('bhsa')` (réseau + quota GitHub).
+
+Les traductions (`data/`) et le lexique sont embarqués ; `gui.properties`
+placé à côté de l'exécutable reste pris en compte pour personnaliser les
+polices, sans toucher aux ressources internes.
+
 ## Utilisation
 
 ### En interface graphique

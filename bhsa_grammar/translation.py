@@ -58,11 +58,14 @@ def _candidate_paths(language="fr"):
         names = ("kjv_1611.txt",)
     if env:
         paths.append(env)
+    from ._paths import resource_dir, app_dir
     here = os.path.dirname(os.path.abspath(__file__))
     data_dir = os.path.join(os.path.dirname(here), "data")
     for name in names:
         paths.append(os.path.join(data_dir, name))
         paths.append(os.path.join(here, "data", name))
+        paths.append(os.path.join(resource_dir(), "data", name))
+        paths.append(os.path.join(app_dir(), "data", name))
     return paths
 
 

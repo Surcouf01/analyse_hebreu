@@ -11,6 +11,8 @@ lemmes non couverts retombent sur le gloss anglais de la BHSA.
 import json
 import os
 
+from ._paths import resource_dir
+
 _CACHE = None
 
 
@@ -19,6 +21,8 @@ def _load():
     if _CACHE is None:
         here = os.path.dirname(os.path.abspath(__file__))
         path = os.path.join(here, "lex_fr.json")
+        if not os.path.isfile(path):
+            path = os.path.join(resource_dir(), "lex_fr.json")
         try:
             with open(path, encoding="utf-8") as f:
                 _CACHE = json.load(f)

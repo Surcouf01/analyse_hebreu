@@ -28,6 +28,7 @@ import os
 import unicodedata
 
 from .lex_fr import best_gloss, gloss_fr as _gloss_fr_pure
+from ._paths import resource_dir
 
 # Cache du lexique de sens par (lemme, binyan).
 _SENSES_CACHE = None
@@ -143,6 +144,8 @@ def _load_binyan_senses():
     if _SENSES_CACHE is None:
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             "binyan_senses_fr_en.json")
+        if not os.path.isfile(path):
+            path = os.path.join(resource_dir(), "binyan_senses_fr_en.json")
         try:
             with open(path, encoding="utf-8") as fh:
                 _SENSES_CACHE = json.load(fh)
@@ -1076,6 +1079,8 @@ def _templates():
         import os
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             "binyan_templates.json")
+        if not os.path.isfile(path):
+            path = os.path.join(resource_dir(), "binyan_templates.json")
         try:
             with open(path, encoding="utf-8") as fh:
                 _TEMPLATE_CACHE = json.load(fh)
@@ -1583,8 +1588,11 @@ MARK_VERB = "###VERB"
 MARK_WEAK = "###WEAK"
 MARK_BINYAN = "###BINYAN"
 
-MISHNAH_JSON = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                            "mishnah_binyanim.json")
+_MISHNAH_JSON_DEFAULT = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "mishnah_binyanim.json")
+if not os.path.isfile(_MISHNAH_JSON_DEFAULT):
+    _MISHNAH_JSON_DEFAULT = os.path.join(resource_dir(), "mishnah_binyanim.json")
+MISHNAH_JSON = _MISHNAH_JSON_DEFAULT
 _MISHNAH_CACHE = {"path": None, "data": {}}
 
 
