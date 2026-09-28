@@ -325,7 +325,10 @@ traductions du verset analysé, toutes **domaine public** :
 - **Riveduta Luzzi 1927** (italien) — fichier `data/riveduta_1927.txt`.
 
 Les quatre fichiers sont fournis avec le projet (un verset par ligne, indexé
-par nom BHSA / chapitre / verset). Dans le GUI, chaque traduction est
+par nom BHSA / chapitre / verset). La provenance de chaque traduction, son
+rendu du nom divin et ses particularités sont documentés dans `docs/`
+(`traduction_louis_segond_1910.md`, `traduction_kjv_1611.md`,
+`traduction_riveduta_1927.md`, `renumerotation_torres_amat.md`). Dans le GUI, chaque traduction est
 activable individuellement par une case à cocher. En ligne de commande,
 options `--translation` (français), `--translation-en` (anglais),
 `--translation-es` (espagnol) et `--translation-it` (italien).
