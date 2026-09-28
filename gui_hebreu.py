@@ -146,41 +146,43 @@ def _saved_geometry():
     return ""
 
 
-def _save_geometry(root):
-    """Écrit la géométrie actuelle dans gui.properties (clé window.geometry).
-
-    Préserve le reste du fichier (commentaires, polices). En cas
-    d'erreur d'E/S, l'échec est silencieux : la préférence est
-    perdue mais l'application continue.
+def _save_properties(root, updates):
+    """Écrit des paires clé/valeur dans gui.properties (géométrie de la
+    fenêtre, traductions affichées…). Préserve le reste du fichier
+    (commentaires, polices). En cas d'erreur d'E/S, l'échec est
+    silencieux : la préférence est perdue mais l'application continue.
     """
     path = _PROPS.get("_path")
     if not path:
-        return
-    try:
-        geo = root.geometry()
-    except tk.TclError:
         return
     try:
         with open(path, encoding="utf-8") as fh:
             lines = fh.readlines()
     except OSError:
         lines = []
-    key = "window.geometry"
-    updated = False
+    written = set()
     for i, raw in enumerate(lines):
         line = raw.strip()
         if not line or line.startswith("#") or "=" not in line:
             continue
         k, _, _ = line.partition("=")
-        if k.strip() == key:
-            lines[i] = f"{key} = {geo}\n"
-            updated = True
-    if not updated:
+        if k.strip() in updates:
+            lines[i] = f"{k.strip()} = {updates[k.strip()]}\n"
+            written.add(k.strip())
+    # Clés absentes du fichier : ajoutées en fin, avec commentaire de
+    # section si nécessaire.
+    missing = {k: v for k, v in updates.items() if k not in written}
+    if missing:
         if lines and lines[-1].strip():
             lines.append("\n")
-        lines.append("# Position et taille de la fenêtre principale "
-                     "(sauvegardées à la fermeture).\n")
-        lines.append(f"{key} = {geo}\n")
+        if "window.geometry" in missing:
+            lines.append("# Position et taille de la fenêtre principale "
+                         "(sauvegardées à la fermeture).\n")
+        if any(k.startswith("translation.") for k in missing):
+            lines.append("# Traductions affichées par défaut dans l'onglet "
+                         "Verset (true/false).\n")
+        for k, v in missing.items():
+            lines.append(f"{k} = {v}\n")
     try:
         with open(path, "w", encoding="utf-8") as fh:
             fh.writelines(lines)
@@ -2095,7 +2097,7 @@ def _quit_from_signal(root, signum, frame):
     after_idle : destroy() s'exécutera dans le thread principal, depuis
     la boucle d'événements, et mainloop() rend la main proprement.
     """
-    _save_geometry(root)
+    _save_all_preferences(root)
     try:
         root.after_idle(root.destroy)
     except tk.TclError:
@@ -2115,12 +2117,28 @@ def _report_callback_exception(self, exc, val, tb):
     traceback.print_exception(exc, val, tb)
 
 
+def _save_all_preferences(root):
+    """Sauvegarde toutes les préférences persistées (géométrie de la
+    fenêtre, traductions affichées) dans gui.properties.
+    """
+    updates = {}
+    try:
+        updates["window.geometry"] = root.geometry()
+    except tk.TclError:
+        pass
+    gui = getattr(root, "_gui", None)
+    if gui is not None:
+        for lang, var in gui.verse_trans.items():
+            updates[f"translation.{lang}"] = "true" if var.get() else "false"
+    if updates:
+        _save_properties(root, updates)
+
+
 def _close_from_window(root):
     """Fermeture demandée par le gestionnaire de fenêtres (bouton ✕).
-
-    Sauvegarde la géométrie avant la destruction.
+    Sauvegarde la géométrie et les préférences avant la destruction.
     """
-    _save_geometry(root)
+    _save_all_preferences(root)
     root.destroy()
 
 
@@ -2206,7 +2224,8 @@ def main():
     root = tk.Tk()
     tk.Tk.report_callback_exception = _report_callback_exception
     _apply_window_icon(root)
-    AnalyseurGUI(root)
+    gui = AnalyseurGUI(root)
+    root._gui = gui
     root.protocol("WM_DELETE_WINDOW", lambda: _close_from_window(root))
     signal.signal(signal.SIGINT, lambda s, f: _quit_from_signal(root, s, f))
     try:
