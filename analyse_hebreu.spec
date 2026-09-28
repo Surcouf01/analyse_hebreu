@@ -233,7 +233,7 @@ else:
         strip=False,
         upx=False,
         console=False if target == "gui" else True,
-        icon=os.path.join(spec_dir, "icone.ico") if os.path.isfile(os.path.join(spec_dir, "icone.ico")) else None,
+        icon=os.path.join(".", "icone.ico") if os.path.isfile(os.path.join(".", "icone.ico")) else None,
         version=exe_version_resource,
     )
     coll = COLLECT(
