@@ -42,6 +42,7 @@ from bidi_display import (
 )
 
 from bhsa_grammar import (
+    __version__,
     load_corpus,
     analyze_verse_by_reference,
     analyze_word,
@@ -1144,7 +1145,10 @@ class AnalyseurGUI:
         self._work_queue = queue.Queue()
         self._target_widget = None  # widget actuellement ciblé par le clavier
 
-        root.title("Analyseur grammatical de l'hébreu biblique — כָּבוֹד לַיהוָה")
+        root.title(
+            "Analyseur grammatical de l'hébreu biblique — כָּבוֹד לַיהוָה"
+            + (f" (v{__version__})" if __version__ else "")
+        )
         root.minsize(1000, 760)
         root.geometry(_saved_geometry() or DEFAULT_GEOMETRY)
 
@@ -1223,7 +1227,8 @@ class AnalyseurGUI:
         self._build_binyanim_tab()
 
         # Barre d'état (chargement de la base / analyse en cours).
-        self.status = ttk.Label(self.root, text="Chargement de la base BHSA…",
+        self.status = ttk.Label(self.root,
+                                text=f"Chargement de la base BHSA… (v{__version__})",
                                 relief="sunken", anchor="w")
         self.status.pack(fill="x", side="bottom")
 

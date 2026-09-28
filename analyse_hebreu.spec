@@ -95,6 +95,29 @@ bhsa_tf_dir = _locate_bhsa()
 # tout le paquet tf pour garantir la disponibilité des resources.
 tf_datas = hooks.collect_data_files("tf", include_py_files=False)
 
+# Version du projet : lue depuis le fichier VERSION à la racine des sources.
+# Elle est embarquée dans le bundle (le GUI/CLI l'affichent via
+# bhsa_grammar.__version__) et sert de ressource de version Windows pour
+# l'exécutable (Propriétés → Détails).
+version = ""
+version_path = os.path.join(spec_dir, "VERSION")
+if os.path.isfile(version_path):
+    with open(version_path, encoding="utf-8") as fh:
+        version = fh.read().strip()
+
+
+def _version_tuple(v):
+    """"1.0" -> (1, 0, 0, 0) : parties numériques de la version,
+    complétées à 4 chiffres pour la ressource Windows."""
+    parts = []
+    for chunk in v.replace("-", ".").split("."):
+        digits = "".join(c for c in chunk if c.isdigit())
+        parts.append(int(digits) if digits else 0)
+    while len(parts) < 4:
+        parts.append(0)
+    return tuple(parts[:4])
+
+
 datas = [
     ("bhsa_grammar/*.json", "bhsa_grammar"),
     ("data", "data"),
@@ -102,6 +125,8 @@ datas = [
     ("icone.ico", "."),
     ("gui.properties", "."),
 ] + tf_datas
+if version:
+    datas.append((version_path, "."))
 
 # Base BHSA embarquée : les features tf/c sont installées sous
 # bhsa_data/tf/c dans le bundle, où loader.py les trouve automatiquement.
@@ -136,6 +161,48 @@ a = Analysis(
 
 pyz = PYZ(a.pure)
 
+# Ressource de version Windows : visible dans les Propriétés → Détails de
+# l'exécutable (explorateur). Construite uniquement sous Windows (les
+# utilitaires PyInstaller de gestion des ressources Win32 exigent win32api).
+exe_version_resource = None
+if version and os.name == "nt":
+    from PyInstaller.utils.win32.versioninfo import (
+        FixedFileInfo,
+        StringFileInfo,
+        StringStruct,
+        StringTable,
+        VarFileInfo,
+        VarStruct,
+        VSVersionInfo,
+    )
+
+    vtuple = _version_tuple(version)
+    exe_version_resource = VSVersionInfo(
+        ffi=FixedFileInfo(
+            filevers=vtuple,
+            prodvers=vtuple,
+            mask=0x3F,
+            flags=0x0,
+            OS=0x40004,
+            fileType=0x1,
+        ),
+        kids=[
+            StringFileInfo([
+                StringTable("040904B0", [
+                    StringStruct("CompanyName", "Surcouf01"),
+                    StringStruct("FileDescription", "Analyseur grammatical de l'hébreu biblique"),
+                    StringStruct("FileVersion", version),
+                    StringStruct("InternalName", "analyse_hebreu"),
+                    StringStruct("LegalCopyright", ""),
+                    StringStruct("OriginalFilename", "analyse_hebreu.exe"),
+                    StringStruct("ProductName", "Analyseur grammatical de l'hébreu biblique"),
+                    StringStruct("ProductVersion", version),
+                ]),
+            ]),
+            VarFileInfo([VarStruct("Translation", [0x0409, 1200])]),
+        ],
+    )
+
 if onefile:
     exe = EXE(
         pyz,
@@ -149,6 +216,7 @@ if onefile:
         upx=False,
         console=False if target == "gui" else True,
         icon=os.path.join(spec_dir, "icone.ico") if os.path.isfile(os.path.join(spec_dir, "icone.ico")) else None,
+        version=exe_version_resource,
     )
 else:
     exe = EXE(
@@ -162,6 +230,7 @@ else:
         upx=False,
         console=False if target == "gui" else True,
         icon=os.path.join(spec_dir, "icone.ico") if os.path.isfile(os.path.join(spec_dir, "icone.ico")) else None,
+        version=exe_version_resource,
     )
     coll = COLLECT(
         exe,

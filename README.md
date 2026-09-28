@@ -97,6 +97,10 @@ Le binaire GUI produit est `dist/analyse_hebreu/analyse_hebreu(.exe)`, le CLI
 À la fin d'un build GUI, une commande post-build exécutée par le spec :
 
 - copie le `README.md` à côté de l'exécutable ;
+- la version du projet (fichier `VERSION` à la racine des sources, ex. `1.0`)
+  est embarquée dans l'exécutable : elle apparaît dans le titre et la barre
+  d'état du GUI, via `--version` du CLI, et dans les Propriétés → Détails de
+  l'exécutable Windows (ressource de version) ;
 - génère un `gui.properties` avec les valeurs par défaut (polices,
   traductions, géométrie) à côté de l'exécutable — l'utilisateur peut le
   personnaliser sans toucher aux ressources internes ;

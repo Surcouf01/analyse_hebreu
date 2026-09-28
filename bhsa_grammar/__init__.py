@@ -8,6 +8,9 @@ Usage rapide :
     print(format_text(analyse))
 """
 
+import os
+import sys
+
 from .loader import load_corpus, DataNotFoundError
 from .reference import parse_reference, find_verse, book_list, book_list_fr, book_french
 from .rules import analyze_verse
@@ -67,7 +70,33 @@ __all__ = [
     "WEAK_CONJ_RULES",
 ]
 
-__version__ = "1.0.0"
+
+def _load_version():
+    """Lit la version du projet dans le fichier VERSION à la racine des
+    sources (à côté du paquet bhsa_grammar). En mode exécutable PyInstaller,
+    le fichier est embarqué à la racine du bundle (cf. analyse_hebreu.spec)
+    et résolu via sys._MEIPASS. En cas d'absence ou d'erreur, retombe sur la
+    valeur codée ci-dessous (dernière version connue à la publication).
+    """
+    default = "1.0"
+    candidates = [
+        os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "VERSION"),
+    ]
+    meipass = getattr(sys, "_MEIPASS", None)
+    if meipass:
+        candidates.insert(0, os.path.join(meipass, "VERSION"))
+    for path in candidates:
+        try:
+            with open(path, encoding="utf-8") as fh:
+                version = fh.read().strip()
+            if version:
+                return version
+        except OSError:
+            continue
+    return default
+
+
+__version__ = _load_version()
 
 
 def analyze_verse_by_reference(api, reference):

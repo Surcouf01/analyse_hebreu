@@ -20,6 +20,7 @@ import argparse
 import sys
 
 from bhsa_grammar import (
+    __version__,
     load_corpus,
     analyze_verse_by_reference,
     analyze_word,
@@ -55,6 +56,12 @@ def build_parser():
                     "— verset de la Bible ou mishna (via Sefaria).",
         epilog="Ex. : python analyse_hebreu.py 'Genèse 1:1' --format text ; "
                 "python analyse_hebreu.py --mishna 'Bérakhot 1:1'",
+    )
+    p.add_argument(
+        "--version",
+        action="version",
+        version="%(prog)s " + __version__,
+        help="Affiche la version et quitte.",
     )
     p.add_argument(
         "reference",
