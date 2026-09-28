@@ -171,3 +171,82 @@ else:
         upx=False,
         name="analyse_hebreu" + ("" if target == "gui" else "-cli"),
     )
+
+
+# --- Post-build (GUI uniquement) --------------------------------------------
+# À côté de l'exécutable GUI : copie du README.md et génération d'un
+# gui.properties avec les valeurs par défaut (l'utilisateur peut y
+# personnaliser polices et traductions ; le GUI le lit à côté de l'exécutable
+# avant les ressources internes). Puis zip du bundle GUI complet en
+# analyse_hebreu-<mode>-<plateforme>.zip.
+#
+# onedir : l'exécutable et ses ressources vivent dans dist/analyse_hebreu/,
+#          le zip reprend tout ce répertoire (racine analyse_hebreu/).
+# onefile : l'exécutable est seul dans dist/, README.md et gui.properties
+#          sont copiés à côté de lui et zippés avec lui.
+if target == "gui":
+    import platform
+    import shutil
+    import zipfile
+
+    dist_dir = DISTPATH if onefile else os.path.join(DISTPATH, "analyse_hebreu")
+
+    readme_src = os.path.join(spec_dir, "README.md")
+    if os.path.isfile(readme_src):
+        shutil.copy2(readme_src, os.path.join(dist_dir, "README.md"))
+
+    default_props = """# Propriétés d'affichage de l'interface graphique (gui_hebreu.py).
+# Format : clé = valeur, encodage UTF-8. Les tailles sont en points.
+# Ce fichier, placé à côté de l'exécutable, personnalise l'affichage sans
+# toucher aux ressources internes ; il est réécrit à la fermeture pour
+# mémoriser la géométrie de la fenêtre.
+
+# Police de saisie de l'hébreu (champs Mot et Phrase).
+font.input.family = DejaVu Sans
+font.input.size = 14
+
+# Police de la zone de résultat.
+font.output.family = DejaVu Sans
+font.output.size = 24
+
+# Police des titres d'onglets (binyanim).
+font.tabs.family = DejaVu Sans
+font.tabs.size = 20
+
+# Traductions affichées par défaut dans l'onglet Livre (true/false).
+translation.fr = true
+translation.en = true
+translation.es = true
+
+# Position et taille de la fenêtre principale (sauvegardées à la fermeture).
+"""
+    props_path = os.path.join(dist_dir, "gui.properties")
+    if not os.path.isfile(props_path):
+        with open(props_path, "w", encoding="utf-8") as fh:
+            fh.write(default_props)
+
+    zip_name = "analyse_hebreu-%s-%s.zip" % (mode, platform.system().lower())
+    zip_path = os.path.join(DISTPATH, zip_name)
+    # Liste des fichiers avant création du zip : en mode onefile le zip est
+    # écrit dans le même répertoire que celui parcouru, il ne doit pas
+    # s'inclure lui-même.
+    entries = []
+    for folder, _dirs, files in os.walk(dist_dir):
+        for fname in files:
+            fpath = os.path.join(folder, fname)
+            if onefile and fname not in (
+                "README.md", "gui.properties", "analyse_hebreu",
+                "analyse_hebreu.exe",
+            ):
+                continue
+            arcname = os.path.join(
+                "analyse_hebreu", os.path.relpath(fpath, dist_dir)
+            )
+            entries.append((fpath, arcname))
+    if os.path.isfile(zip_path):
+        os.remove(zip_path)
+    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
+        for fpath, arcname in entries:
+            zf.write(fpath, arcname)
+    print("[spec] Post-build : README.md et gui.properties copiés ; zip -> %s"
+          % zip_path)

@@ -94,6 +94,16 @@ SPEC_TARGET=cli SPEC_MODE=onedir pyinstaller analyse_hebreu.spec --noconfirm
 Le binaire GUI produit est `dist/analyse_hebreu/analyse_hebreu(.exe)`, le CLI
 `dist/analyse_hebreu-cli/analyse_hebreu-cli(.exe)`.
 
+À la fin d'un build GUI, une commande post-build exécutée par le spec :
+
+- copie le `README.md` à côté de l'exécutable ;
+- génère un `gui.properties` avec les valeurs par défaut (polices,
+  traductions, géométrie) à côté de l'exécutable — l'utilisateur peut le
+  personnaliser sans toucher aux ressources internes ;
+- crée `dist/analyse_hebreu-<mode>-<plateforme>.zip` contenant tout le
+  répertoire du bundle GUI (`onedir`) ou l'exécutable unique avec le README
+  et le `gui.properties` (`onefile`).
+
 Sous Windows, si plusieurs Pythons coexistent, cibler explicitement la bonne
 version, par exemple : `py -3.12 -m PyInstaller analyse_hebreu.spec --noconfirm`
 (avec `$env:SPEC_TARGET="gui"; $env:SPEC_MODE="onedir"` au préalable).
