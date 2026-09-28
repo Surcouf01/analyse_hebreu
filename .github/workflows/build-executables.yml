@@ -125,18 +125,23 @@ jobs:
         shell: bash
         run: |
           MODE="${{ inputs.mode || 'onedir' }}"
-          # Le tag détermine le nom de la release (v1.0 -> « Version 1.0 »).
-          gh release create "${GITHUB_REF_NAME}" \
-            --repo "$GITHUB_REPOSITORY" \
-            --title "Version ${GITHUB_REF_NAME#v}" \
-            --notes "Analyseur grammatical de l'hébreu biblique — version ${GITHUB_REF_NAME#v}.
+          # Chaque job de la matrice téléverse ses propres assets sur la
+          # Release du tag : le premier à arriver la crée (notes ci-dessous),
+          # les autres s'y attachent — aucun conflit entre Windows et Linux.
+          if ! gh release view "${GITHUB_REF_NAME}" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release create "${GITHUB_REF_NAME}" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "Version ${GITHUB_REF_NAME#v}" \
+              --notes "Analyseur grammatical de l'hébreu biblique — version ${GITHUB_REF_NAME#v}.
 
-          Contenu du zip analyse_hebreu-$MODE-<plateforme>.zip (exécutable GUI complet) :
-          - analyse_hebreu(.exe) + ressources embarquées (base BHSA, traductions) ;
-          - README.md ;
-          - gui.properties (valeurs par défaut, personnalisable).
+              Contenu du zip analyse_hebreu-$MODE-<plateforme>.zip (exécutable GUI complet) :
+              - analyse_hebreu(.exe) + ressources embarquées (base BHSA, traductions) ;
+              - README.md ;
+              - gui.properties (valeurs par défaut, personnalisable).
 
-          Autres fichiers : archive complète du build (GUI + CLI) pour chaque plateforme." \
-            release/*
+              Autres fichiers : archive complète du build (GUI + CLI) pour chaque plateforme."
+          fi
+          gh release upload "${GITHUB_REF_NAME}" release/* \
+            --repo "$GITHUB_REPOSITORY" --clobber
         env:
           GH_TOKEN: ${{ github.token }}
