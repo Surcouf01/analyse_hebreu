@@ -329,47 +329,6 @@ def _nearest_cluster_index(w, x, y):
     return cstart
 
 
-def _bind_logical_paste(widget):
-    """Collage en ordre logique pour les champs de saisie hébreux.
-
-    Le texte copié depuis la zone de résultat peut arriver en ordre
-    VISUEL (clusters inversés + marques LRM) — via le menu contextuel
-    de Tk, qui contourne le <<Copy>> convertissant de ResultText, ou
-    depuis toute source affichant de l'hébreu en ordre visuel. Collé
-    tel quel dans un champ en ordre logique, il s'affiche inversé et
-    « danse » à la sélection (le moteur bidi de la plateforme tente de
-    réordonner un texte déjà réordonné). L'interception détecte les
-    marques de directionnalité (looks_visual) et convertit via
-    to_logical avant insertion ; un texte déjà logique est collé tel
-    quel (comportement natif conservé).
-    """
-    def on_paste(event):
-        try:
-            text = widget.selection_get(selection="CLIPBOARD")
-        except tk.TclError:
-            return None
-        if not text:
-            return None
-        if looks_visual(text):
-            text = to_logical(text)
-        if not text:
-            return "break"
-        if isinstance(widget, tk.Text):
-            if widget.tag_ranges("sel"):
-                pos = widget.index("sel.first")
-                widget.delete("sel.first", "sel.last")
-                widget.mark_set(tk.INSERT, pos)
-        elif widget.selection_present():
-            pos = widget.index("sel.first")
-            widget.delete("sel.first", "sel.last")
-            widget.icursor(pos)
-        widget.insert(tk.INSERT, text)
-        if isinstance(widget, tk.Text):
-            widget.see(tk.INSERT)
-        return "break"
-    widget.bind("<<Paste>>", on_paste)
-
-
 def _make_stable_selection(text_widget):
     """Sélection à la souris stable sur l'hébreu vocalisé.
 
@@ -816,6 +775,19 @@ class PhraseText(tk.Text):
         self._caret_line = 0
         self._caret_boundary = 0
         self._anchor_boundary = None
+        # Annulation (Ctrl-Z) / rétablissement (Ctrl-Y) : pile
+        # d'instantanés du miroir LOGIQUE (lignes + caret). Les frappes
+        # et les effacements consécutifs sont fusionnés en un seul
+        # groupe : Ctrl-Z annule le mot entier, pas lettre par lettre.
+        self._undo_stack = []
+        self._redo_stack = []
+        self._last_edit = None
+        self.bind("<Control-z>", self._on_undo)
+        self.bind("<Control-Z>", self._on_redo)
+        self.bind("<Control-y>", self._on_redo)
+        self.bind("<Control-Y>", self._on_redo)
+        self.bind("<<Undo>>", self._on_undo)
+        self.bind("<<Redo>>", self._on_redo)
         self.bind("<<Paste>>", self._on_paste)
         self.bind("<<Copy>>", self._on_copy)
         self.bind("<<Cut>>", self._on_cut)
@@ -842,11 +814,15 @@ class PhraseText(tk.Text):
 
     def set_logical(self, text):
         """Remplace le contenu (texte logique ; les \\n ouvrent des
-        lignes logiques distinctes)."""
+        lignes logiques distinctes) et réinitialise l'historique
+        d'annulation (remplacement programmatique, pas une édition)."""
         self._logical_lines = text.split("\n") if text else [""]
         self._caret_line = 0
         self._caret_boundary = 0
         self._anchor_boundary = None
+        self._undo_stack = []
+        self._redo_stack = []
+        self._last_edit = None
         self._refresh()
 
     def get_logical(self):
@@ -931,9 +907,65 @@ class PhraseText(tk.Text):
             self._caret_boundary = ka
         self._anchor_boundary = None
 
+    def _push_undo(self, kind):
+        """Mémorise l'état avant édition, avec fusion des éditions
+        consécutives du même type (frappes, effacements) : un Ctrl-Z
+        annule le groupe entier. Chaque nouvelle édition vide la pile
+        de rétablissement."""
+        before = (self._caret_line, self._caret_boundary)
+        if (self._undo_stack and kind in ("type", "del")
+                and self._last_edit is not None
+                and self._last_edit[0] == kind
+                and self._last_edit[1] == before):
+            # continuation du groupe en cours : l'instantané du début
+            # du groupe reste au sommet, rien à pousser.
+            self._redo_stack = []
+            return
+        self._undo_stack.append((list(self._logical_lines),
+                                 self._caret_line, self._caret_boundary,
+                                 kind))
+        if len(self._undo_stack) > 200:
+            del self._undo_stack[0]
+        self._redo_stack = []
+
+    def _end_edit(self, kind):
+        """Clôt l'édition courante : mémorise la position résultante
+        pour la fusion du prochain groupe."""
+        self._last_edit = (kind, (self._caret_line, self._caret_boundary))
+
+    def _restore(self, state):
+        self._logical_lines = list(state[0])
+        self._caret_line = state[1]
+        self._caret_boundary = state[2]
+        self._anchor_boundary = None
+        self._refresh()
+
+    def _on_undo(self, event=None):
+        if not self._undo_stack:
+            return "break"
+        state = self._undo_stack.pop()
+        self._redo_stack.append((list(self._logical_lines),
+                                 self._caret_line, self._caret_boundary,
+                                 "edit"))
+        self._restore(state)
+        self._last_edit = None
+        return "break"
+
+    def _on_redo(self, event=None):
+        if not self._redo_stack:
+            return "break"
+        state = self._redo_stack.pop()
+        self._undo_stack.append((list(self._logical_lines),
+                                 self._caret_line, self._caret_boundary,
+                                 "edit"))
+        self._restore(state)
+        self._last_edit = None
+        return "break"
+
     def insert_logical(self, chars):
         """Insère des caractères logiques à la position du caret (les
         \\n sont ignorés : champ monoligne par ligne de travail)."""
+        self._push_undo("type" if len(clusters(chars)) == 1 else "edit")
         self._delete_sel()
         line = self._logical_lines[self._caret_line]
         cl = clusters(line)
@@ -943,6 +975,7 @@ class PhraseText(tk.Text):
         self._caret_boundary = min(self._caret_boundary
                                    + len(clusters(chars)), len(clusters(new_line)))
         self._anchor_boundary = None
+        self._end_edit("type" if len(clusters(chars)) == 1 else "edit")
         self._refresh()
 
     # --- Interaction souris ------------------------------------------------
@@ -1025,6 +1058,7 @@ class PhraseText(tk.Text):
         return "break"
 
     def _on_backspace(self, event=None):
+        self._push_undo("del")
         if self._delete_sel():
             pass
         elif self._caret_boundary == 0:
@@ -1043,10 +1077,12 @@ class PhraseText(tk.Text):
             self._logical_lines[self._caret_line] = "".join(cl[:k - 1] + cl[k:])
             self._caret_boundary = k - 1
         self._anchor_boundary = None
+        self._end_edit("del")
         self._refresh()
         return "break"
 
     def _on_delete(self, event=None):
+        self._push_undo("del")
         if self._delete_sel():
             pass
         else:
@@ -1064,6 +1100,7 @@ class PhraseText(tk.Text):
             else:
                 self._logical_lines[self._caret_line] = "".join(cl[:k] + cl[k + 1:])
         self._anchor_boundary = None
+        self._end_edit("del")
         self._refresh()
         return "break"
 
@@ -1095,8 +1132,10 @@ class PhraseText(tk.Text):
         a, b = self._sel_range()
         if a is None or a == b:
             return None
+        self._push_undo("edit")
         self._on_copy()
         self._delete_logical(a, b)
+        self._end_edit("edit")
         self._refresh()
         return "break"
 
@@ -1742,10 +1781,10 @@ class AnalyseurGUI:
         form = ttk.LabelFrame(tab, text="Mot hébreu à analyser")
         form.pack(fill="x", padx=8, pady=8)
 
-        self.word_entry = tk.Entry(form, font=HEBREW_FONT, justify="right")
+        self.word_entry = PhraseText(form, font=HEBREW_FONT, height=1,
+                                      wrap="none", padx=4, pady=4)
         self.word_entry.pack(fill="x", padx=4, pady=4)
         self.word_entry.bind("<FocusIn>", self._remember_target)
-        _bind_logical_paste(self.word_entry)
 
         hint = ttk.Label(form,
                          text="Saisissez le mot avec le nikkud mais sans les teamim. "
@@ -2034,10 +2073,10 @@ class AnalyseurGUI:
         form = ttk.LabelFrame(tab, text="Verbe à conjuguer (mot conjugué ou racine trilitaire)")
         form.pack(fill="x", padx=8, pady=8)
 
-        self.binyanim_entry = tk.Entry(form, font=HEBREW_FONT, justify="right")
+        self.binyanim_entry = PhraseText(form, font=HEBREW_FONT, height=1,
+                                         wrap="none", padx=4, pady=4)
         self.binyanim_entry.pack(fill="x", padx=4, pady=4)
         self.binyanim_entry.bind("<FocusIn>", self._remember_target)
-        _bind_logical_paste(self.binyanim_entry)
 
         hint = ttk.Label(form,
                          text="Saisissez un mot conjugué (ex. שָׁמַר, avec nikkud) ou une racine "
@@ -2106,7 +2145,7 @@ class AnalyseurGUI:
     def _run_binyanim(self):
         if self.api is None:
             return
-        form = self.binyanim_entry.get().strip()
+        form = self.binyanim_entry.get_logical().strip()
         if not form:
             messagebox.showwarning("Binyanim", "Saisissez un verbe hébreu ou une racine.")
             return
@@ -2431,7 +2470,7 @@ class AnalyseurGUI:
     def _run_word(self):
         if self.api is None:
             return
-        form = self.word_entry.get().strip()
+        form = self.word_entry.get_logical().strip()
         if not form:
             messagebox.showwarning("Mot", "Saisissez un mot hébreu.")
             return
