@@ -776,12 +776,12 @@ class PhraseText(tk.Text):
         self._caret_boundary = 0
         self._anchor_boundary = None
         # Annulation (Ctrl-Z) / rétablissement (Ctrl-Y) : pile
-        # d'instantanés du miroir LOGIQUE (lignes + caret). Les frappes
-        # et les effacements consécutifs sont fusionnés en un seul
-        # groupe : Ctrl-Z annule le mot entier, pas lettre par lettre.
+        # d'instantanés du miroir LOGIQUE (lignes + caret). Chaque
+        # caractère tapé (ou effacé) forme son propre groupe, comme
+        # dans un champ de saisie standard : Ctrl-Z annule le dernier
+        # caractère, pas le mot entier.
         self._undo_stack = []
         self._redo_stack = []
-        self._last_edit = None
         self.bind("<Control-z>", self._on_undo)
         self.bind("<Control-Z>", self._on_redo)
         self.bind("<Control-y>", self._on_redo)
@@ -822,7 +822,6 @@ class PhraseText(tk.Text):
         self._anchor_boundary = None
         self._undo_stack = []
         self._redo_stack = []
-        self._last_edit = None
         self._refresh()
 
     def get_logical(self):
@@ -908,30 +907,14 @@ class PhraseText(tk.Text):
         self._anchor_boundary = None
 
     def _push_undo(self, kind):
-        """Mémorise l'état avant édition, avec fusion des éditions
-        consécutives du même type (frappes, effacements) : un Ctrl-Z
-        annule le groupe entier. Chaque nouvelle édition vide la pile
-        de rétablissement."""
-        before = (self._caret_line, self._caret_boundary)
-        if (self._undo_stack and kind in ("type", "del")
-                and self._last_edit is not None
-                and self._last_edit[0] == kind
-                and self._last_edit[1] == before):
-            # continuation du groupe en cours : l'instantané du début
-            # du groupe reste au sommet, rien à pousser.
-            self._redo_stack = []
-            return
+        """Mémorise l'état avant édition. Chaque nouvelle édition vide
+        la pile de rétablissement."""
         self._undo_stack.append((list(self._logical_lines),
                                  self._caret_line, self._caret_boundary,
                                  kind))
         if len(self._undo_stack) > 200:
             del self._undo_stack[0]
         self._redo_stack = []
-
-    def _end_edit(self, kind):
-        """Clôt l'édition courante : mémorise la position résultante
-        pour la fusion du prochain groupe."""
-        self._last_edit = (kind, (self._caret_line, self._caret_boundary))
 
     def _restore(self, state):
         self._logical_lines = list(state[0])
@@ -948,7 +931,6 @@ class PhraseText(tk.Text):
                                  self._caret_line, self._caret_boundary,
                                  "edit"))
         self._restore(state)
-        self._last_edit = None
         return "break"
 
     def _on_redo(self, event=None):
@@ -959,7 +941,6 @@ class PhraseText(tk.Text):
                                  self._caret_line, self._caret_boundary,
                                  "edit"))
         self._restore(state)
-        self._last_edit = None
         return "break"
 
     def insert_logical(self, chars):
@@ -975,7 +956,6 @@ class PhraseText(tk.Text):
         self._caret_boundary = min(self._caret_boundary
                                    + len(clusters(chars)), len(clusters(new_line)))
         self._anchor_boundary = None
-        self._end_edit("type" if len(clusters(chars)) == 1 else "edit")
         self._refresh()
 
     # --- Interaction souris ------------------------------------------------
@@ -1077,7 +1057,6 @@ class PhraseText(tk.Text):
             self._logical_lines[self._caret_line] = "".join(cl[:k - 1] + cl[k:])
             self._caret_boundary = k - 1
         self._anchor_boundary = None
-        self._end_edit("del")
         self._refresh()
         return "break"
 
@@ -1100,7 +1079,6 @@ class PhraseText(tk.Text):
             else:
                 self._logical_lines[self._caret_line] = "".join(cl[:k] + cl[k + 1:])
         self._anchor_boundary = None
-        self._end_edit("del")
         self._refresh()
         return "break"
 
@@ -1135,7 +1113,6 @@ class PhraseText(tk.Text):
         self._push_undo("edit")
         self._on_copy()
         self._delete_logical(a, b)
-        self._end_edit("edit")
         self._refresh()
         return "break"
 
