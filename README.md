@@ -328,7 +328,9 @@ Les quatre fichiers sont fournis avec le projet (un verset par ligne, indexé
 par nom BHSA / chapitre / verset). La provenance de chaque traduction, son
 rendu du nom divin et ses particularités sont documentés dans `docs/`
 (`traduction_louis_segond_1910.md`, `traduction_kjv_1611.md`,
-`traduction_riveduta_1927.md`, `renumerotation_torres_amat.md`). Dans le GUI, chaque traduction est
+`traduction_riveduta_1927.md`), de même que la renumérotation vers la
+versification BHSA (`renumerotation_torres_amat.md`,
+`renumerotation_traductions.md`). Dans le GUI, chaque traduction est
 activable individuellement par une case à cocher. En ligne de commande,
 options `--translation` (français), `--translation-en` (anglais),
 `--translation-es` (espagnol) et `--translation-it` (italien).
@@ -336,8 +338,8 @@ options `--translation` (français), `--translation-en` (anglais),
 Le chargement est automatique si les fichiers sont présents ; s'ils sont
 absents, l'analyse grammaticale fonctionne normalement (sans traduction). On
 peut forcer un autre chemin via les variables d'environnement
-`TRANSLATION_DATA` (français), `TRANSLATION_EN_DATA` (anglais) et
-`TRANSLATION_ES_DATA` (espagnol).
+`TRANSLATION_DATA` (français), `TRANSLATION_EN_DATA` (anglais),
+`TRANSLATION_ES_DATA` (espagnol) et `TRANSLATION_IT_DATA` (italien).
 
 > **Note sur la numérotation** : la numérotation des versets en Segond 1910
 > et en KJV diffère parfois de celle de la base BHSA (hébraïque). Par exemple

@@ -4,9 +4,11 @@ Ce document décrit la traduction anglaise de l'application : son
 histoire, sa source numérique, le rendu du nom divin, et les
 particularités de maintenance du fichier.
 
-Comme pour la Segond, la numérotation des versets est déjà
-massorétique (BHS) ; aucune renumérotation n'a été nécessaire
-(contrairement à la Torres Amat, voir `renumerotation_torres_amat.md`).
+La KJV suit la versification anglaise (KJV) : Joël et Malachie ont
+3 chapitres, les titres des psaumes sont fusionnés au verset 1, etc.
+Le fichier `data/kjv_1611.txt` a donc été renuméroté vers la
+versification BHSA par `scripts/renumber_translations.py` (voir
+`renumerotation_traductions.md`).
 
 ## 1. Contexte
 

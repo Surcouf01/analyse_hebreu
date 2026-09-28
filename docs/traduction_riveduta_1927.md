@@ -5,10 +5,12 @@ histoire, pourquoi elle a été préférée à la Diodati, sa source
 numérique, le rendu du nom divin, et les particularités de maintenance
 du fichier.
 
-Comme pour la Segond et la KJV, la numérotation des versets du fichier
-OSIS source est déjà massorétique (BHS) ; aucune renumérotation n'a
-été nécessaire (contrairement à la Torres Amat, voir
-`renumerotation_torres_amat.md`).
+Comme les éditions chrétiennes courantes, le fichier OSIS source suit
+la versification KJV (Joël et Malachie 3 chapitres, titres des psaumes
+fusionnés au verset 1, Exode 7-8, Deut 28:69, Osée, etc.). Le fichier
+`data/riveduta_1927.txt` a donc été renuméroté vers la versification
+BHSA par `scripts/renumber_translations.py` (voir
+`renumerotation_traductions.md`).
 
 ## 1. Contexte
 

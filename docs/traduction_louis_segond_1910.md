@@ -5,10 +5,14 @@ histoire, sa source numérique, le rendu du nom divin, et les
 particularités de maintenance du fichier.
 
 L'application n'analyse que l'hébreu (BHSA) ; pour les livres de
-l'Ancien Testament, le nom de livre, le chapitre et le verset du fichier
-sont déjà dans la numérotation massorétique (BHS), celle de la base
-BHSA. Aucune renumérotation n'a été nécessaire (contrairement à la
-Torres Amat, voir `renumerotation_torres_amat.md`).
+l'Ancien Testament, le fichier suit la versification chrétienne
+(KJV) : Joël et Malachie 3 chapitres, titres des psaumes fusionnés,
+Exode 7-8, Deut 28:69, etc. Le fichier `data/louis_segond_1910.txt` a
+donc été renuméroté vers la versification BHSA par
+`scripts/renumber_translations.py`, qui normalise aussi trois noms de
+livres français vers les noms BHSA (Osée → Hosea, Cantique Des
+Cantiques → Canticum, Lamentations De Jérémie → Threni) — voir
+`renumerotation_traductions.md`.
 
 ## 1. Contexte
 
