@@ -335,84 +335,58 @@ def _nearest_cluster_edge_pixel(w, x, y):
     prend le plus proche : le résultat ne dépend que de ce qui est
     affiché, pas de la correspondance pixel→indice de Tk.
 
-    Passe 1 : collecter les lettres de base visibles sur la ligne
-    affichée visée et mesurer l'ordre de rendu (les bboxes suivent-elles
-    l'ordre logique — rendu sans réordonnancement, ex. X11 — ou l'ordre
-    inverse — moteur bidi de la plateforme, ex. Windows/Uniscribe).
-    Passe 2 : pour chaque cluster, mapper les bords affichés (gauche,
-    droite de la boîte) aux bords LOGIQUES (début, fin du cluster)
-    selon la direction du cluster et l'ordre de rendu mesuré, puis
-    prendre le bord le plus proche du pixel cliqué.
+    Sens des bords : un cluster RTL (hébreu) s'affiche avec son début
+    logique à DROITE de sa boîte et sa fin à gauche ; un cluster LTR
+    (latin, chiffres) est dans l'ordre naturel. Les neutres prennent la
+    direction de base de la ligne (premier caractère fort, défaut RTL,
+    cf. bidi_display._base_rtl).
     """
     raw = w.index(f"@{x},{y}")
+    # Ligne logique entière (le wrap peut la couper en plusieurs lignes
+    # affichées) : on ne garde que les bords affichés sur la ligne visée.
     first = w.index(f"{raw} linestart")
     last = w.index(f"{raw} lineend")
-    end = w.index(f"{last} + 1 c")
-
-    # Passe 1 : bases visibles sur la ligne affichée visée.
-    bases = []  # (col, bx, bw)
-    idx = first
-    while w.compare(idx, "<", end):
-        ch = w.get(idx)
-        # Les sauts de ligne ne sont pas des bases de cluster : leur
-        # « boîte » (reste de ligne) n'est pas un glyphe, et leur cluster
-        # s'étendrait au \n suivant (candidat hors ligne).
-        if ch not in ("\n", "\r") and not _is_mark(ch):
-            try:
-                bb = w.bbox(idx)
-            except tk.TclError:
-                bb = None
-            if bb and bb[2] > 0 and bb[1] - 1 <= y <= bb[1] + bb[3]:
-                bases.append((idx, bb[0], bb[2]))
-        idx = w.index(f"{idx} + 1 c")
-    if not bases:
-        return _nearest_cluster_index(w, x, y)
-
-    # Ordre de rendu : True si les bboxes décroissent avec la colonne
-    # logique (moteur bidi actif : le début logique s'affiche à droite).
-    xs = [b[1] for b in bases]
-    render_reversed = (len(xs) >= 2 and xs[1] < xs[0])
-    if len(bases) >= 2 and not render_reversed:
-        # Vérifier sur l'ensemble : deux bases peuvent être équidistantes
-        # par hasard ; l'ordre dominant compte.
-        inc = sum(1 for a, b in zip(xs, xs[1:]) if b > a)
-        render_reversed = inc < len(xs) - 1 - inc
-
-    # Direction de base de la ligne (pour les neutres : espaces,
-    # ponctuation) : premier caractère fort, défaut RTL.
+    # Direction de base de la ligne : premier caractère fort, défaut RTL
+    # (les neutrals — espaces, ponctuation — suivent la base).
     base_rtl = True
     probe = first
     while w.compare(probe, "<", last):
-        bd = unicodedata.bidirectional(w.get(probe))
+        ch = w.get(probe)
+        bd = unicodedata.bidirectional(ch)
         if bd in ("R", "AL"):
             break
         if bd == "L":
             base_rtl = False
             break
         probe = w.index(f"{probe} + 1 c")
-
-    # Passe 2 : bords affichés → bords logiques, plus proche du pixel.
     best = None  # (distance, index)
-    for idx, bx, bw in bases:
+    idx = first
+    end = w.index(f"{last} + 1 c")
+    while w.compare(idx, "<", end):
         ch = w.get(idx)
-        rtl = (unicodedata.bidirectional(ch) in ("R", "AL")
-               or (unicodedata.bidirectional(ch) not in ("L",) and base_rtl))
-        cstart = _cluster_start(w, idx)
-        cend = _cluster_end(w, idx)
-        if rtl == render_reversed:
-            # Hébreu rendu bidi (rtl, inversé) ou latin rendu tel quel :
-            # le début logique est du côté d'entrée du sens de lecture.
-            left_edge = cend if rtl else cstart
-            right_edge = cstart if rtl else cend
-        else:
-            # Rendu contredit le sens du cluster (ex. X11 sans bidi,
-            # ou mot latin isolé dans une ligne RTL) : ordre naturel.
-            left_edge, right_edge = cstart, cend
-        for px, cand in ((bx, left_edge), (bx + bw, right_edge)):
-            d = abs(px - x)
-            if best is None or d < best[0]:
-                best = (d, cand)
-    return best[1]
+        if not _is_mark(ch):
+            try:
+                bb = w.bbox(idx)
+            except tk.TclError:
+                bb = None
+            if bb:
+                bx, by, bw, bh = bb
+                if by - 1 <= y <= by + bh:
+                    rtl = (unicodedata.bidirectional(ch) in ("R", "AL")
+                           or (unicodedata.bidirectional(ch) not in ("L",)
+                               and base_rtl))
+                    left_edge = w.index(f"{idx} + 1 c") if rtl else idx
+                    right_edge = idx if rtl else w.index(f"{idx} + 1 c")
+                    for px, cand in ((bx, left_edge), (bx + bw, right_edge)):
+                        d = abs(px - x)
+                        if best is None or d < best[0]:
+                            best = (d, cand)
+        idx = w.index(f"{idx} + 1 c")
+    if best is not None:
+        return _cluster_start(w, best[1]) if best[1] == raw else best[1]
+    # Aucun bord mesuré (ligne vide, zone hors texte) : comportement
+    # standard arrimé aux clusters.
+    return _nearest_cluster_index(w, x, y)
 
 
 def _make_stable_selection(text_widget, pixel_hit=False):
