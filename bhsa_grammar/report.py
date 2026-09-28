@@ -80,8 +80,8 @@ def word_to_text(word_analysis):
     lines.append("")
     for i, m in enumerate(word_analysis["matches"], 1):
         lines.append(f"-- Analyse {i} ({m['count']} occurrence(s)) --")
-        if m["method"] == "prefix":
-            lines.append(f"  Méthode : préfixe « {m['prefix']} » détaché, reste recherché.")
+        if m["method"] in ("prefix", "word_prefix"):
+            lines.append(f"  Méthode : préfixe « {m['prefix']} » détaché, reste {'vocalisé exact' if m['method']=='word_prefix' else 'recherché'}.")
         else:
             lines.append(f"  Méthode : forme {'complète' if m['method']=='word' else 'consonantique'}.")
         ref = m.get("reference_example")
@@ -133,8 +133,25 @@ def word_to_json(word_analysis, indent=2, ensure_ascii=False):
 def phrase_to_text(phrase_analysis):
     """Formate le résultat de ``analyze_phrase`` en texte lisible."""
     lines = []
-    lines.append(f"=== Phrase analysée : {phrase_analysis['input']} ===")
+    # La phrase hébreue est mise sur sa propre ligne : une ligne mixte
+    # (« français : hébreu === ») n'est pas rendue à l'identique par le GUI
+    # (l'ordre visuel simplifié place mal les neutres autour de l'hébreu),
+    # alors qu'une ligne hébreue pure s'affiche exactement comme dans le
+    # champ de saisie.
+    lines.append("=== Phrase analysée ===")
+    lines.append(phrase_analysis["input"])
     lines.append("")
+    # Traduction indicative (gloss français mot à mot, dans l'ordre des tokens)
+    translation = phrase_analysis.get("translation_fr")
+    if translation:
+        lines.append("-- Traduction indicative (mot à mot) --")
+        lines.append(f"  {translation}")
+        lines.append("")
+    # Notes sur les éléments ignorés (setumah, petuchah…)
+    for note in phrase_analysis.get("notes", []):
+        lines.append(f"  Note : {note}")
+    if phrase_analysis.get("notes"):
+        lines.append("")
     lines.append("-- Règles contextuelles --")
     if not phrase_analysis["context_rules"]:
         lines.append("  (aucune règle contextuelle détectée)")

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!python
 # pip install pillow
 from PIL import Image, ImageDraw, ImageFont
 

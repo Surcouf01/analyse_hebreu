@@ -321,19 +321,25 @@ traductions du verset analysé, toutes **domaine public** :
 
 - **Louis Segond 1910** (français) — fichier `data/louis_segond_1910.txt` ;
 - **King James Version 1611** (anglais) — fichier `data/kjv_1611.txt` ;
-- **Torres Amat 1823** (espagnol) — fichier `data/torres_amat_1823.txt`.
+- **Torres Amat 1823** (espagnol) — fichier `data/torres_amat_1823.txt` ;
+- **Riveduta Luzzi 1927** (italien) — fichier `data/riveduta_1927.txt`.
 
-Les trois fichiers sont fournis avec le projet (un verset par ligne, indexé
-par nom BHSA / chapitre / verset). Dans le GUI, chaque traduction est
+Les quatre fichiers sont fournis avec le projet (un verset par ligne, indexé
+par nom BHSA / chapitre / verset). La provenance de chaque traduction, son
+rendu du nom divin et ses particularités sont documentés dans `docs/`
+(`traduction_louis_segond_1910.md`, `traduction_kjv_1611.md`,
+`traduction_riveduta_1927.md`), de même que la renumérotation vers la
+versification BHSA (`renumerotation_torres_amat.md`,
+`renumerotation_traductions.md`). Dans le GUI, chaque traduction est
 activable individuellement par une case à cocher. En ligne de commande,
-options `--translation` (français), `--translation-en` (anglais) et
-`--translation-es` (espagnol).
+options `--translation` (français), `--translation-en` (anglais),
+`--translation-es` (espagnol) et `--translation-it` (italien).
 
 Le chargement est automatique si les fichiers sont présents ; s'ils sont
 absents, l'analyse grammaticale fonctionne normalement (sans traduction). On
 peut forcer un autre chemin via les variables d'environnement
-`TRANSLATION_DATA` (français), `TRANSLATION_EN_DATA` (anglais) et
-`TRANSLATION_ES_DATA` (espagnol).
+`TRANSLATION_DATA` (français), `TRANSLATION_EN_DATA` (anglais),
+`TRANSLATION_ES_DATA` (espagnol) et `TRANSLATION_IT_DATA` (italien).
 
 > **Note sur la numérotation** : la numérotation des versets en Segond 1910
 > et en KJV diffère parfois de celle de la base BHSA (hébraïque). Par exemple
@@ -547,6 +553,7 @@ scripts/generate_ico.py # (re)génère icone.ico depuis une fonte hébraïque (P
 data/
   louis_segond_1910.txt  # traduction française Louis Segond 1910 (domaine public)
   kjv_1611.txt          # traduction anglaise King James Version 1611 (domaine public)
+  riveduta_1927.txt     # traduction italienne Riveduta Luzzi 1927 (public domain)
 bhsa_grammar/
   __init__.py            # API publique (load_corpus, analyze_*, format_*)
   loader.py              # localisation + chargement de la base BHSA (Text-Fabric)
