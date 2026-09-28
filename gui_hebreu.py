@@ -2201,6 +2201,7 @@ def _apply_window_icon(root):
 
 
 def main():
+    _set_app_user_model_id()
     root = tk.Tk()
     tk.Tk.report_callback_exception = _report_callback_exception
     _apply_window_icon(root)

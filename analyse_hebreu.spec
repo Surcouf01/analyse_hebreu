@@ -31,6 +31,13 @@ import os
 
 import PyInstaller.utils.hooks as hooks
 
+# SPECPATH est injecté par PyInstaller (dossier du .spec) : tous les chemins
+# du projet y sont ancrés pour que le build soit identique quel que soit le
+# répertoire courant d'appel de pyinstaller. Sans cela, icone.ico résolu
+# relativement au répertoire courant peut rester introuvable et PyInstaller
+# embarque alors son icône par défaut (la plume).
+spec_dir = globals().get("SPECPATH") or os.path.abspath(".")
+
 target = os.environ.get("SPEC_TARGET", "gui")
 mode = os.environ.get("SPEC_MODE", "onedir")
 onefile = mode == "onefile"
@@ -48,25 +55,28 @@ def _locate_bhsa():
          dans bhsa_repo/ à côté du spec — la dernière version de la base
          est ainsi embarquée à chaque build.
     """
-    if bhsa_dir.lower() == "none":
+    bhsa = bhsa_dir
+    if bhsa.lower() == "none":
         return None
-    if bhsa_dir:
-        if not os.path.isfile(os.path.join(bhsa_dir, "otype.tf")):
+    if bhsa:
+        if not os.path.isabs(bhsa):
+            bhsa = os.path.join(spec_dir, bhsa)
+        if not os.path.isfile(os.path.join(bhsa, "otype.tf")):
             raise SystemExit(
                 "SPEC_BHSA_DIR=%s ne contient pas otype.tf (attendu : dossier "
-                "tf/c du clone ETCBC/bhsa)" % bhsa_dir
+                "tf/c du clone ETCBC/bhsa)" % bhsa
             )
-        return bhsa_dir
+        return bhsa
     candidates = [
         os.environ.get("BHSA_DATA"),
-        os.path.join("bhsa_repo", "tf", "c"),
+        os.path.join(spec_dir, "bhsa_repo", "tf", "c"),
     ]
     for cand in candidates:
         if cand and os.path.isfile(os.path.join(cand, "otype.tf")):
             return cand
     import subprocess
     repo = "https://github.com/ETCBC/bhsa.git"
-    dest = "bhsa_repo"
+    dest = os.path.join(spec_dir, "bhsa_repo")
     print("[spec] BHSA absente : clonage sparse de %s (branche data2021)..." % repo)
     subprocess.check_call(
         ["git", "clone", "--branch", "data2021", "--depth", "1",
@@ -114,7 +124,7 @@ hiddenimports = [
 
 a = Analysis(
     ["gui_hebreu.py" if target == "gui" else "analyse_hebreu.py"],
-    pathex=[os.path.abspath(".")],
+    pathex=[spec_dir],
     binaries=[],
     datas=datas,
     hiddenimports=hiddenimports,
@@ -138,7 +148,7 @@ if onefile:
         strip=False,
         upx=False,
         console=False if target == "gui" else True,
-        icon="icone.ico" if os.path.exists("icone.ico") else None,
+        icon=os.path.join(spec_dir, "icone.ico") if os.path.isfile(os.path.join(spec_dir, "icone.ico")) else None,
     )
 else:
     exe = EXE(
@@ -151,7 +161,7 @@ else:
         strip=False,
         upx=False,
         console=False if target == "gui" else True,
-        icon="icone.ico" if os.path.exists("icone.ico") else None,
+        icon=os.path.join(spec_dir, "icone.ico") if os.path.isfile(os.path.join(spec_dir, "icone.ico")) else None,
     )
     coll = COLLECT(
         exe,
