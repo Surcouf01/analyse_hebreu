@@ -120,6 +120,25 @@ construit, à chaque push sur `main` (ou manuellement depuis l'onglet
 comme artefacts téléchargeables. Déclenchement manuel avec le choix du mode
 `onedir` (défaut) ou `onefile`.
 
+### Publication d'une version téléchargeable (Release)
+
+Pour publier la version `X.Y` (le zip du build, téléchargeable publiquement
+depuis la page des *Releases* sans compte GitHub) :
+
+1. mettre à jour le fichier `VERSION` à la racine (ex. `1.0`) ;
+2. créer un tag au format `vX.Y` et le pousser :
+
+```bash
+git tag v1.0
+git push origin v1.0
+```
+
+Le workflow construit Windows + Linux puis crée la **Release GitHub** `v1.0`
+(« Version 1.0 ») avec le zip du bundle GUI (`analyse_hebreu-onedir-windows.zip`,
+`analyse_hebreu-onedir-linux.zip` — exécutable + `README.md` +
+`gui.properties`) et les archives complètes du build en pièces jointes.
+La page publique est `https://github.com/Surcouf01/analyse_hebreu/releases`.
+
 ### Base BHSA et exécutable (build sans base embarquée)
 
 Avec un build `SPEC_BHSA_DIR=none`, l'exécutable localise la base BHSA
