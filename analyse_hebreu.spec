@@ -121,10 +121,14 @@ def _version_tuple(v):
 datas = [
     ("bhsa_grammar/*.json", "bhsa_grammar"),
     ("data", "data"),
-    ("icone.png", "."),
     ("icone.ico", "."),
     ("gui.properties", "."),
 ] + tf_datas
+# icone.png (source de l'icône) : embarqué seulement s'il est présent —
+# le spec n'échoue pas s'il a été retiré du dépôt (icone.ico reste la
+# référence pour la fenêtre, la barre des tâches et l'exe).
+if os.path.isfile(os.path.join(spec_dir, "icone.png")):
+    datas.append((os.path.join(spec_dir, "icone.png"), "."))
 if version:
     datas.append((version_path, "."))
 

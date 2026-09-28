@@ -2179,10 +2179,10 @@ def _apply_window_icon(root):
 
     Sur Windows, ``iconphoto`` avec un PNG est sans effet sur la barre de
     titre et la barre des tâches avec la plupart des versions de Tk :
-    on utilise ``iconbitmap`` avec ``icone.ico`` (multi-résolutions,
-    généré depuis icone.png, avec une marge blanche sur les petites
-    tailles pour rester lisible dans la barre des tâches). Sur les autres
-    plateformes, ``iconphoto`` avec ``icone.png``.
+    on utilise ``iconbitmap`` avec ``icone.ico`` (multi-résolutions),
+    avec une marge blanche sur les petites tailles pour rester lisible
+    dans la barre des tâches. Sur les autres plateformes, ``iconphoto``
+    avec ``icone.png`` si présent (repli silencieux sinon).
 
     En mode exécutable PyInstaller (gelé), l'icône est d'abord chargée
     **depuis l'exécutable lui-même** : le spec l'embarque comme ressource
@@ -2211,8 +2211,8 @@ def _apply_window_icon(root):
     if not any(
         os.path.isfile(os.path.join(d, n))
         for d in (here, _resource_dir(), _app_dir())
-        for n in (("icone.ico", "icone.png") if sys.platform == "win32"
-                  else ("icone.png",))
+        for n in (("icone.ico",) if sys.platform == "win32"
+                  else ("icone.png", "icone.ico"))
     ):
         here = _resource_dir()
     try:
@@ -2222,6 +2222,8 @@ def _apply_window_icon(root):
                 root.iconbitmap(ico_path)
                 return
         icon_path = os.path.join(here, "icone.png")
+        if not os.path.isfile(icon_path):
+            return
         icon = tk.PhotoImage(file=icon_path)
         root.iconphoto(True, icon)
         root._icon_image = icon
