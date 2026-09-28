@@ -37,6 +37,9 @@ from bidi_display import (
     to_logical,
     logical_wrap,
     looks_visual,
+    clusters,
+    visual_caret_offsets,
+    logical_boundary_at,
     normalize_query,
     find_line_matches,
     has_hebrew_letters,
@@ -764,12 +767,16 @@ class HebrewKeyboard(ttk.Frame):
             return
         try:
             if action == "backspace":
-                if isinstance(target, tk.Text):
+                if isinstance(target, PhraseText):
+                    target._on_backspace()
+                elif isinstance(target, tk.Text):
                     target.delete("insert-1c", "insert")
                 else:
                     pos = target.index(tk.INSERT)
                     if pos > 0:
                         target.delete(pos - 1)
+            elif isinstance(target, PhraseText):
+                target.insert_logical(char)
             else:
                 target.insert(tk.INSERT, char)
                 if isinstance(target, tk.Text):
@@ -777,6 +784,376 @@ class HebrewKeyboard(ttk.Frame):
             target.focus_set()
         except tk.TclError:
             pass
+
+
+class PhraseText(tk.Text):
+    """Champ de saisie de phrase : stockage VISUEL, édition LOGIQUE.
+
+    La sélection à la souris dans un tk.Text hébreu en ordre logique
+    « danse » sous Windows (moteur bidi Uniscribe : plusieurs indices
+    logiques sont rendus au même pixel, w.index("@x,y") oscille entre
+    eux). La seule architecture stable — celle de ResultText, et la
+    recommandation de la communauté Tk pour l'RTL (wiki Tcl/Tk
+    « bidi rendering », awesometkinter.bidirender) — est de stocker le
+    texte en ordre VISUEL : l'ordre du widget coïncide avec
+    l'affichage, la sélection est naturelle et stable.
+
+    Mais un champ de saisie doit rester ÉDITABLE : on maintient donc un
+    miroir LOGIQUE du contenu et on intercepte les opérations d'édition.
+    Chaque édition (frappe, collage, effacement, coupure) est traduite
+    en opération sur le miroir logique, puis le contenu stocké est
+    régénéré (to_visual) et le caret replacé à la frontière logique
+    correspondante (visual_caret_offsets). Les flèches se déplacent de
+    cluster logique en cluster logique, dans l'ordre de lecture.
+    get_logical() restitue le texte en ordre de lecture pour
+    l'analyse ; la copie (Ctrl+C) copie l'ordre logique. Le clavier
+    virtuel insère via insert_logical().
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._logical_lines = [""]
+        self._caret_line = 0
+        self._caret_boundary = 0
+        self._anchor_boundary = None
+        self.bind("<<Paste>>", self._on_paste)
+        self.bind("<<Copy>>", self._on_copy)
+        self.bind("<<Cut>>", self._on_cut)
+        self.bind("<Key>", self._on_key)
+        self.bind("<BackSpace>", self._on_backspace)
+        self.bind("<Delete>", self._on_delete)
+        self.bind("<Left>", self._on_left)
+        self.bind("<Right>", self._on_right)
+        self.bind("<Home>", self._on_home)
+        self.bind("<End>", self._on_end)
+        # Sélection à la souris : clic et glissement convertis en
+        # frontières logiques (le texte stocké est VISUEL : son ordre
+        # est l'ordre affiché, la sélection est stable par nature).
+        self._sel_anchor = None
+        self.bind("<Button-1>", self._on_mouse_down)
+        self.bind("<B1-Motion>", self._on_mouse_drag)
+        self.bind("<Shift-Button-1>", self._on_mouse_shift)
+        self.bind("<Double-Button-1>", self._on_mouse_double)
+        self.bind("<Triple-Button-1>", self._on_mouse_triple)
+        # La sélection native doit rester visible par-dessus.
+        self.tag_raise("sel")
+
+    # --- Miroir logique --------------------------------------------------
+
+    def set_logical(self, text):
+        """Remplace le contenu (texte logique ; les \\n ouvrent des
+        lignes logiques distinctes)."""
+        self._logical_lines = text.split("\n") if text else [""]
+        self._caret_line = 0
+        self._caret_boundary = 0
+        self._anchor_boundary = None
+        self._refresh()
+
+    def get_logical(self):
+        """Texte en ordre de lecture (pour l'analyse)."""
+        return "\n".join(self._logical_lines)
+
+    def _line_clusters(self):
+        """Clusters logiques de la ligne du caret."""
+        return clusters(self._logical_lines[self._caret_line])
+
+    def _refresh(self):
+        """Régénère le contenu stocké depuis le miroir logique, place
+        le caret et restitue la sélection logique."""
+        self.delete("1.0", "end")
+        for i, line in enumerate(self._logical_lines):
+            if i:
+                self.insert("end-1c", "\n")
+            self.insert("end", to_visual(line))
+        self._apply_selection()
+        self._place_caret()
+
+    def _place_caret(self):
+        offsets = visual_caret_offsets(self._logical_lines[self._caret_line])
+        col = offsets[min(self._caret_boundary, len(offsets) - 1)]
+        self.mark_set(tk.INSERT, f"{self._caret_line + 1}.{col}")
+        self.see(tk.INSERT)
+
+    def _sel_range(self):
+        """Bornes logiques de la sélection (anchor, active) triées, ou
+        (None, None) si pas de sélection."""
+        if self._anchor_boundary is None:
+            return None, None
+        a = (self._caret_line, self._anchor_boundary)
+        b = (self._caret_line, self._caret_boundary)
+        return min(a, b), max(a, b)
+
+    def _apply_selection(self):
+        self.tag_remove("sel", "1.0", "end")
+        a, b = self._sel_range()
+        if a is None or a == b:
+            return
+        ia, ib = self._boundary_indices(a, b)
+        # Sur une ligne RTL, la frontière logique basse a une colonne
+        # stockée HAUTE (ordre visuel inverse) : ordonner les indices
+        # Tk pour que le surlignage couvre le segment.
+        if self.compare(ia, ">", ib):
+            ia, ib = ib, ia
+        self.tag_add("sel", ia, ib)
+
+    def _boundary_indices(self, a, b):
+        """Frontières logiques (ligne, k) -> indices Tk stockés."""
+        oa = visual_caret_offsets(self._logical_lines[a[0]])
+        ob = visual_caret_offsets(self._logical_lines[b[0]])
+        return (f"{a[0] + 1}.{oa[min(a[1], len(oa) - 1)]}",
+                f"{b[0] + 1}.{ob[min(b[1], len(ob) - 1)]}")
+
+    def _delete_sel(self):
+        """Supprime la sélection logique si présente (renvoie True si
+        quelque chose a été supprimé)."""
+        a, b = self._sel_range()
+        if a is None or a == b:
+            return False
+        self._delete_logical(a, b)
+        return True
+
+    def _delete_logical(self, a, b):
+        """Supprime les clusters logiques entre les frontières a et b
+        ((ligne, k) triées, a < b) et place le caret à a."""
+        (la, ka), (lb, kb) = a, b
+        if la != lb:
+            head = clusters(self._logical_lines[la])[:ka]
+            tail = clusters(self._logical_lines[lb])[kb:]
+            self._logical_lines = (self._logical_lines[:la]
+                                   + ["".join(head + tail)]
+                                   + self._logical_lines[lb + 1:])
+            self._caret_line = la
+            self._caret_boundary = ka
+        else:
+            cl = clusters(self._logical_lines[la])
+            self._logical_lines[la] = "".join(cl[:ka] + cl[kb:])
+            self._caret_line = la
+            self._caret_boundary = ka
+        self._anchor_boundary = None
+
+    def insert_logical(self, chars):
+        """Insère des caractères logiques à la position du caret (les
+        \\n sont ignorés : champ monoligne par ligne de travail)."""
+        self._delete_sel()
+        line = self._logical_lines[self._caret_line]
+        cl = clusters(line)
+        k = min(self._caret_boundary, len(cl))
+        new_line = "".join(cl[:k]) + chars + "".join(cl[k:])
+        self._logical_lines[self._caret_line] = new_line
+        self._caret_boundary = min(self._caret_boundary
+                                   + len(clusters(chars)), len(clusters(new_line)))
+        self._anchor_boundary = None
+        self._refresh()
+
+    # --- Interaction souris ------------------------------------------------
+
+    def _mouse_boundary(self, event):
+        """Index brut du clic -> frontière logique de la ligne cliquée."""
+        raw = self.index(f"@{event.x},{event.y}")
+        line_no = int(raw.split(".")[0]) - 1
+        line_no = max(0, min(line_no, len(self._logical_lines) - 1))
+        col = int(raw.split(".")[1])
+        visual = to_visual(self._logical_lines[line_no])
+        return (line_no, logical_boundary_at(visual, col))
+
+    def _on_mouse_down(self, event):
+        self._sel_anchor = self._mouse_boundary(event)
+        self._caret_line, self._caret_boundary = self._sel_anchor
+        self._anchor_boundary = None
+        self._refresh()
+        self.focus_set()
+        return "break"
+
+    def _on_mouse_drag(self, event):
+        if self._sel_anchor is None:
+            return "break"
+        cur = self._mouse_boundary(event)
+        self._caret_line, self._caret_boundary = cur
+        a = self._sel_anchor
+        self._anchor_boundary = a[1] if a[0] == cur[0] else None
+        if a[0] != cur[0]:
+            # glissement multi-lignes : simple garde-fou, sélection de
+            # la ligne entière la plus proche
+            self._anchor_boundary = None
+        self._refresh()
+        return "break"
+
+    def _on_mouse_shift(self, event):
+        cur = self._mouse_boundary(event)
+        if self._anchor_boundary is None:
+            self._anchor_boundary = self._caret_boundary
+        self._caret_line, self._caret_boundary = cur
+        self._refresh()
+        return "break"
+
+    def _on_mouse_double(self, event):
+        cur = self._mouse_boundary(event)
+        line = self._logical_lines[cur[0]]
+        cl = clusters(line)
+        k = min(cur[1], len(cl))
+        # bornes du mot logique autour de la frontière k
+        lo = k
+        while lo > 0 and not cl[lo - 1].isspace():
+            lo -= 1
+        hi = k
+        while hi < len(cl) and not cl[hi].isspace():
+            hi += 1
+        self._caret_line = cur[0]
+        self._caret_boundary = hi
+        self._anchor_boundary = lo
+        self._refresh()
+        return "break"
+
+    def _on_mouse_triple(self, event):
+        cur = self._mouse_boundary(event)
+        self._caret_line = cur[0]
+        self._caret_boundary = len(clusters(self._logical_lines[cur[0]]))
+        self._anchor_boundary = 0
+        self._refresh()
+        return "break"
+
+    # --- Événements d'édition --------------------------------------------
+
+    def _on_key(self, event):
+        if len(event.char) != 1 or event.keysym in ("Return", "KP_Enter",
+                                                   "Tab", "Escape"):
+            return None
+        ch = event.char
+        if ch in ("\n", "\r", "\t") or ord(ch) < 32:
+            return "break"
+        self.insert_logical(ch)
+        return "break"
+
+    def _on_backspace(self, event=None):
+        if self._delete_sel():
+            pass
+        elif self._caret_boundary == 0:
+            if self._caret_line == 0:
+                return "break"
+            prev = self._logical_lines[self._caret_line - 1]
+            cur = self._logical_lines[self._caret_line]
+            self._caret_boundary = len(clusters(prev))
+            self._logical_lines = (self._logical_lines[:self._caret_line - 1]
+                                   + [prev + cur]
+                                   + self._logical_lines[self._caret_line + 1:])
+            self._caret_line -= 1
+        else:
+            cl = self._line_clusters()
+            k = self._caret_boundary
+            self._logical_lines[self._caret_line] = "".join(cl[:k - 1] + cl[k:])
+            self._caret_boundary = k - 1
+        self._anchor_boundary = None
+        self._refresh()
+        return "break"
+
+    def _on_delete(self, event=None):
+        if self._delete_sel():
+            pass
+        else:
+            cl = self._line_clusters()
+            k = self._caret_boundary
+            if k >= len(cl):
+                if self._caret_line + 1 >= len(self._logical_lines):
+                    self._refresh()
+                    return "break"
+                nxt = self._logical_lines[self._caret_line + 1]
+                cur = self._logical_lines[self._caret_line]
+                self._logical_lines = (self._logical_lines[:self._caret_line]
+                                       + [cur + nxt]
+                                       + self._logical_lines[self._caret_line + 2:])
+            else:
+                self._logical_lines[self._caret_line] = "".join(cl[:k] + cl[k + 1:])
+        self._anchor_boundary = None
+        self._refresh()
+        return "break"
+
+    def _on_paste(self, event=None):
+        try:
+            text = self.selection_get(selection="CLIPBOARD")
+        except tk.TclError:
+            return None
+        if not text:
+            return None
+        if looks_visual(text):
+            text = to_logical(text)
+        text = text.replace("\n", " ").replace("\r", " ")
+        self.insert_logical(text)
+        return "break"
+
+    def _on_copy(self, event=None):
+        try:
+            text = self.get("sel.first", "sel.last")
+        except tk.TclError:
+            return None
+        if not text:
+            return None
+        self.clipboard_clear()
+        self.clipboard_append(to_logical(text))
+        return "break"
+
+    def _on_cut(self, event=None):
+        a, b = self._sel_range()
+        if a is None or a == b:
+            return None
+        self._on_copy()
+        self._delete_logical(a, b)
+        self._refresh()
+        return "break"
+
+    # --- Déplacement du caret ---------------------------------------------
+
+    def _on_left(self, event=None):
+        # Gauche visuel = cluster logique PRÉCÉDENT dans l'ordre de
+        # lecture pour une ligne RTL ; pour une ligne LTR (latin),
+        # gauche = précédent également. On se déplace de frontière
+        # logique en frontière logique vers la gauche affichée.
+        if self._caret_boundary > 0:
+            self._caret_boundary -= 1
+        elif self._caret_line > 0:
+            self._caret_line -= 1
+            self._caret_boundary = len(self._line_clusters())
+        else:
+            return "break"
+        if self._shift_held(event):
+            if self._anchor_boundary is None:
+                self._anchor_boundary = self._caret_boundary + 1
+        else:
+            self._anchor_boundary = None
+        self._refresh()
+        return "break"
+
+    def _on_right(self, event=None):
+        if self._caret_boundary < len(self._line_clusters()):
+            self._caret_boundary += 1
+        elif self._caret_line + 1 < len(self._logical_lines):
+            self._caret_line += 1
+            self._caret_boundary = 0
+        else:
+            return "break"
+        if self._shift_held(event):
+            if self._anchor_boundary is None:
+                self._anchor_boundary = self._caret_boundary - 1
+        else:
+            self._anchor_boundary = None
+        self._refresh()
+        return "break"
+
+    def _shift_held(self, event):
+        return bool(event and event.state & 0x0001)
+
+    def _on_home(self, event=None):
+        self._caret_boundary = 0
+        if not self._shift_held(event):
+            self._anchor_boundary = None
+        self._refresh()
+        return "break"
+
+    def _on_end(self, event=None):
+        self._caret_boundary = len(self._line_clusters())
+        if not self._shift_held(event):
+            self._anchor_boundary = None
+        self._refresh()
+        return "break"
 
 
 class ResultText(tk.Text):
@@ -1399,11 +1776,10 @@ class AnalyseurGUI:
         form = ttk.LabelFrame(tab, text="Phrase hébreu à analyser")
         form.pack(fill="both", expand=False, padx=8, pady=8)
 
-        self.phrase_text = tk.Text(form, font=HEBREW_FONT, height=3,
-                                   wrap="word", padx=4, pady=4)
+        self.phrase_text = PhraseText(form, font=HEBREW_FONT, height=3,
+                                      wrap="word", padx=4, pady=4)
         self.phrase_text.pack(fill="x", padx=4, pady=4)
         self.phrase_text.bind("<FocusIn>", self._remember_target)
-        _bind_logical_paste(self.phrase_text)
 
         hint = ttk.Label(form,
                          text="Séparez les mots par des espaces. L'analyse est indicative "
@@ -2078,7 +2454,7 @@ class AnalyseurGUI:
     def _run_phrase(self):
         if self.api is None:
             return
-        phrase = self.phrase_text.get("1.0", "end").strip()
+        phrase = self.phrase_text.get_logical().strip()
         if not phrase:
             messagebox.showwarning("Phrase", "Saisissez une phrase hébreu.")
             return

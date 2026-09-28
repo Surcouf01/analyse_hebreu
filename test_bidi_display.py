@@ -14,6 +14,8 @@ from bidi_display import (
     logical_wrap,
     visual_cluster_bounds,
     visual_hebrew_word_range,
+    visual_caret_offsets,
+    logical_boundary_at,
     consonant_skeleton,
     find_line_matches,
     fold_sofit,
@@ -35,6 +37,47 @@ class TestHasHebrew(unittest.TestCase):
     def test_latin_only(self):
         self.assertFalse(has_hebrew("Louis Segond 1910"))
         self.assertFalse(has_hebrew(""))
+
+
+class TestCaretOffsets(unittest.TestCase):
+    """visual_caret_offsets / logical_boundary_at : correspondance
+    frontières logiques <-> colonnes stockées, base du champ Phrase
+    en ordre visuel éditable."""
+
+    JOEL = ("וְכִֽי־עַ֖ם ׀ וָאֵ֛שֶׁר אֶל־הַשֶּׁ֔מֶשׁ "
+            "לִֽשְׁבָאיִ֑ם גַּ֖ם אֲשֶׁ֣ר ׀")
+
+    def test_bounds_within_visual(self):
+        for logical in ["אבג", self.JOEL, "שלום abc", "abc שלום"]:
+            visual = to_visual(logical)
+            offsets = visual_caret_offsets(logical)
+            self.assertEqual(len(offsets), logical and
+                             len(logical) and len(offsets))
+            for o in offsets:
+                self.assertTrue(0 <= o <= len(visual), logical)
+
+    def test_round_trip_offset_boundary(self):
+        for logical in ["אבג", self.JOEL, "שלום abc", "abc שלום", ""]:
+            visual = to_visual(logical)
+            offsets = visual_caret_offsets(logical)
+            for k, o in enumerate(offsets):
+                got = logical_boundary_at(visual, o)
+                self.assertTrue(got == k or offsets[got] == o,
+                                f"{logical!r} k={k}")
+
+    def test_pure_rtl_offsets_decrease(self):
+        # hébreu pur : les frontières logiques vont de la droite stockée
+        # (fin) vers la gauche (début) — offsets décroissants.
+        offsets = visual_caret_offsets("אבג")
+        self.assertEqual(offsets, sorted(offsets, reverse=True))
+
+    def test_latin_offsets_increase(self):
+        offsets = visual_caret_offsets("abc")
+        self.assertEqual(offsets, [0, 1, 2, 3])
+
+    def test_multiline_rejected(self):
+        with self.assertRaises(ValueError):
+            visual_caret_offsets("a\nb")
 
 
 class TestLooksVisual(unittest.TestCase):

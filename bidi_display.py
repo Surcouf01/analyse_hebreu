@@ -532,6 +532,88 @@ def to_logical(text):
     return "\n".join(out_lines)
 
 
+def visual_caret_offsets(logical):
+    """Frontières logiques -> colonnes stockées (champ phrase).
+
+    Le champ de saisie de phrase stocke son texte en ordre VISUEL
+    (cf. to_visual) pour une sélection stable, mais l'édition (frappe,
+    collage, effacement) se fait en ordre LOGIQUE : après chaque édition
+    le texte est reconverti et le caret replacé au bon endroit. Cette
+    fonction calcule, pour un texte LOGIQUE d'une ligne, la colonne
+    STOCKÉE de chaque frontière logique ``k`` (0..n clusters) — l'endroit
+    où le prochain caractère tapé (ou effacé) doit apparaître : la suite
+    logique après un cluster résolu R (hébreu, ou neutre attaché RTL)
+    est à sa gauche visuelle, après un cluster L/EN à sa droite.
+
+    Renvoie ``offsets`` de longueur n+1 : ``offsets[k]`` est la colonne
+    stockée de la frontière entre le cluster k-1 et le cluster k.
+    Ligne sans hébreu : stocké == logique, offsets == positions brutes.
+    """
+    if "\n" in logical or "\r" in logical:
+        raise ValueError("une seule ligne attendue")
+    marked, line = _split_base_marker(logical)
+    line = _BIDI_MARKS_RE.sub("", line)
+    lclusters = _clusters(line)
+    if not lclusters:
+        return [0]
+    if not any(_cluster_is_rtl(c) for c in lclusters):
+        offsets = [0]
+        pos = 0
+        for cl in lclusters:
+            pos += len(cl)
+            offsets.append(pos)
+        return offsets
+    base_rtl = _base_rtl(line) if marked is None else marked
+    perm = _visual_cluster_indices(lclusters, base_rtl)
+    resolved = _resolve_dirs(lclusters, base_rtl)
+    stored, _base = _stored_clusters(to_visual(logical))
+    n = len(lclusters)
+    vis_start = {j: s for j, (s, _e, _t) in enumerate(stored)}
+    vis_end = {j: e for j, (_s, e, _t) in enumerate(stored)}
+    offsets = []
+    for k in range(n + 1):
+        if k == 0:
+            # Avant le premier cluster : côté opposé à sa direction
+            # résolue (R -> droite stockée, L/EN -> gauche stockée).
+            j = perm[0]
+            if resolved[0] == "R":
+                offsets.append(vis_end[j])
+            else:
+                offsets.append(vis_start[j])
+            continue
+        j = perm[k - 1]
+        if resolved[k - 1] == "R":
+            offsets.append(vis_start[j])
+        else:
+            offsets.append(vis_end[j])
+    return offsets
+
+
+def logical_boundary_at(visual_line, col):
+    """Colonne STOCKÉE -> frontière logique la plus proche.
+
+    Inverse de :code:`visual_caret_offsets` pour l'interaction souris :
+    un clic à la colonne ``col`` du texte STOCKÉE (ordre visuel) est
+    converti en frontière logique k (0..n clusters de la ligne). On
+    reconstruit le logique (to_logical) puis on prend la frontière dont
+    la colonne stockée (visual_caret_offsets) est la plus proche —
+    le round-trip est exact par construction.
+    """
+    logical = to_logical(visual_line)
+    offsets = visual_caret_offsets(logical)
+    best, best_dist = 0, None
+    for k, o in enumerate(offsets):
+        d = abs(col - o)
+        if best_dist is None or d < best_dist:
+            best, best_dist = k, d
+    return best
+
+
+def clusters(line):
+    """Alias public de :code:`_clusters` (découpage en graphèmes)."""
+    return _clusters(line)
+
+
 def looks_visual(text):
     """Vrai si ``text`` semble être en ordre visuel (cf. to_visual).
 
