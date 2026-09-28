@@ -290,8 +290,6 @@ font.tabs.size = 20
 translation.fr = true
 translation.en = true
 translation.es = true
-
-# Position et taille de la fenêtre principale (sauvegardées à la fermeture).
 """
     props_path = os.path.join(dist_dir, "gui.properties")
     if not os.path.isfile(props_path):
