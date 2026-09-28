@@ -726,7 +726,7 @@ class HebrewKeyboard(ttk.Frame):
             return
         try:
             if action == "backspace":
-                if isinstance(target, PhraseText):
+                if isinstance(target, BidiHebrewText):
                     target._on_backspace()
                 elif isinstance(target, tk.Text):
                     target.delete("insert-1c", "insert")
@@ -734,7 +734,7 @@ class HebrewKeyboard(ttk.Frame):
                     pos = target.index(tk.INSERT)
                     if pos > 0:
                         target.delete(pos - 1)
-            elif isinstance(target, PhraseText):
+            elif isinstance(target, BidiHebrewText):
                 target.insert_logical(char)
             else:
                 target.insert(tk.INSERT, char)
@@ -745,8 +745,9 @@ class HebrewKeyboard(ttk.Frame):
             pass
 
 
-class PhraseText(tk.Text):
-    """Champ de saisie de phrase : stockage VISUEL, édition LOGIQUE.
+class BidiHebrewText(tk.Text):
+    """Champ de saisie hébreu (modes Mot, Phrase, Binyanim) : stockage
+    VISUEL, édition LOGIQUE.
 
     La sélection à la souris dans un tk.Text hébreu en ordre logique
     « danse » sous Windows (moteur bidi Uniscribe : plusieurs indices
@@ -766,7 +767,8 @@ class PhraseText(tk.Text):
     cluster logique en cluster logique, dans l'ordre de lecture.
     get_logical() restitue le texte en ordre de lecture pour
     l'analyse ; la copie (Ctrl+C) copie l'ordre logique. Le clavier
-    virtuel insère via insert_logical().
+    virtuel insère via insert_logical(). Ctrl-A sélectionne tout le
+    texte logique ; Ctrl-Z/Ctrl-Y annulent et rétablissent.
     """
 
     def __init__(self, *args, **kwargs):
@@ -788,6 +790,8 @@ class PhraseText(tk.Text):
         self.bind("<Control-Y>", self._on_redo)
         self.bind("<<Undo>>", self._on_undo)
         self.bind("<<Redo>>", self._on_redo)
+        self.bind("<Control-a>", self._on_select_all)
+        self.bind("<Control-A>", self._on_select_all)
         self.bind("<<Paste>>", self._on_paste)
         self.bind("<<Copy>>", self._on_copy)
         self.bind("<<Cut>>", self._on_cut)
@@ -1095,6 +1099,19 @@ class PhraseText(tk.Text):
         self.insert_logical(text)
         return "break"
 
+    def _on_select_all(self, event=None):
+        """Ctrl-A : sélectionne tout le texte logique — anchor au
+        début logique (frontière 0 de la première ligne), caret actif
+        à la fin logique (dernière frontière de la dernière ligne),
+        comme dans un éditeur standard."""
+        self._anchor_boundary = 0
+        self._caret_line = max(0, len(self._logical_lines) - 1)
+        self._caret_boundary = len(clusters(
+            self._logical_lines[self._caret_line]))
+        self._sel_anchor = (0, 0)
+        self._refresh()
+        return "break"
+
     def _on_copy(self, event=None):
         try:
             text = self.get("sel.first", "sel.last")
@@ -1289,6 +1306,19 @@ class ResultText(tk.Text):
             self._redisplay()
 
     # --- Copie en ordre logique ------------------------------------------
+    def _on_select_all(self, event=None):
+        """Ctrl-A : sélectionne tout le texte logique — anchor au
+        début logique (frontière 0 de la première ligne), caret actif
+        à la fin logique (dernière frontière de la dernière ligne),
+        comme dans un éditeur standard."""
+        self._anchor_boundary = 0
+        self._caret_line = max(0, len(self._logical_lines) - 1)
+        self._caret_boundary = len(clusters(
+            self._logical_lines[self._caret_line]))
+        self._sel_anchor = (0, 0)
+        self._refresh()
+        return "break"
+
     def _on_copy(self, event=None):
         try:
             text = self.get("sel.first", "sel.last")
@@ -1758,7 +1788,7 @@ class AnalyseurGUI:
         form = ttk.LabelFrame(tab, text="Mot hébreu à analyser")
         form.pack(fill="x", padx=8, pady=8)
 
-        self.word_entry = PhraseText(form, font=HEBREW_FONT, height=1,
+        self.word_entry = BidiHebrewText(form, font=HEBREW_FONT, height=1,
                                       wrap="none", padx=4, pady=4)
         self.word_entry.pack(fill="x", padx=4, pady=4)
         self.word_entry.bind("<FocusIn>", self._remember_target)
@@ -1792,7 +1822,7 @@ class AnalyseurGUI:
         form = ttk.LabelFrame(tab, text="Phrase hébreu à analyser")
         form.pack(fill="both", expand=False, padx=8, pady=8)
 
-        self.phrase_text = PhraseText(form, font=HEBREW_FONT, height=3,
+        self.phrase_text = BidiHebrewText(form, font=HEBREW_FONT, height=3,
                                       wrap="word", padx=4, pady=4)
         self.phrase_text.pack(fill="x", padx=4, pady=4)
         self.phrase_text.bind("<FocusIn>", self._remember_target)
@@ -2050,7 +2080,7 @@ class AnalyseurGUI:
         form = ttk.LabelFrame(tab, text="Verbe à conjuguer (mot conjugué ou racine trilitaire)")
         form.pack(fill="x", padx=8, pady=8)
 
-        self.binyanim_entry = PhraseText(form, font=HEBREW_FONT, height=1,
+        self.binyanim_entry = BidiHebrewText(form, font=HEBREW_FONT, height=1,
                                          wrap="none", padx=4, pady=4)
         self.binyanim_entry.pack(fill="x", padx=4, pady=4)
         self.binyanim_entry.bind("<FocusIn>", self._remember_target)
