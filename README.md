@@ -235,7 +235,10 @@ L'interface comporte quatre onglets :
   français et le nom hébreu (ex. « qal (paal) · פָּעַל ») ; un marqueur ✓
   signale le binyan attesté dans la BHSA pour la forme saisie. L'onglet
   « Verbe » affiche la racine, le lemme, la traduction et la **catégorie du
-  verbe** (fort, ou faible avec sa classe : lamed-he, creux, pe-nun, etc.).
+  verbe** (fort, ou faible avec sa classe : lamed-he, creux, pe-nun, etc.),
+  ainsi que, pour un verbe faible, les **règles de conjugaison
+  caractéristiques** de sa catégorie (assimilation du nun, élision du ה
+  final, etc.).
   Le GUI parse la sortie marquée du CLI (`###BINYAN|...###`). Formats :
   texte ou JSON.
 

@@ -1713,47 +1713,6 @@ class AnalyseurGUI:
 
         threading.Thread(target=worker, daemon=True).start()
 
-    def _fill_binyanim_rules_tab(self, parsed, weak):
-        """Crée l'onglet « Règles » si le verbe est faible, sinon le retire.
-
-        L'onglet, inséré avant « Sortie complète », affiche les règles de
-        conjugaison caractéristiques de la catégorie du verbe
-        (assimilation du nun, élision du ה final, refus du sheva des
-        gutturales, etc.). Il n'existe que pour un verbe faible.
-        """
-        self._remove_binyanim_rules_tab()
-        code = weak.get("code")
-        if not code or code == "strong" or code not in WEAK_CONJ_RULES:
-            return
-        self.binyanim_rules_tab = ttk.Frame(self.binyanim_notebook.body)
-        raw_index = self.binyanim_notebook.index(self.binyanim_raw_tab)
-        self.binyanim_notebook.insert(raw_index, self.binyanim_rules_tab,
-                                      text="Règles")
-        self.binyanim_rules_text = self._make_binyanim_output(
-            self.binyanim_rules_tab)
-        lines = [f"Verbe faible : {weak.get('label', '')}"]
-        if weak.get("desc"):
-            lines.append(f"  {weak['desc']}")
-        lines.append("")
-        lines.append("Règles de conjugaison caractéristiques :")
-        lines.append("")
-        for title, rule in WEAK_CONJ_RULES[code]:
-            lines.append(f"• {title}")
-            lines.append(f"  {rule}")
-            lines.append("")
-        self._set_output(self.binyanim_rules_text, "\n".join(lines))
-
-    def _remove_binyanim_rules_tab(self):
-        """Retire l'onglet « Règles » s'il existe (verbe fort ou sortie brute)."""
-        tab = getattr(self, "binyanim_rules_tab", None)
-        if tab is None:
-            return
-        tab_id = self.binyanim_notebook._resolve(tab)
-        if tab_id is not None:
-            self.binyanim_notebook.forget(tab_id)
-        self.binyanim_rules_tab = None
-        self.binyanim_rules_text = None
-
     def _show_binyanim_not_found(self, payload):
         """Forme non identifiable : message, résultat précédent conservé."""
         form, reason, suggestions = payload
@@ -1782,7 +1741,6 @@ class AnalyseurGUI:
 
     def _show_binyanim_raw(self, text):
         """Affiche la sortie brute (texte marqué ou JSON)."""
-        self._remove_binyanim_rules_tab()
         self._set_output(self.binyanim_raw_text, text)
         self.binyanim_notebook.select(self.binyanim_raw_tab)
         self.status.configure(text="Prêt.")
@@ -1822,12 +1780,25 @@ class AnalyseurGUI:
         if header:
             lines.append("  · ".join(header))
         if weak:
-            is_weak = weak.get("code") not in (None, "strong")
+            code = weak.get("code")
+            is_weak = code not in (None, "strong")
             if is_weak:
                 lines.append("")
                 lines.append(f"Verbe faible : {weak.get('label', '')}")
                 if weak.get("desc"):
                     lines.append(f"  {weak['desc']}")
+                # Règles de conjugaison caractéristiques de la catégorie,
+                # affichées à la suite de l'identification du verbe
+                # (assimilation du nun, élision du ה final, refus du sheva
+                # des gutturales, etc.).
+                if code in WEAK_CONJ_RULES:
+                    lines.append("")
+                    lines.append("Règles de conjugaison caractéristiques :")
+                    lines.append("")
+                    for title, rule in WEAK_CONJ_RULES[code]:
+                        lines.append(f"• {title}")
+                        lines.append(f"  {rule}")
+                        lines.append("")
             else:
                 lines.append("")
                 lines.append("Verbe fort (shalem) : conjugaison régulière.")
@@ -1875,8 +1846,6 @@ class AnalyseurGUI:
                             "par analogie.\n\n")
                     content = warn + content
             self._set_output(text, content)
-
-        self._fill_binyanim_rules_tab(parsed, weak)
 
         if parsed.get("binyanim"):
             # Sélectionner le premier binyan.
