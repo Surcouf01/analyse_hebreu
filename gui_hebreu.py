@@ -36,6 +36,7 @@ from bidi_display import (
     to_visual,
     to_logical,
     logical_wrap,
+    looks_visual,
     normalize_query,
     find_line_matches,
     has_hebrew_letters,
@@ -323,6 +324,47 @@ def _nearest_cluster_index(w, x, y):
     if bb and x > bb[0] + bb[2] / 2:
         return _cluster_end(w, cstart)
     return cstart
+
+
+def _bind_logical_paste(widget):
+    """Collage en ordre logique pour les champs de saisie hébreux.
+
+    Le texte copié depuis la zone de résultat peut arriver en ordre
+    VISUEL (clusters inversés + marques LRM) — via le menu contextuel
+    de Tk, qui contourne le <<Copy>> convertissant de ResultText, ou
+    depuis toute source affichant de l'hébreu en ordre visuel. Collé
+    tel quel dans un champ en ordre logique, il s'affiche inversé et
+    « danse » à la sélection (le moteur bidi de la plateforme tente de
+    réordonner un texte déjà réordonné). L'interception détecte les
+    marques de directionnalité (looks_visual) et convertit via
+    to_logical avant insertion ; un texte déjà logique est collé tel
+    quel (comportement natif conservé).
+    """
+    def on_paste(event):
+        try:
+            text = widget.selection_get(selection="CLIPBOARD")
+        except tk.TclError:
+            return None
+        if not text:
+            return None
+        if looks_visual(text):
+            text = to_logical(text)
+        if not text:
+            return "break"
+        if isinstance(widget, tk.Text):
+            if widget.tag_ranges("sel"):
+                pos = widget.index("sel.first")
+                widget.delete("sel.first", "sel.last")
+                widget.mark_set(tk.INSERT, pos)
+        elif widget.selection_present():
+            pos = widget.index("sel.first")
+            widget.delete("sel.first", "sel.last")
+            widget.icursor(pos)
+        widget.insert(tk.INSERT, text)
+        if isinstance(widget, tk.Text):
+            widget.see(tk.INSERT)
+        return "break"
+    widget.bind("<<Paste>>", on_paste)
 
 
 def _make_stable_selection(text_widget):
@@ -1326,6 +1368,7 @@ class AnalyseurGUI:
         self.word_entry = tk.Entry(form, font=HEBREW_FONT, justify="right")
         self.word_entry.pack(fill="x", padx=4, pady=4)
         self.word_entry.bind("<FocusIn>", self._remember_target)
+        _bind_logical_paste(self.word_entry)
 
         hint = ttk.Label(form,
                          text="Saisissez le mot avec le nikkud mais sans les teamim. "
@@ -1360,6 +1403,7 @@ class AnalyseurGUI:
                                    wrap="word", padx=4, pady=4)
         self.phrase_text.pack(fill="x", padx=4, pady=4)
         self.phrase_text.bind("<FocusIn>", self._remember_target)
+        _bind_logical_paste(self.phrase_text)
 
         hint = ttk.Label(form,
                          text="Séparez les mots par des espaces. L'analyse est indicative "
@@ -1617,6 +1661,7 @@ class AnalyseurGUI:
         self.binyanim_entry = tk.Entry(form, font=HEBREW_FONT, justify="right")
         self.binyanim_entry.pack(fill="x", padx=4, pady=4)
         self.binyanim_entry.bind("<FocusIn>", self._remember_target)
+        _bind_logical_paste(self.binyanim_entry)
 
         hint = ttk.Label(form,
                          text="Saisissez un mot conjugué (ex. שָׁמַר, avec nikkud) ou une racine "

@@ -9,6 +9,7 @@ import bidi_display
 from bidi_display import (
     to_visual,
     to_logical,
+    looks_visual,
     has_hebrew,
     logical_wrap,
     visual_cluster_bounds,
@@ -34,6 +35,25 @@ class TestHasHebrew(unittest.TestCase):
     def test_latin_only(self):
         self.assertFalse(has_hebrew("Louis Segond 1910"))
         self.assertFalse(has_hebrew(""))
+
+
+class TestLooksVisual(unittest.TestCase):
+    """looks_visual détecte le texte en ordre visuel (marques de
+    directionnalité insérées par to_visual) — utilisé au COLLAGE pour
+    convertir en ordre logique ce qui a été copié en ordre visuel."""
+
+    def test_visual_text_detected(self):
+        self.assertTrue(looks_visual(to_visual(GEN11)))
+
+    def test_logical_text_not_detected(self):
+        self.assertFalse(looks_visual(GEN11))
+
+    def test_partial_selection_detected(self):
+        visual = to_visual(GEN11)
+        self.assertTrue(looks_visual(visual[3:20]))
+
+    def test_latin_untouched(self):
+        self.assertFalse(looks_visual("Louis Segond 1910"))
 
 
 class TestRoundTrip(unittest.TestCase):

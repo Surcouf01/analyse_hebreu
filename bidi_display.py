@@ -532,6 +532,17 @@ def to_logical(text):
     return "\n".join(out_lines)
 
 
+def looks_visual(text):
+    """Vrai si ``text`` semble être en ordre visuel (cf. to_visual).
+
+    Heuristique : un texte stocké en ordre visuel contient les marques
+    de directionnalité insérées par to_visual — LRM devant chaque
+    cluster RTL, marque de base en tête de ligne. Un texte logique
+    (saisi au clavier ou copié via Ctrl+C) n'en contient pas.
+    """
+    return bool(_BIDI_MARKS_RE.search(text))
+
+
 def visual_hebrew_word_range(line, col):
     """Étendue ``(début, fin)`` du mot hébreu contenant la colonne
     ``col`` dans une ligne en ordre visuel, marques LRM incluses ; ``None``
