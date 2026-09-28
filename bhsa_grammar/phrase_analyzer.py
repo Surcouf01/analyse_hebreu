@@ -32,10 +32,42 @@ _JUSSIVE_MARKERS = {"אַל", "לֹא", "לוּ"}
 # Préfixes qui, détachés, indiquent un rôle grammatical.
 _ARTICLE_PREFIX = "ה"
 
+# Marques de paragraphe massorétiques : samekh (setumah) et pe (petuchah).
+# Ce sont des lettres, mais elles ne forment jamais un mot : elles marquent
+# un changement de paragraphe dans le texte biblique et doivent être ignorées.
+_PARAGRAPH_LETTERS = {"ס", "פ"}
+# Maqaf (־) : la BHSA segmente les mots liés par un maqaf en deux nœuds
+# « word » distincts (le maqaf vit dans le trailer) ; on fait pareil.
+_MAQAF = "־"
+
 
 def _tokens(phrase):
-    """Découpe une phrase en tokens (sur espaces) et normalise chacun."""
-    return [t for t in phrase.split() if t]
+    """Découpe une phrase en tokens et normalise chacun.
+
+    - les espaces et retours à la ligne séparent les tokens (un verset copié
+      depuis le GUI peut contenir des retours à la ligne de découpage) ;
+    - les tokens liés par un maqaf (־) sont séparés, comme dans la BHSA ;
+    - la ponctuation de verset collée au mot (sof pasuq ׃, paseq ׀) est
+      retirée par la normalisation ;
+    - les marques de paragraphe (ס setumah, פ petuchah) sont ignorées.
+
+    Renvoie (tokens, notes) : les notes décrivent les éléments ignorés.
+    """
+    tokens, notes = [], []
+    for raw in phrase.split():
+        for part in raw.split(_MAQAF):
+            tok = _normalize(part)
+            if not tok:
+                continue
+            if _strip_nikkud(tok) in _PARAGRAPH_LETTERS:
+                kind = "setumah" if _strip_nikkud(tok) == "ס" else "petuchah"
+                notes.append(
+                    f"« {tok} » ({kind}) : marque de paragraphe massorétique, "
+                    "ignorée pour l'analyse."
+                )
+                continue
+            tokens.append(tok)
+    return tokens, notes
 
 
 def _is_definite(F, w):
@@ -81,11 +113,12 @@ def analyze_phrase(F, L, phrase):
             "context_rules": [...],  # règles portant sur l'ensemble de l'énoncé
         }
     """
-    toks = _tokens(phrase)
+    toks, notes = _tokens(phrase)
     result = {
         "input": phrase,
         "tokens": [],
         "context_rules": [],
+        "notes": notes,
     }
 
     # Analyse chaque token comme mot isolé.
@@ -197,6 +230,18 @@ def analyze_phrase(F, L, phrase):
             "rules": token_rules,
             "word_analysis": wa,
         })
+
+    # Traduction indicative du versement : gloss français (lemme) du meilleur
+    # match de chaque token, dans l'ordre des tokens.
+    glosses = []
+    for wa in token_analyses:
+        if wa["found"] and wa["matches"]:
+            m = wa["matches"][0]
+            g = m.get("gloss_fr") or m.get("gloss") or ""
+            glosses.append(g if g else "—")
+        else:
+            glosses.append("—")
+    result["translation_fr"] = " ".join(glosses)
 
     result["context_rules"] = context_rules
     return result
