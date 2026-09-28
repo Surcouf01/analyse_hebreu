@@ -112,6 +112,32 @@ Sous Windows, si plusieurs Pythons coexistent, cibler explicitement la bonne
 version, par exemple : `py -3.12 -m PyInstaller analyse_hebreu.spec --noconfirm`
 (avec `$env:SPEC_TARGET="gui"; $env:SPEC_MODE="onedir"` au préalable).
 
+> **Icône « plume » dans la barre des tâches ?** La plume est le logo par
+> défaut de Tk (ou du bootloader PyInstaller d'un ancien build). Le build
+> actuel embarque bien `icone.ico` dans l'exécutable (barre de titre, barre
+> des tâches et Explorateur). Si vous voyez encore la plume :
+>
+> 1. **Cache d'icônes Windows périmé** (le cas le plus fréquent après avoir
+>    remplacé un exe au même emplacement) — forcer la reconstruction :
+>
+>    ```bat
+>    ie4uinit.exe -show
+>    ```
+>
+>    ou plus en profondeur (invite de commandes) :
+>
+>    ```bat
+>    taskkill /f /im explorer.exe
+>    del /f /q "%localappdata%\IconCache.db"
+>    del /f /q "%localappdata%\Microsoft\Windows\Explorer\iconcache*"
+>    start explorer.exe
+>    ```
+>
+> 2. **Icône épinglée obsolète** : détacher l'application de la barre des
+>    tâches (clic droit → Détacher), relancer l'exe, puis réépingler.
+> 3. **Vieux artefact** : vérifier que l'exe testé vient bien d'un build
+>    récent (l'icône s'affiche dans l'Explorateur sur le fichier .exe lui-même).
+
 ### Build automatique (GitHub Actions)
 
 Le workflow [`.github/workflows/build-executables.yml`](.github/workflows/build-executables.yml)

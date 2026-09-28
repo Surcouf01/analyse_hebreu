@@ -2184,12 +2184,29 @@ def _apply_window_icon(root):
     tailles pour rester lisible dans la barre des tâches). Sur les autres
     plateformes, ``iconphoto`` avec ``icone.png``.
 
-    Le chemin est résolu relativement à ce script pour que l'icône
-    soit trouvée quel que soit le répertoire de lancement. En cas
+    En mode exécutable PyInstaller (gelé), l'icône est d'abord chargée
+    **depuis l'exécutable lui-même** : le spec l'embarque comme ressource
+    Windows (RT_GROUP_ICON), et Tk sait lire l'icône d'un .exe via
+    ``iconbitmap(sys.executable)``. La fenêtre affiche donc toujours
+    l'icône du build, même si le répertoire courant ou les fichiers
+    externes sont inaccessibles — c'est aussi ce qui alimente la barre
+    des tâches (avec l'AppUserModelID explicite, cf. plus haut).
+
+    Le chemin des icônes externes est ensuite résolu relativement à ce
+    script, aux ressources embarquées et à l'exécutable. En cas
     d'absence ou d'erreur (fichier illisible, Tk indisponible), on
     poursuit silencieusement avec l'icône par défaut.
     """
     _set_app_user_model_id()
+    if sys.platform == "win32":
+        try:
+            if getattr(sys, "frozen", False):
+                # Icône embarquée dans l'exe (ressource Windows) : la
+                # source la plus fiable — elle ne dépend d'aucun chemin.
+                root.iconbitmap(sys.executable)
+                return
+        except (tk.TclError, OSError, AttributeError):
+            pass
     here = os.path.dirname(os.path.abspath(__file__))
     if not any(
         os.path.isfile(os.path.join(d, n))
