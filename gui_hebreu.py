@@ -1360,6 +1360,9 @@ class AnalyseurGUI:
                                    wrap="word", padx=4, pady=4)
         self.phrase_text.pack(fill="x", padx=4, pady=4)
         self.phrase_text.bind("<FocusIn>", self._remember_target)
+        # Sélection à la souris stable sur l'hébreu vocalisé (même correctif
+        # que la zone de résultat : bornes arrimées aux clusters).
+        _make_stable_selection(self.phrase_text)
 
         hint = ttk.Label(form,
                          text="Séparez les mots par des espaces. L'analyse est indicative "
