@@ -100,6 +100,13 @@ jobs:
               tar czf release/analyse_hebreu-linux.tar.gz -C dist analyse_hebreu analyse_hebreu-cli
             fi
           fi
+          # Zip post-build produit par le spec (bundle GUI complet avec
+          # README.md et gui.properties par defaut) ; spec-file selon le mode.
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            cp dist/analyse_hebreu-$MODE-windows.zip release/ || true
+          else
+            cp dist/analyse_hebreu-$MODE-linux.zip release/ || true
+          fi
           ls -lh release/
 
       - name: Upload artifacts
