@@ -78,6 +78,7 @@ TRANSLATIONS = (
     ("fr", "Louis Segond 1910 (fr)"),
     ("en", "King James Version 1611 (en)"),
     ("es", "Torres Amat 1823 (es)"),
+    ("it", "Riveduta Luzzi 1927 (it)"),
 )
 
 
@@ -1881,7 +1882,7 @@ class AnalyseurGUI:
                             for lang, var in self.verse_trans.items()}
         blocks = []
         labels = {"fr": "Louis Segond 1910 (fr)", "en": "King James Version 1611 (en)",
-                  "es": "Torres Amat 1823 (es)"}
+                  "es": "Torres Amat 1823 (es)", "it": "Riveduta Luzzi 1927 (it)"}
         for lang, _label in TRANSLATIONS:
             if not trans_enabled.get(lang):
                 continue
