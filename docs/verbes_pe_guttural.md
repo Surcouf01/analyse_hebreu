@@ -16,8 +16,8 @@ La base morphologique **BHSA** (branche `data2021`, classification `classify_roo
 8. **Impératif.** Construit sur l'imparfait sans préfixe : 2ᵉ m. sg. עֲבֹד (hatef-patah initial) ; 2ᵉ f. sg. עַבְדִי ; 2ᵉ m. pl. עַבְדוּ ; 2ᵉ f. pl. עַבְדְנָה.
 9. **Infinitifs.** Infinitif construit : עֲבֹד (hatef initial ; avec préfixe לְ, le plus souvent לַעֲבֹד). Infinitif absolu : עָבֹד.
 10. **Participe.** Actif m. sg. עֹבֵד (holam sur la gutturale) ; f. sg. עֹבֵדָה ; m. pl. עֹבְדִים ; f. pl. עֹבְדוֹת. Passif qal : עָבוּד.
-11. **Cumul avec d'autres faiblesses.** Un pe-guttural peut être aussi ayin-guttural ou lamed-guttural/lamed-he (חנה « camper », חרה « brûler », עלה « monter » n'est pas pe-guttural au sens strict mais guttural initial ; חטא « manquer » : pe+ayin gutturales). La classification `classify_root` priorise : double > lamed_he > lamed_alef > lamed_guttural > ayin_vav > ayin_guttural > pe_nun > pe_alef > pe_yod > pe_guttural.
-12. **Frontière avec le pe-alef.** L'alef n'est pas une gutturale « phonologique » : אמר « dire » est classé pe-alef (quiescence de l'alef), tandis que ה, ח, ע forment les pe-gutturaux proprement dits. Le project classe אמר comme `pe_alef` et אהב comme `pe_guttural` (ה initial).
+11. **Cumul avec d'autres faiblesses.** Un pe-guttural peut être aussi ayin-guttural ou lamed-guttural/lamed-he (חנה « camper », חרה « brûler », עלה « monter » n'est pas pe-guttural au sens strict mais guttural initial ; חטא « manquer » est en réalité classé `lamed_alef`, l'alef final primant). La classification `classify_root` priorise : double > lamed_he > lamed_alef > lamed_guttural > ayin_vav > ayin_guttural > pe_nun > pe_alef > pe_yod > pe_guttural.
+12. **Frontière avec le pe-alef.** L'alef n'est pas une gutturale « phonologique » : אמר « dire » est classé pe-alef (quiescence de l'alef), tandis que ה, ח, ע forment les pe-gutturaux proprement dits. Le project classe אמר comme `pe_alef` ; אהב (racine א+ה+ב) est classé `ayin_guttural`, sa gutturale étant la 2ᵉ radicale.
 
 ## Exemple de conjugaison complète : עבד « servir » (qal)
 
