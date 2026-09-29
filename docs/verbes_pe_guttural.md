@@ -2,7 +2,7 @@
 
 Un **verbe pe-guttural** (פ״ע/פ״ח/פ״ה/פ״א) est un verbe dont la **1ʳᵉ radicale est une gutturale** (א, ע, ה, ח) : הלך « marcher », עבר « passer », חזק « être fort ». La gutturale refuse le sheva et ne prend pas de daguesh fort : la conjugaison s'adapte par des voyelles brèves de compensation (hatef).
 
-La base morphologique **BHSA** (branche `data2021`, classification `classify_root` du projet) recense **183 lexèmes verbaux pe-gutturaux** (1ʳᵉ radicale א/ה/ח/ע) ; **77** d'entre eux sont attestés **au moins 10 fois** dans la Bible hébraïque. La liste ci-dessous donne, pour chacun, les formes principales générées par le paradigme **qal** du projet (`bhsa_grammar/binyan_gen.py`, gabarits de la catégorie `pe_guttural`).
+La base morphologique **BHSA** (branche `data2021`, classification `classify_root` du projet) recense **183 lexèmes verbaux pe-gutturaux** (1ʳᵉ radicale ה/ח/ע) ; **77** d'entre eux sont attestés **au moins 10 fois** dans la Bible hébraïque. La liste ci-dessous donne, pour chacun, les formes principales générées par le paradigme **qal** du projet (`bhsa_grammar/binyan_gen.py`, gabarits de la catégorie `pe_guttural`).
 
 ## Règles générales de conjugaison (qal)
 
