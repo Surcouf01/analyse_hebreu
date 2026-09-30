@@ -16,7 +16,7 @@ draw.text((W // 2, H // 2), "את", font=font, fill="black", anchor="mm")
 img.save("icone.bmp")
 print("icone.bmp créé")
 
-src = Image.open("icone.bmp").convert("RGBA")  # votre PNG exporté (idéalement 512×512 ou 256×256)
+src = Image.open("icone.jpeg").convert("RGBA")  # votre PNG exporté (idéalement 512×512 ou 256×256)
 
 sizes = [256, 64, 48, 32, 16]
 imgs = [src.resize((s, s), Image.LANCZOS) for s in sizes]

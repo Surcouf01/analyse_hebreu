@@ -31,6 +31,10 @@ import threading
 import unicodedata
 import tkinter as tk
 from tkinter import ttk, messagebox, font as tkfont
+import tempfile
+import win32gui
+from PIL import Image
+from PIL.ImageWin import Dib
 
 from bidi_display import (
     to_visual,
@@ -2628,7 +2632,86 @@ def _set_app_user_model_id():
     except (AttributeError, OSError):
         pass
 
+import os
+import tempfile
 
+import win32con
+import win32gui
+import win32ui
+from PIL import Image
+
+
+def getIconFileFromExe(exe):
+    large, small = win32gui.ExtractIconEx(exe, 0)
+    try:
+        if not large and not small:
+            return ""
+        hicon = large[0] if large else small[0]
+
+        # GetIconInfo -> (fIcon, xHotspot, yHotspot, hbmMask, hbmColor)
+        _, _, _, hbm_mask, hbm_color = win32gui.GetIconInfo(hicon)
+        image = None
+        try:
+            if hbm_color:
+                bmp = win32ui.CreateBitmapFromHandle(hbm_color)
+                try:
+                    bits = bmp.GetBitmapBits(False)
+                    if len(bits) >= 40:
+                        # En-tête BITMAPINFOHEADER: largeur (offset 4) et hauteur (offset 8), little-endian
+                        width  = int.from_bytes(bits[4:8],  "little")
+                        height = int.from_bytes(bits[8:12], "little")
+                        if width and height:
+                            top_down = height < 0   # BITMAP negative height = top-down
+                            height = abs(height)
+                            image = Image.frombuffer(
+                                "RGBA", (width, height), bits, "raw", "BGRA", 0, 1
+                            )
+                            if not top_down:
+                                image = image.transpose(Image.FLIP_TOP_BOTTOM)
+                finally:
+                    win32gui.DeleteObject(hbmp if False else hbm_color)
+        
+            if image is None:
+                # Icône monochrome : dessiner dans un bitmap 32 bits
+                width = height = 32
+                hdc = win32gui.GetDC(0)
+                memdc = hbmp = None
+                old = None
+                try:
+                    memdc = win32gui.CreateCompatibleDC(hdc)
+                    hbmp = win32gui.CreateCompatibleBitmap(hdc, width, height)
+                    old = win32gui.SelectObject(memdc, hbmp)
+                    win32gui.PatBlt(memdc, 0, 0, width, height, win32con.BLACKNESS)
+                    win32gui.DrawIconEx(memdc, 0, 0, hicon, width, height, 0, None, 3)  # DI_NORMAL
+                    bmp = win32ui.CreateBitmapFromHandle(hbmp)
+                    bits = bmp.GetBitmapBits(False)
+                    if not isinstance(bits, bytes):
+                        bits = bytes((b & 0xFF) for b in bits)
+                    image = Image.frombuffer(
+                        "RGBA", (width, height), bits, "raw", "BGRA", 0, 1
+                    ).transpose(Image.FLIP_TOP_BOTTOM)
+                finally:
+                    if old:
+                        win32gui.SelectObject(memdc, old)
+                    if hbmp:
+                        win32gui.DeleteObject(hbmp)
+                    if memdc:
+                        win32gui.DeleteDC(memdc)
+                    win32gui.ReleaseDC(0, hdc)
+        finally:
+            win32gui.DeleteObject(hbm_mask)
+
+        if image is None:
+            return ""
+
+        fd, ico_path = tempfile.mkstemp(suffix=".ico")
+        os.close(fd)
+        image.save(ico_path, format="ICO")
+        return ico_path
+    finally:
+        for h in large + small:
+            win32gui.DestroyIcon(h)
+            
 def _apply_window_icon(root):
     """Applique l'icône du projet comme icône de la fenêtre principale.
 
@@ -2654,37 +2737,18 @@ def _apply_window_icon(root):
     """
     _set_app_user_model_id()
     if sys.platform == "win32":
-        try:
-            if getattr(sys, "frozen", False):
-                # Icône embarquée dans l'exe (ressource Windows) : la
-                # source la plus fiable — elle ne dépend d'aucun chemin.
-                root.iconbitmap(sys.executable)
-                return
-        except (tk.TclError, OSError, AttributeError):
-            pass
-    here = os.path.dirname(os.path.abspath(__file__))
-    if not any(
-        os.path.isfile(os.path.join(d, n))
-        for d in (here, _resource_dir(), _app_dir())
-        for n in (("icone.ico",) if sys.platform == "win32"
-                  else ("icone.png", "icone.ico"))
-    ):
-        here = _resource_dir()
+        exe = sys.executable
+        icon_temppath = getIconFileFromExe(exe)
+        root.iconbitmap(icon_temppath)
     try:
+        here = _resource_dir()
         if sys.platform == "win32":
-            ico_path = os.path.join(here, "icone.ico")
-            if os.path.isfile(ico_path):
-                root.iconbitmap(ico_path)
-                return
-        icon_path = os.path.join(here, "icone.png")
-        if not os.path.isfile(icon_path):
-            return
-        icon = tk.PhotoImage(file=icon_path)
-        root.iconphoto(True, icon)
-        root._icon_image = icon
+             ico_path = os.path.join(here, "icone.ico")
+             if os.path.isfile(ico_path):
+                 root.iconbitmap(ico_path)
+                 return
     except (tk.TclError, OSError):
-        pass
-
+         pass
 
 def main():
     _set_app_user_model_id()

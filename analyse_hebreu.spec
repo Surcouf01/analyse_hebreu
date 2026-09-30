@@ -207,6 +207,9 @@ if version and os.name == "nt":
         ],
     )
 
+
+icon_path=os.path.join(spec_dir, "icone.ico") if os.path.isfile(os.path.join(spec_dir, "icone.ico")) else None
+
 if onefile:
     exe = EXE(
         pyz,
@@ -219,7 +222,7 @@ if onefile:
         strip=False,
         upx=False,
         console=False if target == "gui" else True,
-        icon=os.path.join(spec_dir, "icone.ico") if os.path.isfile(os.path.join(spec_dir, "icone.ico")) else None,
+        icon=icon_path,
         version=exe_version_resource,
     )
 else:
@@ -233,7 +236,7 @@ else:
         strip=False,
         upx=False,
         console=False if target == "gui" else True,
-        icon=os.path.join(spec_dir, "icone.ico") if os.path.isfile(os.path.join(spec_dir, "icone.ico")) else None,
+        icon=icon_path,
         version=exe_version_resource,
     )
     coll = COLLECT(
