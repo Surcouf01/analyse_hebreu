@@ -2655,19 +2655,16 @@ def getIconFileFromExe(exe):
             if hbm_color:
                 bmp = win32ui.CreateBitmapFromHandle(hbm_color)
                 try:
+                    info = bmp.GetInfo()
+                    width = info["Width"]
+                    height = abs(info["Height"])
                     bits = bmp.GetBitmapBits(False)
-                    if len(bits) >= 40:
-                        # En-tête BITMAPINFOHEADER: largeur (offset 4) et hauteur (offset 8), little-endian
-                        width  = int.from_bytes(bits[4:8],  "little")
-                        height = int.from_bytes(bits[8:12], "little")
-                        if width and height:
-                            top_down = height < 0   # BITMAP negative height = top-down
-                            height = abs(height)
-                            image = Image.frombuffer(
-                                "RGBA", (width, height), bits, "raw", "BGRA", 0, 1
-                            )
-                            if not top_down:
-                                image = image.transpose(Image.FLIP_TOP_BOTTOM)
+                    if not isinstance(bits, bytes):
+                        bits = bytes((b & 0xFF) for b in bits)
+                    if width and height and len(bits) == width * height * 4:
+                        image = Image.frombuffer(
+                            "RGBA", (width, height), bits, "raw", "BGRA", 0, 1
+                        ).transpose(Image.FLIP_TOP_BOTTOM)
                 finally:
                     win32gui.DeleteObject(hbmp if False else hbm_color)
         
