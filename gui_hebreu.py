@@ -2754,8 +2754,9 @@ def _apply_window_icon(root):
 def main():
     _set_app_user_model_id()
     root = tk.Tk()
-    tk.Tk.report_callback_exception = _report_callback_exception
+    _set_app_user_model_id()
     _apply_window_icon(root)
+    tk.Tk.report_callback_exception = _report_callback_exception
     gui = AnalyseurGUI(root)
     root._gui = gui
     root.protocol("WM_DELETE_WINDOW", lambda: _close_from_window(root))
