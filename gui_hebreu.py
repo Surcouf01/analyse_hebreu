@@ -2735,7 +2735,6 @@ def _apply_window_icon(root):
     d'absence ou d'erreur (fichier illisible, Tk indisponible), on
     poursuit silencieusement avec l'icône par défaut.
     """
-    _set_app_user_model_id()
     if sys.platform == "win32":
         exe = sys.executable
         icon_temppath = getIconFileFromExe(exe)
