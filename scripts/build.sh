@@ -5,4 +5,4 @@ if [ -d "dist" ]; then
 fi
 
 # Build avec PowerShell :
-SPEC_TARGET=gui SPEC_MODE=onedir pyinstaller analyse_hebreu.spec --noconfirm
+SPEC_TARGET=gui SPEC_MODE=onefile pyinstaller analyse_hebreu.spec --noconfirm

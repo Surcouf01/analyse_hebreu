@@ -2655,9 +2655,14 @@ def getIconFileFromExe(exe):
             if hbm_color:
                 bmp = win32ui.CreateBitmapFromHandle(hbm_color)
                 try:
-                    info = bmp.GetInfo()
-                    width = info["Width"]
-                    height = abs(info["Height"])
+                    try:
+                        width, height = bmp.GetSize()
+                    except Exception:
+                        info = {k.lower(): v for k, v in bmp.GetInfo().items()}
+                        width = info.get("width", 0)
+                        height = info.get("height", 0)
+                    # BITMAP de l'icône : hauteur = pixels, le masque est traité séparément
+                    height = abs(height)
                     bits = bmp.GetBitmapBits(False)
                     if not isinstance(bits, bytes):
                         bits = bytes((b & 0xFF) for b in bits)
