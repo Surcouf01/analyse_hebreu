@@ -1,18 +1,648 @@
 {
- "<BR[": {
-  "en": "pass",
-  "gloss_fr": "passer, traverser",
+ "<B==/": {
+  "en": "thicket",
+  "gloss_fr": "thicket (en)",
+  "sp": "subs"
+ },
+ "<BD/": {
+  "en": "servant",
+  "gloss_fr": "servant (en)",
+  "sp": "subs"
+ },
+ "<BD=/": {
+  "en": "work",
+  "gloss_fr": "work (en)",
+  "sp": "subs"
+ },
+ "<BDH=/": {
+  "en": "slaves",
+  "gloss_fr": "slaves (en)",
+  "sp": "subs"
+ },
+ "<BR/": {
+  "en": "opposite bank",
+  "gloss_fr": "opposite bank (en)",
+  "sp": "subs"
+ },
+ "<BR=[": {
+  "en": "be angry",
+  "gloss_fr": "be angry (en)",
   "sp": "verb"
  },
- "<LH[": {
-  "en": "ascend",
-  "gloss_fr": "monter, gravir",
+ "<BRH/": {
+  "en": "crossing",
+  "gloss_fr": "crossing (en)",
+  "sp": "subs"
+ },
+ "<BRJ=/": {
+  "en": "Ibri",
+  "gloss_fr": "Ibri (en)",
+  "sp": "nmpr"
+ },
+ "<BT[": {
+  "en": "pervert",
+  "gloss_fr": "pervert (en)",
+  "sp": "verb"
+ },
+ "<BV=[": {
+  "en": "change",
+  "gloss_fr": "change (en)",
+  "sp": "verb"
+ },
+ "<BWR=/": {
+  "en": "produce",
+  "gloss_fr": "produce (en)",
+  "sp": "subs"
+ },
+ "<BWT/": {
+  "en": "branchy",
+  "gloss_fr": "branchy (en)",
+  "sp": "adjv"
+ },
+ "<C=/": {
+  "en": "putrefaction",
+  "gloss_fr": "putrefaction (en)",
+  "sp": "subs"
+ },
+ "<C==/": {
+  "en": "constellation of lion",
+  "gloss_fr": "constellation of lion (en)",
+  "sp": "subs"
+ },
+ "<CN=/": {
+  "en": "smoking",
+  "gloss_fr": "smoking (en)",
+  "sp": "adjv"
+ },
+ "<CQ/": {
+  "en": "oppression",
+  "gloss_fr": "oppression (en)",
+  "sp": "subs"
+ },
+ "<CR[": {
+  "en": "become rich",
+  "gloss_fr": "become rich (en)",
+  "sp": "verb"
+ },
+ "<CT/": {
+  "en": "plate",
+  "gloss_fr": "plate (en)",
+  "sp": "subs"
+ },
+ "<CT[": {
+  "en": "intend",
+  "gloss_fr": "intend (en)",
+  "sp": "verb"
+ },
+ "<D": {
+  "en": "until",
+  "gloss_fr": "until (en)",
+  "sp": "prep"
+ },
+ "<D/": {
+  "en": "future",
+  "gloss_fr": "future (en)",
+  "sp": "subs"
+ },
+ "<D==/": {
+  "en": "prey",
+  "gloss_fr": "prey (en)",
+  "sp": "subs"
+ },
+ "<DH=/": {
+  "en": "witness",
+  "gloss_fr": "witness (en)",
+  "sp": "subs"
+ },
+ "<DH==/": {
+  "en": "menstruation",
+  "gloss_fr": "menstruation (en)",
+  "sp": "subs"
+ },
+ "<DH=[": {
+  "en": "stride",
+  "gloss_fr": "stride (en)",
+  "sp": "verb"
+ },
+ "<DH[": {
+  "en": "go",
+  "gloss_fr": "go (en)",
+  "sp": "verb"
+ },
+ "<DN/": {
+  "en": "time",
+  "gloss_fr": "time (en)",
+  "sp": "subs"
+ },
+ "<DN==/": {
+  "en": "Eden",
+  "gloss_fr": "Eden (en)",
+  "sp": "nmpr"
+ },
+ "<DN===/": {
+  "en": "Eden",
+  "gloss_fr": "Eden (en)",
+  "sp": "nmpr"
+ },
+ "<DNH": {
+  "en": "hitherto",
+  "gloss_fr": "hitherto (en)",
+  "sp": "advb"
+ },
+ "<DN[": {
+  "en": "be luxurious",
+  "gloss_fr": "be luxurious (en)",
+  "sp": "verb"
+ },
+ "<DR==[": {
+  "en": "flock together",
+  "gloss_fr": "flock together (en)",
+  "sp": "verb"
+ },
+ "<DR=[": {
+  "en": "weed",
+  "gloss_fr": "weed (en)",
+  "sp": "verb"
+ },
+ "<DR[": {
+  "en": "be missing",
+  "gloss_fr": "be missing (en)",
+  "sp": "verb"
+ },
+ "<FR/": {
+  "en": "ten",
+  "gloss_fr": "ten (en)",
+  "sp": "subs"
+ },
+ "<FR[": {
+  "en": "take tenth",
+  "gloss_fr": "take tenth (en)",
+  "sp": "verb"
+ },
+ "<GL=/": {
+  "en": "round",
+  "gloss_fr": "round (en)",
+  "sp": "adjv"
+ },
+ "<GLH/": {
+  "en": "cow",
+  "gloss_fr": "cow (en)",
+  "sp": "subs"
+ },
+ "<JN[": {
+  "en": "look at",
+  "gloss_fr": "look at (en)",
+  "sp": "verb"
+ },
+ "<JP[": {
+  "en": "be faint",
+  "gloss_fr": "be faint (en)",
+  "sp": "verb"
+ },
+ "<JR/": {
+  "en": "angel",
+  "gloss_fr": "angel (en)",
+  "sp": "subs"
+ },
+ "<JR==/": {
+  "en": "ass",
+  "gloss_fr": "ass (en)",
+  "sp": "subs"
+ },
+ "<JR===/": {
+  "en": "excitement",
+  "gloss_fr": "excitement (en)",
+  "sp": "subs"
+ },
+ "<JV[": {
+  "en": "rebuke",
+  "gloss_fr": "rebuke (en)",
+  "sp": "verb"
+ },
+ "<KS[": {
+  "en": "fetter",
+  "gloss_fr": "fetter (en)",
+  "sp": "verb"
+ },
+ "<L/": {
+  "en": "yoke",
+  "gloss_fr": "yoke (en)",
+  "sp": "subs"
+ },
+ "<L</": {
+  "en": "rib",
+  "gloss_fr": "rib (en)",
+  "sp": "subs"
+ },
+ "<L=/": {
+  "en": "height",
+  "gloss_fr": "height (en)",
+  "sp": "subs"
+ },
+ "<LH/": {
+  "en": "pretext",
+  "gloss_fr": "pretext (en)",
+  "sp": "subs"
+ },
+ "<LH=/": {
+  "en": "leafage",
+  "gloss_fr": "leafage (en)",
+  "sp": "subs"
+ },
+ "<LJ/": {
+  "en": "highest",
+  "gloss_fr": "highest (en)",
+  "sp": "adjv"
+ },
+ "<LJ=/": {
+  "en": "upper room",
+  "gloss_fr": "upper room (en)",
+  "sp": "subs"
+ },
+ "<LL=[": {
+  "en": "insert",
+  "gloss_fr": "insert (en)",
+  "sp": "verb"
+ },
+ "<LM/": {
+  "en": "eternity",
+  "gloss_fr": "eternity (en)",
+  "sp": "subs"
+ },
+ "<LWH/": {
+  "en": "sacrifice",
+  "gloss_fr": "sacrifice (en)",
+  "sp": "subs"
+ },
+ "<LZ/": {
+  "en": "rejoicing",
+  "gloss_fr": "rejoicing (en)",
+  "sp": "adjv"
+ },
+ "<MD/": {
+  "en": "company",
+  "gloss_fr": "company (en)",
+  "sp": "subs"
+ },
+ "<MD=/": {
+  "en": "place",
+  "gloss_fr": "place (en)",
+  "sp": "subs"
+ },
+ "<ML=/": {
+  "en": "labouring",
+  "gloss_fr": "labouring (en)",
+  "sp": "adjv"
+ },
+ "<ML[": {
+  "en": "labour",
+  "gloss_fr": "labour (en)",
+  "sp": "verb"
+ },
+ "<MM=[": {
+  "en": "be dark",
+  "gloss_fr": "be dark (en)",
+  "sp": "verb"
+ },
+ "<MQ=/": {
+  "en": "deep",
+  "gloss_fr": "deep (en)",
+  "sp": "adjv"
+ },
+ "<MQ==/": {
+  "en": "unintelligible",
+  "gloss_fr": "unintelligible (en)",
+  "sp": "adjv"
+ },
+ "<MQ===/": {
+  "en": "depth",
+  "gloss_fr": "depth (en)",
+  "sp": "subs"
+ },
+ "<MQ[": {
+  "en": "be deep",
+  "gloss_fr": "be deep (en)",
+  "sp": "verb"
+ },
+ "<MR/": {
+  "en": "wool",
+  "gloss_fr": "wool (en)",
+  "sp": "subs"
+ },
+ "<MR=[": {
+  "en": "gather ears",
+  "gloss_fr": "gather ears (en)",
+  "sp": "verb"
+ },
+ "<MR[": {
+  "en": "deal violently",
+  "gloss_fr": "deal violently (en)",
+  "sp": "verb"
+ },
+ "<NC/": {
+  "en": "fine",
+  "gloss_fr": "fine (en)",
+  "sp": "subs"
+ },
+ "<NG=/": {
+  "en": "delight",
+  "gloss_fr": "delight (en)",
+  "sp": "subs"
+ },
+ "<NH/": {
+  "en": "humble",
+  "gloss_fr": "humble (en)",
+  "sp": "adjv"
+ },
+ "<NH===[": {
+  "en": "be worried",
+  "gloss_fr": "be worried (en)",
+  "sp": "verb"
+ },
+ "<NH==[": {
+  "en": "sing",
+  "gloss_fr": "sing (en)",
   "sp": "verb"
  },
  "<NH[": {
   "en": "answer",
   "gloss_fr": "répondre, répondre à",
   "sp": "verb"
+ },
+ "<NJ=/": {
+  "en": "poverty",
+  "gloss_fr": "poverty (en)",
+  "sp": "subs"
+ },
+ "<NN/": {
+  "en": "cloud",
+  "gloss_fr": "cloud (en)",
+  "sp": "subs"
+ },
+ "<NP=/": {
+  "en": "branchy",
+  "gloss_fr": "branchy (en)",
+  "sp": "adjv"
+ },
+ "<NQ=/": {
+  "en": "necklace",
+  "gloss_fr": "necklace (en)",
+  "sp": "subs"
+ },
+ "<NQ[": {
+  "en": "put around neck",
+  "gloss_fr": "put around neck (en)",
+  "sp": "verb"
+ },
+ "<PR=/": {
+  "en": "gazelle",
+  "gloss_fr": "gazelle (en)",
+  "sp": "subs"
+ },
+ "<PRH=/": {
+  "en": "Aphrah",
+  "gloss_fr": "Aphrah (en)",
+  "sp": "nmpr"
+ },
+ "<PRH==/": {
+  "en": "Ophrah",
+  "gloss_fr": "Ophrah (en)",
+  "sp": "nmpr"
+ },
+ "<PR[": {
+  "en": "throw",
+  "gloss_fr": "throw (en)",
+  "sp": "verb"
+ },
+ "<QB=/": {
+  "en": "heel",
+  "gloss_fr": "heel (en)",
+  "sp": "subs"
+ },
+ "<QB==/": {
+  "en": "something knobby",
+  "gloss_fr": "something knobby (en)",
+  "sp": "subs"
+ },
+ "<QB[": {
+  "en": "seize at heel",
+  "gloss_fr": "seize at heel (en)",
+  "sp": "verb"
+ },
+ "<QC[": {
+  "en": "crook",
+  "gloss_fr": "crook (en)",
+  "sp": "verb"
+ },
+ "<QD[": {
+  "en": "bind",
+  "gloss_fr": "bind (en)",
+  "sp": "verb"
+ },
+ "<QR=/": {
+  "en": "offspring",
+  "gloss_fr": "offspring (en)",
+  "sp": "subs"
+ },
+ "<QR[": {
+  "en": "pluck out",
+  "gloss_fr": "pluck out (en)",
+  "sp": "verb"
+ },
+ "<R/": {
+  "en": "adversary",
+  "gloss_fr": "adversary (en)",
+  "sp": "subs"
+ },
+ "<R==/": {
+  "en": "Ar",
+  "gloss_fr": "Ar (en)",
+  "sp": "nmpr"
+ },
+ "<RB=/": {
+  "en": "swarm",
+  "gloss_fr": "swarm (en)",
+  "sp": "subs"
+ },
+ "<RB==/": {
+  "en": "woof",
+  "gloss_fr": "woof (en)",
+  "sp": "subs"
+ },
+ "<RB===/": {
+  "en": "raven",
+  "gloss_fr": "raven (en)",
+  "sp": "subs"
+ },
+ "<RB====/": {
+  "en": "mixture",
+  "gloss_fr": "mixture (en)",
+  "sp": "subs"
+ },
+ "<RB=======/": {
+  "en": "pleasant",
+  "gloss_fr": "pleasant (en)",
+  "sp": "adjv"
+ },
+ "<RB===[": {
+  "en": "be pleasing",
+  "gloss_fr": "be pleasing (en)",
+  "sp": "verb"
+ },
+ "<RB==[": {
+  "en": "mix",
+  "gloss_fr": "mix (en)",
+  "sp": "verb"
+ },
+ "<RB=[": {
+  "en": "become evening",
+  "gloss_fr": "become evening (en)",
+  "sp": "verb"
+ },
+ "<RBH=/": {
+  "en": "poplar",
+  "gloss_fr": "poplar (en)",
+  "sp": "subs"
+ },
+ "<RBH==/": {
+  "en": "pledge",
+  "gloss_fr": "pledge (en)",
+  "sp": "subs"
+ },
+ "<RB[": {
+  "en": "mix",
+  "gloss_fr": "mix (en)",
+  "sp": "verb"
+ },
+ "<RH/": {
+  "en": "rush",
+  "gloss_fr": "rush (en)",
+  "sp": "subs"
+ },
+ "<RJ/": {
+  "en": "Erite",
+  "gloss_fr": "Erite (en)",
+  "sp": "adjv"
+ },
+ "<RK/": {
+  "en": "arrangement",
+  "gloss_fr": "arrangement (en)",
+  "sp": "subs"
+ },
+ "<RL[": {
+  "en": "leave unharvested",
+  "gloss_fr": "leave unharvested (en)",
+  "sp": "verb"
+ },
+ "<RMH/": {
+  "en": "prudence",
+  "gloss_fr": "prudence (en)",
+  "sp": "subs"
+ },
+ "<RM[": {
+  "en": "heap",
+  "gloss_fr": "heap (en)",
+  "sp": "verb"
+ },
+ "<RP=[": {
+  "en": "break",
+  "gloss_fr": "break (en)",
+  "sp": "verb"
+ },
+ "<RP[": {
+  "en": "drip",
+  "gloss_fr": "drip (en)",
+  "sp": "verb"
+ },
+ "<RWM=/": {
+  "en": "shrewd",
+  "gloss_fr": "shrewd (en)",
+  "sp": "adjv"
+ },
+ "<TJQ=/": {
+  "en": "choice",
+  "gloss_fr": "choice (en)",
+  "sp": "adjv"
+ },
+ "<TQ/": {
+  "en": "unrestrained",
+  "gloss_fr": "unrestrained (en)",
+  "sp": "adjv"
+ },
+ "<TQ=/": {
+  "en": "hereditary",
+  "gloss_fr": "hereditary (en)",
+  "sp": "adjv"
+ },
+ "<TR/": {
+  "en": "perfume",
+  "gloss_fr": "perfume (en)",
+  "sp": "subs"
+ },
+ "<TWD=/": {
+  "en": "ready",
+  "gloss_fr": "ready (en)",
+  "sp": "subs"
+ },
+ "<VH/": {
+  "en": "advice",
+  "gloss_fr": "advice (en)",
+  "sp": "subs"
+ },
+ "<VH=[": {
+  "en": "grasp",
+  "gloss_fr": "grasp (en)",
+  "sp": "verb"
+ },
+ "<VP[": {
+  "en": "turn aside",
+  "gloss_fr": "turn aside (en)",
+  "sp": "verb"
+ },
+ "<WD/": {
+  "en": "still",
+  "gloss_fr": "still (en)",
+  "sp": "subs"
+ },
+ "<WG[": {
+  "en": "bake",
+  "gloss_fr": "bake (en)",
+  "sp": "verb"
+ },
+ "<WH/": {
+  "en": "ruin",
+  "gloss_fr": "ruin (en)",
+  "sp": "subs"
+ },
+ "<WL/": {
+  "en": "suckling",
+  "gloss_fr": "suckling (en)",
+  "sp": "subs"
+ },
+ "<WL==/": {
+  "en": "evildoer",
+  "gloss_fr": "evildoer (en)",
+  "sp": "subs"
+ },
+ "<WL=[": {
+  "en": "do wrong",
+  "gloss_fr": "do wrong (en)",
+  "sp": "verb"
+ },
+ "<WL[": {
+  "en": "nurse",
+  "gloss_fr": "nurse (en)",
+  "sp": "verb"
+ },
+ "<WP/": {
+  "en": "bird",
+  "gloss_fr": "bird (en)",
+  "sp": "subs"
+ },
+ "<WR/": {
+  "en": "chaff",
+  "gloss_fr": "chaff (en)",
+  "sp": "subs"
  },
  "<WR==[": {
   "en": "be naked",
@@ -29,44 +659,1829 @@
   "gloss_fr": "éveiller, réveiller",
   "sp": "verb"
  },
- "<ZB[": {
-  "en": "leave",
-  "gloss_fr": "abandonner, quitter",
+ "<WY=/": {
+  "en": "Uz",
+  "gloss_fr": "Uz (en)",
+  "sp": "nmpr"
+ },
+ "<WY[": {
+  "en": "plan",
+  "gloss_fr": "plan (en)",
   "sp": "verb"
  },
- ">SP[": {
-  "en": "gather",
-  "gloss_fr": "assembler, rassembler, recueillir",
+ "<YB=/": {
+  "en": "pain",
+  "gloss_fr": "pain (en)",
+  "sp": "subs"
+ },
+ "<YB==/": {
+  "en": "pain",
+  "gloss_fr": "pain (en)",
+  "sp": "subs"
+ },
+ "<YB===/": {
+  "en": "idol",
+  "gloss_fr": "idol (en)",
+  "sp": "subs"
+ },
+ "<YB====/": {
+  "en": "form",
+  "gloss_fr": "form (en)",
+  "sp": "subs"
+ },
+ "<YB=[": {
+  "en": "shape",
+  "gloss_fr": "shape (en)",
   "sp": "verb"
  },
- "B<R[": {
-  "en": "burn",
-  "gloss_fr": "brûler, s'enflammer",
+ "<YB[": {
+  "en": "hurt",
+  "gloss_fr": "hurt (en)",
   "sp": "verb"
  },
- "BJN[": {
-  "en": "understand",
-  "gloss_fr": "comprendre, discerner, percevoir",
+ "<YH=/": {
+  "en": "rebellion",
+  "gloss_fr": "rebellion (en)",
+  "sp": "subs"
+ },
+ "<YH==/": {
+  "en": "spine",
+  "gloss_fr": "spine (en)",
+  "sp": "subs"
+ },
+ "<YH===/": {
+  "en": "wood",
+  "gloss_fr": "wood (en)",
+  "sp": "subs"
+ },
+ "<YH[": {
+  "en": "blink",
+  "gloss_fr": "blink (en)",
   "sp": "verb"
  },
- "BKH[": {
-  "en": "weep",
-  "gloss_fr": "pleurer, verser des larmes",
+ "<YL[": {
+  "en": "be sluggish",
+  "gloss_fr": "be sluggish (en)",
   "sp": "verb"
+ },
+ "<YM=/": {
+  "en": "might",
+  "gloss_fr": "might (en)",
+  "sp": "subs"
+ },
+ "<YM==/": {
+  "en": "bones",
+  "gloss_fr": "bones (en)",
+  "sp": "subs"
+ },
+ "<YM=[": {
+  "en": "close",
+  "gloss_fr": "close (en)",
+  "sp": "verb"
+ },
+ "<YMH=/": {
+  "en": "evil deed, pain",
+  "gloss_fr": "evil deed, pain (en)",
+  "sp": "subs"
+ },
+ "<YM[": {
+  "en": "be mighty",
+  "gloss_fr": "be mighty (en)",
+  "sp": "verb"
+ },
+ "<YR/": {
+  "en": "restraint",
+  "gloss_fr": "restraint (en)",
+  "sp": "subs"
+ },
+ "<YR=/": {
+  "en": "oppression",
+  "gloss_fr": "oppression (en)",
+  "sp": "subs"
+ },
+ "<Z/": {
+  "en": "goat",
+  "gloss_fr": "goat (en)",
+  "sp": "subs"
+ },
+ "<Z=/": {
+  "en": "protection",
+  "gloss_fr": "protection (en)",
+  "sp": "subs"
+ },
+ "<Z===/": {
+  "en": "strong",
+  "gloss_fr": "strong (en)",
+  "sp": "adjv"
+ },
+ "<ZB=[": {
+  "en": "flag",
+  "gloss_fr": "flag (en)",
+  "sp": "verb"
+ },
+ "<ZH=/": {
+  "en": "Uzzah",
+  "gloss_fr": "Uzzah (en)",
+  "sp": "nmpr"
+ },
+ "<ZJ>L=/": {
+  "en": "Aziel",
+  "gloss_fr": "Aziel (en)",
+  "sp": "nmpr"
+ },
+ "<ZR/": {
+  "en": "help, helper",
+  "gloss_fr": "help, helper (en)",
+  "sp": "subs"
+ },
+ "<ZRH=/": {
+  "en": "barrier",
+  "gloss_fr": "barrier (en)",
+  "sp": "subs"
+ },
+ "<ZWZ=/": {
+  "en": "powerful",
+  "gloss_fr": "powerful (en)",
+  "sp": "adjv"
+ },
+ ">B=/": {
+  "en": "fruit",
+  "gloss_fr": "fruit (en)",
+  "sp": "subs"
+ },
+ ">BDH=/": {
+  "en": "destruction",
+  "gloss_fr": "destruction (en)",
+  "sp": "subs"
+ },
+ ">BH/": {
+  "en": "reed",
+  "gloss_fr": "reed (en)",
+  "sp": "subs"
+ },
+ ">BL": {
+  "en": "verily",
+  "gloss_fr": "verily (en)",
+  "sp": "intj"
+ },
+ ">BL=/": {
+  "en": "water-course",
+  "gloss_fr": "water-course (en)",
+  "sp": "subs"
+ },
+ ">BL==/": {
+  "en": "mourning rites",
+  "gloss_fr": "mourning rites (en)",
+  "sp": "subs"
+ },
+ ">BL===/": {
+  "en": "mourning",
+  "gloss_fr": "mourning (en)",
+  "sp": "adjv"
+ },
+ ">BL====/": {
+  "en": "canal",
+  "gloss_fr": "canal (en)",
+  "sp": "subs"
+ },
+ ">BL=[": {
+  "en": "dry up",
+  "gloss_fr": "dry up (en)",
+  "sp": "verb"
+ },
+ ">BN=/": {
+  "en": "potter's wheel",
+  "gloss_fr": "potter's wheel (en)",
+  "sp": "subs"
+ },
+ ">BQ[": {
+  "en": "wrestle",
+  "gloss_fr": "wrestle (en)",
+  "sp": "verb"
+ },
+ ">BR[": {
+  "en": "soar up",
+  "gloss_fr": "soar up (en)",
+  "sp": "verb"
+ },
+ ">C=/": {
+  "en": "existence",
+  "gloss_fr": "existence (en)",
+  "sp": "subs"
+ },
+ ">CH=/": {
+  "en": "fire offering",
+  "gloss_fr": "fire offering (en)",
+  "sp": "subs"
+ },
+ ">CKL/": {
+  "en": "Eshcol",
+  "gloss_fr": "Eshcol (en)",
+  "sp": "nmpr"
+ },
+ ">CM=/": {
+  "en": "guilty",
+  "gloss_fr": "guilty (en)",
+  "sp": "adjv"
+ },
+ ">CM[": {
+  "en": "do wrong",
+  "gloss_fr": "do wrong (en)",
+  "sp": "verb"
+ },
+ ">CR=/": {
+  "en": "happiness",
+  "gloss_fr": "happiness (en)",
+  "sp": "subs"
+ },
+ ">CR===/": {
+  "en": "happiness",
+  "gloss_fr": "happiness (en)",
+  "sp": "subs"
+ },
+ ">CR=[": {
+  "en": "be happy",
+  "gloss_fr": "be happy (en)",
+  "sp": "verb"
+ },
+ ">CR[": {
+  "en": "walk straight",
+  "gloss_fr": "walk straight (en)",
+  "sp": "verb"
+ },
+ ">DM=/": {
+  "en": "red",
+  "gloss_fr": "red (en)",
+  "sp": "adjv"
+ },
+ ">DM==/": {
+  "en": "ruby",
+  "gloss_fr": "ruby (en)",
+  "sp": "subs"
+ },
+ ">DM[": {
+  "en": "be ruddy",
+  "gloss_fr": "be ruddy (en)",
+  "sp": "verb"
+ },
+ ">DR=/": {
+  "en": "threshing-floor",
+  "gloss_fr": "threshing-floor (en)",
+  "sp": "subs"
+ },
+ ">DR==/": {
+  "en": "Addar",
+  "gloss_fr": "Addar (en)",
+  "sp": "nmpr"
+ },
+ ">GM=/": {
+  "en": "grieved",
+  "gloss_fr": "grieved (en)",
+  "sp": "adjv"
+ },
+ ">HB/": {
+  "en": "display of love",
+  "gloss_fr": "display of love (en)",
+  "sp": "subs"
+ },
+ ">HB=/": {
+  "en": "love",
+  "gloss_fr": "love (en)",
+  "sp": "subs"
+ },
+ ">HL==/": {
+  "en": "aloe",
+  "gloss_fr": "aloe (en)",
+  "sp": "subs"
+ },
+ ">HL=[": {
+  "en": "be bright",
+  "gloss_fr": "be bright (en)",
+  "sp": "verb"
+ },
+ ">HL[": {
+  "en": "pitch a tent",
+  "gloss_fr": "pitch a tent (en)",
+  "sp": "verb"
+ },
+ ">J/": {
+  "en": "coast, island",
+  "gloss_fr": "coast, island (en)",
+  "sp": "subs"
+ },
+ ">J=": {
+  "en": "how",
+  "gloss_fr": "how (en)",
+  "sp": "inrg"
+ },
+ ">J=/": {
+  "en": "islander",
+  "gloss_fr": "islander (en)",
+  "sp": "subs"
+ },
+ ">J==": {
+  "en": "not",
+  "gloss_fr": "not (en)",
+  "sp": "nega"
+ },
+ ">JH/": {
+  "en": "black bird",
+  "gloss_fr": "black bird (en)",
+  "sp": "subs"
+ },
+ ">JL/": {
+  "en": "fallow-buck",
+  "gloss_fr": "fallow-buck (en)",
+  "sp": "subs"
+ },
+ ">JL==/": {
+  "en": "mighty tree",
+  "gloss_fr": "mighty tree (en)",
+  "sp": "subs"
+ },
+ ">JL===/": {
+  "en": "pillar",
+  "gloss_fr": "pillar (en)",
+  "sp": "subs"
+ },
+ ">JL====/": {
+  "en": "strength",
+  "gloss_fr": "strength (en)",
+  "sp": "subs"
+ },
+ ">JLWN=/": {
+  "en": "Elon",
+  "gloss_fr": "Elon (en)",
+  "sp": "nmpr"
+ },
+ ">JN": {
+  "en": "whence",
+  "gloss_fr": "whence (en)",
+  "sp": "inrg"
+ },
+ ">JN=": {
+  "en": "if",
+  "gloss_fr": "if (en)",
+  "sp": "conj"
+ },
+ ">JPH": {
+  "en": "where",
+  "gloss_fr": "where (en)",
+  "sp": "inrg"
+ },
+ ">KL[": {
+  "en": "eat",
+  "gloss_fr": "eat (en)",
+  "sp": "verb"
+ },
+ ">KP[": {
+  "en": "press hard",
+  "gloss_fr": "press hard (en)",
+  "sp": "verb"
+ },
+ ">L": {
+  "en": "not",
+  "gloss_fr": "not (en)",
+  "sp": "nega"
+ },
+ ">L=": {
+  "en": "these",
+  "gloss_fr": "these (en)",
+  "sp": "prde"
+ },
+ ">L=/": {
+  "en": "nothingness",
+  "gloss_fr": "nothingness (en)",
+  "sp": "subs"
+ },
+ ">L==": {
+  "en": "where",
+  "gloss_fr": "where (en)",
+  "sp": "inrg"
+ },
+ ">L==/": {
+  "en": "power",
+  "gloss_fr": "power (en)",
+  "sp": "subs"
+ },
+ ">L===": {
+  "en": "these",
+  "gloss_fr": "these (en)",
+  "sp": "prde"
+ },
+ ">LH=/": {
+  "en": "curse",
+  "gloss_fr": "curse (en)",
+  "sp": "subs"
+ },
+ ">LH==/": {
+  "en": "big tree",
+  "gloss_fr": "big tree (en)",
+  "sp": "subs"
+ },
+ ">LH==[": {
+  "en": "wail",
+  "gloss_fr": "wail (en)",
+  "sp": "verb"
+ },
+ ">LH=[": {
+  "en": "be unable",
+  "gloss_fr": "be unable (en)",
+  "sp": "verb"
+ },
+ ">LH[": {
+  "en": "swear",
+  "gloss_fr": "swear (en)",
+  "sp": "verb"
+ },
+ ">LJHW=/": {
+  "en": "Elihu",
+  "gloss_fr": "Elihu (en)",
+  "sp": "nmpr"
+ },
+ ">LM/": {
+  "en": "speechless",
+  "gloss_fr": "speechless (en)",
+  "sp": "adjv"
+ },
+ ">LMN=/": {
+  "en": "widower",
+  "gloss_fr": "widower (en)",
+  "sp": "subs"
+ },
+ ">LP/": {
+  "en": "thousand",
+  "gloss_fr": "thousand (en)",
+  "sp": "subs"
+ },
+ ">LP==/": {
+  "en": "group of thousand",
+  "gloss_fr": "group of thousand (en)",
+  "sp": "subs"
+ },
+ ">LP=[": {
+  "en": "produce in abundance",
+  "gloss_fr": "produce in abundance (en)",
+  "sp": "verb"
+ },
+ ">LP[": {
+  "en": "be familiar",
+  "gloss_fr": "be familiar (en)",
+  "sp": "verb"
+ },
+ ">LWP=/": {
+  "en": "familiar",
+  "gloss_fr": "familiar (en)",
+  "sp": "adjv"
+ },
+ ">M/": {
+  "en": "mother",
+  "gloss_fr": "mother (en)",
+  "sp": "subs"
+ },
+ ">MH/": {
+  "en": "cubit",
+  "gloss_fr": "cubit (en)",
+  "sp": "subs"
+ },
+ ">MH==/": {
+  "en": "clan",
+  "gloss_fr": "clan (en)",
+  "sp": "subs"
+ },
+ ">MLL/": {
+  "en": "decaying",
+  "gloss_fr": "decaying (en)",
+  "sp": "adjv"
+ },
+ ">MN/": {
+  "en": "faith",
+  "gloss_fr": "faith (en)",
+  "sp": "subs"
+ },
+ ">MN=/": {
+  "en": "faithfulness",
+  "gloss_fr": "faithfulness (en)",
+  "sp": "subs"
+ },
+ ">MN==/": {
+  "en": "artisan",
+  "gloss_fr": "artisan (en)",
+  "sp": "subs"
+ },
+ ">MNH/": {
+  "en": "door-post",
+  "gloss_fr": "door-post (en)",
+  "sp": "subs"
+ },
+ ">MNH=/": {
+  "en": "care",
+  "gloss_fr": "care (en)",
+  "sp": "subs"
+ },
+ ">MNH==/": {
+  "en": "trustworthy arrangement",
+  "gloss_fr": "trustworthy arrangement (en)",
+  "sp": "subs"
+ },
+ ">MN[": {
+  "en": "be steady",
+  "gloss_fr": "be steady (en)",
+  "sp": "verb"
+ },
+ ">MR/": {
+  "en": "lamb",
+  "gloss_fr": "lamb (en)",
+  "sp": "subs"
+ },
+ ">MR=/": {
+  "en": "saying",
+  "gloss_fr": "saying (en)",
+  "sp": "subs"
+ },
+ ">MR==/": {
+  "en": "antler",
+  "gloss_fr": "antler (en)",
+  "sp": "subs"
+ },
+ ">MR=[": {
+  "en": "boast",
+  "gloss_fr": "boast (en)",
+  "sp": "verb"
+ },
+ ">MRJ=/": {
+  "en": "Imri",
+  "gloss_fr": "Imri (en)",
+  "sp": "nmpr"
+ },
+ ">MY/": {
+  "en": "strength",
+  "gloss_fr": "strength (en)",
+  "sp": "subs"
+ },
+ ">MY=/": {
+  "en": "piebald",
+  "gloss_fr": "piebald (en)",
+  "sp": "adjv"
+ },
+ ">NC[": {
+  "en": "be sickly",
+  "gloss_fr": "be sickly (en)",
+  "sp": "verb"
+ },
+ ">NH/": {
+  "en": "time of mourning",
+  "gloss_fr": "time of mourning (en)",
+  "sp": "subs"
+ },
+ ">NH=[": {
+  "en": "mourn",
+  "gloss_fr": "mourn (en)",
+  "sp": "verb"
+ },
+ ">NH[": {
+  "en": "occur",
+  "gloss_fr": "occur (en)",
+  "sp": "verb"
+ },
+ ">NJ/": {
+  "en": "ship",
+  "gloss_fr": "ship (en)",
+  "sp": "subs"
+ },
+ ">NJH=/": {
+  "en": "mourning",
+  "gloss_fr": "mourning (en)",
+  "sp": "subs"
+ },
+ ">NP/": {
+  "en": "face",
+  "gloss_fr": "face (en)",
+  "sp": "subs"
+ },
+ ">NQH=/": {
+  "en": "gecko",
+  "gloss_fr": "gecko (en)",
+  "sp": "subs"
+ },
+ ">NWC=/": {
+  "en": "incurable",
+  "gloss_fr": "incurable (en)",
+  "sp": "adjv"
+ },
+ ">P": {
+  "en": "also",
+  "gloss_fr": "also (en)",
+  "sp": "advb"
+ },
+ ">PD[": {
+  "en": "dress",
+  "gloss_fr": "dress (en)",
+  "sp": "verb"
+ },
+ ">PH/": {
+  "en": "baker",
+  "gloss_fr": "baker (en)",
+  "sp": "subs"
+ },
+ ">PJQ=/": {
+  "en": "strong",
+  "gloss_fr": "strong (en)",
+  "sp": "adjv"
+ },
+ ">PQ[": {
+  "en": "be strong",
+  "gloss_fr": "be strong (en)",
+  "sp": "verb"
+ },
+ ">PR=/": {
+  "en": "band",
+  "gloss_fr": "band (en)",
+  "sp": "subs"
+ },
+ ">R>LJ/": {
+  "en": "Arelite",
+  "gloss_fr": "Arelite (en)",
+  "sp": "adjv"
+ },
+ ">RB/": {
+  "en": "ambush",
+  "gloss_fr": "ambush (en)",
+  "sp": "subs"
+ },
+ ">RB=/": {
+  "en": "ambush",
+  "gloss_fr": "ambush (en)",
+  "sp": "subs"
+ },
+ ">RBH=/": {
+  "en": "hole",
+  "gloss_fr": "hole (en)",
+  "sp": "subs"
+ },
+ ">RDJ=/": {
+  "en": "Aridai",
+  "gloss_fr": "Aridai (en)",
+  "sp": "nmpr"
+ },
+ ">RG/": {
+  "en": "weaver's bobbin",
+  "gloss_fr": "weaver's bobbin (en)",
+  "sp": "subs"
+ },
+ ">RK/": {
+  "en": "long",
+  "gloss_fr": "long (en)",
+  "sp": "adjv"
+ },
+ ">RK==/": {
+  "en": "long",
+  "gloss_fr": "long (en)",
+  "sp": "adjv"
+ },
+ ">RK[": {
+  "en": "be long",
+  "gloss_fr": "be long (en)",
+  "sp": "verb"
+ },
+ ">RMJ=/": {
+  "en": "in Aramaic",
+  "gloss_fr": "in Aramaic (en)",
+  "sp": "adjv"
+ },
+ ">RN==/": {
+  "en": "Oren",
+  "gloss_fr": "Oren (en)",
+  "sp": "nmpr"
+ },
+ ">RNN/": {
+  "en": "Arnan",
+  "gloss_fr": "Arnan (en)",
+  "sp": "nmpr"
+ },
+ ">RWD/": {
+  "en": "Arodi",
+  "gloss_fr": "Arodi (en)",
+  "sp": "nmpr"
+ },
+ ">RWDJ=/": {
+  "en": "Arodite",
+  "gloss_fr": "Arodite (en)",
+  "sp": "adjv"
+ },
+ ">RWDJ==/": {
+  "en": "Arodi",
+  "gloss_fr": "Arodi (en)",
+  "sp": "nmpr"
+ },
+ ">RX/": {
+  "en": "way",
+  "gloss_fr": "way (en)",
+  "sp": "subs"
+ },
+ ">RXH/": {
+  "en": "caravan",
+  "gloss_fr": "caravan (en)",
+  "sp": "subs"
+ },
+ ">SP/": {
+  "en": "gathering",
+  "gloss_fr": "gathering (en)",
+  "sp": "subs"
+ },
+ ">SP=/": {
+  "en": "store",
+  "gloss_fr": "store (en)",
+  "sp": "subs"
+ },
+ ">SPH=/": {
+  "en": "collection",
+  "gloss_fr": "collection (en)",
+  "sp": "subs"
+ },
+ ">SR/": {
+  "en": "inhibition",
+  "gloss_fr": "inhibition (en)",
+  "sp": "subs"
+ },
+ ">T/": {
+  "en": "sign",
+  "gloss_fr": "sign (en)",
+  "sp": "subs"
+ },
+ ">T=": {
+  "en": "you",
+  "gloss_fr": "you (en)",
+  "sp": "prps"
+ },
+ ">T==": {
+  "en": "together with",
+  "gloss_fr": "together with (en)",
+  "sp": "prep"
+ },
+ ">TH[": {
+  "en": "come",
+  "gloss_fr": "come (en)",
+  "sp": "verb"
+ },
+ ">TNH/": {
+  "en": "reward",
+  "gloss_fr": "reward (en)",
+  "sp": "subs"
+ },
+ ">VR[": {
+  "en": "close",
+  "gloss_fr": "close (en)",
+  "sp": "verb"
+ },
+ ">WB=/": {
+  "en": "bag",
+  "gloss_fr": "bag (en)",
+  "sp": "subs"
+ },
+ ">WH/": {
+  "en": "desire",
+  "gloss_fr": "desire (en)",
+  "sp": "subs"
+ },
+ ">WJ/": {
+  "en": "Evi",
+  "gloss_fr": "Evi (en)",
+  "sp": "nmpr"
+ },
+ ">WLJ/": {
+  "en": "awkward",
+  "gloss_fr": "awkward (en)",
+  "sp": "adjv"
+ },
+ ">WN/": {
+  "en": "generative power",
+  "gloss_fr": "generative power (en)",
+  "sp": "subs"
+ },
+ ">WR[": {
+  "en": "be light",
+  "gloss_fr": "be light (en)",
+  "sp": "verb"
+ },
+ ">X": {
+  "en": "alas",
+  "gloss_fr": "alas (en)",
+  "sp": "intj"
+ },
+ ">X/": {
+  "en": "brother",
+  "gloss_fr": "brother (en)",
+  "sp": "subs"
+ },
+ ">X=/": {
+  "en": "eagle owl",
+  "gloss_fr": "eagle owl (en)",
+  "sp": "subs"
+ },
+ ">XJ/": {
+  "en": "Ehi",
+  "gloss_fr": "Ehi (en)",
+  "sp": "nmpr"
+ },
+ ">XR/": {
+  "en": "after",
+  "gloss_fr": "after (en)",
+  "sp": "subs"
+ },
+ ">XRJ=/": {
+  "en": "end",
+  "gloss_fr": "end (en)",
+  "sp": "subs"
+ },
+ ">XR[": {
+  "en": "be behind",
+  "gloss_fr": "be behind (en)",
+  "sp": "verb"
+ },
+ ">XZ/": {
+  "en": "holding",
+  "gloss_fr": "holding (en)",
+  "sp": "adjv"
+ },
+ ">XZ=[": {
+  "en": "cover",
+  "gloss_fr": "cover (en)",
+  "sp": "verb"
+ },
+ ">YJL/": {
+  "en": "remote part",
+  "gloss_fr": "remote part (en)",
+  "sp": "subs"
+ },
+ ">YJL=/": {
+  "en": "noble",
+  "gloss_fr": "noble (en)",
+  "sp": "adjv"
+ },
+ ">YL[": {
+  "en": "set aside",
+  "gloss_fr": "set aside (en)",
+  "sp": "verb"
+ },
+ ">ZN=/": {
+  "en": "tool",
+  "gloss_fr": "tool (en)",
+  "sp": "subs"
+ },
+ ">ZN=[": {
+  "en": "ponder",
+  "gloss_fr": "ponder (en)",
+  "sp": "verb"
+ },
+ ">ZNJ/": {
+  "en": "Oznite",
+  "gloss_fr": "Oznite (en)",
+  "sp": "adjv"
+ },
+ ">ZN[": {
+  "en": "listen",
+  "gloss_fr": "listen (en)",
+  "sp": "verb"
+ },
+ "B<L/": {
+  "en": "master",
+  "gloss_fr": "master (en)",
+  "sp": "subs"
+ },
+ "B<R/": {
+  "en": "stupid",
+  "gloss_fr": "stupid (en)",
+  "sp": "adjv"
+ },
+ "B<R=[": {
+  "en": "be stupid",
+  "gloss_fr": "be stupid (en)",
+  "sp": "verb"
+ },
+ "B>C=/": {
+  "en": "rotten berry",
+  "gloss_fr": "rotten berry (en)",
+  "sp": "subs"
+ },
+ "B>C[": {
+  "en": "be evil",
+  "gloss_fr": "be evil (en)",
+  "sp": "verb"
+ },
+ "B>R[": {
+  "en": "explain",
+  "gloss_fr": "explain (en)",
+  "sp": "verb"
+ },
+ "BCL/": {
+  "en": "cooked",
+  "gloss_fr": "cooked (en)",
+  "sp": "adjv"
+ },
+ "BD=/": {
+  "en": "idle talk",
+  "gloss_fr": "idle talk (en)",
+  "sp": "subs"
+ },
+ "BDD[": {
+  "en": "be alone",
+  "gloss_fr": "be alone (en)",
+  "sp": "verb"
+ },
+ "BDJL/": {
+  "en": "dross of melting",
+  "gloss_fr": "dross of melting (en)",
+  "sp": "subs"
+ },
+ "BDL/": {
+  "en": "piece",
+  "gloss_fr": "piece (en)",
+  "sp": "subs"
+ },
+ "BDQ[": {
+  "en": "repair",
+  "gloss_fr": "repair (en)",
+  "sp": "verb"
+ },
+ "BFR/": {
+  "en": "flesh",
+  "gloss_fr": "flesh (en)",
+  "sp": "subs"
+ },
+ "BGD=/": {
+  "en": "treachery",
+  "gloss_fr": "treachery (en)",
+  "sp": "subs"
+ },
+ "BGD[": {
+  "en": "deal treacherously",
+  "gloss_fr": "deal treacherously (en)",
+  "sp": "verb"
+ },
+ "BJN/": {
+  "en": "between",
+  "gloss_fr": "between (en)",
+  "sp": "subs"
+ },
+ "BJT[": {
+  "en": "spend the night",
+  "gloss_fr": "spend the night (en)",
+  "sp": "verb"
+ },
+ "BKH/": {
+  "en": "weeping",
+  "gloss_fr": "weeping (en)",
+  "sp": "subs"
+ },
+ "BKRH=/": {
+  "en": "young female camel",
+  "gloss_fr": "young female camel (en)",
+  "sp": "subs"
+ },
+ "BKRJ/": {
+  "en": "Bekerite",
+  "gloss_fr": "Bekerite (en)",
+  "sp": "adjv"
+ },
+ "BKR[": {
+  "en": "be first-born",
+  "gloss_fr": "be first-born (en)",
+  "sp": "verb"
+ },
+ "BL</": {
+  "en": "confusion",
+  "gloss_fr": "confusion (en)",
+  "sp": "subs"
+ },
+ "BL<=/": {
+  "en": "what is swallowed",
+  "gloss_fr": "what is swallowed (en)",
+  "sp": "subs"
+ },
+ "BL<==[": {
+  "en": "communicate",
+  "gloss_fr": "communicate (en)",
+  "sp": "verb"
+ },
+ "BL<=[": {
+  "en": "confuse",
+  "gloss_fr": "confuse (en)",
+  "sp": "verb"
+ },
+ "BL<M=/": {
+  "en": "Bileam",
+  "gloss_fr": "Bileam (en)",
+  "sp": "nmpr"
+ },
+ "BLHH==/": {
+  "en": "Bilhah",
+  "gloss_fr": "Bilhah (en)",
+  "sp": "nmpr"
+ },
+ "BLH[": {
+  "en": "wear out",
+  "gloss_fr": "wear out (en)",
+  "sp": "verb"
+ },
+ "BLQ[": {
+  "en": "waste",
+  "gloss_fr": "waste (en)",
+  "sp": "verb"
+ },
+ "BNJ=/": {
+  "en": "Bunni",
+  "gloss_fr": "Bunni (en)",
+  "sp": "nmpr"
+ },
+ "BQ</": {
+  "en": "half-shekel",
+  "gloss_fr": "half-shekel (en)",
+  "sp": "subs"
+ },
+ "BQR/": {
+  "en": "cattle",
+  "gloss_fr": "cattle (en)",
+  "sp": "subs"
+ },
+ "BQR[": {
+  "en": "search",
+  "gloss_fr": "search (en)",
+  "sp": "verb"
+ },
+ "BR=/": {
+  "en": "field",
+  "gloss_fr": "field (en)",
+  "sp": "subs"
+ },
+ "BR==/": {
+  "en": "pure",
+  "gloss_fr": "pure (en)",
+  "sp": "adjv"
+ },
+ "BR===/": {
+  "en": "son",
+  "gloss_fr": "son (en)",
+  "sp": "subs"
+ },
+ "BR====/": {
+  "en": "open field",
+  "gloss_fr": "open field (en)",
+  "sp": "subs"
+ },
+ "BR=====/": {
+  "en": "potash",
+  "gloss_fr": "potash (en)",
+  "sp": "subs"
+ },
+ "BR>==[": {
+  "en": "cut down",
+  "gloss_fr": "cut down (en)",
+  "sp": "verb"
+ },
+ "BR>=[": {
+  "en": "fatten",
+  "gloss_fr": "fatten (en)",
+  "sp": "verb"
+ },
+ "BRD=/": {
+  "en": "speckled",
+  "gloss_fr": "speckled (en)",
+  "sp": "adjv"
+ },
+ "BRD[": {
+  "en": "hail",
+  "gloss_fr": "hail (en)",
+  "sp": "verb"
+ },
+ "BRJT=/": {
+  "en": "alkaline salt",
+  "gloss_fr": "alkaline salt (en)",
+  "sp": "subs"
+ },
+ "BRK/": {
+  "en": "knee",
+  "gloss_fr": "knee (en)",
+  "sp": "subs"
  },
  "BRK=[": {
   "en": "kneel",
   "gloss_fr": "bénir, s'agenouiller",
   "sp": "verb"
  },
- "BRK[": {
-  "en": "bless",
-  "gloss_fr": "bénir, s'agenouiller",
+ "BRKH=/": {
+  "en": "pool",
+  "gloss_fr": "pool (en)",
+  "sp": "subs"
+ },
+ "BRQ[": {
+  "en": "lighten",
+  "gloss_fr": "lighten (en)",
   "sp": "verb"
  },
- "BVX[": {
+ "BRX/": {
+  "en": "fleeing",
+  "gloss_fr": "fleeing (en)",
+  "sp": "adjv"
+ },
+ "BTH/": {
+  "en": "gully",
+  "gloss_fr": "gully (en)",
+  "sp": "subs"
+ },
+ "BTR[": {
+  "en": "cut",
+  "gloss_fr": "cut (en)",
+  "sp": "verb"
+ },
+ "BVX/": {
   "en": "trust",
-  "gloss_fr": "se confier, avoir confiance",
+  "gloss_fr": "trust (en)",
+  "sp": "subs"
+ },
+ "BWZ/": {
+  "en": "contempt",
+  "gloss_fr": "contempt (en)",
+  "sp": "subs"
+ },
+ "BWZJ=/": {
+  "en": "Buzi",
+  "gloss_fr": "Buzi (en)",
+  "sp": "nmpr"
+ },
+ "BXN=/": {
+  "en": "watch-tower",
+  "gloss_fr": "watch-tower (en)",
+  "sp": "subs"
+ },
+ "BXWN/": {
+  "en": "examiner",
+  "gloss_fr": "examiner (en)",
+  "sp": "subs"
+ },
+ "BY<[": {
+  "en": "cut off",
+  "gloss_fr": "cut off (en)",
+  "sp": "verb"
+ },
+ "BYJR=/": {
+  "en": "forest",
+  "gloss_fr": "forest (en)",
+  "sp": "subs"
+ },
+ "BYQ[": {
+  "en": "swell",
+  "gloss_fr": "swell (en)",
+  "sp": "verb"
+ },
+ "BYR/": {
+  "en": "ore",
+  "gloss_fr": "ore (en)",
+  "sp": "subs"
+ },
+ "BYR==/": {
+  "en": "Bezer",
+  "gloss_fr": "Bezer (en)",
+  "sp": "nmpr"
+ },
+ "BYR==[": {
+  "en": "humble",
+  "gloss_fr": "humble (en)",
+  "sp": "verb"
+ },
+ "BYR=[": {
+  "en": "be impossible",
+  "gloss_fr": "be impossible (en)",
+  "sp": "verb"
+ },
+ "BZH/": {
+  "en": "spoil",
+  "gloss_fr": "spoil (en)",
+  "sp": "subs"
+ },
+ "C<<=[": {
+  "en": "paste",
+  "gloss_fr": "paste (en)",
+  "sp": "verb"
+ },
+ "C<H/": {
+  "en": "hour",
+  "gloss_fr": "hour (en)",
+  "sp": "subs"
+ },
+ "C<R=/": {
+  "en": "measure",
+  "gloss_fr": "measure (en)",
+  "sp": "subs"
+ },
+ "C<R==/": {
+  "en": "burst",
+  "gloss_fr": "burst (en)",
+  "sp": "adjv"
+ },
+ "C<R[": {
+  "en": "estimate",
+  "gloss_fr": "estimate (en)",
+  "sp": "verb"
+ },
+ "C>H==[": {
+  "en": "gaze",
+  "gloss_fr": "gaze (en)",
+  "sp": "verb"
+ },
+ "C>H=[": {
+  "en": "roar",
+  "gloss_fr": "roar (en)",
+  "sp": "verb"
+ },
+ "C>R/": {
+  "en": "rest",
+  "gloss_fr": "rest (en)",
+  "sp": "subs"
+ },
+ "C>R=/": {
+  "en": "rest",
+  "gloss_fr": "rest (en)",
+  "sp": "subs"
+ },
+ "C>WN=/": {
+  "en": "waste",
+  "gloss_fr": "waste (en)",
+  "sp": "subs"
+ },
+ "CB</": {
+  "en": "seven",
+  "gloss_fr": "seven (en)",
+  "sp": "subs"
+ },
+ "CBJH/": {
+  "en": "captive",
+  "gloss_fr": "captive (en)",
+  "sp": "subs"
+ },
+ "CBLT=/": {
+  "en": "stream",
+  "gloss_fr": "stream (en)",
+  "sp": "subs"
+ },
+ "CBR/": {
+  "en": "breaking",
+  "gloss_fr": "breaking (en)",
+  "sp": "subs"
+ },
+ "CBR=/": {
+  "en": "corn",
+  "gloss_fr": "corn (en)",
+  "sp": "subs"
+ },
+ "CBR==/": {
+  "en": "interpretation",
+  "gloss_fr": "interpretation (en)",
+  "sp": "subs"
+ },
+ "CBR=[": {
+  "en": "buy grain",
+  "gloss_fr": "buy grain (en)",
+  "sp": "verb"
+ },
+ "CBT=/": {
+  "en": "inaction",
+  "gloss_fr": "inaction (en)",
+  "sp": "subs"
+ },
+ "CBT[": {
+  "en": "cease",
+  "gloss_fr": "cease (en)",
+  "sp": "verb"
+ },
+ "CBX=[": {
+  "en": "be calm",
+  "gloss_fr": "be calm (en)",
+  "sp": "verb"
+ },
+ "CBY/": {
+  "en": "cramp",
+  "gloss_fr": "cramp (en)",
+  "sp": "subs"
+ },
+ "CC=/": {
+  "en": "linen",
+  "gloss_fr": "linen (en)",
+  "sp": "subs"
+ },
+ "CC==/": {
+  "en": "alabaster",
+  "gloss_fr": "alabaster (en)",
+  "sp": "subs"
+ },
+ "CD=/": {
+  "en": "breast",
+  "gloss_fr": "breast (en)",
+  "sp": "subs"
+ },
+ "CD==/": {
+  "en": "demon",
+  "gloss_fr": "demon (en)",
+  "sp": "subs"
+ },
+ "CD===/": {
+  "en": "breast",
+  "gloss_fr": "breast (en)",
+  "sp": "subs"
+ },
+ "CJR/": {
+  "en": "song",
+  "gloss_fr": "song (en)",
+  "sp": "subs"
+ },
+ "CJT/": {
+  "en": "weed",
+  "gloss_fr": "weed (en)",
+  "sp": "subs"
+ },
+ "CJT=/": {
+  "en": "garment",
+  "gloss_fr": "garment (en)",
+  "sp": "subs"
+ },
+ "CKM/": {
+  "en": "shoulder",
+  "gloss_fr": "shoulder (en)",
+  "sp": "subs"
+ },
+ "CKN[": {
+  "en": "dwell",
+  "gloss_fr": "dwell (en)",
+  "sp": "verb"
+ },
+ "CKR/": {
+  "en": "drunk",
+  "gloss_fr": "drunk (en)",
+  "sp": "adjv"
+ },
+ "CKR[": {
+  "en": "be drunk",
+  "gloss_fr": "be drunk (en)",
+  "sp": "verb"
+ },
+ "CKWL/": {
+  "en": "loss of children",
+  "gloss_fr": "loss of children (en)",
+  "sp": "subs"
+ },
+ "CKWL==/": {
+  "en": "bereaved of children",
+  "gloss_fr": "bereaved of children (en)",
+  "sp": "adjv"
+ },
+ "CLB[": {
+  "en": "bind",
+  "gloss_fr": "bind (en)",
+  "sp": "verb"
+ },
+ "CLCH/": {
+  "en": "Shilshah",
+  "gloss_fr": "Shilshah (en)",
+  "sp": "nmpr"
+ },
+ "CLC[": {
+  "en": "be three",
+  "gloss_fr": "be three (en)",
+  "sp": "verb"
+ },
+ "CLG=/": {
+  "en": "soap",
+  "gloss_fr": "soap (en)",
+  "sp": "subs"
+ },
+ "CLH/": {
+  "en": "carefree",
+  "gloss_fr": "carefree (en)",
+  "sp": "adjv"
+ },
+ "CLH[": {
+  "en": "be easy",
+  "gloss_fr": "be easy (en)",
+  "sp": "verb"
+ },
+ "CLJC/": {
+  "en": "third part",
+  "gloss_fr": "third part (en)",
+  "sp": "subs"
+ },
+ "CLJC==/": {
+  "en": "triangle",
+  "gloss_fr": "triangle (en)",
+  "sp": "subs"
+ },
+ "CLK/": {
+  "en": "cormorant",
+  "gloss_fr": "cormorant (en)",
+  "sp": "subs"
+ },
+ "CLL=[": {
+  "en": "draw out",
+  "gloss_fr": "draw out (en)",
+  "sp": "verb"
+ },
+ "CLL[": {
+  "en": "plunder",
+  "gloss_fr": "plunder (en)",
+  "sp": "verb"
+ },
+ "CLM/": {
+  "en": "well-being",
+  "gloss_fr": "well-being (en)",
+  "sp": "subs"
+ },
+ "CLMJ/": {
+  "en": "Shillemite",
+  "gloss_fr": "Shillemite (en)",
+  "sp": "adjv"
+ },
+ "CLMJ=/": {
+  "en": "Shelomi",
+  "gloss_fr": "Shelomi (en)",
+  "sp": "nmpr"
+ },
+ "CLM[": {
+  "en": "be finished",
+  "gloss_fr": "be finished (en)",
+  "sp": "verb"
+ },
+ "CLV[": {
+  "en": "rule",
+  "gloss_fr": "rule (en)",
+  "sp": "verb"
+ },
+ "CLW/": {
+  "en": "negligence",
+  "gloss_fr": "negligence (en)",
+  "sp": "subs"
+ },
+ "CLWM=/": {
+  "en": "reward",
+  "gloss_fr": "reward (en)",
+  "sp": "subs"
+ },
+ "CLX/": {
+  "en": "missile",
+  "gloss_fr": "missile (en)",
+  "sp": "subs"
+ },
+ "CLX=/": {
+  "en": "water-conduit",
+  "gloss_fr": "water-conduit (en)",
+  "sp": "subs"
+ },
+ "CM/": {
+  "en": "name",
+  "gloss_fr": "name (en)",
+  "sp": "subs"
+ },
+ "CM<=/": {
+  "en": "sound",
+  "gloss_fr": "sound (en)",
+  "sp": "subs"
+ },
+ "CM<==/": {
+  "en": "rumour",
+  "gloss_fr": "rumour (en)",
+  "sp": "subs"
+ },
+ "CM<H/": {
+  "en": "Shemaah",
+  "gloss_fr": "Shemaah (en)",
+  "sp": "nmpr"
+ },
+ "CM<J/": {
+  "en": "Shimeite",
+  "gloss_fr": "Shimeite (en)",
+  "sp": "adjv"
+ },
+ "CM<[": {
+  "en": "hear",
+  "gloss_fr": "hear (en)",
+  "sp": "verb"
+ },
+ "CMC[": {
+  "en": "serve",
+  "gloss_fr": "serve (en)",
+  "sp": "verb"
+ },
+ "CMJR=/": {
+  "en": "diamond",
+  "gloss_fr": "diamond (en)",
+  "sp": "subs"
+ },
+ "CMM[": {
+  "en": "be astonished",
+  "gloss_fr": "be astonished (en)",
+  "sp": "verb"
+ },
+ "CMN=/": {
+  "en": "fat",
+  "gloss_fr": "fat (en)",
+  "sp": "adjv"
+ },
+ "CMN==/": {
+  "en": "fat",
+  "gloss_fr": "fat (en)",
+  "sp": "adjv"
+ },
+ "CMN[": {
+  "en": "be fat",
+  "gloss_fr": "be fat (en)",
+  "sp": "verb"
+ },
+ "CMR/": {
+  "en": "dregs",
+  "gloss_fr": "dregs (en)",
+  "sp": "subs"
+ },
+ "CMRH=/": {
+  "en": "guard",
+  "gloss_fr": "guard (en)",
+  "sp": "subs"
+ },
+ "CMRWN=/": {
+  "en": "Shimron",
+  "gloss_fr": "Shimron (en)",
+  "sp": "nmpr"
+ },
+ "CMRWN==/": {
+  "en": "Shimron",
+  "gloss_fr": "Shimron (en)",
+  "sp": "nmpr"
+ },
+ "CN>[": {
+  "en": "shine",
+  "gloss_fr": "shine (en)",
+  "sp": "verb"
+ },
+ "CNH/": {
+  "en": "year",
+  "gloss_fr": "year (en)",
+  "sp": "subs"
+ },
+ "CNH=/": {
+  "en": "sleep",
+  "gloss_fr": "sleep (en)",
+  "sp": "subs"
+ },
+ "CNJ=/": {
+  "en": "scarlet",
+  "gloss_fr": "scarlet (en)",
+  "sp": "subs"
+ },
+ "CNN=[": {
+  "en": "repeat",
+  "gloss_fr": "repeat (en)",
+  "sp": "verb"
+ },
+ "CPK/": {
+  "en": "rubbish-heap",
+  "gloss_fr": "rubbish-heap (en)",
+  "sp": "subs"
+ },
+ "CPL/": {
+  "en": "low",
+  "gloss_fr": "low (en)",
+  "sp": "adjv"
+ },
+ "CPL=/": {
+  "en": "low state",
+  "gloss_fr": "low state (en)",
+  "sp": "subs"
+ },
+ "CPL==/": {
+  "en": "low",
+  "gloss_fr": "low (en)",
+  "sp": "adjv"
+ },
+ "CPLH/": {
+  "en": "low state",
+  "gloss_fr": "low state (en)",
+  "sp": "subs"
+ },
+ "CPR/": {
+  "en": "antlers",
+  "gloss_fr": "antlers (en)",
+  "sp": "subs"
+ },
+ "CPV[": {
+  "en": "judge",
+  "gloss_fr": "judge (en)",
+  "sp": "verb"
+ },
+ "CQD/": {
+  "en": "almond tree",
+  "gloss_fr": "almond tree (en)",
+  "sp": "subs"
+ },
+ "CQD=[": {
+  "en": "be emaciated",
+  "gloss_fr": "be emaciated (en)",
+  "sp": "verb"
+ },
+ "CQL[": {
+  "en": "weigh",
+  "gloss_fr": "weigh (en)",
+  "sp": "verb"
+ },
+ "CQR[": {
+  "en": "do falsely",
+  "gloss_fr": "do falsely (en)",
+  "sp": "verb"
+ },
+ "CQV/": {
+  "en": "quiet",
+  "gloss_fr": "quiet (en)",
+  "sp": "subs"
+ },
+ "CQY[": {
+  "en": "detest",
+  "gloss_fr": "detest (en)",
+  "sp": "verb"
+ },
+ "CR==/": {
+  "en": "bracelet",
+  "gloss_fr": "bracelet (en)",
+  "sp": "subs"
+ },
+ "CRC/": {
+  "en": "root",
+  "gloss_fr": "root (en)",
+  "sp": "subs"
+ },
+ "CRT/": {
+  "en": "cultic service",
+  "gloss_fr": "cultic service (en)",
+  "sp": "subs"
+ },
+ "CRY[": {
+  "en": "swarm",
+  "gloss_fr": "swarm (en)",
+  "sp": "verb"
+ },
+ "CS</": {
+  "en": "cleft",
+  "gloss_fr": "cleft (en)",
+  "sp": "subs"
+ },
+ "CT/": {
+  "en": "six",
+  "gloss_fr": "six (en)",
+  "sp": "subs"
+ },
+ "CTJ=/": {
+  "en": "drinking",
+  "gloss_fr": "drinking (en)",
+  "sp": "subs"
+ },
+ "CVP/": {
+  "en": "flood",
+  "gloss_fr": "flood (en)",
+  "sp": "subs"
+ },
+ "CW</": {
+  "en": "noble",
+  "gloss_fr": "noble (en)",
+  "sp": "subs"
+ },
+ "CWB=[": {
+  "en": "gather",
+  "gloss_fr": "gather (en)",
+  "sp": "verb"
+ },
+ "CWH/": {
+  "en": "plain",
+  "gloss_fr": "plain (en)",
+  "sp": "subs"
+ },
+ "CWH[": {
+  "en": "be equal",
+  "gloss_fr": "be equal (en)",
+  "sp": "verb"
+ },
+ "CWNJ/": {
+  "en": "Shunite",
+  "gloss_fr": "Shunite (en)",
+  "sp": "adjv"
+ },
+ "CWP[": {
+  "en": "bruise",
+  "gloss_fr": "bruise (en)",
+  "sp": "verb"
+ },
+ "CWQ=/": {
+  "en": "street",
+  "gloss_fr": "street (en)",
+  "sp": "subs"
+ },
+ "CWQ[": {
+  "en": "be narrow",
+  "gloss_fr": "be narrow (en)",
+  "sp": "verb"
+ },
+ "CWR/": {
+  "en": "wall",
+  "gloss_fr": "wall (en)",
+  "sp": "subs"
+ },
+ "CWR=/": {
+  "en": "wall",
+  "gloss_fr": "wall (en)",
+  "sp": "subs"
+ },
+ "CWR=[": {
+  "en": "descend",
+  "gloss_fr": "descend (en)",
+  "sp": "verb"
+ },
+ "CWV/": {
+  "en": "whip",
+  "gloss_fr": "whip (en)",
+  "sp": "subs"
+ },
+ "CWV=/": {
+  "en": "spate",
+  "gloss_fr": "spate (en)",
+  "sp": "subs"
+ },
+ "CWV=[": {
+  "en": "despise",
+  "gloss_fr": "despise (en)",
+  "sp": "verb"
+ },
+ "CXD[": {
+  "en": "give present",
+  "gloss_fr": "give present (en)",
+  "sp": "verb"
+ },
+ "CXQ[": {
+  "en": "pulverise",
+  "gloss_fr": "pulverise (en)",
+  "sp": "verb"
+ },
+ "CXR=/": {
+  "en": "black",
+  "gloss_fr": "black (en)",
+  "sp": "adjv"
+ },
+ "CXR=[": {
+  "en": "be black",
+  "gloss_fr": "be black (en)",
+  "sp": "verb"
+ },
+ "CXR[": {
+  "en": "look for",
+  "gloss_fr": "look for (en)",
+  "sp": "verb"
+ },
+ "CXT[": {
+  "en": "spoil",
+  "gloss_fr": "spoil (en)",
+  "sp": "verb"
+ },
+ "CXV=[": {
+  "en": "alloy",
+  "gloss_fr": "alloy (en)",
+  "sp": "verb"
+ },
+ "D>H/": {
+  "en": "red bird",
+  "gloss_fr": "red bird (en)",
+  "sp": "subs"
+ },
+ "DBQ/": {
+  "en": "glue",
+  "gloss_fr": "glue (en)",
+  "sp": "subs"
+ },
+ "DBQ[": {
+  "en": "adhere",
+  "gloss_fr": "adhere (en)",
+  "sp": "verb"
+ },
+ "DBR=/": {
+  "en": "pest",
+  "gloss_fr": "pest (en)",
+  "sp": "subs"
+ },
+ "DBR==/": {
+  "en": "pasture",
+  "gloss_fr": "pasture (en)",
+  "sp": "subs"
+ },
+ "DBR===/": {
+  "en": "sting",
+  "gloss_fr": "sting (en)",
+  "sp": "subs"
+ },
+ "DBR=[": {
+  "en": "push back",
+  "gloss_fr": "push back (en)",
   "sp": "verb"
  },
  "DBR[": {
@@ -74,34 +2489,594 @@
   "gloss_fr": "parler",
   "sp": "verb"
  },
+ "DBX/": {
+  "en": "sacrifice",
+  "gloss_fr": "sacrifice (en)",
+  "sp": "subs"
+ },
+ "DC>[": {
+  "en": "grow green",
+  "gloss_fr": "grow green (en)",
+  "sp": "verb"
+ },
+ "DCN=/": {
+  "en": "fat",
+  "gloss_fr": "fat (en)",
+  "sp": "adjv"
+ },
+ "DCN[": {
+  "en": "grow fat",
+  "gloss_fr": "grow fat (en)",
+  "sp": "verb"
+ },
+ "DGH[": {
+  "en": "multiply",
+  "gloss_fr": "multiply (en)",
+  "sp": "verb"
+ },
+ "DGL[": {
+  "en": "lift banner",
+  "gloss_fr": "lift banner (en)",
+  "sp": "verb"
+ },
+ "DJ/": {
+  "en": "sufficiency",
+  "gloss_fr": "sufficiency (en)",
+  "sp": "subs"
+ },
+ "DJG[": {
+  "en": "fish",
+  "gloss_fr": "fish (en)",
+  "sp": "verb"
+ },
+ "DJN=/": {
+  "en": "judge",
+  "gloss_fr": "judge (en)",
+  "sp": "subs"
+ },
+ "DJN[": {
+  "en": "judge",
+  "gloss_fr": "judge (en)",
+  "sp": "verb"
+ },
+ "DK/": {
+  "en": "oppressed",
+  "gloss_fr": "oppressed (en)",
+  "sp": "adjv"
+ },
+ "DK>/": {
+  "en": "crushed",
+  "gloss_fr": "crushed (en)",
+  "sp": "adjv"
+ },
+ "DKH/": {
+  "en": "crushing",
+  "gloss_fr": "crushing (en)",
+  "sp": "subs"
+ },
+ "DL=/": {
+  "en": "door",
+  "gloss_fr": "door (en)",
+  "sp": "subs"
+ },
+ "DLH/": {
+  "en": "thread",
+  "gloss_fr": "thread (en)",
+  "sp": "subs"
+ },
+ "DLH=/": {
+  "en": "poor",
+  "gloss_fr": "poor (en)",
+  "sp": "subs"
+ },
+ "DLP/": {
+  "en": "roof",
+  "gloss_fr": "roof (en)",
+  "sp": "subs"
+ },
+ "DLP=[": {
+  "en": "drip",
+  "gloss_fr": "drip (en)",
+  "sp": "verb"
+ },
+ "DM</": {
+  "en": "abundance",
+  "gloss_fr": "abundance (en)",
+  "sp": "subs"
+ },
+ "DMH[": {
+  "en": "resemble",
+  "gloss_fr": "resemble (en)",
+  "sp": "verb"
+ },
+ "DMJ=/": {
+  "en": "likeness",
+  "gloss_fr": "likeness (en)",
+  "sp": "subs"
+ },
+ "DQ=/": {
+  "en": "something thin",
+  "gloss_fr": "something thin (en)",
+  "sp": "subs"
+ },
+ "DRK[": {
+  "en": "tread",
+  "gloss_fr": "tread (en)",
+  "sp": "verb"
+ },
+ "DRWR/": {
+  "en": "drop",
+  "gloss_fr": "drop (en)",
+  "sp": "subs"
+ },
+ "DRWR==/": {
+  "en": "swallow",
+  "gloss_fr": "swallow (en)",
+  "sp": "subs"
+ },
+ "DTN/": {
+  "en": "Dothan",
+  "gloss_fr": "Dothan (en)",
+  "sp": "nmpr"
+ },
+ "DWH[": {
+  "en": "menstruate",
+  "gloss_fr": "menstruate (en)",
+  "sp": "verb"
+ },
+ "DWJ/": {
+  "en": "illness",
+  "gloss_fr": "illness (en)",
+  "sp": "subs"
+ },
+ "DWR=/": {
+  "en": "circle",
+  "gloss_fr": "circle (en)",
+  "sp": "subs"
+ },
+ "DWR==/": {
+  "en": "tent camp",
+  "gloss_fr": "tent camp (en)",
+  "sp": "subs"
+ },
+ "DWR[": {
+  "en": "dwell",
+  "gloss_fr": "dwell (en)",
+  "sp": "verb"
+ },
+ "F<R/": {
+  "en": "hair",
+  "gloss_fr": "hair (en)",
+  "sp": "subs"
+ },
+ "F<R=/": {
+  "en": "storm",
+  "gloss_fr": "storm (en)",
+  "sp": "subs"
+ },
+ "F<R==/": {
+  "en": "bristling",
+  "gloss_fr": "bristling (en)",
+  "sp": "subs"
+ },
+ "F<R==[": {
+  "en": "know",
+  "gloss_fr": "know (en)",
+  "sp": "verb"
+ },
+ "F<R=[": {
+  "en": "bristle",
+  "gloss_fr": "bristle (en)",
+  "sp": "verb"
+ },
+ "F<RH=/": {
+  "en": "single hair",
+  "gloss_fr": "single hair (en)",
+  "sp": "subs"
+ },
+ "F<RH==/": {
+  "en": "storm",
+  "gloss_fr": "storm (en)",
+  "sp": "subs"
+ },
+ "F>T=/": {
+  "en": "swelling",
+  "gloss_fr": "swelling (en)",
+  "sp": "subs"
+ },
+ "FB</": {
+  "en": "satiety",
+  "gloss_fr": "satiety (en)",
+  "sp": "subs"
+ },
+ "FB<=/": {
+  "en": "sated",
+  "gloss_fr": "sated (en)",
+  "sp": "adjv"
+ },
+ "FB<==/": {
+  "en": "satiety",
+  "gloss_fr": "satiety (en)",
+  "sp": "subs"
+ },
+ "FBR/": {
+  "en": "hope",
+  "gloss_fr": "hope (en)",
+  "sp": "subs"
+ },
+ "FJB/": {
+  "en": "age",
+  "gloss_fr": "age (en)",
+  "sp": "subs"
+ },
+ "FJD[": {
+  "en": "whitewash",
+  "gloss_fr": "whitewash (en)",
+  "sp": "verb"
+ },
+ "FJX/": {
+  "en": "shrub",
+  "gloss_fr": "shrub (en)",
+  "sp": "subs"
+ },
+ "FJX=/": {
+  "en": "concern",
+  "gloss_fr": "concern (en)",
+  "sp": "subs"
+ },
+ "FKL=[": {
+  "en": "exchange",
+  "gloss_fr": "exchange (en)",
+  "sp": "verb"
+ },
+ "FKL[": {
+  "en": "consider",
+  "gloss_fr": "consider (en)",
+  "sp": "verb"
+ },
+ "FKR=/": {
+  "en": "hire",
+  "gloss_fr": "hire (en)",
+  "sp": "subs"
+ },
+ "FKR[": {
+  "en": "hire",
+  "gloss_fr": "hire (en)",
+  "sp": "verb"
+ },
+ "FM>L[": {
+  "en": "turn left",
+  "gloss_fr": "turn left (en)",
+  "sp": "verb"
+ },
+ "FMX/": {
+  "en": "joyful",
+  "gloss_fr": "joyful (en)",
+  "sp": "adjv"
+ },
+ "FPQ/": {
+  "en": "plenty",
+  "gloss_fr": "plenty (en)",
+  "sp": "subs"
+ },
+ "FPQ=[": {
+  "en": "suffice",
+  "gloss_fr": "suffice (en)",
+  "sp": "verb"
+ },
+ "FRD/": {
+  "en": "red chalk",
+  "gloss_fr": "red chalk (en)",
+  "sp": "subs"
+ },
+ "FRD[": {
+  "en": "run away",
+  "gloss_fr": "run away (en)",
+  "sp": "verb"
+ },
+ "FRH[": {
+  "en": "contend",
+  "gloss_fr": "contend (en)",
+  "sp": "verb"
+ },
+ "FRP/": {
+  "en": "serpent",
+  "gloss_fr": "serpent (en)",
+  "sp": "subs"
+ },
+ "FRQ=/": {
+  "en": "bright red",
+  "gloss_fr": "bright red (en)",
+  "sp": "adjv"
+ },
+ "FRV/": {
+  "en": "tattoo",
+  "gloss_fr": "tattoo (en)",
+  "sp": "subs"
+ },
+ "FVN[": {
+  "en": "bear grudge",
+  "gloss_fr": "bear grudge (en)",
+  "sp": "verb"
+ },
+ "G<L/": {
+  "en": "loathing",
+  "gloss_fr": "loathing (en)",
+  "sp": "subs"
+ },
+ "G>H=/": {
+  "en": "arrogance",
+  "gloss_fr": "arrogance (en)",
+  "sp": "subs"
+ },
+ "G>H[": {
+  "en": "be high",
+  "gloss_fr": "be high (en)",
+  "sp": "verb"
+ },
  "G>L=[": {
   "en": "pollute",
   "gloss_fr": "racheter, délivrer, agir comme parent-rédempteur",
   "sp": "verb"
  },
- "G>L[": {
-  "en": "redeem",
-  "gloss_fr": "racheter, délivrer, agir comme parent-rédempteur",
+ "GB/": {
+  "en": "side",
+  "gloss_fr": "side (en)",
+  "sp": "subs"
+ },
+ "GBH=/": {
+  "en": "height",
+  "gloss_fr": "height (en)",
+  "sp": "subs"
+ },
+ "GBH==/": {
+  "en": "tall",
+  "gloss_fr": "tall (en)",
+  "sp": "adjv"
+ },
+ "GBH===/": {
+  "en": "swarm",
+  "gloss_fr": "swarm (en)",
+  "sp": "subs"
+ },
+ "GBH[": {
+  "en": "be high",
+  "gloss_fr": "be high (en)",
   "sp": "verb"
+ },
+ "GBL/": {
+  "en": "Gebal",
+  "gloss_fr": "Gebal (en)",
+  "sp": "nmpr"
+ },
+ "GBR/": {
+  "en": "man",
+  "gloss_fr": "man (en)",
+  "sp": "subs"
+ },
+ "GCM[": {
+  "en": "rain",
+  "gloss_fr": "rain (en)",
+  "sp": "verb"
+ },
+ "GDJ=/": {
+  "en": "Gadite",
+  "gloss_fr": "Gadite (en)",
+  "sp": "adjv"
+ },
+ "GDJH=/": {
+  "en": "young goat",
+  "gloss_fr": "young goat (en)",
+  "sp": "subs"
+ },
+ "GDL/": {
+  "en": "greatness",
+  "gloss_fr": "greatness (en)",
+  "sp": "subs"
+ },
+ "GDL=/": {
+  "en": "growing",
+  "gloss_fr": "growing (en)",
+  "sp": "adjv"
+ },
+ "GDL==/": {
+  "en": "tassel",
+  "gloss_fr": "tassel (en)",
+  "sp": "subs"
+ },
+ "GDR[": {
+  "en": "heap stones",
+  "gloss_fr": "heap stones (en)",
+  "sp": "verb"
+ },
+ "GDWD=/": {
+  "en": "clod",
+  "gloss_fr": "clod (en)",
+  "sp": "subs"
+ },
+ "GJL/": {
+  "en": "rejoicing",
+  "gloss_fr": "rejoicing (en)",
+  "sp": "subs"
+ },
+ "GJL=/": {
+  "en": "age",
+  "gloss_fr": "age (en)",
+  "sp": "subs"
+ },
+ "GL<D=/": {
+  "en": "Galeed",
+  "gloss_fr": "Galeed (en)",
+  "sp": "nmpr"
+ },
+ "GL==/": {
+  "en": "dung-cake",
+  "gloss_fr": "dung-cake (en)",
+  "sp": "subs"
  },
  "GLH[": {
   "en": "reveal",
   "gloss_fr": "découvrir, révéler, rendre visible",
   "sp": "verb"
  },
- "GWR[": {
-  "en": "dwell",
-  "gloss_fr": "séjourner, demeurer (comme étranger)",
+ "GLL=/": {
+  "en": "dung",
+  "gloss_fr": "dung (en)",
+  "sp": "subs"
+ },
+ "GLM/": {
+  "en": "embryo",
+  "gloss_fr": "embryo (en)",
+  "sp": "subs"
+ },
+ "GM>[": {
+  "en": "swallow",
+  "gloss_fr": "swallow (en)",
   "sp": "verb"
+ },
+ "GML[": {
+  "en": "deal fully",
+  "gloss_fr": "deal fully (en)",
+  "sp": "verb"
+ },
+ "GMR[": {
+  "en": "bring to an end",
+  "gloss_fr": "bring to an end (en)",
+  "sp": "verb"
+ },
+ "GNB/": {
+  "en": "thief",
+  "gloss_fr": "thief (en)",
+  "sp": "subs"
+ },
+ "GP=/": {
+  "en": "back?",
+  "gloss_fr": "back? (en)",
+  "sp": "subs"
+ },
+ "GR=/": {
+  "en": "chalk",
+  "gloss_fr": "chalk (en)",
+  "sp": "subs"
+ },
+ "GRC/": {
+  "en": "produce",
+  "gloss_fr": "produce (en)",
+  "sp": "subs"
+ },
+ "GRH/": {
+  "en": "gera",
+  "gloss_fr": "gera (en)",
+  "sp": "subs"
+ },
+ "GRH=/": {
+  "en": "cud",
+  "gloss_fr": "cud (en)",
+  "sp": "subs"
+ },
+ "GRM/": {
+  "en": "bone",
+  "gloss_fr": "bone (en)",
+  "sp": "subs"
+ },
+ "GRR[": {
+  "en": "drag away",
+  "gloss_fr": "drag away (en)",
+  "sp": "verb"
+ },
+ "GW=/": {
+  "en": "back",
+  "gloss_fr": "back (en)",
+  "sp": "subs"
+ },
+ "GW==/": {
+  "en": "community",
+  "gloss_fr": "community (en)",
+  "sp": "subs"
+ },
+ "GWNJ/": {
+  "en": "Gunite",
+  "gloss_fr": "Gunite (en)",
+  "sp": "adjv"
+ },
+ "GWR/": {
+  "en": "whelp",
+  "gloss_fr": "whelp (en)",
+  "sp": "subs"
+ },
+ "GWR=/": {
+  "en": "whelp",
+  "gloss_fr": "whelp (en)",
+  "sp": "subs"
+ },
+ "GWR==[": {
+  "en": "be afraid",
+  "gloss_fr": "be afraid (en)",
+  "sp": "verb"
+ },
+ "GWR=[": {
+  "en": "attack",
+  "gloss_fr": "attack (en)",
+  "sp": "verb"
+ },
+ "GZL/": {
+  "en": "robbery",
+  "gloss_fr": "robbery (en)",
+  "sp": "subs"
+ },
+ "GZL=/": {
+  "en": "robbing",
+  "gloss_fr": "robbing (en)",
+  "sp": "subs"
+ },
+ "GZR=[": {
+  "en": "eat",
+  "gloss_fr": "eat (en)",
+  "sp": "verb"
+ },
+ "GZRH/": {
+  "en": "decision",
+  "gloss_fr": "decision (en)",
+  "sp": "subs"
  },
  "GZR[": {
   "en": "cut",
   "gloss_fr": "couper, partager",
   "sp": "verb"
  },
- "HLK[": {
-  "en": "go",
-  "gloss_fr": "marcher, aller",
+ "HBL[": {
+  "en": "be vain",
+  "gloss_fr": "be vain (en)",
+  "sp": "verb"
+ },
+ "HDR/": {
+  "en": "glory",
+  "gloss_fr": "glory (en)",
+  "sp": "subs"
+ },
+ "HDR=/": {
+  "en": "dignity",
+  "gloss_fr": "dignity (en)",
+  "sp": "subs"
+ },
+ "HGH/": {
+  "en": "whisper",
+  "gloss_fr": "whisper (en)",
+  "sp": "subs"
+ },
+ "HGH=[": {
+  "en": "expel",
+  "gloss_fr": "expel (en)",
+  "sp": "verb"
+ },
+ "HLK/": {
+  "en": "tax",
+  "gloss_fr": "tax (en)",
+  "sp": "subs"
+ },
+ "HLL==[": {
+  "en": "be infatuated",
+  "gloss_fr": "be infatuated (en)",
   "sp": "verb"
  },
  "HLL=[": {
@@ -109,99 +3084,2264 @@
   "gloss_fr": "vanter, se glorifier",
   "sp": "verb"
  },
- "HLL[": {
-  "en": "praise",
-  "gloss_fr": "vanter, se glorifier",
+ "HLM[": {
+  "en": "strike",
+  "gloss_fr": "strike (en)",
   "sp": "verb"
  },
- "HPK[": {
-  "en": "turn",
-  "gloss_fr": "un autre cœur; retourner, renverser",
+ "HMH[": {
+  "en": "make noise",
+  "gloss_fr": "make noise (en)",
   "sp": "verb"
  },
- "HRG[": {
-  "en": "kill",
-  "gloss_fr": "tuer, mettre à mort",
+ "HMWN": {
+  "en": "they",
+  "gloss_fr": "they (en)",
+  "sp": "prps"
+ },
+ "HNH=": {
+  "en": "they",
+  "gloss_fr": "they (en)",
+  "sp": "prps"
+ },
+ "HNH==": {
+  "en": "here",
+  "gloss_fr": "here (en)",
+  "sp": "advb"
+ },
+ "HPK/": {
+  "en": "opposite",
+  "gloss_fr": "opposite (en)",
+  "sp": "subs"
+ },
+ "HRG/": {
+  "en": "slaughter",
+  "gloss_fr": "slaughter (en)",
+  "sp": "subs"
+ },
+ "HRH/": {
+  "en": "pregnant",
+  "gloss_fr": "pregnant (en)",
+  "sp": "adjv"
+ },
+ "HRS/": {
+  "en": "destruction",
+  "gloss_fr": "destruction (en)",
+  "sp": "subs"
+ },
+ "HWH/": {
+  "en": "disaster",
+  "gloss_fr": "disaster (en)",
+  "sp": "subs"
+ },
+ "HWH==/": {
+  "en": "destruction",
+  "gloss_fr": "destruction (en)",
+  "sp": "subs"
+ },
+ "HWH=[": {
+  "en": "fall",
+  "gloss_fr": "fall (en)",
   "sp": "verb"
  },
- "JDH=[": {
-  "en": "shoot",
-  "gloss_fr": "jeter, lancer (des flèches)",
+ "HWN[": {
+  "en": "be easy",
+  "gloss_fr": "be easy (en)",
   "sp": "verb"
+ },
+ "J<H[": {
+  "en": "sweep",
+  "gloss_fr": "sweep (en)",
+  "sp": "verb"
+ },
+ "J<L/": {
+  "en": "goat",
+  "gloss_fr": "goat (en)",
+  "sp": "subs"
+ },
+ "J<P/": {
+  "en": "weary",
+  "gloss_fr": "weary (en)",
+  "sp": "adjv"
+ },
+ "J<R=/": {
+  "en": "honeycomb",
+  "gloss_fr": "honeycomb (en)",
+  "sp": "subs"
+ },
+ "J>L=[": {
+  "en": "be foolish",
+  "gloss_fr": "be foolish (en)",
+  "sp": "verb"
+ },
+ "JBC/": {
+  "en": "dry",
+  "gloss_fr": "dry (en)",
+  "sp": "adjv"
+ },
+ "JBL/": {
+  "en": "water-ditch",
+  "gloss_fr": "water-ditch (en)",
+  "sp": "subs"
+ },
+ "JBM/": {
+  "en": "husband's brother",
+  "gloss_fr": "husband's brother (en)",
+  "sp": "subs"
+ },
+ "JBNJH=/": {
+  "en": "Ibnijah",
+  "gloss_fr": "Ibnijah (en)",
+  "sp": "nmpr"
+ },
+ "JC</": {
+  "en": "help",
+  "gloss_fr": "help (en)",
+  "sp": "subs"
+ },
+ "JCBJ=/": {
+  "en": "Ishbi-Benob",
+  "gloss_fr": "Ishbi-Benob (en)",
+  "sp": "nmpr"
+ },
+ "JCN/": {
+  "en": "sleeping",
+  "gloss_fr": "sleeping (en)",
+  "sp": "adjv"
+ },
+ "JCN=/": {
+  "en": "old",
+  "gloss_fr": "old (en)",
+  "sp": "adjv"
+ },
+ "JCN[": {
+  "en": "be old",
+  "gloss_fr": "be old (en)",
+  "sp": "verb"
+ },
+ "JCR=/": {
+  "en": "uprightness",
+  "gloss_fr": "uprightness (en)",
+  "sp": "subs"
+ },
+ "JCR[": {
+  "en": "be right",
+  "gloss_fr": "be right (en)",
+  "sp": "verb"
+ },
+ "JCWJ/": {
+  "en": "Ishvite",
+  "gloss_fr": "Ishvite (en)",
+  "sp": "adjv"
  },
  "JDH[": {
   "en": "praise",
   "gloss_fr": "jeter, lancer (des flèches)",
   "sp": "verb"
  },
- "JLD[": {
-  "en": "bear",
-  "gloss_fr": "enfanter, mettre au monde",
+ "JG</": {
+  "en": "weary",
+  "gloss_fr": "weary (en)",
+  "sp": "adjv"
+ },
+ "JG<=/": {
+  "en": "product",
+  "gloss_fr": "product (en)",
+  "sp": "subs"
+ },
+ "JGB/": {
+  "en": "compulsory labour",
+  "gloss_fr": "compulsory labour (en)",
+  "sp": "subs"
+ },
+ "JGH=[": {
+  "en": "thrust away",
+  "gloss_fr": "thrust away (en)",
   "sp": "verb"
  },
- "JR>[": {
-  "en": "fear",
-  "gloss_fr": "craindre, avoir peur",
+ "JGJ<=/": {
+  "en": "weary",
+  "gloss_fr": "weary (en)",
+  "sp": "adjv"
+ },
+ "JGR/": {
+  "en": "heap of stones",
+  "gloss_fr": "heap of stones (en)",
+  "sp": "subs"
+ },
+ "JHD[": {
+  "en": "be a Jew",
+  "gloss_fr": "be a Jew (en)",
   "sp": "verb"
  },
- "JTR[": {
-  "en": "remain",
-  "gloss_fr": "rester, demeurer, être de reste",
+ "JHWDJ=/": {
+  "en": "Jehudi",
+  "gloss_fr": "Jehudi (en)",
+  "sp": "nmpr"
+ },
+ "JLD/": {
+  "en": "boy",
+  "gloss_fr": "boy (en)",
+  "sp": "subs"
+ },
+ "JLL/": {
+  "en": "howling",
+  "gloss_fr": "howling (en)",
+  "sp": "subs"
+ },
+ "JMJNJ=/": {
+  "en": "Jaminite",
+  "gloss_fr": "Jaminite (en)",
+  "sp": "adjv"
+ },
+ "JPH[": {
+  "en": "be beautiful",
+  "gloss_fr": "be beautiful (en)",
   "sp": "verb"
  },
- "KBD[": {
-  "en": "be heavy",
-  "gloss_fr": "être lourd, honorer",
+ "JPTX=/": {
+  "en": "Iphtah",
+  "gloss_fr": "Iphtah (en)",
+  "sp": "nmpr"
+ },
+ "JQD/": {
+  "en": "burning",
+  "gloss_fr": "burning (en)",
+  "sp": "subs"
+ },
+ "JQR/": {
+  "en": "dignity",
+  "gloss_fr": "dignity (en)",
+  "sp": "subs"
+ },
+ "JQR[": {
+  "en": "be precious",
+  "gloss_fr": "be precious (en)",
   "sp": "verb"
  },
- "KLH[": {
-  "en": "be complete",
-  "gloss_fr": "être achevé, finir, disparaître",
+ "JR>/": {
+  "en": "afraid",
+  "gloss_fr": "afraid (en)",
+  "sp": "adjv"
+ },
+ "JRH==[": {
+  "en": "be stupefied",
+  "gloss_fr": "be stupefied (en)",
   "sp": "verb"
  },
- "KPR[": {
+ "JRH=[": {
+  "en": "cast",
+  "gloss_fr": "cast (en)",
+  "sp": "verb"
+ },
+ "JRMWT=/": {
+  "en": "Jeremoth",
+  "gloss_fr": "Jeremoth (en)",
+  "sp": "nmpr"
+ },
+ "JRQ=/": {
+  "en": "greens",
+  "gloss_fr": "greens (en)",
+  "sp": "subs"
+ },
+ "JRQ[": {
+  "en": "spit",
+  "gloss_fr": "spit (en)",
+  "sp": "verb"
+ },
+ "JRX/": {
+  "en": "month",
+  "gloss_fr": "month (en)",
+  "sp": "subs"
+ },
+ "JSD/": {
+  "en": "establishment",
+  "gloss_fr": "establishment (en)",
+  "sp": "subs"
+ },
+ "JSD=[": {
+  "en": "close",
+  "gloss_fr": "close (en)",
+  "sp": "verb"
+ },
+ "JTR/": {
+  "en": "remainder",
+  "gloss_fr": "remainder (en)",
+  "sp": "subs"
+ },
+ "JTR=/": {
+  "en": "sinew",
+  "gloss_fr": "sinew (en)",
+  "sp": "subs"
+ },
+ "JWBL=/": {
+  "en": "canal",
+  "gloss_fr": "canal (en)",
+  "sp": "subs"
+ },
+ "JXD[": {
+  "en": "be united",
+  "gloss_fr": "be united (en)",
+  "sp": "verb"
+ },
+ "JXF/": {
+  "en": "book",
+  "gloss_fr": "book (en)",
+  "sp": "subs"
+ },
+ "JYR/": {
+  "en": "form",
+  "gloss_fr": "form (en)",
+  "sp": "subs"
+ },
+ "JZR<>L=/": {
+  "en": "Jezreel",
+  "gloss_fr": "Jezreel (en)",
+  "sp": "nmpr"
+ },
+ "K<S/": {
+  "en": "grief",
+  "gloss_fr": "grief (en)",
+  "sp": "subs"
+ },
+ "K>B/": {
+  "en": "pain",
+  "gloss_fr": "pain (en)",
+  "sp": "subs"
+ },
+ "KBC/": {
+  "en": "footstool",
+  "gloss_fr": "footstool (en)",
+  "sp": "subs"
+ },
+ "KBD/": {
+  "en": "heavy",
+  "gloss_fr": "heavy (en)",
+  "sp": "adjv"
+ },
+ "KBD=/": {
+  "en": "liver",
+  "gloss_fr": "liver (en)",
+  "sp": "subs"
+ },
+ "KBD==/": {
+  "en": "heaviness",
+  "gloss_fr": "heaviness (en)",
+  "sp": "subs"
+ },
+ "KBJR=/": {
+  "en": "quilt",
+  "gloss_fr": "quilt (en)",
+  "sp": "subs"
+ },
+ "KBRH/": {
+  "en": "sieve",
+  "gloss_fr": "sieve (en)",
+  "sp": "subs"
+ },
+ "KBR[": {
+  "en": "multiply",
+  "gloss_fr": "multiply (en)",
+  "sp": "verb"
+ },
+ "KCP/": {
+  "en": "sorcery",
+  "gloss_fr": "sorcery (en)",
+  "sp": "subs"
+ },
+ "KCP=/": {
+  "en": "sorcerer",
+  "gloss_fr": "sorcerer (en)",
+  "sp": "subs"
+ },
+ "KHH/": {
+  "en": "dim",
+  "gloss_fr": "dim (en)",
+  "sp": "adjv"
+ },
+ "KHH=/": {
+  "en": "effacement",
+  "gloss_fr": "effacement (en)",
+  "sp": "subs"
+ },
+ "KHH=[": {
+  "en": "rebuke",
+  "gloss_fr": "rebuke (en)",
+  "sp": "verb"
+ },
+ "KHN/": {
+  "en": "priest",
+  "gloss_fr": "priest (en)",
+  "sp": "subs"
+ },
+ "KJ/": {
+  "en": "branding",
+  "gloss_fr": "branding (en)",
+  "sp": "subs"
+ },
+ "KL>/": {
+  "en": "prison",
+  "gloss_fr": "prison (en)",
+  "sp": "subs"
+ },
+ "KLH/": {
+  "en": "bride",
+  "gloss_fr": "bride (en)",
+  "sp": "subs"
+ },
+ "KLH=/": {
+  "en": "destruction",
+  "gloss_fr": "destruction (en)",
+  "sp": "subs"
+ },
+ "KLH==/": {
+  "en": "failing",
+  "gloss_fr": "failing (en)",
+  "sp": "adjv"
+ },
+ "KMR/": {
+  "en": "idol priest",
+  "gloss_fr": "idol priest (en)",
+  "sp": "subs"
+ },
+ "KN<NJ=/": {
+  "en": "tradesman",
+  "gloss_fr": "tradesman (en)",
+  "sp": "subs"
+ },
+ "KN=/": {
+  "en": "base",
+  "gloss_fr": "base (en)",
+  "sp": "subs"
+ },
+ "KN==/": {
+  "en": "gnat",
+  "gloss_fr": "gnat (en)",
+  "sp": "subs"
+ },
+ "KNNJHW=/": {
+  "en": "Chenaniah",
+  "gloss_fr": "Chenaniah (en)",
+  "sp": "nmpr"
+ },
+ "KNP[": {
+  "en": "hide",
+  "gloss_fr": "hide (en)",
+  "sp": "verb"
+ },
+ "KP=/": {
+  "en": "rock",
+  "gloss_fr": "rock (en)",
+  "sp": "subs"
+ },
+ "KPH[": {
+  "en": "subdue",
+  "gloss_fr": "subdue (en)",
+  "sp": "verb"
+ },
+ "KPL/": {
+  "en": "double",
+  "gloss_fr": "double (en)",
+  "sp": "subs"
+ },
+ "KPN[": {
+  "en": "desire",
+  "gloss_fr": "desire (en)",
+  "sp": "verb"
+ },
+ "KPR/": {
+  "en": "ransom",
+  "gloss_fr": "ransom (en)",
+  "sp": "subs"
+ },
+ "KPR=/": {
   "en": "cover",
-  "gloss_fr": "faire expiation, purifier, apaiser",
+  "gloss_fr": "cover (en)",
+  "sp": "subs"
+ },
+ "KPR==/": {
+  "en": "village",
+  "gloss_fr": "village (en)",
+  "sp": "subs"
+ },
+ "KPR===/": {
+  "en": "village",
+  "gloss_fr": "village (en)",
+  "sp": "subs"
+ },
+ "KPR====/": {
+  "en": "henna",
+  "gloss_fr": "henna (en)",
+  "sp": "subs"
+ },
+ "KPWR/": {
+  "en": "hoar frost",
+  "gloss_fr": "hoar frost (en)",
+  "sp": "subs"
+ },
+ "KR/": {
+  "en": "kor",
+  "gloss_fr": "kor (en)",
+  "sp": "subs"
+ },
+ "KR==/": {
+  "en": "pasture",
+  "gloss_fr": "pasture (en)",
+  "sp": "subs"
+ },
+ "KR===/": {
+  "en": "basket-saddle",
+  "gloss_fr": "basket-saddle (en)",
+  "sp": "subs"
+ },
+ "KRH/": {
+  "en": "feast",
+  "gloss_fr": "feast (en)",
+  "sp": "subs"
+ },
+ "KRH==[": {
+  "en": "feast",
+  "gloss_fr": "feast (en)",
   "sp": "verb"
  },
- "KWN[": {
-  "en": "be firm",
-  "gloss_fr": "être établi, être préparé, être affermi",
+ "KRH[": {
+  "en": "be sick",
+  "gloss_fr": "be sick (en)",
   "sp": "verb"
  },
- "LKD[": {
-  "en": "seize",
-  "gloss_fr": "capturer, s'emparer de, prendre",
+ "KRM=/": {
+  "en": "vinedresser",
+  "gloss_fr": "vinedresser (en)",
+  "sp": "subs"
+ },
+ "KRMJ/": {
+  "en": "Carmite",
+  "gloss_fr": "Carmite (en)",
+  "sp": "adjv"
+ },
+ "KS>=/": {
+  "en": "full moon",
+  "gloss_fr": "full moon (en)",
+  "sp": "subs"
+ },
+ "KSJL=/": {
+  "en": "Orion",
+  "gloss_fr": "Orion (en)",
+  "sp": "subs"
+ },
+ "KSL/": {
+  "en": "imperturbability",
+  "gloss_fr": "imperturbability (en)",
+  "sp": "subs"
+ },
+ "KSLWN/": {
+  "en": "Kesalon",
+  "gloss_fr": "Kesalon (en)",
+  "sp": "nmpr"
+ },
+ "KSL[": {
+  "en": "be insolent",
+  "gloss_fr": "be insolent (en)",
   "sp": "verb"
+ },
+ "KSP[": {
+  "en": "long",
+  "gloss_fr": "long (en)",
+  "sp": "verb"
+ },
+ "KTB[": {
+  "en": "write",
+  "gloss_fr": "write (en)",
+  "sp": "verb"
+ },
+ "KTM[": {
+  "en": "defile",
+  "gloss_fr": "defile (en)",
+  "sp": "verb"
+ },
+ "KTR/": {
+  "en": "headdress",
+  "gloss_fr": "headdress (en)",
+  "sp": "subs"
+ },
+ "KWH/": {
+  "en": "window",
+  "gloss_fr": "window (en)",
+  "sp": "subs"
+ },
+ "KWN/": {
+  "en": "cake",
+  "gloss_fr": "cake (en)",
+  "sp": "subs"
+ },
+ "KWS=/": {
+  "en": "owlet",
+  "gloss_fr": "owlet (en)",
+  "sp": "subs"
+ },
+ "KX=/": {
+  "en": "lizard",
+  "gloss_fr": "lizard (en)",
+  "sp": "subs"
+ },
+ "KXC/": {
+  "en": "leanness",
+  "gloss_fr": "leanness (en)",
+  "sp": "subs"
+ },
+ "KXC=/": {
+  "en": "mendacious",
+  "gloss_fr": "mendacious (en)",
+  "sp": "adjv"
+ },
+ "KZB[": {
+  "en": "lie",
+  "gloss_fr": "lie (en)",
+  "sp": "verb"
+ },
+ "L<G/": {
+  "en": "derision",
+  "gloss_fr": "derision (en)",
+  "sp": "subs"
+ },
+ "L<G=/": {
+  "en": "stammering",
+  "gloss_fr": "stammering (en)",
+  "sp": "subs"
+ },
+ "L>H[": {
+  "en": "be weary",
+  "gloss_fr": "be weary (en)",
+  "sp": "verb"
+ },
+ "LBB=[": {
+  "en": "bake",
+  "gloss_fr": "bake (en)",
+  "sp": "verb"
+ },
+ "LBB[": {
+  "en": "stir",
+  "gloss_fr": "stir (en)",
+  "sp": "verb"
+ },
+ "LBH=/": {
+  "en": "rage",
+  "gloss_fr": "rage (en)",
+  "sp": "subs"
+ },
+ "LBN/": {
+  "en": "white",
+  "gloss_fr": "white (en)",
+  "sp": "adjv"
+ },
+ "LBN=[": {
+  "en": "make brick",
+  "gloss_fr": "make brick (en)",
+  "sp": "verb"
+ },
+ "LBNH/": {
+  "en": "brick",
+  "gloss_fr": "brick (en)",
+  "sp": "subs"
+ },
+ "LBNH==/": {
+  "en": "storax tree",
+  "gloss_fr": "storax tree (en)",
+  "sp": "subs"
+ },
+ "LBNH===/": {
+  "en": "full moon",
+  "gloss_fr": "full moon (en)",
+  "sp": "subs"
+ },
+ "LBNJ/": {
+  "en": "Libnite",
+  "gloss_fr": "Libnite (en)",
+  "sp": "adjv"
+ },
+ "LBN[": {
+  "en": "be white",
+  "gloss_fr": "be white (en)",
+  "sp": "verb"
+ },
+ "LBWC/": {
+  "en": "garment",
+  "gloss_fr": "garment (en)",
+  "sp": "subs"
+ },
+ "LCN[": {
+  "en": "slander",
+  "gloss_fr": "slander (en)",
+  "sp": "verb"
+ },
+ "LHN": {
+  "en": "therefore",
+  "gloss_fr": "therefore (en)",
+  "sp": "advb"
+ },
+ "LHV/": {
+  "en": "flame",
+  "gloss_fr": "flame (en)",
+  "sp": "subs"
+ },
+ "LJC==/": {
+  "en": "Laish",
+  "gloss_fr": "Laish (en)",
+  "sp": "nmpr"
+ },
+ "LKD/": {
+  "en": "capture",
+  "gloss_fr": "capture (en)",
+  "sp": "subs"
+ },
+ "LMD/": {
+  "en": "disciple",
+  "gloss_fr": "disciple (en)",
+  "sp": "subs"
+ },
+ "LQC[": {
+  "en": "despoil",
+  "gloss_fr": "despoil (en)",
+  "sp": "verb"
+ },
+ "LQV/": {
+  "en": "gleaning",
+  "gloss_fr": "gleaning (en)",
+  "sp": "subs"
+ },
+ "LQX/": {
+  "en": "teaching",
+  "gloss_fr": "teaching (en)",
+  "sp": "subs"
+ },
+ "LV=/": {
+  "en": "mastic tree",
+  "gloss_fr": "mastic tree (en)",
+  "sp": "subs"
+ },
+ "LWH[": {
+  "en": "accompany",
+  "gloss_fr": "accompany (en)",
+  "sp": "verb"
+ },
+ "LWJ/": {
+  "en": "Levite",
+  "gloss_fr": "Levite (en)",
+  "sp": "adjv"
+ },
+ "LWV[": {
+  "en": "enwrap",
+  "gloss_fr": "enwrap (en)",
+  "sp": "verb"
+ },
+ "LWZ[": {
+  "en": "turn aside",
+  "gloss_fr": "turn aside (en)",
+  "sp": "verb"
+ },
+ "LX/": {
+  "en": "sap",
+  "gloss_fr": "sap (en)",
+  "sp": "subs"
+ },
+ "LXC[": {
+  "en": "whisper",
+  "gloss_fr": "whisper (en)",
+  "sp": "verb"
+ },
+ "LXM/": {
+  "en": "meal",
+  "gloss_fr": "meal (en)",
+  "sp": "subs"
+ },
+ "LXM=[": {
+  "en": "feed",
+  "gloss_fr": "feed (en)",
+  "sp": "verb"
+ },
+ "LXMJ=/": {
+  "en": "Lahmi",
+  "gloss_fr": "Lahmi (en)",
+  "sp": "nmpr"
+ },
+ "LXY/": {
+  "en": "oppression",
+  "gloss_fr": "oppression (en)",
+  "sp": "subs"
+ },
+ "M<GL=/": {
+  "en": "camp circle",
+  "gloss_fr": "camp circle (en)",
+  "sp": "subs"
+ },
+ "M<L/": {
+  "en": "entrance",
+  "gloss_fr": "entrance (en)",
+  "sp": "subs"
+ },
+ "M<L=/": {
+  "en": "unfaithfulness",
+  "gloss_fr": "unfaithfulness (en)",
+  "sp": "subs"
+ },
+ "M<L==/": {
+  "en": "lifting",
+  "gloss_fr": "lifting (en)",
+  "sp": "subs"
+ },
+ "M<MD=/": {
+  "en": "position",
+  "gloss_fr": "position (en)",
+  "sp": "subs"
+ },
+ "M<NH=/": {
+  "en": "answer",
+  "gloss_fr": "answer (en)",
+  "sp": "subs"
+ },
+ "M<NH==/": {
+  "en": "ploughing line",
+  "gloss_fr": "ploughing line (en)",
+  "sp": "subs"
+ },
+ "M<NH===/": {
+  "en": "purpose",
+  "gloss_fr": "purpose (en)",
+  "sp": "subs"
+ },
+ "M<RB=/": {
+  "en": "exchange",
+  "gloss_fr": "exchange (en)",
+  "sp": "subs"
+ },
+ "M<RH=/": {
+  "en": "vicinity",
+  "gloss_fr": "vicinity (en)",
+  "sp": "subs"
+ },
+ "M<RH==/": {
+  "en": "barren field",
+  "gloss_fr": "barren field (en)",
+  "sp": "subs"
+ },
+ "M<V[": {
+  "en": "be little",
+  "gloss_fr": "be little (en)",
+  "sp": "verb"
+ },
+ "M>H=/": {
+  "en": "the Hundred",
+  "gloss_fr": "the Hundred (en)",
+  "sp": "nmpr"
+ },
+ "M>KLT=/": {
+  "en": "food",
+  "gloss_fr": "food (en)",
+  "sp": "subs"
+ },
+ "M>N/": {
+  "en": "vessel",
+  "gloss_fr": "vessel (en)",
+  "sp": "subs"
+ },
+ "M>S=[": {
+  "en": "waste away",
+  "gloss_fr": "waste away (en)",
+  "sp": "verb"
+ },
+ "MCBR=/": {
+  "en": "mouth of womb",
+  "gloss_fr": "mouth of womb (en)",
+  "sp": "subs"
+ },
+ "MCH/": {
+  "en": "Moses",
+  "gloss_fr": "Moses (en)",
+  "sp": "nmpr"
+ },
+ "MCH[": {
+  "en": "draw out",
+  "gloss_fr": "draw out (en)",
+  "sp": "verb"
+ },
+ "MCK/": {
+  "en": "bag",
+  "gloss_fr": "bag (en)",
+  "sp": "subs"
+ },
+ "MCL/": {
+  "en": "proverb",
+  "gloss_fr": "proverb (en)",
+  "sp": "subs"
+ },
+ "MCL=/": {
+  "en": "dominion",
+  "gloss_fr": "dominion (en)",
+  "sp": "subs"
+ },
+ "MCL==/": {
+  "en": "likeness",
+  "gloss_fr": "likeness (en)",
+  "sp": "subs"
+ },
+ "MCL=[": {
+  "en": "say proverb",
+  "gloss_fr": "say proverb (en)",
+  "sp": "verb"
+ },
+ "MCQ=/": {
+  "en": "rushing",
+  "gloss_fr": "rushing (en)",
+  "sp": "subs"
+ },
+ "MCX/": {
+  "en": "oil",
+  "gloss_fr": "oil (en)",
+  "sp": "subs"
+ },
+ "MCXH=/": {
+  "en": "anointment",
+  "gloss_fr": "anointment (en)",
+  "sp": "subs"
+ },
+ "MCXH==/": {
+  "en": "portion",
+  "gloss_fr": "portion (en)",
+  "sp": "subs"
+ },
+ "MCXH===/": {
+  "en": "portion",
+  "gloss_fr": "portion (en)",
+  "sp": "subs"
+ },
+ "MCXT/": {
+  "en": "destruction",
+  "gloss_fr": "destruction (en)",
+  "sp": "subs"
+ },
+ "MCXT=/": {
+  "en": "destruction",
+  "gloss_fr": "destruction (en)",
+  "sp": "subs"
+ },
+ "MD<=/": {
+  "en": "kinsman",
+  "gloss_fr": "kinsman (en)",
+  "sp": "subs"
+ },
+ "MDBR=/": {
+  "en": "speaking",
+  "gloss_fr": "speaking (en)",
+  "sp": "subs"
+ },
+ "MDH=/": {
+  "en": "tribute",
+  "gloss_fr": "tribute (en)",
+  "sp": "subs"
+ },
+ "MDJ=/": {
+  "en": "Mede",
+  "gloss_fr": "Mede (en)",
+  "sp": "adjv"
+ },
+ "MDJN==/": {
+  "en": "Middin",
+  "gloss_fr": "Middin (en)",
+  "sp": "nmpr"
+ },
+ "MDMNH=/": {
+  "en": "Madmenah",
+  "gloss_fr": "Madmenah (en)",
+  "sp": "nmpr"
+ },
+ "MDMNH==/": {
+  "en": "Madmannah",
+  "gloss_fr": "Madmannah (en)",
+  "sp": "nmpr"
+ },
+ "MF>=/": {
+  "en": "utterance",
+  "gloss_fr": "utterance (en)",
+  "sp": "subs"
+ },
+ "MF>==/": {
+  "en": "partiality",
+  "gloss_fr": "partiality (en)",
+  "sp": "subs"
+ },
+ "MGN=/": {
+  "en": "insolent",
+  "gloss_fr": "insolent (en)",
+  "sp": "adjv"
+ },
+ "MGN[": {
+  "en": "deliver",
+  "gloss_fr": "deliver (en)",
+  "sp": "verb"
+ },
+ "MGWRH=/": {
+  "en": "corn-pit",
+  "gloss_fr": "corn-pit (en)",
+  "sp": "subs"
+ },
+ "MHR/": {
+  "en": "bride price",
+  "gloss_fr": "bride price (en)",
+  "sp": "subs"
+ },
+ "MHR=[": {
+  "en": "obtain",
+  "gloss_fr": "obtain (en)",
+  "sp": "verb"
+ },
+ "MKBR=/": {
+  "en": "cover",
+  "gloss_fr": "cover (en)",
+  "sp": "subs"
+ },
+ "MKR/": {
+  "en": "price",
+  "gloss_fr": "price (en)",
+  "sp": "subs"
+ },
+ "MKR=/": {
+  "en": "client",
+  "gloss_fr": "client (en)",
+  "sp": "subs"
+ },
+ "MKRH=/": {
+  "en": "pit",
+  "gloss_fr": "pit (en)",
+  "sp": "subs"
+ },
+ "MKSH==/": {
+  "en": "amount",
+  "gloss_fr": "amount (en)",
+  "sp": "subs"
+ },
+ "ML>/": {
+  "en": "full",
+  "gloss_fr": "full (en)",
+  "sp": "adjv"
+ },
+ "ML>H=/": {
+  "en": "setting",
+  "gloss_fr": "setting (en)",
+  "sp": "subs"
  },
  "ML>[": {
   "en": "fill",
   "gloss_fr": "remplir, être rempli",
   "sp": "verb"
  },
- "MLK[": {
-  "en": "be king",
-  "gloss_fr": "régner, être roi",
+ "MLK/": {
+  "en": "king",
+  "gloss_fr": "king (en)",
+  "sp": "subs"
+ },
+ "MLK=[": {
+  "en": "counsel",
+  "gloss_fr": "counsel (en)",
   "sp": "verb"
  },
- "MLV[": {
-  "en": "escape",
-  "gloss_fr": "délivrer, sauver",
+ "MLL==[": {
+  "en": "wither",
+  "gloss_fr": "wither (en)",
   "sp": "verb"
  },
- "NKH[": {
+ "MLL=[": {
+  "en": "circumcise",
+  "gloss_fr": "circumcise (en)",
+  "sp": "verb"
+ },
+ "MLQXJM=/": {
+  "en": "jaw",
+  "gloss_fr": "jaw (en)",
+  "sp": "subs"
+ },
+ "MLV/": {
+  "en": "mortar",
+  "gloss_fr": "mortar (en)",
+  "sp": "subs"
+ },
+ "MLV=[": {
+  "en": "be bald",
+  "gloss_fr": "be bald (en)",
+  "sp": "verb"
+ },
+ "MLX/": {
+  "en": "salt",
+  "gloss_fr": "salt (en)",
+  "sp": "subs"
+ },
+ "MLX==/": {
+  "en": "rag",
+  "gloss_fr": "rag (en)",
+  "sp": "subs"
+ },
+ "MLX=[": {
+  "en": "disperse",
+  "gloss_fr": "disperse (en)",
+  "sp": "verb"
+ },
+ "MLX[": {
+  "en": "eat salt",
+  "gloss_fr": "eat salt (en)",
+  "sp": "verb"
+ },
+ "MN/": {
+  "en": "manna",
+  "gloss_fr": "manna (en)",
+  "sp": "subs"
+ },
+ "MN=": {
+  "en": "who",
+  "gloss_fr": "who (en)",
+  "sp": "prin"
+ },
+ "MN=/": {
+  "en": "string",
+  "gloss_fr": "string (en)",
+  "sp": "subs"
+ },
+ "MN==/": {
+  "en": "portion",
+  "gloss_fr": "portion (en)",
+  "sp": "subs"
+ },
+ "MNH=/": {
+  "en": "mina",
+  "gloss_fr": "mina (en)",
+  "sp": "subs"
+ },
+ "MNH==/": {
+  "en": "portion",
+  "gloss_fr": "portion (en)",
+  "sp": "subs"
+ },
+ "MNH[": {
+  "en": "count",
+  "gloss_fr": "count (en)",
+  "sp": "verb"
+ },
+ "MNJ=/": {
+  "en": "Minni",
+  "gloss_fr": "Minni (en)",
+  "sp": "nmpr"
+ },
+ "MPTX=/": {
+  "en": "opening",
+  "gloss_fr": "opening (en)",
+  "sp": "subs"
+ },
+ "MPX=/": {
+  "en": "expiring",
+  "gloss_fr": "expiring (en)",
+  "sp": "subs"
+ },
+ "MPY/": {
+  "en": "shattering",
+  "gloss_fr": "shattering (en)",
+  "sp": "subs"
+ },
+ "MQBT=/": {
+  "en": "hole",
+  "gloss_fr": "hole (en)",
+  "sp": "subs"
+ },
+ "MQCH=/": {
+  "en": "cucumber field",
+  "gloss_fr": "cucumber field (en)",
+  "sp": "subs"
+ },
+ "MQCH==/": {
+  "en": "hair setting",
+  "gloss_fr": "hair setting (en)",
+  "sp": "subs"
+ },
+ "MQRH=/": {
+  "en": "beam-work",
+  "gloss_fr": "beam-work (en)",
+  "sp": "subs"
+ },
+ "MQRH==/": {
+  "en": "coolness",
+  "gloss_fr": "coolness (en)",
+  "sp": "subs"
+ },
+ "MQWH=/": {
+  "en": "reservoir",
+  "gloss_fr": "reservoir (en)",
+  "sp": "subs"
+ },
+ "MQWH==/": {
+  "en": "hope",
+  "gloss_fr": "hope (en)",
+  "sp": "subs"
+ },
+ "MR<=/": {
+  "en": "evil deed",
+  "gloss_fr": "evil deed (en)",
+  "sp": "subs"
+ },
+ "MR=/": {
+  "en": "drop",
+  "gloss_fr": "drop (en)",
+  "sp": "subs"
+ },
+ "MR==/": {
+  "en": "myrrh",
+  "gloss_fr": "myrrh (en)",
+  "sp": "subs"
+ },
+ "MR>=[": {
+  "en": "be rebellious",
+  "gloss_fr": "be rebellious (en)",
+  "sp": "verb"
+ },
+ "MR>H=/": {
+  "en": "vision",
+  "gloss_fr": "vision (en)",
+  "sp": "subs"
+ },
+ "MR>H==/": {
+  "en": "crop",
+  "gloss_fr": "crop (en)",
+  "sp": "subs"
+ },
+ "MR>[": {
+  "en": "toss",
+  "gloss_fr": "toss (en)",
+  "sp": "verb"
+ },
+ "MRD/": {
+  "en": "rebellion",
+  "gloss_fr": "rebellion (en)",
+  "sp": "subs"
+ },
+ "MRD=/": {
+  "en": "Mered",
+  "gloss_fr": "Mered (en)",
+  "sp": "nmpr"
+ },
+ "MRH/": {
+  "en": "bitterness",
+  "gloss_fr": "bitterness (en)",
+  "sp": "subs"
+ },
+ "MRJH=/": {
+  "en": "Meraiah",
+  "gloss_fr": "Meraiah (en)",
+  "sp": "nmpr"
+ },
+ "MRP>=/": {
+  "en": "calmness",
+  "gloss_fr": "calmness (en)",
+  "sp": "subs"
+ },
+ "MRQ/": {
+  "en": "juice",
+  "gloss_fr": "juice (en)",
+  "sp": "subs"
+ },
+ "MRR/": {
+  "en": "bitter",
+  "gloss_fr": "bitter (en)",
+  "sp": "adjv"
+ },
+ "MRRH/": {
+  "en": "gall-bladder",
+  "gloss_fr": "gall-bladder (en)",
+  "sp": "subs"
+ },
+ "MRRJ/": {
+  "en": "Merarite",
+  "gloss_fr": "Merarite (en)",
+  "sp": "adjv"
+ },
+ "MRWYH=/": {
+  "en": "extortion",
+  "gloss_fr": "extortion (en)",
+  "sp": "subs"
+ },
+ "MS<=/": {
+  "en": "quarry-stone",
+  "gloss_fr": "quarry-stone (en)",
+  "sp": "subs"
+ },
+ "MSGR/": {
+  "en": "dungeon",
+  "gloss_fr": "dungeon (en)",
+  "sp": "subs"
+ },
+ "MSH[": {
+  "en": "melt",
+  "gloss_fr": "melt (en)",
+  "sp": "verb"
+ },
+ "MSK=/": {
+  "en": "mixture",
+  "gloss_fr": "mixture (en)",
+  "sp": "subs"
+ },
+ "MSKH=/": {
+  "en": "covering",
+  "gloss_fr": "covering (en)",
+  "sp": "subs"
+ },
+ "MSKH==/": {
+  "en": "alliance",
+  "gloss_fr": "alliance (en)",
+  "sp": "subs"
+ },
+ "MSKH===/": {
+  "en": "covering",
+  "gloss_fr": "covering (en)",
+  "sp": "subs"
+ },
+ "MSK[": {
+  "en": "mix",
+  "gloss_fr": "mix (en)",
+  "sp": "verb"
+ },
+ "MSTR=/": {
+  "en": "making hide face",
+  "gloss_fr": "making hide face (en)",
+  "sp": "subs"
+ },
+ "MTNJ/": {
+  "en": "Mithnite",
+  "gloss_fr": "Mithnite (en)",
+  "sp": "adjv"
+ },
+ "MTQ/": {
+  "en": "sweetness",
+  "gloss_fr": "sweetness (en)",
+  "sp": "subs"
+ },
+ "MTQ=/": {
+  "en": "sweet",
+  "gloss_fr": "sweet (en)",
+  "sp": "adjv"
+ },
+ "MVH=/": {
+  "en": "couch",
+  "gloss_fr": "couch (en)",
+  "sp": "subs"
+ },
+ "MVH==/": {
+  "en": "low place",
+  "gloss_fr": "low place (en)",
+  "sp": "subs"
+ },
+ "MVH===/": {
+  "en": "spreading",
+  "gloss_fr": "spreading (en)",
+  "sp": "subs"
+ },
+ "MVH====/": {
+  "en": "crookedness",
+  "gloss_fr": "crookedness (en)",
+  "sp": "subs"
+ },
+ "MVH=====/": {
+  "en": "coming",
+  "gloss_fr": "coming (en)",
+  "sp": "subs"
+ },
+ "MVR[": {
+  "en": "rain",
+  "gloss_fr": "rain (en)",
+  "sp": "verb"
+ },
+ "MW<D=/": {
+  "en": "place of assemblage",
+  "gloss_fr": "place of assemblage (en)",
+  "sp": "subs"
+ },
+ "MWC=[": {
+  "en": "touch",
+  "gloss_fr": "touch (en)",
+  "sp": "verb"
+ },
+ "MWCJ/": {
+  "en": "Mushite",
+  "gloss_fr": "Mushite (en)",
+  "sp": "adjv"
+ },
+ "MWL=[": {
+  "en": "be off",
+  "gloss_fr": "be off (en)",
+  "sp": "verb"
+ },
+ "MWL[": {
+  "en": "circumcise",
+  "gloss_fr": "circumcise (en)",
+  "sp": "verb"
+ },
+ "MWRC=/": {
+  "en": "desire",
+  "gloss_fr": "desire (en)",
+  "sp": "subs"
+ },
+ "MWRH=/": {
+  "en": "razor",
+  "gloss_fr": "razor (en)",
+  "sp": "subs"
+ },
+ "MWSR=/": {
+  "en": "band",
+  "gloss_fr": "band (en)",
+  "sp": "subs"
+ },
+ "MWT/": {
+  "en": "death",
+  "gloss_fr": "death (en)",
+  "sp": "subs"
+ },
+ "MWV/": {
+  "en": "bar",
+  "gloss_fr": "bar (en)",
+  "sp": "subs"
+ },
+ "MWYQ/": {
+  "en": "casting",
+  "gloss_fr": "casting (en)",
+  "sp": "subs"
+ },
+ "MX=/": {
+  "en": "marrow",
+  "gloss_fr": "marrow (en)",
+  "sp": "subs"
+ },
+ "MXH==[": {
+  "en": "fill with marrow",
+  "gloss_fr": "fill with marrow (en)",
+  "sp": "verb"
+ },
+ "MXH=[": {
   "en": "strike",
-  "gloss_fr": "frapper, blesser, frapper à mort",
+  "gloss_fr": "strike (en)",
   "sp": "verb"
  },
- "NWX[": {
-  "en": "settle",
-  "gloss_fr": "se reposer, s'arrêter, demeurer",
+ "MXLH/": {
+  "en": "disease",
+  "gloss_fr": "disease (en)",
+  "sp": "subs"
+ },
+ "MXLH==/": {
+  "en": "hole",
+  "gloss_fr": "hole (en)",
+  "sp": "subs"
+ },
+ "MXLH===/": {
+  "en": "disease",
+  "gloss_fr": "disease (en)",
+  "sp": "subs"
+ },
+ "MXLJ/": {
+  "en": "Mahlite",
+  "gloss_fr": "Mahlite (en)",
+  "sp": "adjv"
+ },
+ "MXMD=/": {
+  "en": "something precious",
+  "gloss_fr": "something precious (en)",
+  "sp": "subs"
+ },
+ "MXTH=/": {
+  "en": "terror",
+  "gloss_fr": "terror (en)",
+  "sp": "subs"
+ },
+ "MXY/": {
+  "en": "breaking",
+  "gloss_fr": "breaking (en)",
+  "sp": "subs"
+ },
+ "MXZH=/": {
+  "en": "opening",
+  "gloss_fr": "opening (en)",
+  "sp": "subs"
+ },
+ "MYB=/": {
+  "en": "post",
+  "gloss_fr": "post (en)",
+  "sp": "subs"
+ },
+ "MYBH=/": {
+  "en": "guard",
+  "gloss_fr": "guard (en)",
+  "sp": "subs"
+ },
+ "MYH=/": {
+  "en": "contention",
+  "gloss_fr": "contention (en)",
+  "sp": "subs"
+ },
+ "MYH[": {
+  "en": "drain",
+  "gloss_fr": "drain (en)",
   "sp": "verb"
+ },
+ "MYPH==/": {
+  "en": "Mizpeh",
+  "gloss_fr": "Mizpeh (en)",
+  "sp": "nmpr"
+ },
+ "MYWDH=/": {
+  "en": "net",
+  "gloss_fr": "net (en)",
+  "sp": "subs"
+ },
+ "MYWDH==/": {
+  "en": "net",
+  "gloss_fr": "net (en)",
+  "sp": "subs"
+ },
+ "MYWQ=/": {
+  "en": "support",
+  "gloss_fr": "support (en)",
+  "sp": "subs"
+ },
+ "MYWR/": {
+  "en": "stress",
+  "gloss_fr": "stress (en)",
+  "sp": "subs"
+ },
+ "N<H=/": {
+  "en": "Neah",
+  "gloss_fr": "Neah (en)",
+  "sp": "nmpr"
+ },
+ "N<L[": {
+  "en": "lock",
+  "gloss_fr": "lock (en)",
+  "sp": "verb"
+ },
+ "N<M/": {
+  "en": "kindness",
+  "gloss_fr": "kindness (en)",
+  "sp": "subs"
+ },
+ "N<MJ/": {
+  "en": "Naamite",
+  "gloss_fr": "Naamite (en)",
+  "sp": "adjv"
+ },
+ "N<R=/": {
+  "en": "youth",
+  "gloss_fr": "youth (en)",
+  "sp": "subs"
+ },
+ "N<R=[": {
+  "en": "growl",
+  "gloss_fr": "growl (en)",
+  "sp": "verb"
+ },
+ "N<R[": {
+  "en": "shake off",
+  "gloss_fr": "shake off (en)",
+  "sp": "verb"
+ },
+ "N>/": {
+  "en": "raw",
+  "gloss_fr": "raw (en)",
+  "sp": "adjv"
+ },
+ "N>M[": {
+  "en": "speak",
+  "gloss_fr": "speak (en)",
+  "sp": "verb"
+ },
+ "NBL/": {
+  "en": "stupid",
+  "gloss_fr": "stupid (en)",
+  "sp": "adjv"
+ },
+ "NBL=/": {
+  "en": "jar",
+  "gloss_fr": "jar (en)",
+  "sp": "subs"
+ },
+ "NBLH/": {
+  "en": "stupidity",
+  "gloss_fr": "stupidity (en)",
+  "sp": "subs"
+ },
+ "NBL[": {
+  "en": "wither",
+  "gloss_fr": "wither (en)",
+  "sp": "verb"
+ },
+ "NBW/": {
+  "en": "Nabu",
+  "gloss_fr": "Nabu (en)",
+  "sp": "nmpr"
+ },
+ "NBX=/": {
+  "en": "Nobah",
+  "gloss_fr": "Nobah (en)",
+  "sp": "nmpr"
+ },
+ "NBX[": {
+  "en": "bark",
+  "gloss_fr": "bark (en)",
+  "sp": "verb"
+ },
+ "NC>=[": {
+  "en": "beguile",
+  "gloss_fr": "beguile (en)",
+  "sp": "verb"
+ },
+ "NCH/": {
+  "en": "sciatic nerve",
+  "gloss_fr": "sciatic nerve (en)",
+  "sp": "subs"
+ },
+ "NCK=[": {
+  "en": "claim interest",
+  "gloss_fr": "claim interest (en)",
+  "sp": "verb"
+ },
+ "NCK[": {
+  "en": "bite",
+  "gloss_fr": "bite (en)",
+  "sp": "verb"
+ },
+ "NCP[": {
+  "en": "blow",
+  "gloss_fr": "blow (en)",
+  "sp": "verb"
+ },
+ "NCQ/": {
+  "en": "equipment",
+  "gloss_fr": "equipment (en)",
+  "sp": "subs"
+ },
+ "NCQ=[": {
+  "en": "be equipped",
+  "gloss_fr": "be equipped (en)",
+  "sp": "verb"
+ },
+ "NDB[": {
+  "en": "be willing",
+  "gloss_fr": "be willing (en)",
+  "sp": "verb"
+ },
+ "NDH=/": {
+  "en": "gift",
+  "gloss_fr": "gift (en)",
+  "sp": "subs"
+ },
+ "NDH[": {
+  "en": "exclude",
+  "gloss_fr": "exclude (en)",
+  "sp": "verb"
+ },
+ "NDN/": {
+  "en": "sheath",
+  "gloss_fr": "sheath (en)",
+  "sp": "subs"
+ },
+ "NDR[": {
+  "en": "vow",
+  "gloss_fr": "vow (en)",
+  "sp": "verb"
+ },
+ "NFJ>=/": {
+  "en": "fog",
+  "gloss_fr": "fog (en)",
+  "sp": "subs"
+ },
+ "NG</": {
+  "en": "stroke",
+  "gloss_fr": "stroke (en)",
+  "sp": "subs"
+ },
+ "NGD[": {
+  "en": "flow",
+  "gloss_fr": "flow (en)",
+  "sp": "verb"
+ },
+ "NGH/": {
+  "en": "dawn",
+  "gloss_fr": "dawn (en)",
+  "sp": "subs"
+ },
+ "NGP/": {
+  "en": "plague",
+  "gloss_fr": "plague (en)",
+  "sp": "subs"
+ },
+ "NGX/": {
+  "en": "goring",
+  "gloss_fr": "goring (en)",
+  "sp": "adjv"
+ },
+ "NHG=[": {
+  "en": "moan",
+  "gloss_fr": "moan (en)",
+  "sp": "verb"
+ },
+ "NHH=[": {
+  "en": "hold",
+  "gloss_fr": "hold (en)",
+  "sp": "verb"
+ },
+ "NHLL==/": {
+  "en": "Nahalol",
+  "gloss_fr": "Nahalol (en)",
+  "sp": "nmpr"
+ },
+ "NHM/": {
+  "en": "groaning",
+  "gloss_fr": "groaning (en)",
+  "sp": "subs"
+ },
+ "NHR=[": {
+  "en": "beam",
+  "gloss_fr": "beam (en)",
+  "sp": "verb"
+ },
+ "NHR[": {
+  "en": "stream",
+  "gloss_fr": "stream (en)",
+  "sp": "verb"
+ },
+ "NJN[": {
+  "en": "sprout forth",
+  "gloss_fr": "sprout forth (en)",
+  "sp": "verb"
+ },
+ "NJR/": {
+  "en": "tilled ground",
+  "gloss_fr": "tilled ground (en)",
+  "sp": "subs"
+ },
+ "NJR[": {
+  "en": "till",
+  "gloss_fr": "till (en)",
+  "sp": "verb"
+ },
+ "NK>/": {
+  "en": "smitten",
+  "gloss_fr": "smitten (en)",
+  "sp": "adjv"
+ },
+ "NK>[": {
+  "en": "scourge",
+  "gloss_fr": "scourge (en)",
+  "sp": "verb"
+ },
+ "NKH/": {
+  "en": "smitten",
+  "gloss_fr": "smitten (en)",
+  "sp": "adjv"
+ },
+ "NKL/": {
+  "en": "cunning",
+  "gloss_fr": "cunning (en)",
+  "sp": "subs"
+ },
+ "NKR/": {
+  "en": "foreigner",
+  "gloss_fr": "foreigner (en)",
+  "sp": "subs"
+ },
+ "NKR=/": {
+  "en": "misfortune",
+  "gloss_fr": "misfortune (en)",
+  "sp": "subs"
+ },
+ "NKX/": {
+  "en": "straight",
+  "gloss_fr": "straight (en)",
+  "sp": "adjv"
+ },
+ "NPC[": {
+  "en": "take breath",
+  "gloss_fr": "take breath (en)",
+  "sp": "verb"
+ },
+ "NPL/": {
+  "en": "miscarriage",
+  "gloss_fr": "miscarriage (en)",
+  "sp": "subs"
+ },
+ "NPT=/": {
+  "en": "hill",
+  "gloss_fr": "hill (en)",
+  "sp": "subs"
+ },
+ "NPY/": {
+  "en": "pattering",
+  "gloss_fr": "pattering (en)",
+  "sp": "subs"
+ },
+ "NQB/": {
+  "en": "passage",
+  "gloss_fr": "passage (en)",
+  "sp": "subs"
+ },
+ "NQD/": {
+  "en": "sheep-raiser",
+  "gloss_fr": "sheep-raiser (en)",
+  "sp": "subs"
+ },
+ "NQM/": {
+  "en": "vengeance",
+  "gloss_fr": "vengeance (en)",
+  "sp": "subs"
+ },
+ "NQP/": {
+  "en": "strike",
+  "gloss_fr": "strike (en)",
+  "sp": "subs"
+ },
+ "NQP=[": {
+  "en": "strike",
+  "gloss_fr": "strike (en)",
+  "sp": "verb"
+ },
+ "NSJK=/": {
+  "en": "libation",
+  "gloss_fr": "libation (en)",
+  "sp": "subs"
+ },
+ "NSK/": {
+  "en": "libation",
+  "gloss_fr": "libation (en)",
+  "sp": "subs"
+ },
+ "NSK=[": {
+  "en": "interweave",
+  "gloss_fr": "interweave (en)",
+  "sp": "verb"
+ },
+ "NSK[": {
+  "en": "poor out",
+  "gloss_fr": "poor out (en)",
+  "sp": "verb"
+ },
+ "NTQ/": {
+  "en": "scab",
+  "gloss_fr": "scab (en)",
+  "sp": "subs"
+ },
+ "NTR[": {
+  "en": "drop",
+  "gloss_fr": "drop (en)",
+  "sp": "verb"
+ },
+ "NTX[": {
+  "en": "cut",
+  "gloss_fr": "cut (en)",
+  "sp": "verb"
+ },
+ "NV</": {
+  "en": "plantation",
+  "gloss_fr": "plantation (en)",
+  "sp": "subs"
+ },
+ "NVL/": {
+  "en": "load",
+  "gloss_fr": "load (en)",
+  "sp": "subs"
+ },
+ "NVP/": {
+  "en": "drops",
+  "gloss_fr": "drops (en)",
+  "sp": "subs"
+ },
+ "NVP=/": {
+  "en": "drop",
+  "gloss_fr": "drop (en)",
+  "sp": "subs"
+ },
+ "NVR[": {
+  "en": "guard",
+  "gloss_fr": "guard (en)",
+  "sp": "verb"
+ },
+ "NWH=/": {
+  "en": "pasture",
+  "gloss_fr": "pasture (en)",
+  "sp": "subs"
+ },
+ "NWH=[": {
+  "en": "reach",
+  "gloss_fr": "reach (en)",
+  "sp": "verb"
+ },
+ "NWH[": {
+  "en": "praise",
+  "gloss_fr": "praise (en)",
+  "sp": "verb"
+ },
+ "NWP/": {
+  "en": "height",
+  "gloss_fr": "height (en)",
+  "sp": "subs"
+ },
+ "NWP=[": {
+  "en": "besprinkle",
+  "gloss_fr": "besprinkle (en)",
+  "sp": "verb"
+ },
+ "NWX/": {
+  "en": "rest",
+  "gloss_fr": "rest (en)",
+  "sp": "subs"
+ },
+ "NWX=[": {
+  "en": "lament",
+  "gloss_fr": "lament (en)",
+  "sp": "verb"
+ },
+ "NXC/": {
+  "en": "copper",
+  "gloss_fr": "copper (en)",
+  "sp": "subs"
+ },
+ "NXC=/": {
+  "en": "spell",
+  "gloss_fr": "spell (en)",
+  "sp": "subs"
+ },
+ "NXCT=/": {
+  "en": "menstruation",
+  "gloss_fr": "menstruation (en)",
+  "sp": "subs"
+ },
+ "NXH=[": {
+  "en": "lean",
+  "gloss_fr": "lean (en)",
+  "sp": "verb"
+ },
+ "NXL[": {
+  "en": "take possession",
+  "gloss_fr": "take possession (en)",
+  "sp": "verb"
+ },
+ "NXM/": {
+  "en": "compassion",
+  "gloss_fr": "compassion (en)",
+  "sp": "subs"
+ },
+ "NXR[": {
+  "en": "snort",
+  "gloss_fr": "snort (en)",
+  "sp": "verb"
+ },
+ "NXT=/": {
+  "en": "descent",
+  "gloss_fr": "descent (en)",
+  "sp": "subs"
+ },
+ "NXT[": {
+  "en": "come down",
+  "gloss_fr": "come down (en)",
+  "sp": "verb"
+ },
+ "NY=/": {
+  "en": "blossom",
+  "gloss_fr": "blossom (en)",
+  "sp": "subs"
+ },
+ "NYB/": {
+  "en": "handle",
+  "gloss_fr": "handle (en)",
+  "sp": "subs"
+ },
+ "NYH/": {
+  "en": "filth",
+  "gloss_fr": "filth (en)",
+  "sp": "subs"
+ },
+ "NYH=/": {
+  "en": "blossom",
+  "gloss_fr": "blossom (en)",
+  "sp": "subs"
+ },
+ "NYR/": {
+  "en": "shoot",
+  "gloss_fr": "shoot (en)",
+  "sp": "subs"
+ },
+ "NYX=/": {
+  "en": "blood-spout",
+  "gloss_fr": "blood-spout (en)",
+  "sp": "subs"
+ },
+ "NYX[": {
+  "en": "shine",
+  "gloss_fr": "shine (en)",
+  "sp": "verb"
+ },
+ "NZQ/": {
+  "en": "damage",
+  "gloss_fr": "damage (en)",
+  "sp": "subs"
+ },
+ "NZR[": {
+  "en": "dedicate",
+  "gloss_fr": "dedicate (en)",
+  "sp": "verb"
+ },
+ "P<L/": {
+  "en": "doing",
+  "gloss_fr": "doing (en)",
+  "sp": "subs"
+ },
+ "P<M[": {
+  "en": "move",
+  "gloss_fr": "move (en)",
+  "sp": "verb"
+ },
+ "P>H=/": {
+  "en": "splendour",
+  "gloss_fr": "splendour (en)",
+  "sp": "subs"
+ },
+ "P>H==/": {
+  "en": "piece",
+  "gloss_fr": "piece (en)",
+  "sp": "subs"
+ },
+ "P>H[": {
+  "en": "split",
+  "gloss_fr": "split (en)",
+  "sp": "verb"
+ },
+ "P>R/": {
+  "en": "headdress",
+  "gloss_fr": "headdress (en)",
+  "sp": "subs"
+ },
+ "P>R=[": {
+  "en": "knock down",
+  "gloss_fr": "knock down (en)",
+  "sp": "verb"
+ },
+ "PC<[": {
+  "en": "rebel",
+  "gloss_fr": "rebel (en)",
+  "sp": "verb"
+ },
+ "PCR[": {
+  "en": "interpret",
+  "gloss_fr": "interpret (en)",
+  "sp": "verb"
+ },
+ "PF<[": {
+  "en": "step",
+  "gloss_fr": "step (en)",
+  "sp": "verb"
+ },
+ "PG</": {
+  "en": "occurrence",
+  "gloss_fr": "occurrence (en)",
+  "sp": "subs"
+ },
+ "PGR[": {
+  "en": "be faint",
+  "gloss_fr": "be faint (en)",
+  "sp": "verb"
+ },
+ "PH": {
+  "en": "here",
+  "gloss_fr": "here (en)",
+  "sp": "advb"
+ },
+ "PL>/": {
+  "en": "miracle",
+  "gloss_fr": "miracle (en)",
+  "sp": "subs"
+ },
+ "PL>J=/": {
+  "en": "Palluite",
+  "gloss_fr": "Palluite (en)",
+  "sp": "adjv"
+ },
+ "PLG/": {
+  "en": "half",
+  "gloss_fr": "half (en)",
+  "sp": "subs"
+ },
+ "PLK/": {
+  "en": "whirl of spindle",
+  "gloss_fr": "whirl of spindle (en)",
+  "sp": "subs"
+ },
+ "PLL=[": {
+  "en": "arbitrate",
+  "gloss_fr": "arbitrate (en)",
+  "sp": "verb"
+ },
+ "PLS/": {
+  "en": "indicator",
+  "gloss_fr": "indicator (en)",
+  "sp": "subs"
+ },
+ "PLS=[": {
+  "en": "watch",
+  "gloss_fr": "watch (en)",
+  "sp": "verb"
+ },
+ "PLVJ/": {
+  "en": "Paltite",
+  "gloss_fr": "Paltite (en)",
+  "sp": "adjv"
+ },
+ "PLVJ==/": {
+  "en": "Piltai",
+  "gloss_fr": "Piltai (en)",
+  "sp": "nmpr"
+ },
+ "PLX/": {
+  "en": "slice",
+  "gloss_fr": "slice (en)",
+  "sp": "subs"
+ },
+ "PNH=/": {
+  "en": "corner",
+  "gloss_fr": "corner (en)",
+  "sp": "subs"
  },
  "PNH[": {
   "en": "turn",
   "gloss_fr": "se tourner, se détourner",
+  "sp": "verb"
+ },
+ "PNW>L=/": {
+  "en": "Penuel",
+  "gloss_fr": "Penuel (en)",
+  "sp": "nmpr"
+ },
+ "PQX/": {
+  "en": "clear-sighted",
+  "gloss_fr": "clear-sighted (en)",
+  "sp": "adjv"
+ },
+ "PR</": {
+  "en": "loose hair",
+  "gloss_fr": "loose hair (en)",
+  "sp": "subs"
+ },
+ "PR>[": {
+  "en": "be fertile",
+  "gloss_fr": "be fertile (en)",
+  "sp": "verb"
+ },
+ "PRC=/": {
+  "en": "contents of stomach",
+  "gloss_fr": "contents of stomach (en)",
+  "sp": "subs"
+ },
+ "PRC[": {
+  "en": "interpret",
+  "gloss_fr": "interpret (en)",
+  "sp": "verb"
+ },
+ "PRD/": {
+  "en": "mule",
+  "gloss_fr": "mule (en)",
+  "sp": "subs"
+ },
+ "PRH/": {
+  "en": "cow",
+  "gloss_fr": "cow (en)",
+  "sp": "subs"
+ },
+ "PRJY=/": {
+  "en": "burglar",
+  "gloss_fr": "burglar (en)",
+  "sp": "subs"
+ },
+ "PRQ[": {
+  "en": "atone",
+  "gloss_fr": "atone (en)",
+  "sp": "verb"
+ },
+ "PRR=[": {
+  "en": "stir",
+  "gloss_fr": "stir (en)",
+  "sp": "verb"
+ },
+ "PRS=/": {
+  "en": "half-shekel",
+  "gloss_fr": "half-shekel (en)",
+  "sp": "subs"
+ },
+ "PRS[": {
+  "en": "divide",
+  "gloss_fr": "divide (en)",
+  "sp": "verb"
+ },
+ "PRV[": {
+  "en": "improvise",
+  "gloss_fr": "improvise (en)",
+  "sp": "verb"
+ },
+ "PRX/": {
+  "en": "bud",
+  "gloss_fr": "bud (en)",
+  "sp": "subs"
+ },
+ "PRX=[": {
+  "en": "fly?",
+  "gloss_fr": "fly? (en)",
+  "sp": "verb"
+ },
+ "PRY/": {
+  "en": "breach",
+  "gloss_fr": "breach (en)",
+  "sp": "subs"
+ },
+ "PRZJ=/": {
+  "en": "open country",
+  "gloss_fr": "open country (en)",
+  "sp": "subs"
+ },
+ "PSL[": {
+  "en": "cut",
+  "gloss_fr": "cut (en)",
+  "sp": "verb"
+ },
+ "PSX==/": {
+  "en": "Paseah",
+  "gloss_fr": "Paseah (en)",
+  "sp": "nmpr"
+ },
+ "PSX[": {
+  "en": "be lame",
+  "gloss_fr": "be lame (en)",
+  "sp": "verb"
+ },
+ "PT=/": {
+  "en": "forehead",
+  "gloss_fr": "forehead (en)",
+  "sp": "subs"
+ },
+ "PTH=[": {
+  "en": "be spacious",
+  "gloss_fr": "be spacious (en)",
+  "sp": "verb"
+ },
+ "PTJ=/": {
+  "en": "simplicity",
+  "gloss_fr": "simplicity (en)",
+  "sp": "subs"
+ },
+ "PTX=/": {
+  "en": "disclosure",
+  "gloss_fr": "disclosure (en)",
+  "sp": "subs"
+ },
+ "PTX=[": {
+  "en": "engrave",
+  "gloss_fr": "engrave (en)",
   "sp": "verb"
  },
  "PTX[": {
@@ -209,24 +5349,454 @@
   "gloss_fr": "ouvrir",
   "sp": "verb"
  },
- "QBR[": {
-  "en": "bury",
-  "gloss_fr": "enterrer, ensevelir",
+ "PVR[": {
+  "en": "escape",
+  "gloss_fr": "escape (en)",
   "sp": "verb"
+ },
+ "PWL=/": {
+  "en": "Libyans",
+  "gloss_fr": "Libyans (en)",
+  "sp": "nmpr"
+ },
+ "PWR[": {
+  "en": "destroy",
+  "gloss_fr": "destroy (en)",
+  "sp": "verb"
+ },
+ "PWX=[": {
+  "en": "breath",
+  "gloss_fr": "breath (en)",
+  "sp": "verb"
+ },
+ "PX/": {
+  "en": "plate",
+  "gloss_fr": "plate (en)",
+  "sp": "subs"
+ },
+ "PXD=/": {
+  "en": "thigh",
+  "gloss_fr": "thigh (en)",
+  "sp": "subs"
+ },
+ "PXD[": {
+  "en": "tremble",
+  "gloss_fr": "tremble (en)",
+  "sp": "verb"
+ },
+ "PY<[": {
+  "en": "squeeze",
+  "gloss_fr": "squeeze (en)",
+  "sp": "verb"
+ },
+ "PYX=[": {
+  "en": "scatter",
+  "gloss_fr": "scatter (en)",
+  "sp": "verb"
+ },
+ "PZZ=[": {
+  "en": "set with topaz",
+  "gloss_fr": "set with topaz (en)",
+  "sp": "verb"
+ },
+ "QBH=/": {
+  "en": "women's room",
+  "gloss_fr": "women's room (en)",
+  "sp": "subs"
+ },
+ "QBL[": {
+  "en": "receive",
+  "gloss_fr": "receive (en)",
+  "sp": "verb"
+ },
+ "QBR/": {
+  "en": "grave",
+  "gloss_fr": "grave (en)",
+  "sp": "subs"
+ },
+ "QCB/": {
+  "en": "attentiveness",
+  "gloss_fr": "attentiveness (en)",
+  "sp": "subs"
+ },
+ "QCB=/": {
+  "en": "attentive",
+  "gloss_fr": "attentive (en)",
+  "sp": "adjv"
+ },
+ "QCB==/": {
+  "en": "attentive",
+  "gloss_fr": "attentive (en)",
+  "sp": "adjv"
+ },
+ "QCH[": {
+  "en": "be hard",
+  "gloss_fr": "be hard (en)",
+  "sp": "verb"
+ },
+ "QCR/": {
+  "en": "conspiracy",
+  "gloss_fr": "conspiracy (en)",
+  "sp": "subs"
+ },
+ "QCT=/": {
+  "en": "bowman",
+  "gloss_fr": "bowman (en)",
+  "sp": "subs"
+ },
+ "QDC=/": {
+  "en": "temple prostitute",
+  "gloss_fr": "temple prostitute (en)",
+  "sp": "adjv"
+ },
+ "QDC[": {
+  "en": "be holy",
+  "gloss_fr": "be holy (en)",
+  "sp": "verb"
+ },
+ "QDMH/": {
+  "en": "former time",
+  "gloss_fr": "former time (en)",
+  "sp": "subs"
+ },
+ "QDMNJ=/": {
+  "en": "easterner",
+  "gloss_fr": "easterner (en)",
+  "sp": "adjv"
+ },
+ "QDM[": {
+  "en": "be in front",
+  "gloss_fr": "be in front (en)",
+  "sp": "verb"
+ },
+ "QHL[": {
+  "en": "assemble",
+  "gloss_fr": "assemble (en)",
+  "sp": "verb"
+ },
+ "QJ>/": {
+  "en": "vomit",
+  "gloss_fr": "vomit (en)",
+  "sp": "subs"
+ },
+ "QJM=/": {
+  "en": "statute",
+  "gloss_fr": "statute (en)",
+  "sp": "subs"
+ },
+ "QJN==/": {
+  "en": "Kain",
+  "gloss_fr": "Kain (en)",
+  "sp": "nmpr"
+ },
+ "QJN===/": {
+  "en": "Kain",
+  "gloss_fr": "Kain (en)",
+  "sp": "nmpr"
+ },
+ "QJN[": {
+  "en": "chant elegy",
+  "gloss_fr": "chant elegy (en)",
+  "sp": "verb"
+ },
+ "QJY/": {
+  "en": "summer",
+  "gloss_fr": "summer (en)",
+  "sp": "subs"
+ },
+ "QL<=/": {
+  "en": "slinger",
+  "gloss_fr": "slinger (en)",
+  "sp": "subs"
+ },
+ "QL<==/": {
+  "en": "sling",
+  "gloss_fr": "sling (en)",
+  "sp": "subs"
+ },
+ "QL<=[": {
+  "en": "carve",
+  "gloss_fr": "carve (en)",
+  "sp": "verb"
+ },
+ "QL<[": {
+  "en": "sling forth",
+  "gloss_fr": "sling forth (en)",
+  "sp": "verb"
+ },
+ "QL=/": {
+  "en": "lightness",
+  "gloss_fr": "lightness (en)",
+  "sp": "subs"
+ },
+ "QLH[": {
+  "en": "roast",
+  "gloss_fr": "roast (en)",
+  "sp": "verb"
+ },
+ "QLL/": {
+  "en": "burnished",
+  "gloss_fr": "burnished (en)",
+  "sp": "adjv"
+ },
+ "QLS/": {
+  "en": "derision",
+  "gloss_fr": "derision (en)",
+  "sp": "subs"
+ },
+ "QMY[": {
+  "en": "take handful",
+  "gloss_fr": "take handful (en)",
+  "sp": "verb"
+ },
+ "QN>/": {
+  "en": "jealous",
+  "gloss_fr": "jealous (en)",
+  "sp": "adjv"
+ },
+ "QNH=[": {
+  "en": "create",
+  "gloss_fr": "create (en)",
+  "sp": "verb"
+ },
+ "QNH[": {
+  "en": "buy",
+  "gloss_fr": "buy (en)",
+  "sp": "verb"
+ },
+ "QPD[": {
+  "en": "roll up",
+  "gloss_fr": "roll up (en)",
+  "sp": "verb"
+ },
+ "QR/": {
+  "en": "cold",
+  "gloss_fr": "cold (en)",
+  "sp": "subs"
+ },
+ "QR>/": {
+  "en": "partridge",
+  "gloss_fr": "partridge (en)",
+  "sp": "subs"
  },
  "QR>[": {
   "en": "call",
   "gloss_fr": "appeler, rencontrer",
   "sp": "verb"
  },
+ "QRB/": {
+  "en": "war",
+  "gloss_fr": "war (en)",
+  "sp": "subs"
+ },
+ "QRB==/": {
+  "en": "fight",
+  "gloss_fr": "fight (en)",
+  "sp": "subs"
+ },
+ "QRBN=/": {
+  "en": "supply",
+  "gloss_fr": "supply (en)",
+  "sp": "subs"
+ },
  "QRB[": {
   "en": "approach",
   "gloss_fr": "s'approcher, approcher",
   "sp": "verb"
  },
- "QVR[": {
-  "en": "smoke",
-  "gloss_fr": "faire fumer l'encens, brûler de l'encens",
+ "QRH/": {
+  "en": "cold",
+  "gloss_fr": "cold (en)",
+  "sp": "subs"
+ },
+ "QRH=/": {
+  "en": "pollution",
+  "gloss_fr": "pollution (en)",
+  "sp": "subs"
+ },
+ "QRN[": {
+  "en": "shine",
+  "gloss_fr": "shine (en)",
+  "sp": "verb"
+ },
+ "QRS[": {
+  "en": "bend down",
+  "gloss_fr": "bend down (en)",
+  "sp": "verb"
+ },
+ "QRX===/": {
+  "en": "Kareah",
+  "gloss_fr": "Kareah (en)",
+  "sp": "nmpr"
+ },
+ "QRX[": {
+  "en": "make bald",
+  "gloss_fr": "make bald (en)",
+  "sp": "verb"
+ },
+ "QRY/": {
+  "en": "piece",
+  "gloss_fr": "piece (en)",
+  "sp": "subs"
+ },
+ "QSM/": {
+  "en": "divination",
+  "gloss_fr": "divination (en)",
+  "sp": "subs"
+ },
+ "QVL/": {
+  "en": "slaughter",
+  "gloss_fr": "slaughter (en)",
+  "sp": "subs"
+ },
+ "QVN=/": {
+  "en": "small",
+  "gloss_fr": "small (en)",
+  "sp": "adjv"
+ },
+ "QVN==/": {
+  "en": "the little one",
+  "gloss_fr": "the little one (en)",
+  "sp": "subs"
+ },
+ "QVN[": {
+  "en": "be small",
+  "gloss_fr": "be small (en)",
+  "sp": "verb"
+ },
+ "QVR/": {
+  "en": "knot",
+  "gloss_fr": "knot (en)",
+  "sp": "subs"
+ },
+ "QWH=[": {
+  "en": "collect",
+  "gloss_fr": "collect (en)",
+  "sp": "verb"
+ },
+ "QWR/": {
+  "en": "thread",
+  "gloss_fr": "thread (en)",
+  "sp": "subs"
+ },
+ "QWY=/": {
+  "en": "snuff",
+  "gloss_fr": "snuff (en)",
+  "sp": "subs"
+ },
+ "QWY=[": {
+  "en": "be asunder",
+  "gloss_fr": "be asunder (en)",
+  "sp": "verb"
+ },
+ "QWY[": {
+  "en": "loath",
+  "gloss_fr": "loath (en)",
+  "sp": "verb"
+ },
+ "QY<=[": {
+  "en": "scrape off",
+  "gloss_fr": "scrape off (en)",
+  "sp": "verb"
+ },
+ "QYB[": {
+  "en": "cut off",
+  "gloss_fr": "cut off (en)",
+  "sp": "verb"
+ },
+ "QYH[": {
+  "en": "cut off",
+  "gloss_fr": "cut off (en)",
+  "sp": "verb"
+ },
+ "QYJR=/": {
+  "en": "bough",
+  "gloss_fr": "bough (en)",
+  "sp": "subs"
+ },
+ "QYP/": {
+  "en": "wrath",
+  "gloss_fr": "wrath (en)",
+  "sp": "subs"
+ },
+ "QYP=/": {
+  "en": "bough",
+  "gloss_fr": "bough (en)",
+  "sp": "subs"
+ },
+ "QYR/": {
+  "en": "shortness",
+  "gloss_fr": "shortness (en)",
+  "sp": "subs"
+ },
+ "QYR=/": {
+  "en": "short",
+  "gloss_fr": "short (en)",
+  "sp": "adjv"
+ },
+ "QYR[": {
+  "en": "be short",
+  "gloss_fr": "be short (en)",
+  "sp": "verb"
+ },
+ "R<=/": {
+  "en": "fellow",
+  "gloss_fr": "fellow (en)",
+  "sp": "subs"
+ },
+ "R<==/": {
+  "en": "shouting",
+  "gloss_fr": "shouting (en)",
+  "sp": "subs"
+ },
+ "R<===/": {
+  "en": "wickedness",
+  "gloss_fr": "wickedness (en)",
+  "sp": "subs"
+ },
+ "R<====/": {
+  "en": "will",
+  "gloss_fr": "will (en)",
+  "sp": "subs"
+ },
+ "R<B=/": {
+  "en": "hungry",
+  "gloss_fr": "hungry (en)",
+  "sp": "adjv"
+ },
+ "R<B[": {
+  "en": "be hungry",
+  "gloss_fr": "be hungry (en)",
+  "sp": "verb"
+ },
+ "R<C/": {
+  "en": "quaking",
+  "gloss_fr": "quaking (en)",
+  "sp": "subs"
+ },
+ "R<C=[": {
+  "en": "be abundant",
+  "gloss_fr": "be abundant (en)",
+  "sp": "verb"
+ },
+ "R<D/": {
+  "en": "trembling",
+  "gloss_fr": "trembling (en)",
+  "sp": "subs"
+ },
+ "R<H=/": {
+  "en": "fellow",
+  "gloss_fr": "fellow (en)",
+  "sp": "subs"
+ },
+ "R<H==/": {
+  "en": "female companion",
+  "gloss_fr": "female companion (en)",
+  "sp": "subs"
+ },
+ "R<H=[": {
+  "en": "deal with",
+  "gloss_fr": "deal with (en)",
   "sp": "verb"
  },
  "R<H[": {
@@ -234,24 +5804,1094 @@
   "gloss_fr": "paître, faire paître, être berger",
   "sp": "verb"
  },
+ "R<L/": {
+  "en": "reeling",
+  "gloss_fr": "reeling (en)",
+  "sp": "subs"
+ },
+ "R<M/": {
+  "en": "thunder",
+  "gloss_fr": "thunder (en)",
+  "sp": "subs"
+ },
+ "R<M=[": {
+  "en": "be disconcerted",
+  "gloss_fr": "be disconcerted (en)",
+  "sp": "verb"
+ },
+ "R<WT/": {
+  "en": "female companion",
+  "gloss_fr": "female companion (en)",
+  "sp": "subs"
+ },
+ "R>C=/": {
+  "en": "poison",
+  "gloss_fr": "poison (en)",
+  "sp": "subs"
+ },
+ "R>CH=/": {
+  "en": "upper",
+  "gloss_fr": "upper (en)",
+  "sp": "adjv"
+ },
+ "R>H/": {
+  "en": "seer",
+  "gloss_fr": "seer (en)",
+  "sp": "subs"
+ },
+ "R>H=/": {
+  "en": "red bird",
+  "gloss_fr": "red bird (en)",
+  "sp": "subs"
+ },
+ "R>H==/": {
+  "en": "vision",
+  "gloss_fr": "vision (en)",
+  "sp": "subs"
+ },
+ "R>J=/": {
+  "en": "mirror",
+  "gloss_fr": "mirror (en)",
+  "sp": "subs"
+ },
+ "R>M[": {
+  "en": "rise",
+  "gloss_fr": "rise (en)",
+  "sp": "verb"
+ },
+ "RB/": {
+  "en": "great",
+  "gloss_fr": "great (en)",
+  "sp": "adjv"
+ },
+ "RB</": {
+  "en": "of fourth generation",
+  "gloss_fr": "of fourth generation (en)",
+  "sp": "subs"
+ },
+ "RB<=/": {
+  "en": "fourth part",
+  "gloss_fr": "fourth part (en)",
+  "sp": "subs"
+ },
+ "RB<==/": {
+  "en": "dust",
+  "gloss_fr": "dust (en)",
+  "sp": "subs"
+ },
+ "RB<===/": {
+  "en": "fourth part",
+  "gloss_fr": "fourth part (en)",
+  "sp": "subs"
+ },
+ "RB<=[": {
+  "en": "lie down",
+  "gloss_fr": "lie down (en)",
+  "sp": "verb"
+ },
+ "RB=/": {
+  "en": "chief",
+  "gloss_fr": "chief (en)",
+  "sp": "subs"
+ },
+ "RB===/": {
+  "en": "dart",
+  "gloss_fr": "dart (en)",
+  "sp": "subs"
+ },
+ "RBB=[": {
+  "en": "shoot",
+  "gloss_fr": "shoot (en)",
+  "sp": "verb"
+ },
+ "RBH=[": {
+  "en": "shoot",
+  "gloss_fr": "shoot (en)",
+  "sp": "verb"
+ },
+ "RBW=/": {
+  "en": "myriad",
+  "gloss_fr": "myriad (en)",
+  "sp": "subs"
+ },
+ "RBY/": {
+  "en": "resting place",
+  "gloss_fr": "resting place (en)",
+  "sp": "subs"
+ },
+ "RC<=/": {
+  "en": "guilt",
+  "gloss_fr": "guilt (en)",
+  "sp": "subs"
+ },
+ "RC<[": {
+  "en": "be guilty",
+  "gloss_fr": "be guilty (en)",
+  "sp": "verb"
+ },
+ "RDH=[": {
+  "en": "scrape out",
+  "gloss_fr": "scrape out (en)",
+  "sp": "verb"
+ },
+ "RG<=/": {
+  "en": "quiet",
+  "gloss_fr": "quiet (en)",
+  "sp": "adjv"
+ },
+ "RG<[": {
+  "en": "stir",
+  "gloss_fr": "stir (en)",
+  "sp": "verb"
+ },
+ "RGC/": {
+  "en": "turmoil",
+  "gloss_fr": "turmoil (en)",
+  "sp": "subs"
+ },
+ "RGL/": {
+  "en": "foot",
+  "gloss_fr": "foot (en)",
+  "sp": "subs"
+ },
+ "RGZ/": {
+  "en": "anger",
+  "gloss_fr": "anger (en)",
+  "sp": "subs"
+ },
+ "RGZ=/": {
+  "en": "excited",
+  "gloss_fr": "excited (en)",
+  "sp": "adjv"
+ },
+ "RHB/": {
+  "en": "stormer",
+  "gloss_fr": "stormer (en)",
+  "sp": "subs"
+ },
+ "RHB=/": {
+  "en": "insistence",
+  "gloss_fr": "insistence (en)",
+  "sp": "subs"
+ },
+ "RJB/": {
+  "en": "law-case",
+  "gloss_fr": "law-case (en)",
+  "sp": "subs"
+ },
+ "RJQ/": {
+  "en": "emptiness",
+  "gloss_fr": "emptiness (en)",
+  "sp": "subs"
+ },
+ "RJQ=/": {
+  "en": "empty",
+  "gloss_fr": "empty (en)",
+  "sp": "adjv"
+ },
+ "RJR[": {
+  "en": "spittle",
+  "gloss_fr": "spittle (en)",
+  "sp": "verb"
+ },
+ "RK=/": {
+  "en": "tenderness",
+  "gloss_fr": "tenderness (en)",
+  "sp": "subs"
+ },
+ "RKB=/": {
+  "en": "charioteer",
+  "gloss_fr": "charioteer (en)",
+  "sp": "subs"
+ },
+ "RKB[": {
+  "en": "ride",
+  "gloss_fr": "ride (en)",
+  "sp": "verb"
+ },
+ "RKC/": {
+  "en": "span",
+  "gloss_fr": "span (en)",
+  "sp": "subs"
+ },
+ "RKS/": {
+  "en": "rugged ground",
+  "gloss_fr": "rugged ground (en)",
+  "sp": "subs"
+ },
+ "RMF/": {
+  "en": "creeping animals",
+  "gloss_fr": "creeping animals (en)",
+  "sp": "subs"
+ },
+ "RMH=[": {
+  "en": "deceive",
+  "gloss_fr": "deceive (en)",
+  "sp": "verb"
+ },
+ "RMH[": {
+  "en": "throw",
+  "gloss_fr": "throw (en)",
+  "sp": "verb"
+ },
+ "RMJH/": {
+  "en": "looseness",
+  "gloss_fr": "looseness (en)",
+  "sp": "subs"
+ },
+ "RMM[": {
+  "en": "be wormy",
+  "gloss_fr": "be wormy (en)",
+  "sp": "verb"
+ },
+ "RMT/": {
+  "en": "Remeth",
+  "gloss_fr": "Remeth (en)",
+  "sp": "nmpr"
+ },
+ "RNH[": {
+  "en": "rattle",
+  "gloss_fr": "rattle (en)",
+  "sp": "verb"
+ },
+ "RPH/": {
+  "en": "slack",
+  "gloss_fr": "slack (en)",
+  "sp": "adjv"
+ },
+ "RPH=/": {
+  "en": "Raphah",
+  "gloss_fr": "Raphah (en)",
+  "sp": "nmpr"
+ },
+ "RQ/": {
+  "en": "spittle",
+  "gloss_fr": "spittle (en)",
+  "sp": "subs"
+ },
+ "RQ</": {
+  "en": "beaten",
+  "gloss_fr": "beaten (en)",
+  "sp": "adjv"
+ },
+ "RQ=/": {
+  "en": "thin",
+  "gloss_fr": "thin (en)",
+  "sp": "adjv"
+ },
+ "RQB[": {
+  "en": "rot",
+  "gloss_fr": "rot (en)",
+  "sp": "verb"
+ },
+ "RQX/": {
+  "en": "spice",
+  "gloss_fr": "spice (en)",
+  "sp": "subs"
+ },
+ "RQX=/": {
+  "en": "ointment",
+  "gloss_fr": "ointment (en)",
+  "sp": "subs"
+ },
+ "RQX==/": {
+  "en": "ointment mixer",
+  "gloss_fr": "ointment mixer (en)",
+  "sp": "subs"
+ },
+ "RQX===/": {
+  "en": "spice",
+  "gloss_fr": "spice (en)",
+  "sp": "subs"
+ },
+ "RTM[": {
+  "en": "bind",
+  "gloss_fr": "bind (en)",
+  "sp": "verb"
+ },
+ "RVB[": {
+  "en": "be moist",
+  "gloss_fr": "be moist (en)",
+  "sp": "verb"
+ },
+ "RWH/": {
+  "en": "watered",
+  "gloss_fr": "watered (en)",
+  "sp": "adjv"
+ },
+ "RWM/": {
+  "en": "height",
+  "gloss_fr": "height (en)",
+  "sp": "subs"
+ },
  "RWM[": {
   "en": "be high",
   "gloss_fr": "être haut, être élevé",
   "sp": "verb"
  },
- "SPR[": {
-  "en": "count",
-  "gloss_fr": "compter, raconter",
+ "RWX/": {
+  "en": "wind",
+  "gloss_fr": "wind (en)",
+  "sp": "subs"
+ },
+ "RWX=/": {
+  "en": "space",
+  "gloss_fr": "space (en)",
+  "sp": "subs"
+ },
+ "RXB/": {
+  "en": "wide",
+  "gloss_fr": "wide (en)",
+  "sp": "adjv"
+ },
+ "RXB==/": {
+  "en": "open place",
+  "gloss_fr": "open place (en)",
+  "sp": "subs"
+ },
+ "RXB======/": {
+  "en": "expanse",
+  "gloss_fr": "expanse (en)",
+  "sp": "subs"
+ },
+ "RXB[": {
+  "en": "be wide",
+  "gloss_fr": "be wide (en)",
   "sp": "verb"
  },
- "SWR[": {
-  "en": "turn aside",
-  "gloss_fr": "se détourner, s'écarter",
+ "RXM/": {
+  "en": "womb",
+  "gloss_fr": "womb (en)",
+  "sp": "subs"
+ },
+ "RXM=/": {
+  "en": "vulture",
+  "gloss_fr": "vulture (en)",
+  "sp": "subs"
+ },
+ "RXQ/": {
+  "en": "far",
+  "gloss_fr": "far (en)",
+  "sp": "adjv"
+ },
+ "RXY[": {
+  "en": "trust",
+  "gloss_fr": "trust (en)",
   "sp": "verb"
+ },
+ "RYH=[": {
+  "en": "pay off",
+  "gloss_fr": "pay off (en)",
+  "sp": "verb"
+ },
+ "RYPH/": {
+  "en": "coal",
+  "gloss_fr": "coal (en)",
+  "sp": "subs"
+ },
+ "RYP[": {
+  "en": "fit",
+  "gloss_fr": "fit (en)",
+  "sp": "verb"
+ },
+ "RYX/": {
+  "en": "killing",
+  "gloss_fr": "killing (en)",
+  "sp": "subs"
+ },
+ "RZH[": {
+  "en": "diminish",
+  "gloss_fr": "diminish (en)",
+  "sp": "verb"
+ },
+ "S<JP=/": {
+  "en": "bough",
+  "gloss_fr": "bough (en)",
+  "sp": "subs"
+ },
+ "S<P/": {
+  "en": "despicable",
+  "gloss_fr": "despicable (en)",
+  "sp": "adjv"
+ },
+ "S<R[": {
+  "en": "be stormy",
+  "gloss_fr": "be stormy (en)",
+  "sp": "verb"
+ },
+ "SB>/": {
+  "en": "drink",
+  "gloss_fr": "drink (en)",
+  "sp": "subs"
+ },
+ "SB>=/": {
+  "en": "weed",
+  "gloss_fr": "weed (en)",
+  "sp": "subs"
+ },
+ "SBK=/": {
+  "en": "thicket",
+  "gloss_fr": "thicket (en)",
+  "sp": "subs"
+ },
+ "SBK[": {
+  "en": "be interwoven",
+  "gloss_fr": "be interwoven (en)",
+  "sp": "verb"
+ },
+ "SBL=/": {
+  "en": "load",
+  "gloss_fr": "load (en)",
+  "sp": "subs"
+ },
+ "SBL==/": {
+  "en": "load",
+  "gloss_fr": "load (en)",
+  "sp": "subs"
+ },
+ "SBL[": {
+  "en": "carry",
+  "gloss_fr": "carry (en)",
+  "sp": "verb"
+ },
+ "SGWR=/": {
+  "en": "enclosure",
+  "gloss_fr": "enclosure (en)",
+  "sp": "subs"
+ },
+ "SHR=/": {
+  "en": "enclosure",
+  "gloss_fr": "enclosure (en)",
+  "sp": "subs"
+ },
+ "SJNJ/": {
+  "en": "Sinite",
+  "gloss_fr": "Sinite (en)",
+  "sp": "adjv"
+ },
+ "SKK/": {
+  "en": "barricade",
+  "gloss_fr": "barricade (en)",
+  "sp": "subs"
+ },
+ "SKK=[": {
+  "en": "weave",
+  "gloss_fr": "weave (en)",
+  "sp": "verb"
+ },
+ "SKL/": {
+  "en": "foolish",
+  "gloss_fr": "foolish (en)",
+  "sp": "adjv"
+ },
+ "SKN=[": {
+  "en": "be poor?",
+  "gloss_fr": "be poor? (en)",
+  "sp": "verb"
+ },
+ "SKR=[": {
+  "en": "hire",
+  "gloss_fr": "hire (en)",
+  "sp": "verb"
+ },
+ "SKWT=/": {
+  "en": "Sakkuth",
+  "gloss_fr": "Sakkuth (en)",
+  "sp": "nmpr"
+ },
+ "SLD[": {
+  "en": "jump",
+  "gloss_fr": "jump (en)",
+  "sp": "verb"
+ },
+ "SLH=[": {
+  "en": "pay",
+  "gloss_fr": "pay (en)",
+  "sp": "verb"
+ },
+ "SLH[": {
+  "en": "reject",
+  "gloss_fr": "reject (en)",
+  "sp": "verb"
+ },
+ "SLP/": {
+  "en": "crookedness",
+  "gloss_fr": "crookedness (en)",
+  "sp": "subs"
+ },
+ "SLW>/": {
+  "en": "Salu",
+  "gloss_fr": "Salu (en)",
+  "sp": "nmpr"
+ },
+ "SLX/": {
+  "en": "forgiving",
+  "gloss_fr": "forgiving (en)",
+  "sp": "adjv"
+ },
+ "SMR/": {
+  "en": "bristly",
+  "gloss_fr": "bristly (en)",
+  "sp": "adjv"
+ },
+ "SP/": {
+  "en": "basin",
+  "gloss_fr": "basin (en)",
+  "sp": "subs"
+ },
+ "SPJX=/": {
+  "en": "outpouring",
+  "gloss_fr": "outpouring (en)",
+  "sp": "subs"
+ },
+ "SPN/": {
+  "en": "ceiling",
+  "gloss_fr": "ceiling (en)",
+  "sp": "subs"
+ },
+ "SPR/": {
+  "en": "book",
+  "gloss_fr": "book (en)",
+  "sp": "subs"
+ },
+ "SPR=/": {
+  "en": "scribe",
+  "gloss_fr": "scribe (en)",
+  "sp": "subs"
+ },
+ "SPR==/": {
+  "en": "census",
+  "gloss_fr": "census (en)",
+  "sp": "subs"
+ },
+ "SRH=/": {
+  "en": "ceasing",
+  "gloss_fr": "ceasing (en)",
+  "sp": "subs"
+ },
+ "SRX/": {
+  "en": "overhanging",
+  "gloss_fr": "overhanging (en)",
+  "sp": "subs"
+ },
+ "SRX=[": {
+  "en": "be corrupt",
+  "gloss_fr": "be corrupt (en)",
+  "sp": "verb"
+ },
+ "STR=[": {
+  "en": "demolish",
+  "gloss_fr": "demolish (en)",
+  "sp": "verb"
+ },
+ "SWG=[": {
+  "en": "fence",
+  "gloss_fr": "fence (en)",
+  "sp": "verb"
+ },
+ "SWK=[": {
+  "en": "incite",
+  "gloss_fr": "incite (en)",
+  "sp": "verb"
+ },
+ "SWP=/": {
+  "en": "end",
+  "gloss_fr": "end (en)",
+  "sp": "subs"
+ },
+ "SWP[": {
+  "en": "end",
+  "gloss_fr": "end (en)",
+  "sp": "verb"
+ },
+ "SWR/": {
+  "en": "backsliding",
+  "gloss_fr": "backsliding (en)",
+  "sp": "adjv"
+ },
+ "SWT/": {
+  "en": "garment",
+  "gloss_fr": "garment (en)",
+  "sp": "subs"
+ },
+ "SXR/": {
+  "en": "gain",
+  "gloss_fr": "gain (en)",
+  "sp": "subs"
+ },
+ "SXRH/": {
+  "en": "bulwark",
+  "gloss_fr": "bulwark (en)",
+  "sp": "subs"
+ },
+ "T<LH=/": {
+  "en": "healing",
+  "gloss_fr": "healing (en)",
+  "sp": "subs"
+ },
+ "T>NH=/": {
+  "en": "occasion",
+  "gloss_fr": "occasion (en)",
+  "sp": "subs"
+ },
+ "T>NH==/": {
+  "en": "rutting",
+  "gloss_fr": "rutting (en)",
+  "sp": "subs"
+ },
+ "T>R[": {
+  "en": "turn",
+  "gloss_fr": "turn (en)",
+  "sp": "verb"
+ },
+ "TBH=/": {
+  "en": "chest",
+  "gloss_fr": "chest (en)",
+  "sp": "subs"
+ },
+ "TBL=/": {
+  "en": "abomination",
+  "gloss_fr": "abomination (en)",
+  "sp": "subs"
+ },
+ "THLH=/": {
+  "en": "error",
+  "gloss_fr": "error (en)",
+  "sp": "subs"
+ },
+ "TJMNJ=/": {
+  "en": "Temenite",
+  "gloss_fr": "Temenite (en)",
+  "sp": "adjv"
+ },
+ "TKN/": {
+  "en": "quantity",
+  "gloss_fr": "quantity (en)",
+  "sp": "subs"
+ },
+ "TLT=/": {
+  "en": "triumvir",
+  "gloss_fr": "triumvir (en)",
+  "sp": "subs"
+ },
+ "TM/": {
+  "en": "complete",
+  "gloss_fr": "complete (en)",
+  "sp": "adjv"
+ },
+ "TMH": {
+  "en": "there",
+  "gloss_fr": "there (en)",
+  "sp": "advb"
+ },
+ "TMH/": {
+  "en": "wonder",
+  "gloss_fr": "wonder (en)",
+  "sp": "subs"
+ },
+ "TMJM=/": {
+  "en": "tummim",
+  "gloss_fr": "tummim (en)",
+  "sp": "subs"
+ },
+ "TNCMT=/": {
+  "en": "chameleon",
+  "gloss_fr": "chameleon (en)",
+  "sp": "subs"
+ },
+ "TPL=/": {
+  "en": "something tasteless",
+  "gloss_fr": "something tasteless (en)",
+  "sp": "subs"
+ },
+ "TPLH=/": {
+  "en": "unseemliness",
+  "gloss_fr": "unseemliness (en)",
+  "sp": "subs"
+ },
+ "TPL[": {
+  "en": "be silly",
+  "gloss_fr": "be silly (en)",
+  "sp": "verb"
+ },
+ "TQ</": {
+  "en": "blast",
+  "gloss_fr": "blast (en)",
+  "sp": "subs"
+ },
+ "TQL[": {
+  "en": "weigh",
+  "gloss_fr": "weigh (en)",
+  "sp": "verb"
+ },
+ "TQP/": {
+  "en": "strength",
+  "gloss_fr": "strength (en)",
+  "sp": "subs"
+ },
+ "TQP=/": {
+  "en": "strength",
+  "gloss_fr": "strength (en)",
+  "sp": "subs"
+ },
+ "TQWH=/": {
+  "en": "cord",
+  "gloss_fr": "cord (en)",
+  "sp": "subs"
+ },
+ "TR<=/": {
+  "en": "door-keeper",
+  "gloss_fr": "door-keeper (en)",
+  "sp": "subs"
+ },
+ "TWH[": {
+  "en": "be amazed",
+  "gloss_fr": "be amazed (en)",
+  "sp": "verb"
+ },
+ "TWR/": {
+  "en": "ox",
+  "gloss_fr": "ox (en)",
+  "sp": "subs"
+ },
+ "TWR=/": {
+  "en": "turn",
+  "gloss_fr": "turn (en)",
+  "sp": "subs"
+ },
+ "V<M[": {
+  "en": "eat",
+  "gloss_fr": "eat (en)",
+  "sp": "verb"
+ },
+ "V<N=[": {
+  "en": "pierce",
+  "gloss_fr": "pierce (en)",
+  "sp": "verb"
+ },
+ "VBT=/": {
+  "en": "Tebeth",
+  "gloss_fr": "Tebeth (en)",
+  "sp": "nmpr"
+ },
+ "VBX/": {
+  "en": "executioner",
+  "gloss_fr": "executioner (en)",
+  "sp": "subs"
+ },
+ "VBXH=/": {
+  "en": "female cook",
+  "gloss_fr": "female cook (en)",
+  "sp": "subs"
+ },
+ "VBX[": {
+  "en": "slaughter",
+  "gloss_fr": "slaughter (en)",
+  "sp": "verb"
+ },
+ "VHR=/": {
+  "en": "purity",
+  "gloss_fr": "purity (en)",
+  "sp": "subs"
  },
  "VHR[": {
   "en": "be clean",
   "gloss_fr": "être pur, être rituellement pur",
+  "sp": "verb"
+ },
+ "VM>/": {
+  "en": "unclean",
+  "gloss_fr": "unclean (en)",
+  "sp": "adjv"
+ },
+ "VPX/": {
+  "en": "span",
+  "gloss_fr": "span (en)",
+  "sp": "subs"
+ },
+ "VPX=[": {
+  "en": "bring forth",
+  "gloss_fr": "bring forth (en)",
+  "sp": "verb"
+ },
+ "VPX[": {
+  "en": "spread",
+  "gloss_fr": "spread (en)",
+  "sp": "verb"
+ },
+ "VRP/": {
+  "en": "prey",
+  "gloss_fr": "prey (en)",
+  "sp": "subs"
+ },
+ "VRP=/": {
+  "en": "fresh plucked",
+  "gloss_fr": "fresh plucked (en)",
+  "sp": "adjv"
+ },
+ "VRP==/": {
+  "en": "food",
+  "gloss_fr": "food (en)",
+  "sp": "subs"
+ },
+ "VRX[": {
+  "en": "burden",
+  "gloss_fr": "burden (en)",
+  "sp": "verb"
+ },
+ "VWB=/": {
+  "en": "best",
+  "gloss_fr": "best (en)",
+  "sp": "subs"
+ },
+ "VWB==/": {
+  "en": "perfume",
+  "gloss_fr": "perfume (en)",
+  "sp": "subs"
+ },
+ "VWB[": {
+  "en": "be good",
+  "gloss_fr": "be good (en)",
+  "sp": "verb"
+ },
+ "XBB[": {
+  "en": "love",
+  "gloss_fr": "love (en)",
+  "sp": "verb"
+ },
+ "XBL/": {
+  "en": "damage",
+  "gloss_fr": "damage (en)",
+  "sp": "subs"
+ },
+ "XBL==/": {
+  "en": "sailor",
+  "gloss_fr": "sailor (en)",
+  "sp": "subs"
+ },
+ "XBL===/": {
+  "en": "destruction",
+  "gloss_fr": "destruction (en)",
+  "sp": "subs"
+ },
+ "XBL====/": {
+  "en": "pledge",
+  "gloss_fr": "pledge (en)",
+  "sp": "subs"
+ },
+ "XBL======/": {
+  "en": "foetus",
+  "gloss_fr": "foetus (en)",
+  "sp": "subs"
+ },
+ "XBL==[": {
+  "en": "be pregnant",
+  "gloss_fr": "be pregnant (en)",
+  "sp": "verb"
+ },
+ "XBL=[": {
+  "en": "be corrupt",
+  "gloss_fr": "be corrupt (en)",
+  "sp": "verb"
+ },
+ "XBL[": {
+  "en": "be harmful",
+  "gloss_fr": "be harmful (en)",
+  "sp": "verb"
+ },
+ "XBQ/": {
+  "en": "folding",
+  "gloss_fr": "folding (en)",
+  "sp": "subs"
+ },
+ "XBR/": {
+  "en": "colleague",
+  "gloss_fr": "colleague (en)",
+  "sp": "subs"
+ },
+ "XBR=/": {
+  "en": "company",
+  "gloss_fr": "company (en)",
+  "sp": "subs"
+ },
+ "XBR==/": {
+  "en": "partner",
+  "gloss_fr": "partner (en)",
+  "sp": "subs"
+ },
+ "XBR=[": {
+  "en": "be brilliant",
+  "gloss_fr": "be brilliant (en)",
+  "sp": "verb"
+ },
+ "XBRT=/": {
+  "en": "companion",
+  "gloss_fr": "companion (en)",
+  "sp": "subs"
+ },
+ "XCB[": {
+  "en": "consider",
+  "gloss_fr": "consider (en)",
+  "sp": "verb"
+ },
+ "XCK=/": {
+  "en": "dark",
+  "gloss_fr": "dark (en)",
+  "sp": "adjv"
+ },
+ "XCK[": {
+  "en": "be dark",
+  "gloss_fr": "be dark (en)",
+  "sp": "verb"
+ },
+ "XCM/": {
+  "en": "Husham",
+  "gloss_fr": "Husham (en)",
+  "sp": "nmpr"
+ },
+ "XCM=/": {
+  "en": "Hushim",
+  "gloss_fr": "Hushim (en)",
+  "sp": "nmpr"
+ },
+ "XCQ/": {
+  "en": "desire",
+  "gloss_fr": "desire (en)",
+  "sp": "subs"
+ },
+ "XCQ=/": {
+  "en": "spoke",
+  "gloss_fr": "spoke (en)",
+  "sp": "subs"
+ },
+ "XDC/": {
+  "en": "new",
+  "gloss_fr": "new (en)",
+  "sp": "adjv"
+ },
+ "XDC[": {
+  "en": "be new",
+  "gloss_fr": "be new (en)",
+  "sp": "verb"
+ },
+ "XDH/": {
+  "en": "breast",
+  "gloss_fr": "breast (en)",
+  "sp": "subs"
+ },
+ "XDL/": {
+  "en": "ceasing",
+  "gloss_fr": "ceasing (en)",
+  "sp": "adjv"
+ },
+ "XDR[": {
+  "en": "surround",
+  "gloss_fr": "surround (en)",
+  "sp": "verb"
+ },
+ "XFP/": {
+  "en": "handful",
+  "gloss_fr": "handful (en)",
+  "sp": "subs"
+ },
+ "XFP=[": {
+  "en": "accelerate",
+  "gloss_fr": "accelerate (en)",
+  "sp": "verb"
+ },
+ "XGJ/": {
+  "en": "Haggai",
+  "gloss_fr": "Haggai (en)",
+  "sp": "nmpr"
+ },
+ "XGJ==/": {
+  "en": "Haggi",
+  "gloss_fr": "Haggi (en)",
+  "sp": "nmpr"
+ },
+ "XGWR/": {
+  "en": "girded",
+  "gloss_fr": "girded (en)",
+  "sp": "adjv"
+ },
+ "XJH=/": {
+  "en": "bearing easily",
+  "gloss_fr": "bearing easily (en)",
+  "sp": "adjv"
+ },
+ "XJH==/": {
+  "en": "life",
+  "gloss_fr": "life (en)",
+  "sp": "subs"
+ },
+ "XJH[": {
+  "en": "live",
+  "gloss_fr": "live (en)",
+  "sp": "verb"
+ },
+ "XJL=/": {
+  "en": "labour pains",
+  "gloss_fr": "labour pains (en)",
+  "sp": "subs"
+ },
+ "XJL==/": {
+  "en": "rampart",
+  "gloss_fr": "rampart (en)",
+  "sp": "subs"
+ },
+ "XJL==[": {
+  "en": "wait",
+  "gloss_fr": "wait (en)",
+  "sp": "verb"
+ },
+ "XJL=[": {
+  "en": "endure",
+  "gloss_fr": "endure (en)",
+  "sp": "verb"
+ },
+ "XKH/": {
+  "en": "fish-hook",
+  "gloss_fr": "fish-hook (en)",
+  "sp": "subs"
+ },
+ "XKM[": {
+  "en": "be wise",
+  "gloss_fr": "be wise (en)",
+  "sp": "verb"
+ },
+ "XLB/": {
+  "en": "milk",
+  "gloss_fr": "milk (en)",
+  "sp": "subs"
+ },
+ "XLC/": {
+  "en": "weak man",
+  "gloss_fr": "weak man (en)",
+  "sp": "subs"
+ },
+ "XLD=/": {
+  "en": "mole-rat",
+  "gloss_fr": "mole-rat (en)",
+  "sp": "subs"
+ },
+ "XLH/": {
+  "en": "bread",
+  "gloss_fr": "bread (en)",
+  "sp": "subs"
+ },
+ "XLJ=/": {
+  "en": "ornament",
+  "gloss_fr": "ornament (en)",
+  "sp": "subs"
+ },
+ "XLL/": {
+  "en": "pierced",
+  "gloss_fr": "pierced (en)",
+  "sp": "adjv"
+ },
+ "XLL==[": {
+  "en": "play flute",
+  "gloss_fr": "play flute (en)",
   "sp": "verb"
  },
  "XLL=[": {
@@ -259,24 +6899,879 @@
   "gloss_fr": "percer, blesser, déchirer",
   "sp": "verb"
  },
- "XLL[": {
-  "en": "defile",
-  "gloss_fr": "percer, blesser, déchirer",
+ "XLM/": {
+  "en": "dream",
+  "gloss_fr": "dream (en)",
+  "sp": "subs"
+ },
+ "XLN=/": {
+  "en": "Holon",
+  "gloss_fr": "Holon (en)",
+  "sp": "nmpr"
+ },
+ "XLP/": {
+  "en": "return",
+  "gloss_fr": "return (en)",
+  "sp": "subs"
+ },
+ "XLP=[": {
+  "en": "cut",
+  "gloss_fr": "cut (en)",
   "sp": "verb"
  },
- "XNH[": {
-  "en": "encamp",
-  "gloss_fr": "camper, dresser (le camp), séjourner",
+ "XLQ/": {
+  "en": "share",
+  "gloss_fr": "share (en)",
+  "sp": "subs"
+ },
+ "XLQ=/": {
+  "en": "smooth",
+  "gloss_fr": "smooth (en)",
+  "sp": "adjv"
+ },
+ "XLQ==/": {
+  "en": "smooth",
+  "gloss_fr": "smooth (en)",
+  "sp": "adjv"
+ },
+ "XLQ===/": {
+  "en": "smoothness",
+  "gloss_fr": "smoothness (en)",
+  "sp": "subs"
+ },
+ "XLQ=[": {
+  "en": "be smooth",
+  "gloss_fr": "be smooth (en)",
   "sp": "verb"
  },
- "XV>[": {
-  "en": "miss",
-  "gloss_fr": "pécher, manquer (le but)",
+ "XLQH=/": {
+  "en": "smoothness",
+  "gloss_fr": "smoothness (en)",
+  "sp": "subs"
+ },
+ "XLQH==/": {
+  "en": "portion",
+  "gloss_fr": "portion (en)",
+  "sp": "subs"
+ },
+ "XLQJ=/": {
+  "en": "Helkai",
+  "gloss_fr": "Helkai (en)",
+  "sp": "nmpr"
+ },
+ "XLY/": {
+  "en": "loins",
+  "gloss_fr": "loins (en)",
+  "sp": "subs"
+ },
+ "XMC=/": {
+  "en": "belly",
+  "gloss_fr": "belly (en)",
+  "sp": "subs"
+ },
+ "XMC[": {
+  "en": "array",
+  "gloss_fr": "array (en)",
   "sp": "verb"
  },
- "XZQ[": {
-  "en": "be strong",
-  "gloss_fr": "être fort, se fortifier",
+ "XMD/": {
+  "en": "splendour",
+  "gloss_fr": "splendour (en)",
+  "sp": "subs"
+ },
+ "XMH/": {
+  "en": "wrath",
+  "gloss_fr": "wrath (en)",
+  "sp": "subs"
+ },
+ "XMR/": {
+  "en": "wine",
+  "gloss_fr": "wine (en)",
+  "sp": "subs"
+ },
+ "XMR==/": {
+  "en": "bitumen",
+  "gloss_fr": "bitumen (en)",
+  "sp": "subs"
+ },
+ "XMR===/": {
+  "en": "wine",
+  "gloss_fr": "wine (en)",
+  "sp": "subs"
+ },
+ "XMR=[": {
+  "en": "be red",
+  "gloss_fr": "be red (en)",
+  "sp": "verb"
+ },
+ "XMR[": {
+  "en": "cover",
+  "gloss_fr": "cover (en)",
+  "sp": "verb"
+ },
+ "XMS[": {
+  "en": "treat violently",
+  "gloss_fr": "treat violently (en)",
+  "sp": "verb"
+ },
+ "XMT==/": {
+  "en": "Hammath",
+  "gloss_fr": "Hammath (en)",
+  "sp": "nmpr"
+ },
+ "XMT===/": {
+  "en": "Hammath",
+  "gloss_fr": "Hammath (en)",
+  "sp": "nmpr"
+ },
+ "XMWY/": {
+  "en": "coloured",
+  "gloss_fr": "coloured (en)",
+  "sp": "adjv"
+ },
+ "XMY=/": {
+  "en": "vinegar",
+  "gloss_fr": "vinegar (en)",
+  "sp": "subs"
+ },
+ "XMY=[": {
+  "en": "oppress",
+  "gloss_fr": "oppress (en)",
+  "sp": "verb"
+ },
+ "XMY[": {
+  "en": "be leavened",
+  "gloss_fr": "be leavened (en)",
+  "sp": "verb"
+ },
+ "XNH=[": {
+  "en": "be gracious",
+  "gloss_fr": "be gracious (en)",
+  "sp": "verb"
+ },
+ "XNN=[": {
+  "en": "be loathsome",
+  "gloss_fr": "be loathsome (en)",
+  "sp": "verb"
+ },
+ "XNP=/": {
+  "en": "alienation",
+  "gloss_fr": "alienation (en)",
+  "sp": "subs"
+ },
+ "XNP[": {
+  "en": "alienate",
+  "gloss_fr": "alienate (en)",
+  "sp": "verb"
+ },
+ "XNWK=/": {
+  "en": "Enoch",
+  "gloss_fr": "Enoch (en)",
+  "sp": "nmpr"
+ },
+ "XPC/": {
+  "en": "cloth",
+  "gloss_fr": "cloth (en)",
+  "sp": "subs"
+ },
+ "XPH/": {
+  "en": "balcony",
+  "gloss_fr": "balcony (en)",
+  "sp": "subs"
+ },
+ "XPR=/": {
+  "en": "Hepher",
+  "gloss_fr": "Hepher (en)",
+  "sp": "nmpr"
+ },
+ "XPR[": {
+  "en": "be ashamed",
+  "gloss_fr": "be ashamed (en)",
+  "sp": "verb"
+ },
+ "XPY/": {
+  "en": "pleasure",
+  "gloss_fr": "pleasure (en)",
+  "sp": "subs"
+ },
+ "XPY=/": {
+  "en": "delighting",
+  "gloss_fr": "delighting (en)",
+  "sp": "adjv"
+ },
+ "XPY=[": {
+  "en": "bend down",
+  "gloss_fr": "bend down (en)",
+  "sp": "verb"
+ },
+ "XQH[": {
+  "en": "carve",
+  "gloss_fr": "carve (en)",
+  "sp": "verb"
+ },
+ "XQR/": {
+  "en": "exploration",
+  "gloss_fr": "exploration (en)",
+  "sp": "subs"
+ },
+ "XR/": {
+  "en": "hiding-place",
+  "gloss_fr": "hiding-place (en)",
+  "sp": "subs"
+ },
+ "XR==/": {
+  "en": "hole",
+  "gloss_fr": "hole (en)",
+  "sp": "subs"
+ },
+ "XRB=/": {
+  "en": "dryness",
+  "gloss_fr": "dryness (en)",
+  "sp": "subs"
+ },
+ "XRB==/": {
+  "en": "dry",
+  "gloss_fr": "dry (en)",
+  "sp": "adjv"
+ },
+ "XRB=[": {
+  "en": "slaughter",
+  "gloss_fr": "slaughter (en)",
+  "sp": "verb"
+ },
+ "XRBH/": {
+  "en": "dry ground",
+  "gloss_fr": "dry ground (en)",
+  "sp": "subs"
+ },
+ "XRB[": {
+  "en": "destroy",
+  "gloss_fr": "destroy (en)",
+  "sp": "verb"
+ },
+ "XRC/": {
+  "en": "artisan",
+  "gloss_fr": "artisan (en)",
+  "sp": "subs"
+ },
+ "XRC=/": {
+  "en": "deaf",
+  "gloss_fr": "deaf (en)",
+  "sp": "adjv"
+ },
+ "XRC==/": {
+  "en": "wood",
+  "gloss_fr": "wood (en)",
+  "sp": "subs"
+ },
+ "XRC===/": {
+  "en": "silence",
+  "gloss_fr": "silence (en)",
+  "sp": "subs"
+ },
+ "XRC====/": {
+  "en": "craftsman",
+  "gloss_fr": "craftsman (en)",
+  "sp": "subs"
+ },
+ "XRC=[": {
+  "en": "plough",
+  "gloss_fr": "plough (en)",
+  "sp": "verb"
+ },
+ "XRD/": {
+  "en": "trembling",
+  "gloss_fr": "trembling (en)",
+  "sp": "adjv"
+ },
+ "XRH=[": {
+  "en": "diminish",
+  "gloss_fr": "diminish (en)",
+  "sp": "verb"
+ },
+ "XRJ=/": {
+  "en": "heat",
+  "gloss_fr": "heat (en)",
+  "sp": "subs"
+ },
+ "XRJ==/": {
+  "en": "cake",
+  "gloss_fr": "cake (en)",
+  "sp": "subs"
+ },
+ "XRJY=/": {
+  "en": "slice",
+  "gloss_fr": "slice (en)",
+  "sp": "subs"
+ },
+ "XRM/": {
+  "en": "ban",
+  "gloss_fr": "ban (en)",
+  "sp": "subs"
+ },
+ "XRM=/": {
+  "en": "net",
+  "gloss_fr": "net (en)",
+  "sp": "subs"
+ },
+ "XRM=[": {
+  "en": "mutilate",
+  "gloss_fr": "mutilate (en)",
+  "sp": "verb"
+ },
+ "XRN=/": {
+  "en": "Haran",
+  "gloss_fr": "Haran (en)",
+  "sp": "nmpr"
+ },
+ "XRP/": {
+  "en": "autumn",
+  "gloss_fr": "autumn (en)",
+  "sp": "subs"
+ },
+ "XRP=/": {
+  "en": "youth",
+  "gloss_fr": "youth (en)",
+  "sp": "subs"
+ },
+ "XRP==[": {
+  "en": "confuse",
+  "gloss_fr": "confuse (en)",
+  "sp": "verb"
+ },
+ "XRP=[": {
+  "en": "spend autumn",
+  "gloss_fr": "spend autumn (en)",
+  "sp": "verb"
+ },
+ "XRR=[": {
+  "en": "be hoarse",
+  "gloss_fr": "be hoarse (en)",
+  "sp": "verb"
+ },
+ "XRS/": {
+  "en": "scabies",
+  "gloss_fr": "scabies (en)",
+  "sp": "subs"
+ },
+ "XRWY/": {
+  "en": "threshing instrument",
+  "gloss_fr": "threshing instrument (en)",
+  "sp": "subs"
+ },
+ "XRWY=/": {
+  "en": "cut",
+  "gloss_fr": "cut (en)",
+  "sp": "adjv"
+ },
+ "XRWY===/": {
+  "en": "moat",
+  "gloss_fr": "moat (en)",
+  "sp": "subs"
+ },
+ "XRWY====/": {
+  "en": "assiduous",
+  "gloss_fr": "assiduous (en)",
+  "sp": "adjv"
+ },
+ "XRY/": {
+  "en": "hip",
+  "gloss_fr": "hip (en)",
+  "sp": "subs"
+ },
+ "XRY=[": {
+  "en": "be eager",
+  "gloss_fr": "be eager (en)",
+  "sp": "verb"
+ },
+ "XSD=/": {
+  "en": "shame",
+  "gloss_fr": "shame (en)",
+  "sp": "subs"
+ },
+ "XSD=[": {
+  "en": "insult",
+  "gloss_fr": "insult (en)",
+  "sp": "verb"
+ },
+ "XSD[": {
+  "en": "act piously",
+  "gloss_fr": "act piously (en)",
+  "sp": "verb"
+ },
+ "XSN/": {
+  "en": "power",
+  "gloss_fr": "power (en)",
+  "sp": "subs"
+ },
+ "XSN[": {
+  "en": "possess",
+  "gloss_fr": "possess (en)",
+  "sp": "verb"
+ },
+ "XSR/": {
+  "en": "lacking",
+  "gloss_fr": "lacking (en)",
+  "sp": "adjv"
+ },
+ "XSR=/": {
+  "en": "lack",
+  "gloss_fr": "lack (en)",
+  "sp": "subs"
+ },
+ "XSR==/": {
+  "en": "want",
+  "gloss_fr": "want (en)",
+  "sp": "subs"
+ },
+ "XTH/": {
+  "en": "terror",
+  "gloss_fr": "terror (en)",
+  "sp": "subs"
+ },
+ "XTH=[": {
+  "en": "knock down",
+  "gloss_fr": "knock down (en)",
+  "sp": "verb"
+ },
+ "XTN/": {
+  "en": "son-in-law",
+  "gloss_fr": "son-in-law (en)",
+  "sp": "subs"
+ },
+ "XTP/": {
+  "en": "robber",
+  "gloss_fr": "robber (en)",
+  "sp": "subs"
+ },
+ "XTT/": {
+  "en": "terror",
+  "gloss_fr": "terror (en)",
+  "sp": "subs"
+ },
+ "XV>/": {
+  "en": "sin",
+  "gloss_fr": "sin (en)",
+  "sp": "subs"
+ },
+ "XV>=/": {
+  "en": "sinful",
+  "gloss_fr": "sinful (en)",
+  "sp": "adjv"
+ },
+ "XV>H/": {
+  "en": "sin-offering",
+  "gloss_fr": "sin-offering (en)",
+  "sp": "subs"
+ },
+ "XV>H==/": {
+  "en": "error",
+  "gloss_fr": "error (en)",
+  "sp": "subs"
+ },
+ "XVB=[": {
+  "en": "be coloured",
+  "gloss_fr": "be coloured (en)",
+  "sp": "verb"
+ },
+ "XWB[": {
+  "en": "be guilty",
+  "gloss_fr": "be guilty (en)",
+  "sp": "verb"
+ },
+ "XWC=[": {
+  "en": "feel",
+  "gloss_fr": "feel (en)",
+  "sp": "verb"
+ },
+ "XWH/": {
+  "en": "tent camp",
+  "gloss_fr": "tent camp (en)",
+  "sp": "subs"
+ },
+ "XWH=[": {
+  "en": "make known",
+  "gloss_fr": "make known (en)",
+  "sp": "verb"
+ },
+ "XWL=/": {
+  "en": "phoenix",
+  "gloss_fr": "phoenix (en)",
+  "sp": "subs"
+ },
+ "XWL[": {
+  "en": "dance",
+  "gloss_fr": "dance (en)",
+  "sp": "verb"
+ },
+ "XWR/": {
+  "en": "white",
+  "gloss_fr": "white (en)",
+  "sp": "adjv"
+ },
+ "XWR[": {
+  "en": "grow pale",
+  "gloss_fr": "grow pale (en)",
+  "sp": "verb"
+ },
+ "XWX=/": {
+  "en": "recess",
+  "gloss_fr": "recess (en)",
+  "sp": "subs"
+ },
+ "XYJ=/": {
+  "en": "arrow",
+  "gloss_fr": "arrow (en)",
+  "sp": "subs"
+ },
+ "XYJR=/": {
+  "en": "leek",
+  "gloss_fr": "leek (en)",
+  "sp": "subs"
+ },
+ "XYJR==/": {
+  "en": "reed",
+  "gloss_fr": "reed (en)",
+  "sp": "subs"
+ },
+ "XYR[": {
+  "en": "sound clarion",
+  "gloss_fr": "sound clarion (en)",
+  "sp": "verb"
+ },
+ "XYY/": {
+  "en": "pebble",
+  "gloss_fr": "pebble (en)",
+  "sp": "subs"
+ },
+ "XZH/": {
+  "en": "breast",
+  "gloss_fr": "breast (en)",
+  "sp": "subs"
+ },
+ "XZH=/": {
+  "en": "seer",
+  "gloss_fr": "seer (en)",
+  "sp": "subs"
+ },
+ "XZQ/": {
+  "en": "strong",
+  "gloss_fr": "strong (en)",
+  "sp": "adjv"
+ },
+ "XZQ=/": {
+  "en": "strength",
+  "gloss_fr": "strength (en)",
+  "sp": "subs"
+ },
+ "XZQ==/": {
+  "en": "strong",
+  "gloss_fr": "strong (en)",
+  "sp": "adjv"
+ },
+ "XZQ===/": {
+  "en": "strength",
+  "gloss_fr": "strength (en)",
+  "sp": "subs"
+ },
+ "Y<D[": {
+  "en": "march",
+  "gloss_fr": "march (en)",
+  "sp": "verb"
+ },
+ "Y<N[": {
+  "en": "pack up",
+  "gloss_fr": "pack up (en)",
+  "sp": "verb"
+ },
+ "Y<R[": {
+  "en": "be small",
+  "gloss_fr": "be small (en)",
+  "sp": "verb"
+ },
+ "Y>H/": {
+  "en": "excrement",
+  "gloss_fr": "excrement (en)",
+  "sp": "subs"
+ },
+ "YB/": {
+  "en": "lizard",
+  "gloss_fr": "lizard (en)",
+  "sp": "subs"
+ },
+ "YB</": {
+  "en": "stuff",
+  "gloss_fr": "stuff (en)",
+  "sp": "subs"
+ },
+ "YB>=/": {
+  "en": "gazelle",
+  "gloss_fr": "gazelle (en)",
+  "sp": "subs"
+ },
+ "YB>[": {
+  "en": "serve",
+  "gloss_fr": "serve (en)",
+  "sp": "verb"
+ },
+ "YBH/": {
+  "en": "swollen",
+  "gloss_fr": "swollen (en)",
+  "sp": "adjv"
+ },
+ "YBR/": {
+  "en": "heap",
+  "gloss_fr": "heap (en)",
+  "sp": "subs"
+ },
+ "YD=/": {
+  "en": "snare",
+  "gloss_fr": "snare (en)",
+  "sp": "subs"
+ },
+ "YDH=[": {
+  "en": "waste",
+  "gloss_fr": "waste (en)",
+  "sp": "verb"
+ },
+ "YDQ[": {
+  "en": "be just",
+  "gloss_fr": "be just (en)",
+  "sp": "verb"
+ },
+ "YHB[": {
+  "en": "gleam",
+  "gloss_fr": "gleam (en)",
+  "sp": "verb"
+ },
+ "YHL=[": {
+  "en": "shine",
+  "gloss_fr": "shine (en)",
+  "sp": "verb"
+ },
+ "YHR[": {
+  "en": "press out",
+  "gloss_fr": "press out (en)",
+  "sp": "verb"
+ },
+ "YJ=/": {
+  "en": "ship",
+  "gloss_fr": "ship (en)",
+  "sp": "subs"
+ },
+ "YJD=/": {
+  "en": "provision",
+  "gloss_fr": "provision (en)",
+  "sp": "subs"
+ },
+ "YJD==/": {
+  "en": "hunter",
+  "gloss_fr": "hunter (en)",
+  "sp": "subs"
+ },
+ "YJD[": {
+  "en": "feed",
+  "gloss_fr": "feed (en)",
+  "sp": "verb"
+ },
+ "YJR=/": {
+  "en": "pivot",
+  "gloss_fr": "pivot (en)",
+  "sp": "subs"
+ },
+ "YJR===/": {
+  "en": "convulsion",
+  "gloss_fr": "convulsion (en)",
+  "sp": "subs"
+ },
+ "YL<=/": {
+  "en": "stumbling",
+  "gloss_fr": "stumbling (en)",
+  "sp": "subs"
+ },
+ "YL<[": {
+  "en": "limp",
+  "gloss_fr": "limp (en)",
+  "sp": "verb"
+ },
+ "YLL==[": {
+  "en": "grow dark",
+  "gloss_fr": "grow dark (en)",
+  "sp": "verb"
+ },
+ "YLL[": {
+  "en": "sink",
+  "gloss_fr": "sink (en)",
+  "sp": "verb"
+ },
+ "YLYL=/": {
+  "en": "harpoon",
+  "gloss_fr": "harpoon (en)",
+  "sp": "subs"
+ },
+ "YM>/": {
+  "en": "thirsty",
+  "gloss_fr": "thirsty (en)",
+  "sp": "adjv"
+ },
+ "YM>[": {
+  "en": "be thirsty",
+  "gloss_fr": "be thirsty (en)",
+  "sp": "verb"
+ },
+ "YMD[": {
+  "en": "attach",
+  "gloss_fr": "attach (en)",
+  "sp": "verb"
+ },
+ "YMJD=/": {
+  "en": "cover",
+  "gloss_fr": "cover (en)",
+  "sp": "subs"
+ },
+ "YMX/": {
+  "en": "sprout",
+  "gloss_fr": "sprout (en)",
+  "sp": "subs"
+ },
+ "YNH=/": {
+  "en": "small cattle",
+  "gloss_fr": "small cattle (en)",
+  "sp": "subs"
+ },
+ "YNH==/": {
+  "en": "cold",
+  "gloss_fr": "cold (en)",
+  "sp": "subs"
+ },
+ "YPH[": {
+  "en": "look out",
+  "gloss_fr": "look out (en)",
+  "sp": "verb"
+ },
+ "YPWN==/": {
+  "en": "Zephon",
+  "gloss_fr": "Zephon (en)",
+  "sp": "nmpr"
+ },
+ "YPWNJ=/": {
+  "en": "northern",
+  "gloss_fr": "northern (en)",
+  "sp": "adjv"
+ },
+ "YR/": {
+  "en": "narrow",
+  "gloss_fr": "narrow (en)",
+  "sp": "adjv"
+ },
+ "YR==/": {
+  "en": "pebble",
+  "gloss_fr": "pebble (en)",
+  "sp": "subs"
+ },
+ "YRB/": {
+  "en": "burning",
+  "gloss_fr": "burning (en)",
+  "sp": "adjv"
+ },
+ "YRH=/": {
+  "en": "rival wife",
+  "gloss_fr": "rival wife (en)",
+  "sp": "subs"
+ },
+ "YRJ=/": {
+  "en": "Tyrian",
+  "gloss_fr": "Tyrian (en)",
+  "sp": "adjv"
+ },
+ "YRR=[": {
+  "en": "be hostile",
+  "gloss_fr": "be hostile (en)",
+  "sp": "verb"
+ },
+ "YRWR=/": {
+  "en": "pebble",
+  "gloss_fr": "pebble (en)",
+  "sp": "subs"
+ },
+ "YWM[": {
+  "en": "fast",
+  "gloss_fr": "fast (en)",
+  "sp": "verb"
+ },
+ "YWP=/": {
+  "en": "Zuph",
+  "gloss_fr": "Zuph (en)",
+  "sp": "nmpr"
+ },
+ "YWQ/": {
+  "en": "oppression",
+  "gloss_fr": "oppression (en)",
+  "sp": "subs"
+ },
+ "YWR=/": {
+  "en": "pebble",
+  "gloss_fr": "pebble (en)",
+  "sp": "subs"
+ },
+ "YWR==[": {
+  "en": "shape",
+  "gloss_fr": "shape (en)",
+  "sp": "verb"
+ },
+ "YWR=[": {
+  "en": "damage",
+  "gloss_fr": "damage (en)",
+  "sp": "verb"
+ },
+ "YWR[": {
+  "en": "bind",
+  "gloss_fr": "bind (en)",
+  "sp": "verb"
+ },
+ "YWY=[": {
+  "en": "glance",
+  "gloss_fr": "glance (en)",
+  "sp": "verb"
+ },
+ "YXH[": {
+  "en": "be white",
+  "gloss_fr": "be white (en)",
+  "sp": "verb"
+ },
+ "YXQ/": {
+  "en": "laughter",
+  "gloss_fr": "laughter (en)",
+  "sp": "subs"
+ },
+ "YXR==/": {
+  "en": "Zahar",
+  "gloss_fr": "Zahar (en)",
+  "sp": "nmpr"
+ },
+ "Z<M[": {
+  "en": "curse",
+  "gloss_fr": "curse (en)",
+  "sp": "verb"
+ },
+ "Z<P=/": {
+  "en": "raging",
+  "gloss_fr": "raging (en)",
+  "sp": "adjv"
+ },
+ "Z<P[": {
+  "en": "be embittered",
+  "gloss_fr": "be embittered (en)",
+  "sp": "verb"
+ },
+ "ZBD[": {
+  "en": "bestow",
+  "gloss_fr": "bestow (en)",
+  "sp": "verb"
+ },
+ "ZBL[": {
+  "en": "tolerate",
+  "gloss_fr": "tolerate (en)",
   "sp": "verb"
  },
  "ZBX[": {
@@ -284,9 +7779,139 @@
   "gloss_fr": "sacrifier, immoler",
   "sp": "verb"
  },
- "ZKR[": {
-  "en": "remember",
-  "gloss_fr": "se souvenir, mentionner",
+ "ZHR/": {
+  "en": "shining",
+  "gloss_fr": "shining (en)",
+  "sp": "subs"
+ },
+ "ZHR=[": {
+  "en": "shine",
+  "gloss_fr": "shine (en)",
+  "sp": "verb"
+ },
+ "ZJZ=/": {
+  "en": "udder",
+  "gloss_fr": "udder (en)",
+  "sp": "subs"
+ },
+ "ZKR/": {
+  "en": "mention",
+  "gloss_fr": "mention (en)",
+  "sp": "subs"
+ },
+ "ZKR=/": {
+  "en": "male",
+  "gloss_fr": "male (en)",
+  "sp": "adjv"
+ },
+ "ZMJR=/": {
+  "en": "pruning",
+  "gloss_fr": "pruning (en)",
+  "sp": "subs"
+ },
+ "ZMM/": {
+  "en": "plan",
+  "gloss_fr": "plan (en)",
+  "sp": "subs"
+ },
+ "ZMN[": {
+  "en": "appoint",
+  "gloss_fr": "appoint (en)",
+  "sp": "verb"
+ },
+ "ZMR/": {
+  "en": "music for strings",
+  "gloss_fr": "music for strings (en)",
+  "sp": "subs"
+ },
+ "ZMR=/": {
+  "en": "musician",
+  "gloss_fr": "musician (en)",
+  "sp": "subs"
+ },
+ "ZMR=[": {
+  "en": "prune",
+  "gloss_fr": "prune (en)",
+  "sp": "verb"
+ },
+ "ZMRH/": {
+  "en": "melody",
+  "gloss_fr": "melody (en)",
+  "sp": "subs"
+ },
+ "ZNB[": {
+  "en": "cut off",
+  "gloss_fr": "cut off (en)",
+  "sp": "verb"
+ },
+ "ZNH=[": {
+  "en": "feel repugnance",
+  "gloss_fr": "feel repugnance (en)",
+  "sp": "verb"
+ },
+ "ZNX=[": {
+  "en": "stink",
+  "gloss_fr": "stink (en)",
+  "sp": "verb"
+ },
+ "ZQN=/": {
+  "en": "beard",
+  "gloss_fr": "beard (en)",
+  "sp": "subs"
+ },
+ "ZQN==/": {
+  "en": "old age",
+  "gloss_fr": "old age (en)",
+  "sp": "subs"
+ },
+ "ZQN[": {
+  "en": "be old",
+  "gloss_fr": "be old (en)",
+  "sp": "verb"
+ },
+ "ZR</": {
+  "en": "seed",
+  "gloss_fr": "seed (en)",
+  "sp": "subs"
+ },
+ "ZR=/": {
+  "en": "border",
+  "gloss_fr": "border (en)",
+  "sp": "subs"
+ },
+ "ZRH=[": {
+  "en": "measure off",
+  "gloss_fr": "measure off (en)",
+  "sp": "verb"
+ },
+ "ZRM[": {
+  "en": "flood thunderously?",
+  "gloss_fr": "flood thunderously? (en)",
+  "sp": "verb"
+ },
+ "ZRQ=[": {
+  "en": "be white",
+  "gloss_fr": "be white (en)",
+  "sp": "verb"
+ },
+ "ZRW<=/": {
+  "en": "plant",
+  "gloss_fr": "plant (en)",
+  "sp": "subs"
+ },
+ "ZRX[": {
+  "en": "flash up",
+  "gloss_fr": "flash up (en)",
+  "sp": "verb"
+ },
+ "ZWR==[": {
+  "en": "be loathsome",
+  "gloss_fr": "be loathsome (en)",
+  "sp": "verb"
+ },
+ "ZWR=[": {
+  "en": "press",
+  "gloss_fr": "press (en)",
   "sp": "verb"
  }
 }
