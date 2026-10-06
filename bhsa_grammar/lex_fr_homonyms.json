@@ -1,0 +1,292 @@
+{
+ "<BR[": {
+  "en": "pass",
+  "gloss_fr": "passer, traverser",
+  "sp": "verb"
+ },
+ "<LH[": {
+  "en": "ascend",
+  "gloss_fr": "monter, gravir",
+  "sp": "verb"
+ },
+ "<NH[": {
+  "en": "answer",
+  "gloss_fr": "répondre, répondre à",
+  "sp": "verb"
+ },
+ "<WR==[": {
+  "en": "be naked",
+  "gloss_fr": "être nu",
+  "sp": "verb"
+ },
+ "<WR=[": {
+  "en": "be blind",
+  "gloss_fr": "être aveugle",
+  "sp": "verb"
+ },
+ "<WR[": {
+  "en": "be awake",
+  "gloss_fr": "éveiller, réveiller",
+  "sp": "verb"
+ },
+ "<ZB[": {
+  "en": "leave",
+  "gloss_fr": "abandonner, quitter",
+  "sp": "verb"
+ },
+ ">SP[": {
+  "en": "gather",
+  "gloss_fr": "assembler, rassembler, recueillir",
+  "sp": "verb"
+ },
+ "B<R[": {
+  "en": "burn",
+  "gloss_fr": "brûler, s'enflammer",
+  "sp": "verb"
+ },
+ "BJN[": {
+  "en": "understand",
+  "gloss_fr": "comprendre, discerner, percevoir",
+  "sp": "verb"
+ },
+ "BKH[": {
+  "en": "weep",
+  "gloss_fr": "pleurer, verser des larmes",
+  "sp": "verb"
+ },
+ "BRK=[": {
+  "en": "kneel",
+  "gloss_fr": "bénir, s'agenouiller",
+  "sp": "verb"
+ },
+ "BRK[": {
+  "en": "bless",
+  "gloss_fr": "bénir, s'agenouiller",
+  "sp": "verb"
+ },
+ "BVX[": {
+  "en": "trust",
+  "gloss_fr": "se confier, avoir confiance",
+  "sp": "verb"
+ },
+ "DBR[": {
+  "en": "speak",
+  "gloss_fr": "parler",
+  "sp": "verb"
+ },
+ "G>L=[": {
+  "en": "pollute",
+  "gloss_fr": "racheter, délivrer, agir comme parent-rédempteur",
+  "sp": "verb"
+ },
+ "G>L[": {
+  "en": "redeem",
+  "gloss_fr": "racheter, délivrer, agir comme parent-rédempteur",
+  "sp": "verb"
+ },
+ "GLH[": {
+  "en": "reveal",
+  "gloss_fr": "découvrir, révéler, rendre visible",
+  "sp": "verb"
+ },
+ "GWR[": {
+  "en": "dwell",
+  "gloss_fr": "séjourner, demeurer (comme étranger)",
+  "sp": "verb"
+ },
+ "GZR[": {
+  "en": "cut",
+  "gloss_fr": "couper, partager",
+  "sp": "verb"
+ },
+ "HLK[": {
+  "en": "go",
+  "gloss_fr": "marcher, aller",
+  "sp": "verb"
+ },
+ "HLL=[": {
+  "en": "light",
+  "gloss_fr": "vanter, se glorifier",
+  "sp": "verb"
+ },
+ "HLL[": {
+  "en": "praise",
+  "gloss_fr": "vanter, se glorifier",
+  "sp": "verb"
+ },
+ "HPK[": {
+  "en": "turn",
+  "gloss_fr": "un autre cœur; retourner, renverser",
+  "sp": "verb"
+ },
+ "HRG[": {
+  "en": "kill",
+  "gloss_fr": "tuer, mettre à mort",
+  "sp": "verb"
+ },
+ "JDH=[": {
+  "en": "shoot",
+  "gloss_fr": "jeter, lancer (des flèches)",
+  "sp": "verb"
+ },
+ "JDH[": {
+  "en": "praise",
+  "gloss_fr": "jeter, lancer (des flèches)",
+  "sp": "verb"
+ },
+ "JLD[": {
+  "en": "bear",
+  "gloss_fr": "enfanter, mettre au monde",
+  "sp": "verb"
+ },
+ "JR>[": {
+  "en": "fear",
+  "gloss_fr": "craindre, avoir peur",
+  "sp": "verb"
+ },
+ "JTR[": {
+  "en": "remain",
+  "gloss_fr": "rester, demeurer, être de reste",
+  "sp": "verb"
+ },
+ "KBD[": {
+  "en": "be heavy",
+  "gloss_fr": "être lourd, honorer",
+  "sp": "verb"
+ },
+ "KLH[": {
+  "en": "be complete",
+  "gloss_fr": "être achevé, finir, disparaître",
+  "sp": "verb"
+ },
+ "KPR[": {
+  "en": "cover",
+  "gloss_fr": "faire expiation, purifier, apaiser",
+  "sp": "verb"
+ },
+ "KWN[": {
+  "en": "be firm",
+  "gloss_fr": "être établi, être préparé, être affermi",
+  "sp": "verb"
+ },
+ "LKD[": {
+  "en": "seize",
+  "gloss_fr": "capturer, s'emparer de, prendre",
+  "sp": "verb"
+ },
+ "ML>[": {
+  "en": "fill",
+  "gloss_fr": "remplir, être rempli",
+  "sp": "verb"
+ },
+ "MLK[": {
+  "en": "be king",
+  "gloss_fr": "régner, être roi",
+  "sp": "verb"
+ },
+ "MLV[": {
+  "en": "escape",
+  "gloss_fr": "délivrer, sauver",
+  "sp": "verb"
+ },
+ "NKH[": {
+  "en": "strike",
+  "gloss_fr": "frapper, blesser, frapper à mort",
+  "sp": "verb"
+ },
+ "NWX[": {
+  "en": "settle",
+  "gloss_fr": "se reposer, s'arrêter, demeurer",
+  "sp": "verb"
+ },
+ "PNH[": {
+  "en": "turn",
+  "gloss_fr": "se tourner, se détourner",
+  "sp": "verb"
+ },
+ "PTX[": {
+  "en": "open",
+  "gloss_fr": "ouvrir",
+  "sp": "verb"
+ },
+ "QBR[": {
+  "en": "bury",
+  "gloss_fr": "enterrer, ensevelir",
+  "sp": "verb"
+ },
+ "QR>[": {
+  "en": "call",
+  "gloss_fr": "appeler, rencontrer",
+  "sp": "verb"
+ },
+ "QRB[": {
+  "en": "approach",
+  "gloss_fr": "s'approcher, approcher",
+  "sp": "verb"
+ },
+ "QVR[": {
+  "en": "smoke",
+  "gloss_fr": "faire fumer l'encens, brûler de l'encens",
+  "sp": "verb"
+ },
+ "R<H[": {
+  "en": "pasture",
+  "gloss_fr": "paître, faire paître, être berger",
+  "sp": "verb"
+ },
+ "RWM[": {
+  "en": "be high",
+  "gloss_fr": "être haut, être élevé",
+  "sp": "verb"
+ },
+ "SPR[": {
+  "en": "count",
+  "gloss_fr": "compter, raconter",
+  "sp": "verb"
+ },
+ "SWR[": {
+  "en": "turn aside",
+  "gloss_fr": "se détourner, s'écarter",
+  "sp": "verb"
+ },
+ "VHR[": {
+  "en": "be clean",
+  "gloss_fr": "être pur, être rituellement pur",
+  "sp": "verb"
+ },
+ "XLL=[": {
+  "en": "pierce",
+  "gloss_fr": "percer, blesser, déchirer",
+  "sp": "verb"
+ },
+ "XLL[": {
+  "en": "defile",
+  "gloss_fr": "percer, blesser, déchirer",
+  "sp": "verb"
+ },
+ "XNH[": {
+  "en": "encamp",
+  "gloss_fr": "camper, dresser (le camp), séjourner",
+  "sp": "verb"
+ },
+ "XV>[": {
+  "en": "miss",
+  "gloss_fr": "pécher, manquer (le but)",
+  "sp": "verb"
+ },
+ "XZQ[": {
+  "en": "be strong",
+  "gloss_fr": "être fort, se fortifier",
+  "sp": "verb"
+ },
+ "ZBX[": {
+  "en": "slaughter",
+  "gloss_fr": "sacrifier, immoler",
+  "sp": "verb"
+ },
+ "ZKR[": {
+  "en": "remember",
+  "gloss_fr": "se souvenir, mentionner",
+  "sp": "verb"
+ }
+}

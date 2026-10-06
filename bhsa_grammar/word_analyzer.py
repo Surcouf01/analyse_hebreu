@@ -223,7 +223,7 @@ def word_features(F, w):
         "lex": g("lex_utf8"),
         "lex_id": g("lex"),
         "gloss": g("gloss"),
-        "gloss_fr": FR.best_gloss(g("lex"), g("gloss")),
+        "gloss_fr": FR.best_gloss(g("lex"), g("gloss"), sp=g("sp")),
         "sp": g("sp"),
         "pdp": g("pdp"),
         "ls": g("ls"),
