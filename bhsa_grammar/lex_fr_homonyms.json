@@ -888,7 +888,7 @@
  },
  ">MR=[": {
   "voc": "אמר",
-  "gloss_fr": "boast (en)",
+  "gloss_fr": "se vanter, agir avec arrogance",
   "sp": "verb",
   "en": "boast",
   "binyanim": [
@@ -1694,7 +1694,7 @@
  },
  "G>L=[": {
   "voc": "גאל",
-  "gloss_fr": "racheter, délivrer, agir comme parent-rédempteur",
+  "gloss_fr": "se souiller, se profaner",
   "sp": "verb",
   "en": "pollute",
   "binyanim": [
@@ -1983,7 +1983,7 @@
  },
  "DBR[": {
   "voc": "דבר",
-  "gloss_fr": "parler",
+  "gloss_fr": "se parler (l'un à l'autre)",
   "sp": "verb",
   "en": "speak",
   "binyanim": [
@@ -2228,7 +2228,7 @@
  },
  "HLL=[": {
   "voc": "הלל",
-  "gloss_fr": "vanter, se glorifier",
+  "gloss_fr": "briller, rayonner",
   "sp": "verb",
   "en": "light",
   "binyanim": [
@@ -2354,7 +2354,7 @@
  },
  "ZBX[": {
   "voc": "זבח",
-  "gloss_fr": "sacrifier, immoler",
+  "gloss_fr": "sacrifier (intensif), immoler",
   "sp": "verb",
   "en": "slaughter",
   "binyanim": [
@@ -3362,7 +3362,7 @@
  },
  "XLL=[": {
   "voc": "חלל",
-  "gloss_fr": "percer, blesser, déchirer",
+  "gloss_fr": "profaner, souiller, violer",
   "sp": "verb",
   "en": "pierce",
   "binyanim": [
@@ -3747,7 +3747,7 @@
  },
  "VHR[": {
   "voc": "טהר",
-  "gloss_fr": "être pur, être rituellement pur",
+  "gloss_fr": "se purifier",
   "sp": "verb",
   "en": "be clean",
   "binyanim": [
@@ -7580,7 +7580,7 @@
  },
  "<WR[": {
   "voc": "עור",
-  "gloss_fr": "éveiller, réveiller",
+  "gloss_fr": "éveiller, réveiller (faire lever)",
   "sp": "verb",
   "en": "be awake",
   "binyanim": [
@@ -7593,7 +7593,7 @@
  },
  "<WR=[": {
   "voc": "עור",
-  "gloss_fr": "être aveugle",
+  "gloss_fr": "être aveugle (privé de vue), aveugler",
   "sp": "verb",
   "en": "be blind",
   "binyanim": [
@@ -7602,7 +7602,7 @@
  },
  "<WR==[": {
   "voc": "עור",
-  "gloss_fr": "être nu",
+  "gloss_fr": "be naked (en)",
   "sp": "verb",
   "en": "be naked",
   "binyanim": [
@@ -8276,7 +8276,7 @@
  },
  "PNH[": {
   "voc": "פנה",
-  "gloss_fr": "se tourner, se détourner",
+  "gloss_fr": "faire tourner, détourner",
   "sp": "verb",
   "en": "turn",
   "binyanim": [
