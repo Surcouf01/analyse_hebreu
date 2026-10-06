@@ -378,24 +378,46 @@ def analyze_verse(F, L, T, verse):
         "text": text,
         "sentences": [],
     }
-    for s in L.d(verse, "sentence"):
+    # Un nœud « sentence » BHSA peut chevaucher plusieurs versets (poésie,
+    # ex. Deut 32:11) : L.d(verse, "sentence") ne renvoie alors rien. On part
+    # donc des mots du verset et on les regroupe par ancêtre sentence/clause/
+    # phrase, en ne gardant que les mots du verset courant.
+    verse_words = L.d(verse, "word")
+
+    def _parent(word, otype):
+        parents = L.u(word, otype)
+        return parents[0] if parents else None
+
+    sentence_order = {}
+    for w in verse_words:
+        s = _parent(w, "sentence") or _parent(w, "sentence_atom")
+        sentence_order.setdefault(s, []).append(w)
+    for s, s_words in sentence_order.items():
         sent = {
-            "text": T.text(s),
+            "text": T.text(s_words),
             "clauses": [],
         }
-        for c in L.d(s, "clause"):
+        clause_order = {}
+        for w in s_words:
+            c = _parent(w, "clause") or _parent(w, "clause_atom")
+            clause_order.setdefault(c, []).append(w)
+        for c, c_words in clause_order.items():
             clause = {
-                "text": T.text(c),
-                "rules": clause_rules(F, L, c),
+                "text": T.text(c_words),
+                "rules": clause_rules(F, L, c) if c is not None else [],
                 "phrases": [],
             }
-            for p in L.d(c, "phrase"):
+            phrase_order = {}
+            for w in c_words:
+                p = _parent(w, "phrase") or _parent(w, "phrase_atom")
+                phrase_order.setdefault(p, []).append(w)
+            for p, p_words in phrase_order.items():
                 phrase = {
-                    "text": T.text(p),
-                    "rules": phrase_rules(F, L, p),
+                    "text": T.text(p_words),
+                    "rules": phrase_rules(F, L, p) if p is not None else [],
                     "words": [],
                 }
-                for w in L.d(p, "word"):
+                for w in p_words:
                     lex_id = _clean(_fv(F, "lex", w)) or ""
                     en_gloss = _clean(_fv(F, "gloss", w)) or ""
                     word = {
