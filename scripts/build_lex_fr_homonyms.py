@@ -66,7 +66,15 @@ def main():
         with open(CURATION_PATH, encoding="utf-8") as fh:
             manual = json.load(fh)
     except (OSError, ValueError):
-        manual = {}
+        manual = []
+    # Curation lisible : [{voc, sp, en, gloss_fr}] — le lemme vocalisé +
+    # la partie du discours + le gloss anglais identifient l'homonyme
+    # visé (le gloss anglais lève l'ambiguïté des lemmes identiques).
+    manual_lookup = {}
+    for entry in manual:
+        key = (entry.get("voc"), entry.get("sp"),
+              (entry.get("en") or "").lower())
+        manual_lookup[key] = entry.get("gloss_fr")
 
     # --- 1. lexèmes BHSA : partie du discours + gloss EN dominants ---------
     lexemes = {}
@@ -74,16 +82,19 @@ def main():
         lex = F.lex.v(lx)
         if not lex:
             continue
-        sps, ens = defaultdict(int), defaultdict(int)
+        sps, ens, vss = defaultdict(int), defaultdict(int), defaultdict(int)
         words = L.d(lx, "word")
         for w in words:
             sps[F.sp.v(w)] += 1
             if F.gloss.v(w):
                 ens[F.gloss.v(w)] += 1
+            if F.vs.v(w):
+                vss[F.vs.v(w)] += 1
         lexemes[lex] = {
             "sp": max(sps, key=sps.get) if sps else None,
             "en": max(ens, key=ens.get) if ens else None,
             "voc": F.voc_lex_utf8.v(lx) or F.lex_utf8.v(lx),
+            "binyanim": sorted(vss) if vss else [],
             "count": len(words),
         }
 
@@ -163,7 +174,8 @@ def main():
                 if m == owner:
                     continue
                 e = lexemes[m]
-                new = manual.get(m)
+                new = manual_lookup.get(
+                    (e["voc"], e["sp"], (e["en"] or "").lower()))
                 source = "curation" if new else None
                 if new is None and e["sp"] == "verb":
                     cand = verb_fr.get(e["voc"])
@@ -171,11 +183,15 @@ def main():
                         new = cand[0]
                         source = "binyan_senses"
                 if new and new != fr:
-                    overrides[m] = {
+                    entry = {
+                        "voc": e["voc"],
                         "gloss_fr": new,
                         "sp": e["sp"],
                         "en": e["en"],
                     }
+                    if e["sp"] == "verb" and e["binyanim"]:
+                        entry["binyanim"] = e["binyanim"]
+                    overrides[m] = entry
                     if source == "curation":
                         n_cured += 1
                     else:
@@ -189,20 +205,29 @@ def main():
                 if fr_matches_en(fr, en):
                     continue
                 if en and en != fr:
-                    overrides[m] = {
+                    entry = {
+                        "voc": e["voc"],
                         "gloss_fr": f"{en} (en)",
                         "sp": e["sp"],
                         "en": e["en"],
                     }
+                    if e["sp"] == "verb" and e["binyanim"]:
+                        entry["binyanim"] = e["binyanim"]
+                    overrides[m] = entry
                     n_default += 1
                 else:
                     report_unresolved.append(
                         (m, e["voc"], e["sp"], e["en"], fr))
 
     # --- 5. écriture -------------------------------------------------------
+    # Tri lisible : par lemme vocalisé, puis partie du discours, puis gloss.
+    ordered = dict(sorted(overrides.items(),
+                          key=lambda kv: (kv[1].get("voc") or "",
+                                          kv[1].get("sp") or "",
+                                          kv[1].get("en") or "")))
     out = "bhsa_grammar/lex_fr_homonyms.json"
     with open(out, "w", encoding="utf-8") as fh:
-        json.dump(overrides, fh, ensure_ascii=False, indent=1, sort_keys=True)
+        json.dump(ordered, fh, ensure_ascii=False, indent=1)
         fh.write("\n")
 
     print(f"Groupes homonymes ambigus : {len(report_ambiguous)}")

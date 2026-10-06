@@ -1,5 +1,20 @@
-{
-  "<WR[": "éveiller, réveiller",
-  "<WR=[": "être aveugle",
-  "<WR==[": "être nu"
-}
+[
+  {
+    "voc": "עור",
+    "sp": "verb",
+    "en": "be awake",
+    "gloss_fr": "éveiller, réveiller"
+  },
+  {
+    "voc": "עור",
+    "sp": "verb",
+    "en": "be blind",
+    "gloss_fr": "être aveugle"
+  },
+  {
+    "voc": "עור",
+    "sp": "verb",
+    "en": "be naked",
+    "gloss_fr": "être nu"
+  }
+]
