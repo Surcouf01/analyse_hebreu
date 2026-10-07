@@ -7275,20 +7275,24 @@
   },
   "עור": {
     "piel": [
-      "",
-      "blindeth"
+      "être aveugle (privé de vue), aveugler",
+      "be blind"
     ],
     "qal": [
-      "",
-      "rouse oneself; my heart waketh"
+      "éveiller, se réveiller",
+      "be awake; rouse oneself"
     ],
     "nif": [
-      "",
+      "être éveillé, être excité",
       "be roused; be incited"
     ],
+    "piel": [
+      "aveugler",
+      "blindeth"
+    ],
     "hif": [
-      "",
-      "rouse"
+      "éveiller, réveiller (faire lever)",
+      "be awake; rouse"
     ]
   },
   "עות": {

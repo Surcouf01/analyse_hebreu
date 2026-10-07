@@ -982,7 +982,7 @@ def identify_verb(F, form):
                     "lex_utf8": lex_utf8,
                     "root": tuple(letters),
                     "gloss": F.gloss.v(w),
-                    "gloss_fr": best_gloss(lex, F.gloss.v(w)),
+                    "gloss_fr": best_gloss(lex, F.gloss.v(w), sp="verb"),
                     "method": "root",
                 }
         return {
@@ -1033,7 +1033,7 @@ def identify_verb(F, form):
             "lex_utf8": lex_utf8,
             "root": tuple(rletters),
             "gloss": F.gloss.v(w),
-            "gloss_fr": best_gloss(lex, F.gloss.v(w)),
+            "gloss_fr": best_gloss(lex, F.gloss.v(w), sp="verb"),
             "binyan_attested": F.vs.v(w),
             "method": "form",
         }
@@ -1553,7 +1553,7 @@ def analyze_binyanim(F, form, use_mishnah=False):
         verb["binyanim_of_lex"] = sorted(binyanim_of_lex)
 
     attested = verb.get("binyan_attested")
-    gloss_fr = _gloss_fr_pure(verb.get("lex"))
+    gloss_fr = _gloss_fr_pure(verb.get("lex"), sp="verb")
     gloss_en = verb.get("gloss") or ""
     mishnah_data = load_mishnah_binyanim() if use_mishnah else {}
     mishnah_root = mishnah_data.get(verb.get("root_display") or "", {})
