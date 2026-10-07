@@ -1333,9 +1333,88 @@ def _hitpolel_non_finite(p1, p3):
         }
     return _hitpolel_forms(p1, p3, base)
 
+# --- HIFIL DES VERBES CREUX (ע״ו/ע״י) -------------------------------------------
+# Schéma attesté (BHSA) : הֵעִיר, הֵבִיאָה (perf) ; יָעִיר, תָּעִירִי, נָעִיר,
+# נָבִיא (impf : qamats + P1 + ḥireq-yod + P3) ; הָעֵר, הָבֵא (impv) ;
+# הָאֵר (infa), הָאִיר/הָעִיר (infc) ; מֵעִיר, מֵבִיא (ptca). Perf suffixé :
+# הֲעִירֹתִי, הֲבִיאֹתִי (ḥatef-qamats + P1 + ḥireq + P3 + holam + ות...).
+
+
+def _hif_hollow_perf(p1, p3):
+    pre = HE + TSERE + p1 + HIREQ + YOD
+    # Hatef de préfixe : gutturale selon sa classe (ע → patah, א/ה/ח →
+    # qamats), sinon segol (הֱשִׁיבֹתִי, הֱקִימֹותִי).
+    if p1 == "\u05E2":
+        hatef = HATEF_PATAH
+    elif p1 in GUTTURALS:
+        hatef = HATAF_QAMATS
+    else:
+        hatef = HATEF_SEGOL
+    pre_h = HE + hatef + p1 + HIREQ + YOD
+    return {
+        ("p3", "m", "sg"): pre + p3,
+        ("p3", "f", "sg"): pre + p3 + QAMATS + HE,
+        ("p2", "m", "sg"): pre_h + p3 + HOLAM + TAV + QAMATS + DAGESH,
+        ("p2", "f", "sg"): pre_h + p3 + HOLAM + TAV + SHEVA + DAGESH,
+        ("p1", "c", "sg"): pre_h + p3 + HOLAM + TAV + HIREQ + YOD,
+        ("p3", "m", "pl"): pre + p3 + SHUREQ,
+        ("p3", "f", "pl"): pre + p3 + QAMATS + HE,
+        ("p2", "m", "pl"): pre_h + p3 + HOLAM + TAV + SEGOL + DAGESH + END_MEM,
+        ("p2", "f", "pl"): pre_h + p3 + HOLAM + TAV + SEGOL + DAGESH + END_NUN,
+        ("p1", "c", "pl"): pre_h + p3 + HOLAM + NUN + SHUREQ,
+    }
+
+
+def _hif_hollow_impf(p1, p3):
+    # Préfixe voyelle qamats (יָעִיר, תָּשִׁיב) ; pas de daguesh lene sur
+    # P1 puisque la voyelle préfixe la précède (הֵבִיא, יָשִׁיב).
+    stem = p1 + HIREQ + YOD
+    out = {}
+    for key, (pref, _d) in IMPF_PREF.items():
+        pref_q = pref[0] + QAMATS
+        dash = DAGESH if pref[0] == TAV else ""
+        if key == ("p2", "f", "sg"):
+            out[key] = pref_q + dash + stem + p3 + HIREQ + YOD
+        elif key[2] == "pl" and key[1] == "m":
+            out[key] = pref_q + dash + stem + p3 + SHUREQ
+        elif key[2] == "pl" and key[1] == "f":
+            out[key] = (pref_q + dash + stem + p3 + SHEVA + NUN
+                        + QAMATS + HE)
+        else:
+            out[key] = pref_q + dash + stem + p3
+    return out
+
+
+def _hif_hollow_impv(p1, p3):
+    pre = HE + QAMATS + p1
+    pre_i = HE + QAMATS + p1 + HIREQ + YOD
+    return {
+        ("p2", "m", "sg"): pre + TSERE + p3,
+        ("p2", "f", "sg"): pre_i + p3 + HIREQ + YOD,
+        ("p2", "m", "pl"): pre_i + p3 + SHUREQ,
+        ("p2", "f", "pl"): pre_i + p3 + SHEVA + NUN + QAMATS + HE,
+    }
+
+
+def _hif_hollow_non_finite(p1, p3):
+    ptc = MEM + TSERE + p1 + HIREQ + YOD
+    return {
+        ("infa", "unknown", "unknown"): HE + QAMATS + p1 + TSERE + p3,
+        ("infc", "unknown", "unknown"): HE + QAMATS + p1 + HIREQ + YOD + p3,
+        ("ptca", "m", "sg"): ptc + p3,
+        ("ptca", "m", "pl"): MEM + SHEVA + p1 + HIREQ + YOD + p3 + HIREQ + YOD + END_MEM,
+        ("ptca", "f", "sg"): MEM + SHEVA + p1 + HIREQ + YOD + p3 + PATAH + TAV,
+        ("ptca", "f", "pl"): MEM + SHEVA + p1 + HIREQ + YOD + p3 + HOLAM + VAV + TSERE + TAV,
+    }
+
+
 def _builtin_paradigm(vs, root, category=None):
     """Paradigme du verbe fort par les générateurs intégrés (repli)."""
     p1, p2, p3 = root
+    if category == "ayin_vav" and vs == "hif":
+        return {"perf": _hif_hollow_perf(p1, p3),
+                "impf": _hif_hollow_impf(p1, p3),
+                "impv": _hif_hollow_impv(p1, p3)}
     if category == "ayin_vav" and vs == "hit":
         return {"perf": _hitpolel_perf(p1, p3),
                 "impf": _hitpolel_impf(p1, p3),
@@ -1491,6 +1570,31 @@ def generate_binyan_paradigm(vs, root, category):
     """
     out = {}
     builtin = None
+    if category == "ayin_vav" and vs == "hif":
+        # Hifil des verbes creux : la 2e radicale vocalique (ו/י) s'assimile
+        # au ḥireq-yod du thème (יָעִיר, הֵעִיר, הָבֵא) ; les gabarits P1/P2
+        # extraits la traitent comme consonne ou perdent la finale.
+        builtin = _builtin_paradigm(vs, root, category)
+        for tense, persons in TENSE_PERSONS.items():
+            forms = {}
+            for ps, gn, nu, _label in persons:
+                cell = (ps, gn, nu)
+                if tense in ("juss", "coh"):
+                    # Volitifs : forme longue de l'imparfait (יָעִיר jussif,
+                    # אָעִירָה cohortatif, Deut 32:11 / Ps 44:24).
+                    base = builtin["impf"].get(cell, "")
+                    if not base:
+                        continue
+                    if tense == "juss":
+                        forms[cell] = base
+                    else:
+                        forms[cell] = (base + QAMATS + HE
+                                       if not base.endswith(QAMATS + HE)
+                                       else base)
+                else:
+                    forms[cell] = builtin[tense].get(cell, "")
+            out[tense] = forms
+        return out
     if category == "ayin_vav" and vs == "hit":
         # Hitpolel : les verbes creux redoublent la 3e radicale au hitpael
         # (הִתְעֹורֵר) ; les gabarits extraits (P1/P2/P3) ne peuvent pas
@@ -1568,6 +1672,8 @@ NON_FINITE_CELLS = (
 def generate_binyan_non_finite(vs, root, category):
     """Infinitifs et participes d'un binyan : {(vt, gn, nu): forme}."""
     out = {}
+    if category == "ayin_vav" and vs == "hif":
+        return _hif_hollow_non_finite(root[0], root[2])
     if category == "ayin_vav" and vs == "hit":
         return _hitpolel_non_finite(root[0], root[2])
     for vt, (gn, nu), _label in NON_FINITE_CELLS:
