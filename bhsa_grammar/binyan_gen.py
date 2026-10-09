@@ -1750,21 +1750,32 @@ def analyze_binyanim(F, form, use_mishnah=False):
     verb["is_weak"] = category != "strong"
     verb["root_display"] = "".join(root)
 
-    # Binyanim attestés pour le lemme dans la BHSA (toutes occurrences du
-    # lemme, indépendamment de la forme saisie) : sert à repérer les binyanim
-    # qui « n'ont pas de sens » pour cette racine. Les variantes hitpael des
-    # verbes faibles (htpa/hitpolel « htpo », hitpelel « htpe ») comptent
-    # comme hitpael.
+    # Binyanim attestés pour la racine dans la BHSA (toutes occurrences
+    # de tous les lemmes de la racine, indépendamment de la forme
+    # saisie) : sert à repérer les binyanim qui « n'ont pas de sens »
+    # pour cette racine. La BHSA scinde parfois une racine en plusieurs
+    # lemmes (ex. מהר : `MHR=[` qal « acquérir », `MHR[` nif/piel
+    # « hâter ») ; se limiter au lemme de la forme saisie colorerait en
+    # rouge des binyanim pourtant attestés pour la racine. Les variantes
+    # hitpael des verbes faibles (htpa/hitpolel « htpo », hitpelel
+    # « htpe ») comptent comme hitpael.
     binyanim_of_lex = None
-    if verb.get("lex"):
-        binyanim_of_lex = set()
-        for w in F.otype.s("word"):
-            if F.sp.v(w) != "verb":
-                continue
-            if F.lex.v(w) == verb["lex"]:
+    if verb.get("root_display"):
+        root_letters = [ch.replace("\u05C1", "").replace("\u05C2", "")
+                        for ch in _root_letters(verb["root_display"])]
+        if root_letters:
+            binyanim_of_lex = set()
+            for w in F.otype.s("word"):
+                if F.sp.v(w) != "verb":
+                    continue
+                lex_utf8 = F.lex_utf8.v(w) or ""
+                lex_letters = [ch.replace("\u05C1", "").replace("\u05C2", "")
+                               for ch in _root_letters(lex_utf8)]
+                if lex_letters != root_letters:
+                    continue
                 vs = F.vs.v(w)
                 binyanim_of_lex.add("hit" if vs in ("htpa", "htpo", "htpe") else vs)
-        verb["binyanim_of_lex"] = sorted(binyanim_of_lex)
+    verb["binyanim_of_lex"] = sorted(binyanim_of_lex or ())
 
     attested = verb.get("binyan_attested")
     gloss_fr = _gloss_fr_pure(verb.get("lex"), sp="verb")
