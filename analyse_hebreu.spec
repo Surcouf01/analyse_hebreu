@@ -149,6 +149,9 @@ hiddenimports = [
     "tf.convert.walker",
     "tf.parameters",
     "tf.core.timestamp",
+    "win32com",
+    "win32com.client",
+    "pythoncom",
 ]
 
 a = Analysis(

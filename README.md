@@ -223,6 +223,12 @@ L'interface comporte quatre onglets :
   propres à la Mishna sont signalés « Aucune occurrence trouvée ». Le
   détail mot à mot BHSA et les traductions Segond/KJV restent grisés dans
   ce mode, car ils ne s'appliquent pas à la Mishna.
+  Le bouton **« 🔊 Lire le verset »** (Bible uniquement, Windows) synthétise
+  l'hébreu du verset en fichier **WAV** via la voix SAPI installée (teamim et
+  nikkud retirés pour la lecture), en déduit la **durée exacte**, puis propose
+  un lecteur avec **curseur de position déplaçable** : glisser le curseur
+  déplace la lecture, les boutons Pause/Reprendre et Stop contrôlent la
+  lecture, et le temps écoulé/total est affiché.
 - **Mot** : analyse d'un mot hébreu isolé, saisi à l'aide d'un **clavier
   hébreu virtuel** (consonnes + points-voyelles/nikkud + daguesh, en UTF-8).
   Un clavier physique en hébreu reste utilisable : la saisie se fait toujours

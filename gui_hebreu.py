@@ -79,6 +79,11 @@ from bhsa_grammar.mishnah_analyzer import (
     analyze_mishnah_text,
     mishnah_analysis_block,
 )
+from verse_audio import (
+    VersePlayer,
+    VersePlayerError,
+    synthesize_wav,
+)
 
 
 # Langues de traduction disponibles, avec leur libellé.
@@ -1785,6 +1790,33 @@ class AnalyseurGUI:
         self.btn_verse.pack(anchor="w", padx=8, pady=8)
         self.btn_verse.state(["disabled"])
 
+        # Lecture audio du verset : synthèse WAV (SAPI) puis lecteur avec
+        # curseur de position déplaçable. Hors Windows ou sans voix SAPI,
+        # le bouton reste désactivé et un message l'explique.
+        audio = ttk.Frame(tab)
+        audio.pack(fill="x", padx=8, pady=(0, 8))
+        self.btn_audio = ttk.Button(audio, text="🔊 Lire le verset",
+                                    command=self._on_audio_button)
+        self.btn_audio.pack(side="left")
+        self.btn_audio.state(["disabled"])
+        self.audio_pause = ttk.Button(audio, text="⏸ Pause",
+                                      command=self._toggle_audio_pause)
+        self.audio_pause.pack(side="left", padx=(6, 0))
+        self.audio_pause.state(["disabled"])
+        self.audio_time = ttk.Label(audio, text="0:00 / 0:00")
+        self.audio_time.pack(side="left", padx=(10, 0))
+        self.audio_pos = tk.IntVar(value=0)
+        self.audio_scale = ttk.Scale(audio, from_=0, to=1000,
+                                     variable=self.audio_pos,
+                                     command=self._on_audio_seek)
+        self.audio_scale.pack(side="left", fill="x", expand=True, padx=(10, 0))
+        self.audio_scale.state(["disabled"])
+        self._audio_player = None
+        self._audio_wav = None
+        self._audio_duration_ms = 0
+        self._audio_seeking = False
+        self._audio_polling = False
+
         self._build_output(tab)
 
     def _build_word_tab(self):
@@ -1936,6 +1968,12 @@ class AnalyseurGUI:
         self.status.configure(text="Base BHSA chargée. Prêt.")
         for btn in (self.btn_verse, self.btn_word, self.btn_phrase, self.btn_binyanim):
             btn.state(["!disabled"])
+        if sys.platform == "win32":
+            self.btn_audio.state(["!disabled"])
+        else:
+            self.btn_audio.state(["disabled"])
+            self._set_audio_error(
+                "Lecture audio indisponible hors Windows.")
         self._populate_books()
 
     def _on_corpus_error(self, msg):
@@ -2342,6 +2380,156 @@ class AnalyseurGUI:
                         self.btn_binyanim):
                 btn.state(["!disabled"])
 
+    # --- Lecture audio du verset -----------------------------------------
+    def _set_audio_error(self, msg):
+        self.audio_time.configure(text=msg)
+        self.audio_scale.state(["disabled"])
+        self.audio_pause.state(["disabled"])
+
+    def _on_audio_button(self):
+        if self._audio_player is not None:
+            self._stop_audio()
+            return
+        if self.corpus_var.get() == CORPUS_MISHNA:
+            messagebox.showinfo(
+                "Lecture", "La lecture audio n'est disponible que pour les "
+                "versets de la Bible (BHSA).")
+            return
+        fr = self.book_var.get()
+        entry = self._book_index.get(fr)
+        if entry is None:
+            messagebox.showwarning("Référence", "Sélectionnez un livre.")
+            return
+        bhsa, _b = entry
+        chap = self.chapter_var.get()
+        verse = self.verse_var.get()
+        if not chap or not verse:
+            messagebox.showwarning("Référence",
+                                   "Sélectionnez chapitre et verset.")
+            return
+        if self.api is None:
+            return
+        reference = f"{fr} {chap}:{verse}"
+        self.btn_audio.state(["disabled"])
+        self.audio_time.configure(text=f"Synthèse : {reference}…")
+
+        def worker():
+            from bhsa_grammar.reference import find_verse
+            F, L, T = self.api.F, self.api.L, self.api.T
+            node = find_verse(F, L, bhsa, int(chap), int(verse))
+            if node is None:
+                self._work_queue.put(("audio_error",
+                                      "Verset introuvable."))
+                return
+            hebrew = T.text(node)
+            path = os.path.join(tempfile.gettempdir(),
+                                "analyse_hebreu_verse.wav")
+            duration = synthesize_wav(hebrew, path)
+            if duration is None or duration <= 0:
+                self._work_queue.put(("audio_error",
+                                      "Synthèse vocale indisponible "
+                                      "(voix SAPI requise)."))
+                return
+            self._work_queue.put(("audio_ready", (path, duration)))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _on_audio_ready(self, path, duration_ms):
+        player = VersePlayer()
+        try:
+            length = player.open(path)
+        except VersePlayerError as exc:
+            player.close()
+            self._set_audio_error(str(exc))
+            self.btn_audio.state(["!disabled"])
+            return
+        self._audio_player = player
+        self._audio_wav = path
+        self._audio_duration_ms = max(1, duration_ms or length)
+        self.btn_audio.configure(text="⏹ Stop")
+        self.btn_audio.state(["!disabled"])
+        self.audio_pause.state(["!disabled"])
+        self.audio_scale.state(["!disabled"])
+        self.audio_scale.configure(to=self._audio_duration_ms)
+        self.audio_pos.set(0)
+        try:
+            player.play(0)
+        except VersePlayerError as exc:
+            self._set_audio_error(str(exc))
+            self._stop_audio()
+            return
+        self._poll_audio()
+
+    def _on_audio_error(self, msg):
+        self._set_audio_error(msg)
+        self.btn_audio.state(["!disabled"])
+
+    def _toggle_audio_pause(self):
+        if self._audio_player is None:
+            return
+        if self._audio_player.is_paused():
+            self._audio_player.play()
+            self.audio_pause.configure(text="⏸ Pause")
+        else:
+            self._audio_player.pause()
+            self.audio_pause.configure(text="▶ Reprendre")
+
+    def _on_audio_seek(self, value):
+        if self._audio_player is None or self._audio_seeking:
+            return
+        self._audio_seeking = True
+        try:
+            self._audio_player.seek(float(value))
+        except VersePlayerError:
+            pass
+        finally:
+            self._audio_seeking = False
+
+    def _poll_audio(self):
+        if self._audio_player is None or self._audio_polling:
+            return
+        self._audio_polling = True
+
+        def tick():
+            self._audio_polling = False
+            player = self._audio_player
+            if player is None:
+                return
+            if not self._audio_seeking:
+                pos = player.position_ms()
+                self.audio_pos.set(pos)
+            self._update_audio_time(player.position_ms())
+            if not player.is_playing() and not player.is_paused():
+                self._stop_audio()
+                return
+            self.root.after(200, tick)
+
+        self.root.after(200, tick)
+
+    def _update_audio_time(self, pos_ms):
+        dur = self._audio_duration_ms
+
+        def fmt(ms):
+            return f"{int(ms) // 60000}:{int(ms) % 60000 // 1000:02d}"
+
+        self.audio_time.configure(text=f"{fmt(pos_ms)} / {fmt(dur)}")
+
+    def _stop_audio(self):
+        player = self._audio_player
+        self._audio_player = None
+        self._audio_wav = None
+        if player is not None:
+            player.stop()
+            player.close()
+        self.btn_audio.configure(text="🔊 Lire le verset")
+        self.audio_pause.configure(text="⏸ Pause")
+        self.audio_pause.state(["disabled"])
+        self.audio_scale.state(["disabled"])
+        self.audio_pos.set(0)
+        self._audio_duration_ms = 0
+        self.audio_time.configure(text="0:00 / 0:00")
+
+
     def _build_translation_header(self, analysis, fr, chap, verse, trans_enabled=None):
         """Construit l'en-tête de traduction(s) pour le verset analysé.
 
@@ -2551,6 +2739,10 @@ class AnalyseurGUI:
                     self._show_binyanim_parsed(payload)
                 elif kind == "binyanim_not_found":
                     self._show_binyanim_not_found(payload)
+                elif kind == "audio_ready":
+                    self._on_audio_ready(*payload)
+                elif kind == "audio_error":
+                    self._on_audio_error(payload)
         except queue.Empty:
             pass
         self.root.after(120, self._poll_queue)
@@ -2610,6 +2802,9 @@ def _close_from_window(root):
     Sauvegarde la géométrie et les préférences avant la destruction.
     """
     _save_all_preferences(root)
+    gui = getattr(root, "_gui", None)
+    if gui is not None:
+        gui._stop_audio()
     root.destroy()
 
 
