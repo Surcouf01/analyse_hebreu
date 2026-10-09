@@ -78,6 +78,16 @@ def _candidate_paths(language="fr"):
     return paths
 
 
+def _clean_verse_text(text):
+    """Retire les marques de paragraphe du texte source.
+
+    Le pilcrow ``¶`` ouvre les versets de la KJV 1611 marquant un
+    nouveau paragraphe dans l'édition imprimée ; il n'a pas lieu
+    d'apparaître à l'affichage (cf. docs/traduction_kjv_1611.md).
+    """
+    return text.replace("¶", "").strip()
+
+
 def _parse_flat(path):
     index = {}
     with open(path, encoding="utf-8") as fh:
@@ -93,6 +103,7 @@ def _parse_flat(path):
                 chap_i, verse_i = int(chap), int(verse)
             except ValueError:
                 continue
+            text = _clean_verse_text(text)
             index.setdefault(book, {}).setdefault(chap_i, {})[verse_i] = text
     return index
 
