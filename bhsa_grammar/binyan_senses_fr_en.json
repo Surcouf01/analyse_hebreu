@@ -3079,24 +3079,24 @@
   },
   "חנן": {
     "qal": [
-      "",
-      "favour, shew favour; favour us with them"
+      "accorder faveur, être favorable",
+      "favour, show favour"
     ],
     "nif": [
-      "",
-      "be pitied; groan"
+      "être objet de pitié, s'apitoyer",
+      "be pitied"
     ],
     "piel": [
-      "",
-      "make gracious, favourable; direct favour to"
+      "rendre favorable, faire grâce",
+      "make gracious, show favour"
     ],
     "hof": [
-      "",
-      "be shewn favour, consideration"
+      "être montré favorable, être épargné",
+      "be shown favour"
     ],
     "hit": [
-      "",
-      "seek or implore favour; of man"
+      "implorer faveur, chercher grâce",
+      "seek or implore favour"
     ]
   },
   "חנף": {
@@ -3163,8 +3163,8 @@
   },
   "חפץ": {
     "qal": [
-      "",
-      "men; take pleasure in, delight in"
+      "prendre plaisir, désirer, vouloir",
+      "take pleasure in, delight in"
     ]
   },
   "חפר": {
@@ -4071,15 +4071,15 @@
   },
   "יעץ": {
     "qal": [
-      "",
-      "advise, counsel; wonder of a counsellor"
+      "conseiller, donner conseil",
+      "advise, counsel"
     ],
     "nif": [
-      "",
-      "consult together, exchange counsel; consult, take counsel"
+      "se consulter, délibérer",
+      "consult together, take counsel"
     ],
     "hit": [
-      "",
+      "comploter, se concerter",
       "conspire"
     ]
   },
@@ -4271,16 +4271,16 @@
   },
   "ירה": {
     "qal": [
-      "",
-      "throw, cast; cast"
+      "jeter, lancer, précipiter",
+      "throw, cast"
     ],
     "nif": [
-      "",
-      "shot through"
+      "être transpercé, être frappé",
+      "be shot through"
     ],
     "hif": [
-      "",
-      "throw, cast; shoot"
+      "jeter, lancer, tirer (des flèches), enseigner",
+      "throw, cast, shoot"
     ]
   },
   "ירט": {
@@ -4989,12 +4989,12 @@
   },
   "למד": {
     "qal": [
-      "",
-      "learn; trained"
+      "apprendre, être instruit",
+      "learn"
     ],
     "piel": [
-      "",
-      "teach; my teachers"
+      "enseigner",
+      "teach"
     ]
   },
   "לעב": {
@@ -5139,16 +5139,16 @@
   },
   "מהר": {
     "nif": [
-      "",
-      "be hurried; hasty, precipitate"
+      "être pressé, se hâter",
+      "be hurried"
     ],
     "piel": [
-      "",
-      "hasten, make haste; hasten"
+      "hâter, presser",
+      "hasten"
     ],
     "qal": [
-      "",
-      "obtain; in exchange"
+      "acquérir (une épouse), se fiancer",
+      "acquire (by purchase)"
     ]
   },
   "מוג": {
@@ -5265,15 +5265,15 @@
   },
   "מכר": {
     "qal": [
-      "",
-      "pret"
+      "vendre",
+      "sell"
     ],
     "nif": [
-      "",
-      "be sold; sell oneself"
+      "être vendu",
+      "be sold"
     ],
     "hit": [
-      "",
+      "se vendre, se livrer",
       "sell oneself"
     ]
   },
@@ -6755,24 +6755,24 @@
   },
   "סגר": {
     "qal": [
-      "",
-      "shut; their fat"
+      "fermer",
+      "shut"
     ],
     "nif": [
-      "",
-      "be shut up; be shut, closed"
+      "être fermé, s'enfermer",
+      "be shut up"
     ],
     "piel": [
-      "",
+      "livrer, livrer entre les mains",
       "deliver up"
     ],
     "pual": [
-      "",
-      "be shut up; down into"
+      "être enfermé, être livré",
+      "be shut up"
     ],
     "hif": [
-      "",
-      "deliver up"
+      "livrer, enfermer, mettre sous séquestre",
+      "deliver up, shut up"
     ]
   },
   "סוג": {
@@ -7093,24 +7093,24 @@
   },
   "סתר": {
     "nif": [
-      "",
-      "hide oneself; be hid, concealed"
+      "se cacher, être caché",
+      "hide oneself, be hid"
     ],
     "piel": [
-      "",
+      "cacher soigneusement",
       "carefully hide"
     ],
     "pual": [
-      "",
-      "love carefully concealed"
+      "être caché",
+      "be hidden"
     ],
     "hit": [
-      "",
+      "se cacher soigneusement",
       "hide oneself carefully"
     ],
     "hif": [
-      "",
-      "conceal, hide; hide"
+      "cacher, dissimuler",
+      "conceal, hide"
     ]
   },
   "עבד": {
@@ -7275,8 +7275,8 @@
   },
   "עור": {
     "piel": [
-      "être aveugle (privé de vue), aveugler",
-      "be blind"
+      "aveugler",
+      "blindeth"
     ],
     "qal": [
       "éveiller, se réveiller",
@@ -7285,10 +7285,6 @@
     "nif": [
       "être éveillé, être excité",
       "be roused; be incited"
-    ],
-    "piel": [
-      "aveugler",
-      "blindeth"
     ],
     "hif": [
       "éveiller, réveiller (faire lever)",
@@ -7335,12 +7331,12 @@
   },
   "עזר": {
     "hif": [
-      "",
+      "aider, secourir",
       "help"
     ],
     "nif": [
-      "",
-      "I am helped; he was wonderfully helped"
+      "être secouru, recevoir de l'aide",
+      "be helped"
     ]
   },
   "עטה": {
@@ -7991,12 +7987,12 @@
   },
   "פלל": {
     "piel": [
-      "",
-      "mediate, judge: Perfect; arbitrate"
+      "juger, arbitrer, médier",
+      "judge, arbitrate"
     ],
     "hit": [
-      "",
-      "intercede; on behalf of"
+      "intercéder, prier pour",
+      "intercede"
     ]
   },
   "פנה": {
@@ -8533,16 +8529,16 @@
   },
   "צפה": {
     "qal": [
-      "",
-      "may; which looketh"
+      "guetter, observer, veiller",
+      "watch, look out"
     ],
     "piel": [
-      "",
-      "overlay, plate: Perfect; overlay"
+      "recouvrir, plaquer (de métal)",
+      "overlay, plate"
     ],
     "pual": [
-      "",
-      "over laid with gold"
+      "être recouvert",
+      "be overlaid"
     ]
   },
   "צפן": {
@@ -8815,24 +8811,24 @@
   },
   "קלל": {
     "qal": [
-      "",
-      "be slight; be abated"
+      "être léger, diminuer, être méprisé",
+      "be slight, be abated"
     ],
     "nif": [
-      "",
-      "shew oneself swift; appear trifling"
+      "s'humilier, se rendre léger",
+      "show oneself slight"
     ],
     "piel": [
-      "",
-      "curse; make contemptible"
+      "maudire, mépriser",
+      "curse, make contemptible"
     ],
     "pual": [
-      "",
-      "be cursed; is cursed"
+      "être maudit",
+      "be cursed"
     ],
     "hif": [
-      "",
-      "make light, lighten; he will lighten his hand from upon you"
+      "alléger, traiter à la légère",
+      "make light, lighten"
     ]
   },
   "קלס": {
@@ -8875,16 +8871,16 @@
   },
   "קנה": {
     "qal": [
-      "",
-      "get, acquire; buy"
+      "acquérir, acheter, créer",
+      "get, acquire, buy"
     ],
     "nif": [
-      "",
+      "être acheté, être acquis",
       "be bought"
     ],
     "hif": [
-      "",
-      "cattle; caused"
+      "faire acquérir",
+      "cause to acquire"
     ]
   },
   "קנן": {
@@ -9415,12 +9411,12 @@
   },
   "רכב": {
     "qal": [
-      "",
-      "mount, mount and sit; ride"
+      "monter (à cheval, sur un char), chevaucher",
+      "mount, ride"
     ],
     "hif": [
-      "",
-      "cause to (mount and) ride; over our heads"
+      "faire monter, faire chevaucher",
+      "cause to ride"
     ]
   },
   "רכך": {

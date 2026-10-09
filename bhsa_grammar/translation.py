@@ -78,6 +78,23 @@ def _candidate_paths(language="fr"):
     return paths
 
 
+def _clean_verse_text(text):
+    """Retire les marques typographiques parasites du texte source.
+
+    Deux artefacts d'édition/OCR ne doivent pas apparaître à
+    l'affichage (cf. docs/traduction_kjv_1611.md et
+    docs/renumerotation_torres_amat.md) :
+
+    - le pilcrow ``¶`` ouvrant les versets de la KJV 1611 marquant un
+      nouveau paragraphe dans l'édition imprimée ;
+    - le ``$`` résiduel de l'OCR du module SWORD TorresAmat (isolé en
+      fin de verset, ou embarqué dans un mot : ``$us`` = ``sus``,
+      ``escar$ lata`` = ``escarlata``, ``$Sidrach`` = ``Sidrach``) ;
+      les autres traductions n'en contiennent aucune occurrence.
+    """
+    return text.replace("¶", "").replace("$", "").strip()
+
+
 def _parse_flat(path):
     index = {}
     with open(path, encoding="utf-8") as fh:
@@ -93,6 +110,7 @@ def _parse_flat(path):
                 chap_i, verse_i = int(chap), int(verse)
             except ValueError:
                 continue
+            text = _clean_verse_text(text)
             index.setdefault(book, {}).setdefault(chap_i, {})[verse_i] = text
     return index
 

@@ -71,8 +71,9 @@ Exemples de versets de contrôle :
   comparaison fine du nom divin, préférer la Riveduta (l'Eterno /
   Signore) ou la Segond (l'Éternel / Seigneur).
 - Le pilcrow `¶` (marque de paragraphe de l'édition imprimée) est
-  conservé dans certaines lignes (p. ex. Chronica_I 1:5) ; c'est le
-  texte de la source.
+  conservé dans les données brutes (p. ex. Chronica_I 1:5) ; il est
+  retiré du texte à l'affichage par `bhsa_grammar.translation`
+  (`_clean_verse_text`).
 - Typographie ancienne : virgules et points-virgules sans espace
   consécutif, majuscules de la source conservées.
 

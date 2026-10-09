@@ -307,6 +307,13 @@ résidus « CAPITULO … » / « HASTA AQUÍ … » collés en fin de verset
   aquel dia que te presentaste delante del Señor Dios tuyo en Horeb,
   cuando el Señor me habló diciendo: Junta el pueblo delante de mí,
   para que oigan mis palabras… ».
+- Le `$` (316 occurrences résiduelles de l'OCR du module SWORD, p. ex.
+  Exode 22:15) est conservé dans les données brutes mais retiré du
+  texte à l'affichage par `bhsa_grammar.translation`
+  (`_clean_verse_text`), comme le pilcrow `¶` de la KJV ; il remplace
+  parfois une lettre de l'édition imprimée (`$us` = « sus »,
+  `escar$ lata` = « escarlata »), sa suppression simple restaure le
+  texte.
 
 Pour toute divergence constatée entre le texte espagnol affiché et le
 verset hébreu, le diagnostic est le suivant : (1) vérifier dans
