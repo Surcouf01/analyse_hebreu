@@ -79,13 +79,20 @@ def _candidate_paths(language="fr"):
 
 
 def _clean_verse_text(text):
-    """Retire les marques de paragraphe du texte source.
+    """Retire les marques typographiques parasites du texte source.
 
-    Le pilcrow ``¶`` ouvre les versets de la KJV 1611 marquant un
-    nouveau paragraphe dans l'édition imprimée ; il n'a pas lieu
-    d'apparaître à l'affichage (cf. docs/traduction_kjv_1611.md).
+    Deux artefacts d'édition/OCR ne doivent pas apparaître à
+    l'affichage (cf. docs/traduction_kjv_1611.md et
+    docs/renumerotation_torres_amat.md) :
+
+    - le pilcrow ``¶`` ouvrant les versets de la KJV 1611 marquant un
+      nouveau paragraphe dans l'édition imprimée ;
+    - le ``$`` résiduel de l'OCR du module SWORD TorresAmat (isolé en
+      fin de verset, ou embarqué dans un mot : ``$us`` = ``sus``,
+      ``escar$ lata`` = ``escarlata``, ``$Sidrach`` = ``Sidrach``) ;
+      les autres traductions n'en contiennent aucune occurrence.
     """
-    return text.replace("¶", "").strip()
+    return text.replace("¶", "").replace("$", "").strip()
 
 
 def _parse_flat(path):
