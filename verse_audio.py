@@ -1,33 +1,34 @@
-"""Lecture audio du verset : synthèse WAV (SAPI5) et lecteur MCI.
+"""Lecture audio du verset : synthèse WAV (phonikud-tts) et lecteur MCI.
 
 - ``synthesize_wav(text, path)`` : produit un fichier WAV à partir du texte
-  hébreu via la voix SAPI installée (Synthèse vocale Windows), puis renvoie
-  la durée en millisecondes lue dans l'en-tête WAV. Le texte est normalisé
-  (teamim et nikkud retirés : la voix lit les consonnes).
+  hébreu voyellé via **phonikud-tts** (exécution locale, ONNX Runtime) puis
+  renvoie la durée en millisecondes lue dans l'en-tête WAV. Le texte est
+  normalisé (teamim retirés, nikkud conservé : c'est lui qui porte la
+  vocalisation). Les modèles (Phonikud + voix Piper « shaul », ~370 Mo au
+  total) sont téléchargés au premier usage dans le cache Hugging Face.
 - ``VersePlayer`` : lecteur fondé sur MCI (winmm) qui expose position,
   durée, lecture/pause/reprise, arrêt et déplacement du curseur (seek).
 
-Hors Windows, ces fonctions sont inopérantes : ``synthesize_wav`` renvoie
-``None`` et ``VersePlayer`` lève une erreur explicite à l'ouverture — l'interface
-graphique désactive alors le bouton et affiche un message.
+Dépendances : ``phonikud-tts`` (pip) qui fournit ``phonikud``,
+``phonikud-onnx``, ``piper-onnx``, ``onnxruntime``, ``espeakng-loader`` et
+``soundfile``. Sous Windows, MCI (winmm) lit le WAV ; ailleurs le lecteur
+est inopérant et l'interface affiche un message.
 """
 
 import ctypes
 import re
-import sys
 import wave
 
 _ALIAS = "analyse_hebreu_verse"
 
+# Teamim (accents massorétiques) : ils portent le chant, pas la
+# vocalisation — retirés pour une lecture parlée ; le nikkud est conservé.
+_TEAMIM = re.compile("[\u0591-\u05af\u05bd\u05c0\u05c3-\u05c7]")
 
-_MCI_HEBREW_LETTERS = re.compile(
-    "[^\u05d0-\u05ea ]")
 
-
-def strip_marks(text):
-    """Retire teamim, nikkud et signes parasites du texte hébreu."""
-    text = text.replace("\u05be", " ")
-    return _MCI_HEBREW_LETTERS.sub("", text)
+def strip_teamim(text):
+    """Retire les accents massorétiques (teamim), garde le nikkud."""
+    return _TEAMIM.sub("", text)
 
 
 def wave_duration_ms(path):
@@ -38,33 +39,44 @@ def wave_duration_ms(path):
     return int(round(frames * 1000.0 / rate))
 
 
+_MODELS = {}
+
+
+def _get_models():
+    """Charge (une seule fois) Phonikud (diacritisation) et Piper (voix)."""
+    if "piper" in _MODELS:
+        return _MODELS["piper"]
+    import os
+    from huggingface_hub import hf_hub_download
+    from phonikud_tts import Piper
+
+    tts_dir = hf_hub_download("thewh1teagle/phonikud-tts-checkpoints",
+                              "shaul.onnx")
+    cfg = hf_hub_download("thewh1teagle/phonikud-tts-checkpoints",
+                          "model.config.json")
+    _MODELS["piper"] = Piper(tts_dir, cfg)
+    return _MODELS["piper"]
+
+
 def synthesize_wav(text, path):
     """Synthétise ``text`` en WAV dans ``path`` ; renvoie la durée en ms.
 
-    Renvoie ``None`` si la synthèse est indisponible (hors Windows ou
-    voix SAPI introuvable).
+    Le texte du verset biblique étant déjà voyellé, il est passé directement
+    au phonétiseur phonikud (le modèle de diacritisation ne sert que pour du
+    texte non voyellé). Renvoie ``None`` en cas d'échec (dépendances
+    manquantes, modèle introuvable, erreur de synthèse).
     """
-    if sys.platform != "win32":
-        return None
+    import soundfile as sf
+    from phonikud import phonemize
+    from phonikud_tts import Piper
+
     try:
-        import pythoncom
-        import win32com.client
-    except ImportError:
-        return None
-    try:
-        pythoncom.CoInitialize()
-        voice = win32com.client.Dispatch("SAPI.SpVoice")
-        stream = win32com.client.Dispatch("SAPI.SpFileStream")
-        try:
-            stream.Format.Type = 22  # SAFT22kHz16BitMono
-            stream.Open(path, 3)  # SSFMCreateForWrite
-            voice.AudioOutputStream = stream
-            voice.Speak(strip_marks(text), 0)  # SVSFDefault : synchrone
-        finally:
-            try:
-                stream.Close()
-            except Exception:  # noqa: BLE001
-                pass
+        piper = _get_models()
+        phonemes = phonemize(strip_teamim(text))
+        samples, rate = piper.create(phonemes, is_phonemes=True)
+        if samples is None or len(samples) == 0:
+            return None
+        sf.write(path, samples, rate)
     except Exception:  # noqa: BLE001
         return None
     try:
@@ -78,6 +90,7 @@ class VersePlayerError(Exception):
 
 
 def _mci():
+    import ctypes
     return ctypes.windll.winmm
 
 

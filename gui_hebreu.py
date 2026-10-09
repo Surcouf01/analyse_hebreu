@@ -1790,9 +1790,10 @@ class AnalyseurGUI:
         self.btn_verse.pack(anchor="w", padx=8, pady=8)
         self.btn_verse.state(["disabled"])
 
-        # Lecture audio du verset : synthèse WAV (SAPI) puis lecteur avec
-        # curseur de position déplaçable. Hors Windows ou sans voix SAPI,
-        # le bouton reste désactivé et un message l'explique.
+        # Lecture audio du verset : synthèse WAV (phonikud-tts, locale)
+        # puis lecteur avec curseur de position déplaçable. Requiert le
+        # paquet phonikud-tts (synthèse, toute plateforme) et Windows pour
+        # la lecture MCI ; sinon le bouton reste désactivé.
         audio = ttk.Frame(tab)
         audio.pack(fill="x", padx=8, pady=(0, 8))
         self.btn_audio = ttk.Button(audio, text="🔊 Lire le verset",
@@ -1968,12 +1969,18 @@ class AnalyseurGUI:
         self.status.configure(text="Base BHSA chargée. Prêt.")
         for btn in (self.btn_verse, self.btn_word, self.btn_phrase, self.btn_binyanim):
             btn.state(["!disabled"])
-        if sys.platform == "win32":
+        try:
+            import soundfile  # noqa: F401
+            _audio_tts_ok = True
+        except ImportError:
+            _audio_tts_ok = False
+        if _audio_tts_ok:
             self.btn_audio.state(["!disabled"])
         else:
             self.btn_audio.state(["disabled"])
             self._set_audio_error(
-                "Lecture audio indisponible hors Windows.")
+                "Lecture audio : installez phonikud-tts (pip install "
+                "phonikud-tts) pour la synthèse.")
         self._populate_books()
 
     def _on_corpus_error(self, msg):
@@ -2428,7 +2435,7 @@ class AnalyseurGUI:
             if duration is None or duration <= 0:
                 self._work_queue.put(("audio_error",
                                       "Synthèse vocale indisponible "
-                                      "(voix SAPI requise)."))
+                                      "(modèles phonikud-tts)."))
                 return
             self._work_queue.put(("audio_ready", (path, duration)))
 
