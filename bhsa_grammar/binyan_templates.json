@@ -1109,26 +1109,6 @@
    "מֵP1ִֽיP2"
   ]
  },
- "ayin_vav|hit|impf|p3|m|sg": {
-  "count": 3,
-  "lexemes": 2,
-  "template": "יִתְP1ֹּונָֽP2",
-  "variants": [
-   "יִתְP1ֹּונָֽP2",
-   "יִתְP1ֹופֵP2",
-   "יִתְP1ֹונָֽP2"
-  ]
- },
- "ayin_vav|hit|ptca|m|sg": {
-  "count": 2,
-  "lexemes": 2,
-  "template": "מִתְP1ֹוP2ֵל",
-  "variants": [
-   "מִתְP1ֹוP2ֵל",
-   "מִתְP1ֹּוP2ֵר",
-   "מִתְP1ֹוP2ֵר"
-  ]
- },
  "ayin_vav|hof|impf|p3|f|sg": {
   "count": 2,
   "lexemes": 2,
@@ -1738,16 +1718,6 @@
    "יִּתְP1ֹP2ֵP2",
    "יִּתְP1ַּP2ֵּP2",
    "יִּתְP1ַP2ְמָP2ּ"
-  ]
- },
- "double|hit|ptca|m|sg": {
-  "count": 2,
-  "lexemes": 2,
-  "template": "מִP1ְתֹּוP2ֵP2",
-  "variants": [
-   "מִP1ְתֹּוP2ֵP2",
-   "מִתְP1ַּP2ֵּP2",
-   "P1ִתְמַP2ְמֵP2ַּ"
   ]
  },
  "double|hof|perf|p3|m|sg": {
@@ -3091,16 +3061,6 @@
    "מֹוP2ִיP3ַ"
   ]
  },
- "lamed_guttural|hit|infc|unknown|unknown": {
-  "count": 4,
-  "lexemes": 3,
-  "template": "הִP1ְתַּP2ֵּP3ַ",
-  "variants": [
-   "הִP1ְתַּP2ֵּP3ַ",
-   "הִתְוַP2ַּP3",
-   "הִP1ְתָּP2ֵP3ַ"
-  ]
- },
  "lamed_guttural|nif|impf|p3|f|sg": {
   "count": 4,
   "lexemes": 4,
@@ -4142,7 +4102,7 @@
   "variants": [
    "מִתְP1ַP2ֶּה",
    "מִתְוַP2ֶּה",
-   "מִP1ְתָּP2ֵה"
+   "מִתְP1ַּP2ֶּה"
   ]
  },
  "lamed_he|hof|perf|p3|m|sg": {
@@ -8121,30 +8081,12 @@
    "מַּP1ְP2ִּיP3"
   ]
  },
- "strong|hit|impf|p1|c|pl": {
-  "count": 1,
-  "lexemes": 1,
-  "template": "נִּP1ְטַP2ָּP3",
-  "variants": [
-   "נִּP1ְטַP2ָּP3"
-  ]
- },
- "strong|hit|impf|p2|f|sg": {
-  "count": 1,
-  "lexemes": 1,
-  "template": "תִּP1ְתַּP2ָּP3ִין",
-  "variants": [
-   "תִּP1ְתַּP2ָּP3ִין"
-  ]
- },
  "strong|hit|impf|p2|m|sg": {
-  "count": 3,
-  "lexemes": 2,
-  "template": "P1ִּתַּP2ָּֽP3",
+  "count": 1,
+  "lexemes": 1,
+  "template": "תִּתְP1ַּP2ָּֽP3",
   "variants": [
-   "P1ִּתַּP2ָּֽP3",
-   "תִּתְP1ַּP2ָּֽP3",
-   "תִּP1ֹּוP2ֵֽP3"
+   "תִּתְP1ַּP2ָּֽP3"
   ]
  },
  "strong|hit|impf|p3|m|pl": {
@@ -8164,15 +8106,7 @@
   "variants": [
    "יִתְP1ַּP2ֵּP3",
    "יִתְP1ַּP2ָּֽP3",
-   "יִP1ְתַּP2ֵּP3"
-  ]
- },
- "strong|hit|infa|unknown|unknown": {
-  "count": 1,
-  "lexemes": 1,
-  "template": "הִP1ְתֹּוP2ֵP3",
-  "variants": [
-   "הִP1ְתֹּוP2ֵP3"
+   "יִתְP1ָּP2ֵP3ְ"
   ]
  },
  "strong|hit|juss|p3|m|pl": {

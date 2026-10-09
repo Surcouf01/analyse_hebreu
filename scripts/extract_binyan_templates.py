@@ -222,6 +222,21 @@ def main():
             entry = templates[(cat, vs, vt, key)][tpl]
             entry["n"] += 1
             entry["lexes"].add(lex)
+        # Hitpael : toute forme \u00e0 1re radicale sifflante/dentale est
+        # m\u00e9tath\u00e9s\u00e9e (\u05d4\u05b4\u05e9\u05c1\u05ea\u05b7\u05bc\u05de\u05b5\u05bc\u05e8, \u05d4\u05b4\u05e1\u05b0\u05ea\u05b7\u05bc\u05d1\u05b5\u05bc\u05d1,
+        # \u05e0\u05b4\u05bc\u05e6\u05b0\u05d8\u05b7\u05d3\u05b8\u05bc\u05e7, \u05ea\u05b4\u05bc\u05ea\u05b7\u05bc\u05de\u05b8\u05bc\u05dd) : le \u05ea d\u00e9plac\u00e9 serait fig\u00e9 en
+        # litt\u00e9ral dans le gabarit (\u05e0\u05b4\u05bcP1\u05b0\u05d8\u05b7P2\u05b8\u05bcP3, P1\u05b4\u05bc\u05ea\u05b7\u05bcP2\u05b8\u05bcP3),
+        # faux pour toute autre racine. La m\u00e9tath\u00e8se est r\u00e9appliqu\u00e9e au
+        # rendu par _apply_hit_metathesis sur gabarit canonique. Les
+        # verbes creux suivent au hitpael le th\u00e8me hitpolel
+        # (redoublement de la 3e radicale), hors de port\u00e9e d'un gabarit
+        # P1/P2/P3.
+        if vs == "hit" and root and root[0] in (
+                "\u05E9", "\u05E9\u05C1", "\u05E9\u05C2", "\u05E1",
+                "\u05D6", "\u05E6", "\u05EA"):
+            return
+        if vs == "hit" and cat == "ayin_vav":
+            return
         tpl = _to_template(form, root)
         if tpl and "P1" in tpl:
             bump(tpl)
