@@ -49,17 +49,40 @@ VOICES = {
 }
 
 
+def _download_quiet(repo, filename):
+    """Télécharge un fichier du Hub en neutralisant l'avertissement stderr
+    « You are sending unauthenticated requests to the HF Hub » émis par le
+    backend de téléchargement (hf_xet) : le téléchargement anonyme est
+    normal ici (modèles publics, pas de compte requis), le message n'a
+    donc pas lieu d'apparaître dans la console de l'utilisateur."""
+    import contextlib
+    import os
+    import sys
+    from huggingface_hub import hf_hub_download
+
+    sys.stderr.flush()
+    saved = os.dup(2)
+    devnull = os.open(os.devnull, os.O_WRONLY)
+    try:
+        os.dup2(devnull, 2)
+        with contextlib.redirect_stderr(sys.stderr):
+            return hf_hub_download(repo, filename)
+    finally:
+        os.dup2(saved, 2)
+        os.close(devnull)
+        os.close(saved)
+
+
 def _get_models(voice="shaul"):
     """Charge (une seule fois par voix) le modèle Piper correspondant."""
     voice = voice if voice in VOICES else "shaul"
     if voice in _MODELS:
         return _MODELS[voice]
-    from huggingface_hub import hf_hub_download
     from phonikud_tts import Piper
 
-    tts_dir = hf_hub_download("thewh1teagle/phonikud-tts-checkpoints",
+    tts_dir = _download_quiet("thewh1teagle/phonikud-tts-checkpoints",
                               VOICES[voice]["model"])
-    cfg = hf_hub_download("thewh1teagle/phonikud-tts-checkpoints",
+    cfg = _download_quiet("thewh1teagle/phonikud-tts-checkpoints",
                           "model.config.json")
     _MODELS[voice] = Piper(tts_dir, cfg)
     return _MODELS[voice]
