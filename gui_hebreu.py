@@ -1618,6 +1618,61 @@ class ResultText(tk.Text):
                 text=f"{self._find_pos + 1} / {n}")
 
 
+class ScaleTimeTooltip:
+    """Infobulle dynamique pour le curseur de lecture : affiche le temps
+    correspondant à la position du pointeur (utile en pause et pendant le
+    glissement : « où vais-je reprendre ? »). L'infobulle suit le pointeur
+    et se met à jour en continu."""
+
+    def __init__(self, scale, value_to_text):
+        self._scale = scale
+        self._value_to_text = value_to_text
+        self._tip = None
+        scale.bind("<Enter>", self._show, add="+")
+        scale.bind("<Leave>", self._hide, add="+")
+        scale.bind("<B1-Motion>", self._motion, add="+")
+        scale.bind("<Motion>", self._motion, add="+")
+        scale.bind("<Button-1>", self._motion, add="+")
+
+    def _text_under_pointer(self):
+        try:
+            frac = (self._scale.pointerx() - self._scale.winfo_rootx()
+                    ) / max(1, self._scale.winfo_width())
+        except tk.TclError:
+            return ""
+        frac = min(1.0, max(0.0, frac))
+        lo = float(self._scale.cget("from_"))
+        hi = float(self._scale.cget("to"))
+        return self._value_to_text(lo + frac * (hi - lo))
+
+    def _show(self, event=None):
+        if self._tip is None or not self._tip.winfo_exists():
+            self._tip = tk.Toplevel(self._scale)
+            self._tip.wm_overrideredirect(True)
+            self._tip.attributes("-topmost", True)
+            self._label = tk.Label(
+                self._tip, text="", relief="solid", borderwidth=1,
+                font=("Segoe UI", 9), justify="left")
+            self._label.pack()
+        self._motion(event)
+
+    def _motion(self, event=None):
+        if self._tip is None or not self._tip.winfo_exists():
+            return
+        try:
+            x = self._scale.winfo_pointerx() + 12
+            y = self._scale.winfo_pointery() + 14
+        except tk.TclError:
+            return
+        self._label.configure(text=self._text_under_pointer())
+        self._tip.wm_geometry(f"+{x}+{y}")
+
+    def _hide(self, event=None):
+        if self._tip is not None and self._tip.winfo_exists():
+            self._tip.destroy()
+        self._tip = None
+
+
 class AnalyseurGUI:
     """Fenêtre principale de l'analyseur grammatical."""
 
@@ -1857,6 +1912,14 @@ class AnalyseurGUI:
         self.audio_scale.configure(length=280)
         self.audio_scale.pack(side="left", padx=(10, 0))
         self.audio_scale.state(["disabled"])
+        # Infobulle dynamique : temps à la position du pointeur (pause,
+        # glissement) — format identique au compteur temps écoulé/total.
+        self._audio_tooltip = ScaleTimeTooltip(
+            self.audio_scale,
+            lambda ms: (f"{int(ms) // 60000}"
+                        f":{int(ms) % 60000 // 1000:02d}"
+                        f" / {self._audio_duration_ms // 60000}:"
+                        f"{self._audio_duration_ms % 60000 // 1000:02d}"))
         self._audio_player = None
         self._audio_tts_ready = False
         self._audio_wav = None
