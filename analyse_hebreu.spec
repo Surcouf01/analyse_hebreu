@@ -95,6 +95,19 @@ bhsa_tf_dir = _locate_bhsa()
 # tout le paquet tf pour garantir la disponibilité des resources.
 tf_datas = hooks.collect_data_files("tf", include_py_files=False)
 
+# Lecture audio du verset (phonikud-tts) : le paquet embarque des données
+# ET des librairies natives sans lesquelles la synthèse échoue silencieuse-
+# ment dans l'exécutable figé (bouton lecture alors désactivé) :
+#   - phonikud : lexiques JSON (data/*.json) et paquet expander ;
+#   - espeakng_loader : libespeak-ng (.so sous Linux, .dll sous Windows) et
+#     le dossier espeak-ng-data, requis par piper_onnx via phonemizer ;
+#   - onnxruntime : ses librairies natives sont collectées par le hook
+#     contrib standard (hook-onnxruntime).
+tts_datas = hooks.collect_data_files("phonikud", include_py_files=True)
+tts_datas += hooks.collect_data_files("espeakng_loader", include_py_files=False)
+tts_datas += hooks.collect_data_files("language_tags", include_py_files=False)
+tts_binaries = hooks.collect_dynamic_libs("espeakng_loader")
+
 # Version du projet : lue depuis le fichier VERSION à la racine des sources.
 # Elle est embarquée dans le bundle (le GUI/CLI l'affichent via
 # bhsa_grammar.__version__) et sert de ressource de version Windows pour
@@ -123,7 +136,7 @@ datas = [
     ("data", "data"),
     ("icone.ico", "."),
     ("gui.properties", "."),
-] + tf_datas
+] + tf_datas + tts_datas
 # icone.png (source de l'icône) : embarqué seulement s'il est présent —
 # le spec n'échoue pas s'il a été retiré du dépôt (icone.ico reste la
 # référence pour la fenêtre, la barre des tâches et l'exe).
@@ -162,6 +175,14 @@ hiddenimports = [
     "phonikud",
     "phonikud_onnx",
     "piper_onnx",
+    "phonemizer",
+    "phonemizer.backend",
+    "phonemizer.backend.espeak",
+    "phonemizer.backend.espeak.wrapper",
+    "espeakng_loader",
+    "language_tags",
+    "language_tags.data",
+    "onnxruntime",
     "soundfile",
     "huggingface_hub",
 ]
@@ -169,12 +190,14 @@ hiddenimports = [
 a = Analysis(
     ["gui_hebreu.py" if target == "gui" else "analyse_hebreu.py"],
     pathex=[spec_dir],
-    binaries=[],
+    binaries=tts_binaries,
     datas=datas,
     hiddenimports=hiddenimports,
     hookspath=[],
     runtime_hooks=[],
-    excludes=["matplotlib", "numpy", "pandas", "scipy", "pytest"],
+    # numpy est requis par piper_onnx (phonikud-tts) : il ne doit pas être
+    # exclu, sinon la lecture audio du verset échoue dans l'exécutable figé.
+    excludes=["matplotlib", "pandas", "scipy", "pytest"],
     noarchive=False,
 )
 
@@ -286,6 +309,13 @@ if target == "gui":
     if os.path.isfile(readme_src):
         shutil.copy2(readme_src, os.path.join(dist_dir, "README.md"))
 
+    # requirements.txt : livré avec la release pour que l'utilisateur qui
+    # n'utilise pas l'exécutable puisse recréer l'environnement Python
+    # sans deviner les dépendances (pip install -r requirements.txt).
+    req_src = os.path.join(spec_dir, "requirements.txt")
+    if os.path.isfile(req_src):
+        shutil.copy2(req_src, os.path.join(dist_dir, "requirements.txt"))
+
     default_props = """# Propriétés d'affichage de l'interface graphique (gui_hebreu.py).
 # Format : clé = valeur, encodage UTF-8. Les tailles sont en points.
 # Ce fichier, placé à côté de l'exécutable, personnalise l'affichage sans
@@ -324,8 +354,8 @@ translation.es = true
         for fname in files:
             fpath = os.path.join(folder, fname)
             if onefile and fname not in (
-                "README.md", "gui.properties", "analyse_hebreu",
-                "analyse_hebreu.exe",
+                "README.md", "gui.properties", "requirements.txt",
+                "analyse_hebreu", "analyse_hebreu.exe",
             ):
                 continue
             arcname = os.path.join(
@@ -337,5 +367,5 @@ translation.es = true
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
         for fpath, arcname in entries:
             zf.write(fpath, arcname)
-    print("[spec] Post-build : README.md et gui.properties copiés ; zip -> %s"
+    print("[spec] Post-build : README.md, gui.properties et requirements.txt copiés ; zip -> %s"
           % zip_path)
