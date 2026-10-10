@@ -78,9 +78,24 @@ _TETRAGRAMMATON_FORMS = {
 
 def substitute_tetragrammaton(text):
     """Remplace le Tétragramme (et formes préfixées) par Adonaï pour la
-    lecture. Sans effet sur le reste du texte ; les occurrences sans
-    nikkud sont aussi couvertes (le nikkud du BHSA est retiré avant la
-    substitution via strip_teamim, qui conserve le nikkud)."""
+    lecture — ou par Elohim quand il est adjacent à אֲדֹנָי.
+
+    Deux lectures traditionnelles (qéré perpétuel) :
+    - Adonaï par défaut ;
+    - Elohim quand le Tétragramme précède ou suit immédiatement
+      אֲדֹנָי, pour éviter « Adonaï Adonaï » : Ps 109:21 (יְהוָה
+      אֲדֹנָי) se lit « Elohim Adonaï ». Dans l'ordre אֲדֹנָי + YHWH,
+      la massore signale Elohim par le hatef-segol (יֱהוִה, déjà couvert
+      par la table) ; dans l'ordre inverse, la graphie est identique à la
+      forme normale : la substitution contextuelle est nécessaire.
+    """
+    # Cas contextuel : YHWH (graphie normale) immédiatement suivi de
+    # אֲדֹנָי -> Elohim. Teamim/espaces déjà retirés ou réduits ; on
+    # tolère un espace ou un maqaf (־) entre les deux mots.
+    for yhwh in ("יְהֹוָה", "יְהוָה", "יהוה", "יהוָה"):
+        for sep in (" ", "־"):
+            text = text.replace(yhwh + sep + "אֲדֹנָי",
+                               "אֱלֹהִים" + sep + "אֲדֹנָי")
     for src, dst in _TETRAGRAMMATON_FORMS.items():
         text = text.replace(src, dst)
     return text
