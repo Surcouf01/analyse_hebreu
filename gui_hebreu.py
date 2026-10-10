@@ -1619,12 +1619,12 @@ class ResultText(tk.Text):
 
 
 class ScaleTimeTooltip:
-    """Infobulle dynamique pour le curseur de lecture : affiche le temps
-    correspondant à la position du pointeur (utile en pause et pendant le
-    glissement : « où vais-je reprendre ? »). Pilotée par polling (200 ms)
-    plutôt que par événements souris : la bulle apparaît dès que le
-    pointeur arrive sur le curseur, se met à jour même sans bouger, et
-    disparaît dès qu'il le quitte."""
+    """Infobulle du curseur de lecture : deux lignes — le temps à la
+    position survolée (« où reprendre si je clique ») et le temps de
+    lecture courant (mis à jour en continu, même souris immobile, pour
+    suivre le thumb pendant la lecture). Création/destruction par
+    événements Enter/Leave ; seul le texte est rafraîchi périodiquement
+    et uniquement tant que la bulle est visible."""
 
     _REFRESH_MS = 200
 
@@ -1633,67 +1633,71 @@ class ScaleTimeTooltip:
         self._value_to_text = value_to_text
         self._tip = None
         self._label = None
-        self._poll()
+        self._after_id = None
+        self._last_text = None
+        scale.bind("<Enter>", self._show, add="+")
+        scale.bind("<Leave>", self._hide, add="+")
 
-    def _poll(self):
-        inside = self._pointer_inside()
-        if inside and (self._tip is None or not self._tip.winfo_exists()):
-            self._create_tip()
-        if not inside and self._tip is not None and self._tip.winfo_exists():
-            self._destroy_tip()
-        if inside:
-            self._update_tip()
-        self._scale.after(self._REFRESH_MS, self._poll)
-
-    def _pointer_inside(self):
-        try:
-            x = self._scale.winfo_pointerx()
-            y = self._scale.winfo_pointery()
-            rx = self._scale.winfo_rootx()
-            ry = self._scale.winfo_rooty()
-            w = self._scale.winfo_width()
-            h = self._scale.winfo_height()
-        except tk.TclError:
-            return False
-        return rx <= x <= rx + w and ry <= y <= ry + h
-
-    def _text_under_pointer(self):
-        # Fraction horizontale du pointeur dans le curseur (0.0 – 1.0) ;
-        # la conversion en temps est faite par le callable fourni — les
-        # options from_/to d'un ttk.Scale ne sont pas lisibles par cget.
+    def _pointer_frac(self):
         try:
             frac = (self._scale.winfo_pointerx() - self._scale.winfo_rootx()
                     ) / max(1, self._scale.winfo_width())
         except tk.TclError:
-            return ""
-        frac = min(1.0, max(0.0, frac))
-        return self._value_to_text(frac)
+            return 0.0
+        return min(1.0, max(0.0, frac))
 
-    def _create_tip(self):
-        self._tip = tk.Toplevel(self._scale)
-        self._tip.wm_overrideredirect(True)
-        self._tip.attributes("-topmost", True)
-        self._label = tk.Label(
-            self._tip, text="", relief="solid", borderwidth=1,
-            font=("Segoe UI", 9), justify="left")
-        self._label.pack()
+    def _current_text(self):
+        return self._value_to_text(self._pointer_frac())
 
-    def _update_tip(self):
+    def _show(self, event=None):
+        if self._tip is None or not self._tip.winfo_exists():
+            self._tip = tk.Toplevel(self._scale)
+            self._tip.wm_overrideredirect(True)
+            self._label = tk.Label(
+                self._tip, text="", relief="solid", borderwidth=1,
+                font=("Segoe UI", 9), justify="left")
+            self._label.pack()
+        self._refresh()
+        self._schedule()
+
+    def _schedule(self):
+        if self._after_id is None:
+            self._after_id = self._scale.after(self._REFRESH_MS,
+                                               self._refresh_scheduled)
+
+    def _refresh_scheduled(self):
+        self._after_id = None
         if self._tip is None or not self._tip.winfo_exists():
             return
+        self._refresh()
+        self._schedule()
+
+    def _refresh(self):
+        if self._tip is None or not self._tip.winfo_exists():
+            return
+        text = self._current_text()
+        if text != self._last_text:
+            self._label.configure(text=text)
+            self._last_text = text
         try:
             x = self._scale.winfo_pointerx() + 12
             y = self._scale.winfo_pointery() + 14
+            self._tip.wm_geometry(f"+{x}+{y}")
         except tk.TclError:
-            return
-        self._label.configure(text=self._text_under_pointer())
-        self._tip.wm_geometry(f"+{x}+{y}")
+            pass
 
-    def _destroy_tip(self):
+    def _hide(self, event=None):
+        if self._after_id is not None:
+            try:
+                self._scale.after_cancel(self._after_id)
+            except tk.TclError:
+                pass
+            self._after_id = None
         if self._tip is not None and self._tip.winfo_exists():
             self._tip.destroy()
         self._tip = None
         self._label = None
+        self._last_text = None
 
 
 class AnalyseurGUI:
@@ -1937,13 +1941,21 @@ class AnalyseurGUI:
         self.audio_scale.state(["disabled"])
         # Infobulle dynamique : temps à la position du pointeur (pause,
         # glissement) — format identique au compteur temps écoulé/total.
-        self._audio_tooltip = ScaleTimeTooltip(
-            self.audio_scale,
-            lambda frac: (lambda ms: (
-                f"{int(ms) // 60000}:{int(ms) % 60000 // 1000:02d}"
-                f" / {self._audio_duration_ms // 60000}:"
-                f"{self._audio_duration_ms % 60000 // 1000:02d}"))(
-                frac * self._audio_duration_ms))
+        def _audio_tooltip_text(frac):
+            def fmt(ms):
+                return f"{int(ms) // 60000}:{int(ms) % 60000 // 1000:02d}"
+            hover = fmt(frac * self._audio_duration_ms)
+            total = fmt(self._audio_duration_ms)
+            player = self._audio_player
+            if player is not None and self._audio_duration_ms:
+                # Temps de lecture courant : suit le thumb même souris
+                # immobile (la bulle est rafraîchie toutes les 200 ms).
+                return (f"Position : {hover} / {total}\n"
+                        f"Lecture  : {fmt(player.position_ms())} / {total}")
+            return f"Position : {hover} / {total}"
+
+        self._audio_tooltip = ScaleTimeTooltip(self.audio_scale,
+                                               _audio_tooltip_text)
         self._audio_player = None
         self._audio_tts_ready = False
         self._audio_wav = None
