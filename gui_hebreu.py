@@ -2415,8 +2415,23 @@ class AnalyseurGUI:
     def _on_audio_button(self):
         if self._audio_player is not None:
             # Bouton unique, machine à états : ⏸ pendant la lecture (clic
-            # = pause), ▶ en pause (clic = reprise), 🔊 au repos (clic =
-            # lecture). À la fin du verset, le polling remet 🔊.
+            # = pause), ▶ en pause ou en fin de lecture (clic = (re)lecture
+            # depuis la position du curseur), 🔊 au repos sans WAV.
+            player = self._audio_player
+            if not player.is_playing() and not player.is_paused():
+                # Fin de lecture : relance à la position du curseur ; si le
+                # curseur est en fin de verset, on repart du début.
+                pos = player.position_ms()
+                if self._audio_duration_ms - pos < 50:
+                    pos = 0
+                    self.audio_pos.set(0)
+                try:
+                    player.play(pos)
+                    self.btn_audio.configure(text="⏸")
+                except VersePlayerError:
+                    pass
+                self._poll_audio()
+                return
             self._toggle_audio_pause()
             return
         if self.corpus_var.get() == CORPUS_MISHNA:
@@ -2581,13 +2596,17 @@ class AnalyseurGUI:
             player = self._audio_player
             if player is None:
                 return
+            if not player.is_playing() and not player.is_paused():
+                # Fin du verset : le lecteur reste ouvert et le curseur
+                # actif — ▶ relance la lecture à la position du curseur.
+                # La position MCI peut être retombée à 0 : on ne touche
+                # pas au curseur, il marque l'endroit atteint.
+                self.btn_audio.configure(text="▶")
+                return
             if not self._audio_seeking:
                 pos = player.position_ms()
                 self.audio_pos.set(pos)
-            self._update_audio_time(player.position_ms())
-            if not player.is_playing() and not player.is_paused():
-                self._stop_audio()
-                return
+                self._update_audio_time(pos)
             self.root.after(200, tick)
 
         self.root.after(200, tick)
