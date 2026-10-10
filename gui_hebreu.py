@@ -1621,10 +1621,10 @@ class ResultText(tk.Text):
 class ScaleTimeTooltip:
     """Infobulle dynamique pour le curseur de lecture : affiche le temps
     correspondant à la position du pointeur (utile en pause et pendant le
-    glissement : « où vais-je reprendre ? »). L'infobulle suit le pointeur
-    et se rafraîchit aussi périodiquement (200 ms) tant qu'il survole le
-    curseur — même sans bouger — pour rester exacte quand la durée ou la
-    position change sous elle."""
+    glissement : « où vais-je reprendre ? »). Pilotée par polling (200 ms)
+    plutôt que par événements souris : la bulle apparaît dès que le
+    pointeur arrive sur le curseur, se met à jour même sans bouger, et
+    disparaît dès qu'il le quitte."""
 
     _REFRESH_MS = 200
 
@@ -1632,55 +1632,18 @@ class ScaleTimeTooltip:
         self._scale = scale
         self._value_to_text = value_to_text
         self._tip = None
-        self._after_id = None
-        scale.bind("<Enter>", self._show, add="+")
-        scale.bind("<Leave>", self._hide, add="+")
-        scale.bind("<B1-Motion>", self._motion, add="+")
-        scale.bind("<Motion>", self._motion, add="+")
-        scale.bind("<Button-1>", self._motion, add="+")
+        self._label = None
+        self._poll()
 
-    def _text_under_pointer(self):
-        # Fraction horizontale du pointeur dans le curseur (0.0 – 1.0) ;
-        # la conversion en temps est faite par le callable fourni — les
-        # options from_/to d'un ttk.Scale ne sont pas lisibles par cget.
-        try:
-            frac = (self._scale.winfo_pointerx() - self._scale.winfo_rootx()
-                    ) / max(1, self._scale.winfo_width())
-        except tk.TclError:
-            return ""
-        frac = min(1.0, max(0.0, frac))
-        return self._value_to_text(frac)
-
-    def _show(self, event=None):
-        if self._tip is None or not self._tip.winfo_exists():
-            self._tip = tk.Toplevel(self._scale)
-            self._tip.wm_overrideredirect(True)
-            self._tip.attributes("-topmost", True)
-            self._label = tk.Label(
-                self._tip, text="", relief="solid", borderwidth=1,
-                font=("Segoe UI", 9), justify="left")
-            self._label.pack()
-        self._motion(event)
-        self._schedule_refresh()
-
-    def _schedule_refresh(self):
-        # Rafraîchissement périodique tant que le pointeur survole le
-        # curseur : la bulle reste exacte même immobile (durée ou position
-        # modifiées pendant le survol, glissement relâché, etc.).
-        if self._after_id is not None:
-            return
-        self._after_id = self._scale.after(self._REFRESH_MS, self._refresh)
-
-    def _refresh(self):
-        self._after_id = None
-        if self._tip is None or not self._tip.winfo_exists():
-            return
-        if not self._pointer_inside():
-            # Le pointeur a quitté sans <Leave> (rare) : fermer proprement.
-            self._hide()
-            return
-        self._motion()
-        self._schedule_refresh()
+    def _poll(self):
+        inside = self._pointer_inside()
+        if inside and (self._tip is None or not self._tip.winfo_exists()):
+            self._create_tip()
+        if not inside and self._tip is not None and self._tip.winfo_exists():
+            self._destroy_tip()
+        if inside:
+            self._update_tip()
+        self._scale.after(self._REFRESH_MS, self._poll)
 
     def _pointer_inside(self):
         try:
@@ -1694,7 +1657,28 @@ class ScaleTimeTooltip:
             return False
         return rx <= x <= rx + w and ry <= y <= ry + h
 
-    def _motion(self, event=None):
+    def _text_under_pointer(self):
+        # Fraction horizontale du pointeur dans le curseur (0.0 – 1.0) ;
+        # la conversion en temps est faite par le callable fourni — les
+        # options from_/to d'un ttk.Scale ne sont pas lisibles par cget.
+        try:
+            frac = (self._scale.winfo_pointerx() - self._scale.winfo_rootx()
+                    ) / max(1, self._scale.winfo_width())
+        except tk.TclError:
+            return ""
+        frac = min(1.0, max(0.0, frac))
+        return self._value_to_text(frac)
+
+    def _create_tip(self):
+        self._tip = tk.Toplevel(self._scale)
+        self._tip.wm_overrideredirect(True)
+        self._tip.attributes("-topmost", True)
+        self._label = tk.Label(
+            self._tip, text="", relief="solid", borderwidth=1,
+            font=("Segoe UI", 9), justify="left")
+        self._label.pack()
+
+    def _update_tip(self):
         if self._tip is None or not self._tip.winfo_exists():
             return
         try:
@@ -1705,13 +1689,11 @@ class ScaleTimeTooltip:
         self._label.configure(text=self._text_under_pointer())
         self._tip.wm_geometry(f"+{x}+{y}")
 
-    def _hide(self, event=None):
-        if self._after_id is not None:
-            self._scale.after_cancel(self._after_id)
-            self._after_id = None
+    def _destroy_tip(self):
         if self._tip is not None and self._tip.winfo_exists():
             self._tip.destroy()
         self._tip = None
+        self._label = None
 
 
 class AnalyseurGUI:
