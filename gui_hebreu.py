@@ -194,6 +194,9 @@ def _save_properties(root, updates):
         if any(k.startswith("translation.") for k in missing):
             lines.append("# Traductions affichées par défaut dans l'onglet "
                          "Verset (true/false).\n")
+        if "audio.speed" in missing:
+            lines.append("# Vitesse de lecture du verset (0.5 à 2.0 ; "
+                         "1.0 = normale).\n")
         for k, v in missing.items():
             lines.append(f"{k} = {v}\n")
     try:
@@ -1807,7 +1810,13 @@ class AnalyseurGUI:
         self.audio_time = ttk.Label(audio, text="0:00 / 0:00")
         self.audio_time.pack(side="left", padx=(10, 0))
         ttk.Label(audio, text="Vitesse :").pack(side="left", padx=(12, 2))
-        self.audio_speed = tk.StringVar(value="1.0")
+        _saved_speed = _PROPS.get("audio.speed", "1.0").strip()
+        try:
+            if not 0.5 <= float(_saved_speed) <= 2.0:
+                raise ValueError
+        except ValueError:
+            _saved_speed = "1.0"
+        self.audio_speed = tk.StringVar(value=_saved_speed)
         self.audio_speed_spin = ttk.Spinbox(
             audio, textvariable=self.audio_speed, width=4,
             from_=0.5, to=2.0, increment=0.1)
@@ -2869,6 +2878,12 @@ def _save_all_preferences(root):
     if gui is not None:
         for lang, var in gui.verse_trans.items():
             updates[f"translation.{lang}"] = "true" if var.get() else "false"
+        try:
+            speed = float(gui.audio_speed.get())
+            if 0.5 <= speed <= 2.0:
+                updates["audio.speed"] = f"{speed:g}"
+        except ValueError:
+            pass
     if updates:
         _save_properties(root, updates)
 
