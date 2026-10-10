@@ -2419,6 +2419,9 @@ class AnalyseurGUI:
         reference = f"{fr} {chap}:{verse}"
         self.btn_audio.state(["disabled"])
         self.audio_time.configure(text=f"Synthèse : {reference}…")
+        # Sablier comme pour le chargement de la base : le premier usage
+        # peut télécharger ~370 Mo de modèles phonikud-tts.
+        self.root.configure(cursor="watch")
 
         def worker():
             from bhsa_grammar.reference import find_verse
@@ -2455,6 +2458,7 @@ class AnalyseurGUI:
         self._audio_duration_ms = max(1, duration_ms or length)
         self.btn_audio.configure(text="⏹ Stop")
         self.btn_audio.state(["!disabled"])
+        self.root.configure(cursor="")
         self.audio_pause.state(["!disabled"])
         self.audio_scale.state(["!disabled"])
         self.audio_scale.configure(to=self._audio_duration_ms)
@@ -2470,6 +2474,7 @@ class AnalyseurGUI:
     def _on_audio_error(self, msg):
         self._set_audio_error(msg)
         self.btn_audio.state(["!disabled"])
+        self.root.configure(cursor="")
 
     def _toggle_audio_pause(self):
         if self._audio_player is None:
@@ -2525,6 +2530,7 @@ class AnalyseurGUI:
         player = self._audio_player
         self._audio_player = None
         self._audio_wav = None
+        self.root.configure(cursor="")
         if player is not None:
             player.stop()
             player.close()
