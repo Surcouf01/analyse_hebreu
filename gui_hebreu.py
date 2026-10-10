@@ -32,7 +32,6 @@ import unicodedata
 import tkinter as tk
 from tkinter import ttk, messagebox, font as tkfont
 import tempfile
-import win32gui
 from PIL import Image
 from PIL.ImageWin import Dib
 
@@ -3151,9 +3150,10 @@ def _set_app_user_model_id():
 import os
 import tempfile
 
-import win32con
-import win32gui
-import win32ui
+if sys.platform == "win32":
+    import win32con
+    import win32gui
+    import win32ui
 from PIL import Image
 
 
