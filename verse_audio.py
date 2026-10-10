@@ -38,17 +38,41 @@ def strip_teamim(text):
 # Substitution faite uniquement pour la synthèse vocale (l'affichage et
 # l'analyse grammaticale gardent le texte biblique intact).
 _TETRAGRAMMATON_FORMS = {
-    # Tétragramme simple (avec ou sans nikkud).
+    # Tétragramme simple — le texte BHSA (Codex de Leningrad) écrit la
+    # forme Qéré Perpétuel SANS holam (יְהוָה) ; la forme avec holam
+    # (יְהֹוָה) figure dans certaines éditions. Les deux sont couvertes,
+    # avec ou sans nikkud.
     "יְהֹוָה": "אֲדֹנָי",
+    "יְהוָה": "אֲדֹנָי",
     "יהוה": "אֲדֹנָי",
+    "יהוָה": "אֲדֹנָי",
+    # Variantes avec hatef-patach sous le yod (lecture Elohim).
+    "יֱהֹוִה": "אֱלֹהִים",
+    "יֱהוִה": "אֱלֹהִים",
     # Formes préfixées : le patach du préfixe est réporté sur l'aleph
-    # (qéré perpétuel) — לַיהוָה -> לַאדֹנָי (« la-Adonaï »).
+    # (qéré perpétuel) — לַיהוָה -> לַאדֹנָי (« la-Adonaï »). La BHSA
+    # écrit aussi la forme contractée avec hé (לַהוָה).
+    "לַיהֹוָה": "לַאדֹנָי",
     "לַיהוָה": "לַאדֹנָי",
+    "לַהוָה": "לַאדֹנָי",
     "לַיהוה": "לַאדֹנָי",
+    "לַהוה": "לַאדֹנָי",
+    "בַּיהֹוָה": "בַּאדֹנָי",
     "בַּיהוָה": "בַּאדֹנָי",
+    "בַּהוָה": "בַּאדֹנָי",
+    "בַּיהוה": "בַּאדֹנָי",
+    "כַּיהֹוָה": "כַּאדֹנָי",
     "כַּיהוָה": "כַּאדֹנָי",
+    "כַּהוָה": "כַּאדֹנָי",
+    "כַּיהוה": "כַּאדֹנָי",
+    "מַיהֹוָה": "מַאדֹנָי",
     "מַיהוָה": "מַאדֹנָי",
+    "מַהוָה": "מַאדֹנָי",
+    "מַיהוה": "מַאדֹנָי",
+    "וַיהֹוָה": "וַאדֹנָי",
     "וַיהוָה": "וַאדֹנָי",
+    "וַהוָה": "וַאדֹנָי",
+    "וַיהוה": "וַאדֹנָי",
 }
 
 
