@@ -1636,7 +1636,7 @@ class ScaleTimeTooltip:
 
     def _text_under_pointer(self):
         try:
-            frac = (self._scale.pointerx() - self._scale.winfo_rootx()
+            frac = (self._scale.winfo_pointerx() - self._scale.winfo_rootx()
                     ) / max(1, self._scale.winfo_width())
         except tk.TclError:
             return ""
