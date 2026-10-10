@@ -83,6 +83,7 @@ from verse_audio import (
     VersePlayer,
     VersePlayerError,
     synthesize_wav,
+    VOICES,
 )
 
 
@@ -197,6 +198,8 @@ def _save_properties(root, updates):
         if "audio.speed" in missing:
             lines.append("# Vitesse de lecture du verset (0.5 à 2.0 ; "
                          "1.0 = normale).\n")
+        if "audio.voice" in missing:
+            lines.append("# Voix de lecture du verset (shaul ou michael).\n")
         for k, v in missing.items():
             lines.append(f"{k} = {v}\n")
     try:
@@ -1809,6 +1812,19 @@ class AnalyseurGUI:
         ttk.Label(audio, text="Lire le verset").pack(side="left", padx=(2, 6))
         self.audio_time = ttk.Label(audio, text="0:00 / 0:00")
         self.audio_time.pack(side="left", padx=(10, 0))
+        ttk.Label(audio, text="Voix :").pack(side="left", padx=(12, 2))
+        _saved_voice = _PROPS.get("audio.voice", "shaul").strip()
+        if _saved_voice not in VOICES:
+            _saved_voice = "shaul"
+        self.audio_voice = tk.StringVar(value=_saved_voice)
+        self.audio_voice_combo = ttk.Combobox(
+            audio, textvariable=self.audio_voice, state="readonly", width=14,
+            values=[v["label"] for v in VOICES.values()])
+        self.audio_voice_combo.pack(side="left")
+        self.audio_voice_combo.state(["disabled"])
+        self._voice_labels = {v["label"]: k for k, v in VOICES.items()}
+        self.audio_voice_combo.bind("<<ComboboxSelected>>",
+                                    self._on_audio_voice_change)
         ttk.Label(audio, text="Vitesse :").pack(side="left", padx=(12, 2))
         _saved_speed = _PROPS.get("audio.speed", "1.0").strip()
         try:
@@ -1996,6 +2012,7 @@ class AnalyseurGUI:
         if _audio_tts_ok:
             self.btn_audio.state(["!disabled"])
             self.audio_speed_spin.state(["!disabled"])
+            self.audio_voice_combo.state(["!disabled"])
         else:
             self.btn_audio.state(["disabled"])
             self._set_audio_error(
@@ -2462,6 +2479,7 @@ class AnalyseurGUI:
                                    "Vitesse invalide : entrez une valeur "
                                    "entre 0.5 et 2.0.")
             return
+        voice = self._voice_labels.get(self.audio_voice.get(), "shaul")
         reference = f"{fr} {chap}:{verse}"
         self.btn_audio.state(["disabled"])
         self.audio_time.configure(text=f"Synthèse : {reference}…")
@@ -2481,7 +2499,7 @@ class AnalyseurGUI:
             self._audio_last_text = hebrew
             path = os.path.join(tempfile.gettempdir(),
                                 "analyse_hebreu_verse.wav")
-            duration = synthesize_wav(hebrew, path, speed=speed)
+            duration = synthesize_wav(hebrew, path, speed=speed, voice=voice)
             if duration is None or duration <= 0:
                 self._work_queue.put(("audio_error",
                                       "Synthèse vocale indisponible "
@@ -2527,11 +2545,9 @@ class AnalyseurGUI:
         self.btn_audio.state(["!disabled"])
         self.root.configure(cursor="")
 
-    def _on_audio_speed_change(self, event=None):
-        """Changement de vitesse pendant la lecture : resynthétise le verset
-        courant à la nouvelle vitesse et reprend la lecture à la position
-        proportionnelle (les modèles étant en cache, la resynthèse est
-        quasi instantanée)."""
+    def _resynthesize_current(self, reason):
+        """Resynthétise le verset courant (vitesse ou voix changée en cours
+        de lecture) et reprend la lecture à la position proportionnelle."""
         if self._audio_player is None or self._audio_last_text is None:
             return
         try:
@@ -2540,19 +2556,20 @@ class AnalyseurGUI:
                 return
         except ValueError:
             return
+        voice = self._voice_labels.get(self.audio_voice.get(), "shaul")
         text = self._audio_last_text
         was_paused = self._audio_player.is_paused()
         pos = self._audio_player.position_ms()
         old_dur = self._audio_duration_ms or 1
         self._stop_audio()
         self.btn_audio.state(["disabled"])
-        self.audio_time.configure(text="Resynthèse à la nouvelle vitesse…")
+        self.audio_time.configure(text=reason)
         self.root.configure(cursor="watch")
 
         def worker():
             path = os.path.join(tempfile.gettempdir(),
                                 "analyse_hebreu_verse.wav")
-            duration = synthesize_wav(text, path, speed=speed)
+            duration = synthesize_wav(text, path, speed=speed, voice=voice)
             if duration is None or duration <= 0:
                 self._work_queue.put(("audio_error",
                                       "Synthèse vocale indisponible "
@@ -2564,6 +2581,12 @@ class AnalyseurGUI:
                                  int(pos * ratio), was_paused)))
 
         threading.Thread(target=worker, daemon=True).start()
+
+    def _on_audio_speed_change(self, event=None):
+        self._resynthesize_current("Resynthèse à la nouvelle vitesse…")
+
+    def _on_audio_voice_change(self, event=None):
+        self._resynthesize_current("Resynthèse avec la nouvelle voix…")
 
     def _toggle_audio_pause(self):
         if self._audio_player is None:
@@ -2903,6 +2926,9 @@ def _save_all_preferences(root):
                 updates["audio.speed"] = f"{speed:g}"
         except ValueError:
             pass
+        voice = getattr(gui, "audio_voice", None)
+        if voice is not None and voice.get() in gui._voice_labels.values():
+            updates["audio.voice"] = voice.get()
     if updates:
         _save_properties(root, updates)
 

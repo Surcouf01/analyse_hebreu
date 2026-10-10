@@ -41,24 +41,31 @@ def wave_duration_ms(path):
 
 _MODELS = {}
 
+# Voix disponibles dans le dépôt de checkpoints (Piper ONNX, mono-locuteur).
+# « grave » = f0 médian ≈ 111 Hz, « shaul » ≈ 133 Hz (mesuré sur Gen 1:1).
+VOICES = {
+    "shaul": {"label": "Shaul", "model": "shaul.onnx"},
+    "michael": {"label": "Michael (grave)", "model": "michael.onnx"},
+}
 
-def _get_models():
-    """Charge (une seule fois) Phonikud (diacritisation) et Piper (voix)."""
-    if "piper" in _MODELS:
-        return _MODELS["piper"]
-    import os
+
+def _get_models(voice="shaul"):
+    """Charge (une seule fois par voix) le modèle Piper correspondant."""
+    voice = voice if voice in VOICES else "shaul"
+    if voice in _MODELS:
+        return _MODELS[voice]
     from huggingface_hub import hf_hub_download
     from phonikud_tts import Piper
 
     tts_dir = hf_hub_download("thewh1teagle/phonikud-tts-checkpoints",
-                              "shaul.onnx")
+                              VOICES[voice]["model"])
     cfg = hf_hub_download("thewh1teagle/phonikud-tts-checkpoints",
                           "model.config.json")
-    _MODELS["piper"] = Piper(tts_dir, cfg)
-    return _MODELS["piper"]
+    _MODELS[voice] = Piper(tts_dir, cfg)
+    return _MODELS[voice]
 
 
-def synthesize_wav(text, path, speed=1.0):
+def synthesize_wav(text, path, speed=1.0, voice="shaul"):
     """Synthétise ``text`` en WAV dans ``path`` ; renvoie la durée en ms.
 
     ``speed`` (> 1 = plus vite) ajuste le ``length_scale`` de Piper : la
@@ -72,7 +79,7 @@ def synthesize_wav(text, path, speed=1.0):
     from phonikud import phonemize
 
     try:
-        piper = _get_models()
+        piper = _get_models(voice)
         phonemes = phonemize(strip_teamim(text))
         length_scale = piper.config["inference"]["length_scale"]
         if speed and speed > 0 and speed != 1.0:

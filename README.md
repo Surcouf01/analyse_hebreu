@@ -228,9 +228,12 @@ L'interface comporte quatre onglets :
   (synthèse vocale hébraïque **locale**, ONNX Runtime ; `pip install
   phonikud-tts`) : les *teamim* sont retirés, le *nikkud* — qui porte la
   vocalisation massorétique — est conservé, ce qui donne une prononciation
-  biblique précise. Les modèles (~370 Mo, voix « shaul ») sont téléchargés
-  automatiquement au premier usage dans le cache Hugging Face, puis la
-  synthèse est quasi instantanée. La **durée exacte** du WAV est déduite de
+  biblique précise. Deux voix au choix — **Shaul** et **Michael** (plus
+  grave) — sélectionnables dans l'onglet (le choix est mémorisé dans
+  `gui.properties` avec la vitesse). Les modèles (~370 Mo par voix) sont
+  téléchargés automatiquement au premier usage de chaque voix dans le
+  cache Hugging Face, puis la synthèse est quasi instantanée. La **durée
+  exacte** du WAV est déduite de
   son en-tête, et un lecteur offre un **curseur de position déplaçable** :
   glisser le curseur déplace la lecture, les boutons Pause/Reprendre et
   Stop contrôlent la lecture, et le temps écoulé/total est affiché (lecture
