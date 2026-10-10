@@ -1622,12 +1622,17 @@ class ScaleTimeTooltip:
     """Infobulle dynamique pour le curseur de lecture : affiche le temps
     correspondant à la position du pointeur (utile en pause et pendant le
     glissement : « où vais-je reprendre ? »). L'infobulle suit le pointeur
-    et se met à jour en continu."""
+    et se rafraîchit aussi périodiquement (200 ms) tant qu'il survole le
+    curseur — même sans bouger — pour rester exacte quand la durée ou la
+    position change sous elle."""
+
+    _REFRESH_MS = 200
 
     def __init__(self, scale, value_to_text):
         self._scale = scale
         self._value_to_text = value_to_text
         self._tip = None
+        self._after_id = None
         scale.bind("<Enter>", self._show, add="+")
         scale.bind("<Leave>", self._hide, add="+")
         scale.bind("<B1-Motion>", self._motion, add="+")
@@ -1656,6 +1661,38 @@ class ScaleTimeTooltip:
                 font=("Segoe UI", 9), justify="left")
             self._label.pack()
         self._motion(event)
+        self._schedule_refresh()
+
+    def _schedule_refresh(self):
+        # Rafraîchissement périodique tant que le pointeur survole le
+        # curseur : la bulle reste exacte même immobile (durée ou position
+        # modifiées pendant le survol, glissement relâché, etc.).
+        if self._after_id is not None:
+            return
+        self._after_id = self._scale.after(self._REFRESH_MS, self._refresh)
+
+    def _refresh(self):
+        self._after_id = None
+        if self._tip is None or not self._tip.winfo_exists():
+            return
+        if not self._pointer_inside():
+            # Le pointeur a quitté sans <Leave> (rare) : fermer proprement.
+            self._hide()
+            return
+        self._motion()
+        self._schedule_refresh()
+
+    def _pointer_inside(self):
+        try:
+            x = self._scale.winfo_pointerx()
+            y = self._scale.winfo_pointery()
+            rx = self._scale.winfo_rootx()
+            ry = self._scale.winfo_rooty()
+            w = self._scale.winfo_width()
+            h = self._scale.winfo_height()
+        except tk.TclError:
+            return False
+        return rx <= x <= rx + w and ry <= y <= ry + h
 
     def _motion(self, event=None):
         if self._tip is None or not self._tip.winfo_exists():
@@ -1669,6 +1706,9 @@ class ScaleTimeTooltip:
         self._tip.wm_geometry(f"+{x}+{y}")
 
     def _hide(self, event=None):
+        if self._after_id is not None:
+            self._scale.after_cancel(self._after_id)
+            self._after_id = None
         if self._tip is not None and self._tip.winfo_exists():
             self._tip.destroy()
         self._tip = None
