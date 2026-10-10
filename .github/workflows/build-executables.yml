@@ -139,7 +139,8 @@ jobs:
               Contenu du zip analyse_hebreu-$MODE-<plateforme>.zip (exécutable GUI complet) :
               - analyse_hebreu(.exe) + ressources embarquées (base BHSA, traductions) ;
               - README.md ;
-              - gui.properties (valeurs par défaut, personnalisable).
+              - gui.properties (valeurs par défaut, personnalisable) ;
+              - requirements.txt (dépendances Python, pour usage sans exécutable).
 
               Autres fichiers : archive complète du build (GUI + CLI) pour chaque plateforme."
           fi
