@@ -1806,6 +1806,16 @@ class AnalyseurGUI:
         self.audio_pause.state(["disabled"])
         self.audio_time = ttk.Label(audio, text="0:00 / 0:00")
         self.audio_time.pack(side="left", padx=(10, 0))
+        ttk.Label(audio, text="Vitesse :").pack(side="left", padx=(12, 2))
+        self.audio_speed = tk.StringVar(value="1.0")
+        self.audio_speed_spin = ttk.Spinbox(
+            audio, textvariable=self.audio_speed, width=4,
+            from_=0.5, to=2.0, increment=0.1)
+        self.audio_speed_spin.pack(side="left")
+        self.audio_speed_spin.state(["disabled"])
+        self.audio_speed_spin.bind("<Return>", self._on_audio_speed_change)
+        self.audio_speed_spin.bind("<FocusOut>", self._on_audio_speed_change)
+        self._audio_last_text = None
         self.audio_pos = tk.IntVar(value=0)
         self.audio_scale = ttk.Scale(audio, from_=0, to=1000,
                                      variable=self.audio_pos,
@@ -1976,6 +1986,7 @@ class AnalyseurGUI:
             _audio_tts_ok = False
         if _audio_tts_ok:
             self.btn_audio.state(["!disabled"])
+            self.audio_speed_spin.state(["!disabled"])
         else:
             self.btn_audio.state(["disabled"])
             self._set_audio_error(
@@ -2416,6 +2427,15 @@ class AnalyseurGUI:
             return
         if self.api is None:
             return
+        try:
+            speed = float(self.audio_speed.get())
+            if not 0.5 <= speed <= 2.0:
+                raise ValueError
+        except ValueError:
+            messagebox.showwarning("Vitesse",
+                                   "Vitesse invalide : entrez une valeur "
+                                   "entre 0.5 et 2.0.")
+            return
         reference = f"{fr} {chap}:{verse}"
         self.btn_audio.state(["disabled"])
         self.audio_time.configure(text=f"Synthèse : {reference}…")
@@ -2432,9 +2452,10 @@ class AnalyseurGUI:
                                       "Verset introuvable."))
                 return
             hebrew = T.text(node)
+            self._audio_last_text = hebrew
             path = os.path.join(tempfile.gettempdir(),
                                 "analyse_hebreu_verse.wav")
-            duration = synthesize_wav(hebrew, path)
+            duration = synthesize_wav(hebrew, path, speed=speed)
             if duration is None or duration <= 0:
                 self._work_queue.put(("audio_error",
                                       "Synthèse vocale indisponible "
@@ -2444,7 +2465,8 @@ class AnalyseurGUI:
 
         threading.Thread(target=worker, daemon=True).start()
 
-    def _on_audio_ready(self, path, duration_ms):
+    def _on_audio_ready(self, path, duration_ms, resume_ms=None,
+                         start_paused=False):
         player = VersePlayer()
         try:
             length = player.open(path)
@@ -2462,19 +2484,61 @@ class AnalyseurGUI:
         self.audio_pause.state(["!disabled"])
         self.audio_scale.state(["!disabled"])
         self.audio_scale.configure(to=self._audio_duration_ms)
-        self.audio_pos.set(0)
+        resume_ms = int(resume_ms) if resume_ms else 0
+        self.audio_pos.set(min(resume_ms, self._audio_duration_ms))
         try:
-            player.play(0)
+            player.play(resume_ms)
         except VersePlayerError as exc:
             self._set_audio_error(str(exc))
             self._stop_audio()
             return
+        if start_paused:
+            player.pause()
+            self.audio_pause.configure(text="▶ Reprendre")
         self._poll_audio()
 
     def _on_audio_error(self, msg):
         self._set_audio_error(msg)
         self.btn_audio.state(["!disabled"])
         self.root.configure(cursor="")
+
+    def _on_audio_speed_change(self, event=None):
+        """Changement de vitesse pendant la lecture : resynthétise le verset
+        courant à la nouvelle vitesse et reprend la lecture à la position
+        proportionnelle (les modèles étant en cache, la resynthèse est
+        quasi instantanée)."""
+        if self._audio_player is None or self._audio_last_text is None:
+            return
+        try:
+            speed = float(self.audio_speed.get())
+            if not 0.5 <= speed <= 2.0:
+                return
+        except ValueError:
+            return
+        text = self._audio_last_text
+        was_paused = self._audio_player.is_paused()
+        pos = self._audio_player.position_ms()
+        old_dur = self._audio_duration_ms or 1
+        self._stop_audio()
+        self.btn_audio.state(["disabled"])
+        self.audio_time.configure(text="Resynthèse à la nouvelle vitesse…")
+        self.root.configure(cursor="watch")
+
+        def worker():
+            path = os.path.join(tempfile.gettempdir(),
+                                "analyse_hebreu_verse.wav")
+            duration = synthesize_wav(text, path, speed=speed)
+            if duration is None or duration <= 0:
+                self._work_queue.put(("audio_error",
+                                      "Synthèse vocale indisponible "
+                                      "(modèles phonikud-tts)."))
+                return
+            ratio = duration / float(old_dur)
+            self._work_queue.put(
+                ("audio_ready", (path, duration,
+                                 int(pos * ratio), was_paused)))
+
+        threading.Thread(target=worker, daemon=True).start()
 
     def _toggle_audio_pause(self):
         if self._audio_player is None:

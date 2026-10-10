@@ -58,22 +58,27 @@ def _get_models():
     return _MODELS["piper"]
 
 
-def synthesize_wav(text, path):
+def synthesize_wav(text, path, speed=1.0):
     """Synthétise ``text`` en WAV dans ``path`` ; renvoie la durée en ms.
 
-    Le texte du verset biblique étant déjà voyellé, il est passé directement
-    au phonétiseur phonikud (le modèle de diacritisation ne sert que pour du
-    texte non voyellé). Renvoie ``None`` en cas d'échec (dépendances
-    manquantes, modèle introuvable, erreur de synthèse).
+    ``speed`` (> 1 = plus vite) ajuste le ``length_scale`` de Piper : la
+    vitesse agit sur la synthèse, pas sur la lecture, donc la voix reste
+    naturelle à toute vitesse. Le texte du verset biblique étant déjà
+    voyellé, il est passé directement au phonétiseur phonikud (le modèle de
+    diacritisation ne sert que pour du texte non voyellé). Renvoie ``None``
+    en cas d'échec (dépendances manquantes, modèle introuvable, erreur).
     """
     import soundfile as sf
     from phonikud import phonemize
-    from phonikud_tts import Piper
 
     try:
         piper = _get_models()
         phonemes = phonemize(strip_teamim(text))
-        samples, rate = piper.create(phonemes, is_phonemes=True)
+        length_scale = piper.config["inference"]["length_scale"]
+        if speed and speed > 0 and speed != 1.0:
+            length_scale = length_scale / float(speed)
+        samples, rate = piper.create(phonemes, is_phonemes=True,
+                                    length_scale=length_scale)
         if samples is None or len(samples) == 0:
             return None
         sf.write(path, samples, rate)
