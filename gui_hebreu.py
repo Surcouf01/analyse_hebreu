@@ -1796,14 +1796,14 @@ class AnalyseurGUI:
         # la lecture MCI ; sinon le bouton reste désactivé.
         audio = ttk.Frame(tab)
         audio.pack(fill="x", padx=8, pady=(0, 8))
-        self.btn_audio = ttk.Button(audio, text="🔊 Lire le verset",
+        # Bouton unique : 🔊 lance la lecture, ⏸ met en pause pendant la
+        # lecture, ▶ reprend, ⏹ arrête et remet à zéro.
+        self.btn_audio = ttk.Button(audio, text="🔊",
+                                    width=4,
                                     command=self._on_audio_button)
         self.btn_audio.pack(side="left")
         self.btn_audio.state(["disabled"])
-        self.audio_pause = ttk.Button(audio, text="⏸ Pause",
-                                      command=self._toggle_audio_pause)
-        self.audio_pause.pack(side="left", padx=(6, 0))
-        self.audio_pause.state(["disabled"])
+        ttk.Label(audio, text="Lire le verset").pack(side="left", padx=(2, 6))
         self.audio_time = ttk.Label(audio, text="0:00 / 0:00")
         self.audio_time.pack(side="left", padx=(10, 0))
         ttk.Label(audio, text="Vitesse :").pack(side="left", padx=(12, 2))
@@ -2402,11 +2402,13 @@ class AnalyseurGUI:
     def _set_audio_error(self, msg):
         self.audio_time.configure(text=msg)
         self.audio_scale.state(["disabled"])
-        self.audio_pause.state(["disabled"])
 
     def _on_audio_button(self):
         if self._audio_player is not None:
-            self._stop_audio()
+            # Bouton unique, machine à états : ⏸ pendant la lecture (clic
+            # = pause), ▶ en pause (clic = reprise), 🔊 au repos (clic =
+            # lecture). À la fin du verset, le polling remet 🔊.
+            self._toggle_audio_pause()
             return
         if self.corpus_var.get() == CORPUS_MISHNA:
             messagebox.showinfo(
@@ -2478,10 +2480,9 @@ class AnalyseurGUI:
         self._audio_player = player
         self._audio_wav = path
         self._audio_duration_ms = max(1, duration_ms or length)
-        self.btn_audio.configure(text="⏹ Stop")
+        self.btn_audio.configure(text="⏸")
         self.btn_audio.state(["!disabled"])
         self.root.configure(cursor="")
-        self.audio_pause.state(["!disabled"])
         self.audio_scale.state(["!disabled"])
         self.audio_scale.configure(to=self._audio_duration_ms)
         resume_ms = int(resume_ms) if resume_ms else 0
@@ -2494,7 +2495,7 @@ class AnalyseurGUI:
             return
         if start_paused:
             player.pause()
-            self.audio_pause.configure(text="▶ Reprendre")
+            self.btn_audio.configure(text="▶")
         self._poll_audio()
 
     def _on_audio_error(self, msg):
@@ -2545,10 +2546,10 @@ class AnalyseurGUI:
             return
         if self._audio_player.is_paused():
             self._audio_player.play()
-            self.audio_pause.configure(text="⏸ Pause")
+            self.btn_audio.configure(text="⏸")
         else:
             self._audio_player.pause()
-            self.audio_pause.configure(text="▶ Reprendre")
+            self.btn_audio.configure(text="▶")
 
     def _on_audio_seek(self, value):
         if self._audio_player is None or self._audio_seeking:
@@ -2598,9 +2599,7 @@ class AnalyseurGUI:
         if player is not None:
             player.stop()
             player.close()
-        self.btn_audio.configure(text="🔊 Lire le verset")
-        self.audio_pause.configure(text="⏸ Pause")
-        self.audio_pause.state(["disabled"])
+        self.btn_audio.configure(text="🔊")
         self.audio_scale.state(["disabled"])
         self.audio_pos.set(0)
         self._audio_duration_ms = 0
