@@ -31,6 +31,37 @@ def strip_teamim(text):
     return _TEAMIM.sub("", text)
 
 
+# Tétragramme et ses formes avec préfixe (ב/כ/ל/מ/ה + patach).
+# La tradition massorétique ne prononce jamais le Tétragramme : on lit
+# אֲדֹנָי (Adonaï) — et pour les formes préfixées (לַיהוָה), la voyelle
+# du préfixe est réportée sur l'aleph : לַאדֹנָי (« la-Donaï »).
+# Substitution faite uniquement pour la synthèse vocale (l'affichage et
+# l'analyse grammaticale gardent le texte biblique intact).
+_TETRAGRAMMATON_FORMS = {
+    # Tétragramme simple (avec ou sans nikkud).
+    "יְהֹוָה": "אֲדֹנָי",
+    "יהוה": "אֲדֹנָי",
+    # Formes préfixées : le patach du préfixe est réporté sur l'aleph
+    # (qéré perpétuel) — לַיהוָה -> לַאדֹנָי (« la-Adonaï »).
+    "לַיהוָה": "לַאדֹנָי",
+    "לַיהוה": "לַאדֹנָי",
+    "בַּיהוָה": "בַּאדֹנָי",
+    "כַּיהוָה": "כַּאדֹנָי",
+    "מַיהוָה": "מַאדֹנָי",
+    "וַיהוָה": "וַאדֹנָי",
+}
+
+
+def substitute_tetragrammaton(text):
+    """Remplace le Tétragramme (et formes préfixées) par Adonaï pour la
+    lecture. Sans effet sur le reste du texte ; les occurrences sans
+    nikkud sont aussi couvertes (le nikkud du BHSA est retiré avant la
+    substitution via strip_teamim, qui conserve le nikkud)."""
+    for src, dst in _TETRAGRAMMATON_FORMS.items():
+        text = text.replace(src, dst)
+    return text
+
+
 def wave_duration_ms(path):
     """Durée du fichier WAV en millisecondes (via l'en-tête)."""
     with wave.open(path, "rb") as wav:
@@ -103,7 +134,7 @@ def synthesize_wav(text, path, speed=1.0, voice="shaul"):
 
     try:
         piper = _get_models(voice)
-        phonemes = phonemize(strip_teamim(text))
+        phonemes = phonemize(substitute_tetragrammaton(strip_teamim(text)))
         length_scale = piper.config["inference"]["length_scale"]
         if speed and speed > 0 and speed != 1.0:
             length_scale = length_scale / float(speed)
