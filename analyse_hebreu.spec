@@ -138,6 +138,9 @@ if bhsa_tf_dir:
     datas.append((bhsa_tf_dir, "bhsa_data/tf/c"))
 
 hiddenimports = [
+    "PIL",
+    "PIL.Image",
+    "PIL.ImageWin",
     "tf",
     "tf.app",
     "tf.fabric",

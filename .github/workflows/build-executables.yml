@@ -44,7 +44,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyinstaller text-fabric pytest
           pip install -r requirements.txt
-
+      - name: Check GUI/CLI imports resolve
+        run: python scripts/check_imports.py
       - name: Run tests
         run: python -m pytest tests/ test_bidi_display.py -q
 
