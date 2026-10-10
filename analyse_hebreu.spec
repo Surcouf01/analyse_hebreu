@@ -149,6 +149,15 @@ hiddenimports = [
     "tf.convert.walker",
     "tf.parameters",
     "tf.core.timestamp",
+    "win32com",
+    "win32com.client",
+    "pythoncom",
+    "phonikud_tts",
+    "phonikud",
+    "phonikud_onnx",
+    "piper_onnx",
+    "soundfile",
+    "huggingface_hub",
 ]
 
 a = Analysis(
