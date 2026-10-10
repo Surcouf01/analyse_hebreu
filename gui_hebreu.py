@@ -1813,16 +1813,21 @@ class AnalyseurGUI:
         self.audio_time = ttk.Label(audio, text="0:00 / 0:00")
         self.audio_time.pack(side="left", padx=(10, 0))
         ttk.Label(audio, text="Voix :").pack(side="left", padx=(12, 2))
-        _saved_voice = _PROPS.get("audio.voice", "shaul").strip()
-        if _saved_voice not in VOICES:
-            _saved_voice = "shaul"
-        self.audio_voice = tk.StringVar(value=_saved_voice)
+        # gui.properties stocke la clé (ex. « michael ») ; la combobox
+        # affiche les libellés — la traduction se fait dans les deux sens :
+        # clé -> libellé ici (au démarrage), libellé -> clé à la synthèse
+        # et à la sauvegarde (via _voice_labels).
+        self._voice_labels = {v["label"]: k for k, v in VOICES.items()}
+        _saved_voice_key = _PROPS.get("audio.voice", "shaul").strip()
+        if _saved_voice_key not in VOICES:
+            _saved_voice_key = "shaul"
+        self.audio_voice = tk.StringVar(
+            value=VOICES[_saved_voice_key]["label"])
         self.audio_voice_combo = ttk.Combobox(
             audio, textvariable=self.audio_voice, state="readonly", width=14,
-            values=[v["label"] for v in VOICES.values()])
+            values=list(self._voice_labels))
         self.audio_voice_combo.pack(side="left")
         self.audio_voice_combo.state(["disabled"])
-        self._voice_labels = {v["label"]: k for k, v in VOICES.items()}
         self.audio_voice_combo.bind("<<ComboboxSelected>>",
                                     self._on_audio_voice_change)
         ttk.Label(audio, text="Vitesse :").pack(side="left", padx=(12, 2))
