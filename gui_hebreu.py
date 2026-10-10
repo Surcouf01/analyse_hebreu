@@ -1802,7 +1802,7 @@ class AnalyseurGUI:
         # paquet phonikud-tts (synthèse, toute plateforme) et Windows pour
         # la lecture MCI ; sinon le bouton reste désactivé.
         audio = ttk.Frame(tab)
-        audio.pack(fill="x", padx=8, pady=(0, 8))
+        audio.pack(anchor="w", padx=8, pady=(0, 8))
         # Bouton unique : 🔊 lance la lecture, ⏸ met en pause pendant la
         # lecture, ▶ reprend, ⏹ arrête et remet à zéro.
         self.btn_audio = ttk.Button(audio, text="🔊",
@@ -1846,7 +1846,12 @@ class AnalyseurGUI:
         self.audio_scale = ttk.Scale(audio, from_=0, to=1000,
                                      variable=self.audio_pos,
                                      command=self._on_audio_seek)
-        self.audio_scale.pack(side="left", fill="x", expand=True, padx=(10, 0))
+        # Largeur fixe (en pixels) : le curseur ne s'étire pas avec la
+        # fenêtre ; ~10 cm restent confortables pour placer finement la
+        # lecture, et la rangée reste compacte à côté du bouton et des
+        # contrôles Vitesse/Voix.
+        self.audio_scale.configure(length=280)
+        self.audio_scale.pack(side="left", padx=(10, 0))
         self.audio_scale.state(["disabled"])
         self._audio_player = None
         self._audio_tts_ready = False
