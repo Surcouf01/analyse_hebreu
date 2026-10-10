@@ -1750,6 +1750,7 @@ class AnalyseurGUI:
         self.verse_combo = ttk.Combobox(form, textvariable=self.verse_var,
                                         state="readonly", width=8)
         self.verse_combo.grid(row=0, column=7, sticky="w", padx=4, pady=6)
+        self.verse_combo.bind("<<ComboboxSelected>>", self._on_verse_selected)
 
         # Options de format (analyse BHSA uniquement ; sans effet en mode
         # Mishna, qui affiche texte hébreu + traduction).
@@ -1848,6 +1849,7 @@ class AnalyseurGUI:
         self.audio_scale.pack(side="left", fill="x", expand=True, padx=(10, 0))
         self.audio_scale.state(["disabled"])
         self._audio_player = None
+        self._audio_tts_ready = False
         self._audio_wav = None
         self._audio_duration_ms = 0
         self._audio_seeking = False
@@ -2009,12 +2011,14 @@ class AnalyseurGUI:
             _audio_tts_ok = True
         except ImportError:
             _audio_tts_ok = False
+        # Le bouton de lecture n'est activé qu'après sélection explicite
+        # d'un verset (voir _on_verse_selected) ; les contrôles annexes
+        # sont actifs dès que la synthèse est disponible.
+        self._audio_tts_ready = _audio_tts_ok
         if _audio_tts_ok:
-            self.btn_audio.state(["!disabled"])
             self.audio_speed_spin.state(["!disabled"])
             self.audio_voice_combo.state(["!disabled"])
         else:
-            self.btn_audio.state(["disabled"])
             self._set_audio_error(
                 "Lecture audio : installez phonikud-tts (pip install "
                 "phonikud-tts) pour la synthèse.")
@@ -2098,6 +2102,10 @@ class AnalyseurGUI:
         for child in self.verse_trads_frame.winfo_children():
             if isinstance(child, ttk.Checkbutton):
                 child.state([state])
+        # Le bouton de lecture reste lié à la sélection d'un verset de la
+        # Bible : en basculant de corpus, il redevient grisé jusqu'à une
+        # nouvelle sélection explicite.
+        self._on_verse_selected()
         self._populate_books()
 
     def _on_book_change(self, event=None):
@@ -2154,6 +2162,15 @@ class AnalyseurGUI:
         self.verse_combo["values"] = [str(v) for v in verses]
         if verses:
             self.verse_combo.current(0)
+
+    def _on_verse_selected(self, event=None):
+        """Activation du bouton de lecture : l'utilisateur doit avoir
+        explicitement sélectionné un verset au moins une fois. En corpus
+        Mishna, le bouton reste grisé (lecture réservée à la Bible)."""
+        if self._audio_tts_ready and self.corpus_var.get() != CORPUS_MISHNA:
+            self.btn_audio.state(["!disabled"])
+        else:
+            self.btn_audio.state(["disabled"])
 
     def _build_binyanim_tab(self):
         """Onglet « Binyanim » : conjugaison d'un verbe dans les 7 binyanim.
