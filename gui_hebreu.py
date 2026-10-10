@@ -2952,8 +2952,10 @@ def _save_all_preferences(root):
         except ValueError:
             pass
         voice = getattr(gui, "audio_voice", None)
-        if voice is not None and voice.get() in gui._voice_labels.values():
-            updates["audio.voice"] = voice.get()
+        if voice is not None:
+            key = gui._voice_labels.get(voice.get())
+            if key is not None:
+                updates["audio.voice"] = key
     if updates:
         _save_properties(root, updates)
 
