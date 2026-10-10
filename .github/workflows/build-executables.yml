@@ -44,7 +44,30 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyinstaller text-fabric pytest
           pip install -r requirements.txt
-
+      - name: Check GUI/CLI imports resolve
+        run: |
+          python - <<'EOF'
+          import ast, importlib.util, sys
+          missing = []
+          for f in ("gui_hebreu.py", "analyse_hebreu.py", "verse_audio.py", "bidi_display.py"):
+              for n in ast.walk(ast.parse(open(f).read())):
+                  names = []
+                  if isinstance(n, ast.Import):
+                      names = [a.name for a in n.names]
+                  elif isinstance(n, ast.ImportFrom) and n.module and n.level == 0:
+                      names = [n.module]
+                  else:
+                      continue
+                  for m in names:
+                      if m.split(".")[0] in ("tkinter", "win32con", "win32gui", "win32ui"):
+                          continue
+                      if importlib.util.find_spec(m) is None:
+                          missing.append((f, m))
+          if missing:
+              print("Imports manquants:", sorted(set(missing)))
+              sys.exit(1)
+          print("Tous les imports externes sont resolus.")
+          EOF
       - name: Run tests
         run: python -m pytest tests/ test_bidi_display.py -q
 
