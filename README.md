@@ -223,6 +223,21 @@ L'interface comporte quatre onglets :
   propres à la Mishna sont signalés « Aucune occurrence trouvée ». Le
   détail mot à mot BHSA et les traductions Segond/KJV restent grisés dans
   ce mode, car ils ne s'appliquent pas à la Mishna.
+  Le bouton **« 🔊 Lire le verset »** (Bible uniquement) synthétise
+  l'hébreu du verset en fichier **WAV** via **[phonikud-tts](https://github.com/thewh1teagle/phonikud-tts)**
+  (synthèse vocale hébraïque **locale**, ONNX Runtime ; `pip install
+  phonikud-tts`) : les *teamim* sont retirés, le *nikkud* — qui porte la
+  vocalisation massorétique — est conservé, ce qui donne une prononciation
+  biblique précise. Deux voix au choix — **Shaul** et **Michael** (plus
+  grave) — sélectionnables dans l'onglet (le choix est mémorisé dans
+  `gui.properties` avec la vitesse). Les modèles (~370 Mo par voix) sont
+  téléchargés automatiquement au premier usage de chaque voix dans le
+  cache Hugging Face, puis la synthèse est quasi instantanée. La **durée
+  exacte** du WAV est déduite de
+  son en-tête, et un lecteur offre un **curseur de position déplaçable** :
+  glisser le curseur déplace la lecture, les boutons Pause/Reprendre et
+  Stop contrôlent la lecture, et le temps écoulé/total est affiché (lecture
+  via MCI, Windows).
 - **Mot** : analyse d'un mot hébreu isolé, saisi à l'aide d'un **clavier
   hébreu virtuel** (consonnes + points-voyelles/nikkud + daguesh, en UTF-8).
   Un clavier physique en hébreu reste utilisable : la saisie se fait toujours
