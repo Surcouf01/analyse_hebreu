@@ -1635,15 +1635,16 @@ class ScaleTimeTooltip:
         scale.bind("<Button-1>", self._motion, add="+")
 
     def _text_under_pointer(self):
+        # Fraction horizontale du pointeur dans le curseur (0.0 – 1.0) ;
+        # la conversion en temps est faite par le callable fourni — les
+        # options from_/to d'un ttk.Scale ne sont pas lisibles par cget.
         try:
             frac = (self._scale.winfo_pointerx() - self._scale.winfo_rootx()
                     ) / max(1, self._scale.winfo_width())
         except tk.TclError:
             return ""
         frac = min(1.0, max(0.0, frac))
-        lo = float(self._scale.cget("from_"))
-        hi = float(self._scale.cget("to"))
-        return self._value_to_text(lo + frac * (hi - lo))
+        return self._value_to_text(frac)
 
     def _show(self, event=None):
         if self._tip is None or not self._tip.winfo_exists():
@@ -1916,10 +1917,11 @@ class AnalyseurGUI:
         # glissement) — format identique au compteur temps écoulé/total.
         self._audio_tooltip = ScaleTimeTooltip(
             self.audio_scale,
-            lambda ms: (f"{int(ms) // 60000}"
-                        f":{int(ms) % 60000 // 1000:02d}"
-                        f" / {self._audio_duration_ms // 60000}:"
-                        f"{self._audio_duration_ms % 60000 // 1000:02d}"))
+            lambda frac: (lambda ms: (
+                f"{int(ms) // 60000}:{int(ms) % 60000 // 1000:02d}"
+                f" / {self._audio_duration_ms // 60000}:"
+                f"{self._audio_duration_ms % 60000 // 1000:02d}"))(
+                frac * self._audio_duration_ms))
         self._audio_player = None
         self._audio_tts_ready = False
         self._audio_wav = None
