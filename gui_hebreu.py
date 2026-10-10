@@ -2447,9 +2447,10 @@ class AnalyseurGUI:
         self.audio_scale.state(["disabled"])
 
     def _current_verse_reference(self):
-        """Référence biblique actuellement sélectionnée, ou None si la
-        sélection est incomplète (la lecture d'un nouveau verset ne peut
-        alors pas être lancée)."""
+        """Référence actuellement sélectionnée (Bible ou Mishna), ou None
+        si la sélection est incomplète. La comparaison avec le WAV en
+        lecture se fait sur cette même chaîne (les traités Mishna sont
+        indentés dans la liste : .strip() comme pour _start_audio_mishnah)."""
         fr = self.book_var.get()
         entry = self._book_index.get(fr)
         if entry is None:
@@ -2458,7 +2459,7 @@ class AnalyseurGUI:
         verse = self.verse_var.get()
         if not chap or not verse:
             return None
-        return f"{fr} {chap}:{verse}"
+        return f"{fr.strip()} {chap}:{verse}"
 
     def _on_audio_button(self):
         if self._audio_player is not None:
@@ -2489,11 +2490,7 @@ class AnalyseurGUI:
                     return
                 self._toggle_audio_pause()
                 return
-        if self.corpus_var.get() == CORPUS_MISHNA:
-            messagebox.showinfo(
-                "Lecture", "La lecture audio n'est disponible que pour les "
-                "versets de la Bible (BHSA).")
-            return
+        mishna = self.corpus_var.get() == CORPUS_MISHNA
         fr = self.book_var.get()
         entry = self._book_index.get(fr)
         if entry is None:
@@ -2505,6 +2502,10 @@ class AnalyseurGUI:
         if not chap or not verse:
             messagebox.showwarning("Référence",
                                    "Sélectionnez chapitre et verset.")
+            return
+        if mishna:
+            self._start_audio_mishnah(bhsa, fr.strip(), int(chap),
+                                      int(verse))
             return
         if self.api is None:
             return
@@ -2519,6 +2520,47 @@ class AnalyseurGUI:
             return
         voice = self._voice_labels.get(self.audio_voice.get(), "shaul")
         reference = self._current_verse_reference()
+
+        def fetch():
+            from bhsa_grammar.reference import find_verse
+            F, L, T = self.api.F, self.api.L, self.api.T
+            node = find_verse(F, L, bhsa, int(chap), int(verse))
+            if node is None:
+                return None, reference
+            return T.text(node), reference
+
+        self._start_audio_synthesis(fetch, speed, voice, reference)
+
+    def _start_audio_mishnah(self, tractate, fr, chapter, mishnah):
+        """Lecture audio d'une mishna : texte hébreu « Torat Emet 357 » via
+        l'API Sefaria (requiert le réseau, comme l'affichage), puis la même
+        chaîne de synthèse phonikud-tts que pour le verset biblique."""
+        try:
+            speed = float(self.audio_speed.get())
+            if not 0.5 <= speed <= 2.0:
+                raise ValueError
+        except ValueError:
+            messagebox.showwarning("Vitesse",
+                                   "Vitesse invalide : entrez une valeur "
+                                   "entre 0.5 et 2.0.")
+            return
+        voice = self._voice_labels.get(self.audio_voice.get(), "shaul")
+        reference = f"{fr} {chapter}:{mishnah}"
+
+        def fetch():
+            he = fetch_mishnah_mishnayot(tractate, chapter, "hebrew")
+            if not he or not 1 <= mishnah <= len(he):
+                return None, reference
+            return he[mishnah - 1], reference
+
+        self._start_audio_synthesis(fetch, speed, voice, reference)
+
+    def _start_audio_synthesis(self, fetch, speed, voice, reference):
+        """Sablier + thread de synthèse commun aux deux corpus.
+
+        ``fetch`` est un callable exécuté dans le thread de travail qui
+        renvoie ``(texte_hébreu_ou_None, reference)``.
+        """
         self.btn_audio.state(["disabled"])
         self.audio_time.configure(text=f"Synthèse : {reference}…")
         # Sablier comme pour le chargement de la base : le premier usage
@@ -2526,14 +2568,12 @@ class AnalyseurGUI:
         self.root.configure(cursor="watch")
 
         def worker():
-            from bhsa_grammar.reference import find_verse
-            F, L, T = self.api.F, self.api.L, self.api.T
-            node = find_verse(F, L, bhsa, int(chap), int(verse))
-            if node is None:
+            hebrew, reference = fetch()
+            if hebrew is None:
                 self._work_queue.put(("audio_error",
-                                      "Verset introuvable."))
+                                      "Texte hébreu introuvable pour "
+                                      f"{reference}."))
                 return
-            hebrew = T.text(node)
             self._audio_last_text = hebrew
             path = os.path.join(tempfile.gettempdir(),
                                 "analyse_hebreu_verse.wav")
@@ -2543,8 +2583,7 @@ class AnalyseurGUI:
                                       "Synthèse vocale indisponible "
                                       "(modèles phonikud-tts)."))
                 return
-            self._work_queue.put(("audio_ready", (path, duration, reference))
-)
+            self._work_queue.put(("audio_ready", (path, duration, reference)))
 
         threading.Thread(target=worker, daemon=True).start()
 
@@ -2746,7 +2785,7 @@ class AnalyseurGUI:
             return
         # Afficher le verset valide la référence : le bouton de lecture
         # s'active (corpus Bible uniquement).
-        if self._audio_tts_ready and self.corpus_var.get() != CORPUS_MISHNA:
+        if self._audio_tts_ready:
             self.btn_audio.state(["!disabled"])
         if self.corpus_var.get() == CORPUS_MISHNA:
             self._run_mishnah(bhsa, fr.strip(), int(chap), int(verse))
