@@ -51,6 +51,10 @@ _TETRAGRAMMATON_FORMS = {
     # écrit la forme sans holam), avec et sans nikkud.
     "יֱהֹוִה": "אֱלֹהִים",
     "יֱהוִה": "אֱלֹהִים",
+    # Graphie Leningrad/BHSA avec shva simple sous le yod et hiriq
+    # (Ps 109:21 : יְהוִה) — voyelles mixtes, lecture Elohim.
+    "יְהֹוִה": "אֱלֹהִים",
+    "יְהוִה": "אֱלֹהִים",
     "יהוִה": "אֱלֹהִים",
     # Formes préfixées : le patach du préfixe est réporté sur l'aleph
     # (qéré perpétuel) — לַיהוָה -> לַאדֹנָי (« la-Adonaï »). La BHSA
