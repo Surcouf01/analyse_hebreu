@@ -1803,9 +1803,9 @@ class AnalyseurGUI:
         # la lecture MCI ; sinon le bouton reste désactivé.
         audio = ttk.Frame(tab)
         audio.pack(anchor="w", padx=8, pady=(0, 8))
-        # Bouton unique : 🔊 lance la lecture, ⏸ met en pause pendant la
-        # lecture, ▶ reprend, ⏹ arrête et remet à zéro.
-        self.btn_audio = ttk.Button(audio, text="🔊",
+        # Bouton unique : ▶ (re)lance la lecture, ⏸ met en pause pendant
+        # la lecture, ▶ reprend — ▶ à l'état de repos comme en pause.
+        self.btn_audio = ttk.Button(audio, text="▶",
                                     width=4,
                                     command=self._on_audio_button)
         self.btn_audio.pack(side="left")
@@ -2455,7 +2455,7 @@ class AnalyseurGUI:
         if self._audio_player is not None:
             # Bouton unique, machine à états : ⏸ pendant la lecture (clic
             # = pause), ▶ en pause ou en fin de lecture (clic = (re)lecture
-            # depuis la position du curseur), 🔊 au repos sans WAV.
+            # depuis la position du curseur), ▶ au repos sans WAV.
             player = self._audio_player
             if not player.is_playing() and not player.is_paused():
                 # Fin de lecture : relance à la position du curseur ; si le
@@ -2672,7 +2672,7 @@ class AnalyseurGUI:
         if player is not None:
             player.stop()
             player.close()
-        self.btn_audio.configure(text="🔊")
+        self.btn_audio.configure(text="▶")
         self.audio_scale.state(["disabled"])
         self.audio_pos.set(0)
         self._audio_duration_ms = 0
