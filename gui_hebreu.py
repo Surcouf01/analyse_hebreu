@@ -1860,6 +1860,7 @@ class AnalyseurGUI:
         self._audio_player = None
         self._audio_tts_ready = False
         self._audio_wav = None
+        self._audio_ref = None
         self._audio_duration_ms = 0
         self._audio_seeking = False
         self._audio_polling = False
@@ -2445,28 +2446,49 @@ class AnalyseurGUI:
         self.audio_time.configure(text=msg)
         self.audio_scale.state(["disabled"])
 
+    def _current_verse_reference(self):
+        """Référence biblique actuellement sélectionnée, ou None si la
+        sélection est incomplète (la lecture d'un nouveau verset ne peut
+        alors pas être lancée)."""
+        fr = self.book_var.get()
+        entry = self._book_index.get(fr)
+        if entry is None:
+            return None
+        chap = self.chapter_var.get()
+        verse = self.verse_var.get()
+        if not chap or not verse:
+            return None
+        return f"{fr} {chap}:{verse}"
+
     def _on_audio_button(self):
         if self._audio_player is not None:
-            # Bouton unique, machine à états : ⏸ pendant la lecture (clic
-            # = pause), ▶ en pause ou en fin de lecture (clic = (re)lecture
-            # depuis la position du curseur), ▶ au repos sans WAV.
-            player = self._audio_player
-            if not player.is_playing() and not player.is_paused():
-                # Fin de lecture : relance à la position du curseur ; si le
-                # curseur est en fin de verset, on repart du début.
-                pos = player.position_ms()
-                if self._audio_duration_ms - pos < 50:
-                    pos = 0
-                    self.audio_pos.set(0)
-                try:
-                    player.play(pos)
-                    self.btn_audio.configure(text="⏸")
-                except VersePlayerError:
-                    pass
-                self._poll_audio()
+            # Référence courante ≠ celle du WAV en lecture (l'utilisateur a
+            # affiché un autre verset) : on repart d'une synthèse du verset
+            # courant, pas d'une reprise de l'ancien WAV.
+            current_ref = self._current_verse_reference()
+            if current_ref is not None and current_ref != self._audio_ref:
+                self._stop_audio()
+            else:
+                # Bouton unique, machine à états : ⏸ pendant la lecture (clic
+                # = pause), ▶ en pause ou en fin de lecture (clic = (re)
+                # lecture depuis la position du curseur), ▶ au repos.
+                player = self._audio_player
+                if not player.is_playing() and not player.is_paused():
+                    # Fin de lecture : relance à la position du curseur ; si
+                    # le curseur est en fin de verset, on repart du début.
+                    pos = player.position_ms()
+                    if self._audio_duration_ms - pos < 50:
+                        pos = 0
+                        self.audio_pos.set(0)
+                    try:
+                        player.play(pos)
+                        self.btn_audio.configure(text="⏸")
+                    except VersePlayerError:
+                        pass
+                    self._poll_audio()
+                    return
+                self._toggle_audio_pause()
                 return
-            self._toggle_audio_pause()
-            return
         if self.corpus_var.get() == CORPUS_MISHNA:
             messagebox.showinfo(
                 "Lecture", "La lecture audio n'est disponible que pour les "
@@ -2496,7 +2518,7 @@ class AnalyseurGUI:
                                    "entre 0.5 et 2.0.")
             return
         voice = self._voice_labels.get(self.audio_voice.get(), "shaul")
-        reference = f"{fr} {chap}:{verse}"
+        reference = self._current_verse_reference()
         self.btn_audio.state(["disabled"])
         self.audio_time.configure(text=f"Synthèse : {reference}…")
         # Sablier comme pour le chargement de la base : le premier usage
@@ -2521,12 +2543,14 @@ class AnalyseurGUI:
                                       "Synthèse vocale indisponible "
                                       "(modèles phonikud-tts)."))
                 return
-            self._work_queue.put(("audio_ready", (path, duration)))
+            self._work_queue.put(("audio_ready", (path, duration, reference))
+)
 
         threading.Thread(target=worker, daemon=True).start()
 
-    def _on_audio_ready(self, path, duration_ms, resume_ms=None,
-                         start_paused=False):
+    def _on_audio_ready(self, path, duration_ms, reference=None,
+                         resume_ms=None, start_paused=False):
+        self._audio_ref = reference
         player = VersePlayer()
         try:
             length = player.open(path)
@@ -2593,7 +2617,7 @@ class AnalyseurGUI:
                 return
             ratio = duration / float(old_dur)
             self._work_queue.put(
-                ("audio_ready", (path, duration,
+                ("audio_ready", (path, duration, self._audio_ref,
                                  int(pos * ratio), was_paused)))
 
         threading.Thread(target=worker, daemon=True).start()
@@ -2662,6 +2686,7 @@ class AnalyseurGUI:
         player = self._audio_player
         self._audio_player = None
         self._audio_wav = None
+        self._audio_ref = None
         self.root.configure(cursor="")
         if player is not None:
             player.stop()
