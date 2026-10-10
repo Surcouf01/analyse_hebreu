@@ -46,9 +46,12 @@ _TETRAGRAMMATON_FORMS = {
     "יְהוָה": "אֲדֹנָי",
     "יהוה": "אֲדֹנָי",
     "יהוָה": "אֲדֹנָי",
-    # Variantes avec hatef-patach sous le yod (lecture Elohim).
+    # Variantes avec hatef-segol sous le yod (lecture Elohim, quand le
+    # Tétragramme est adjacent à אֲדֹנָי) — avec et sans holam (la BHSA
+    # écrit la forme sans holam), avec et sans nikkud.
     "יֱהֹוִה": "אֱלֹהִים",
     "יֱהוִה": "אֱלֹהִים",
+    "יהוִה": "אֱלֹהִים",
     # Formes préfixées : le patach du préfixe est réporté sur l'aleph
     # (qéré perpétuel) — לַיהוָה -> לַאדֹנָי (« la-Adonaï »). La BHSA
     # écrit aussi la forme contractée avec hé (לַהוָה).
