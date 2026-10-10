@@ -2725,6 +2725,9 @@ class AnalyseurGUI:
         if not chap or not verse:
             messagebox.showwarning("Référence", "Sélectionnez chapitre et verset.")
             return
+        # Afficher le verset valide la référence : le bouton de lecture
+        # s'active (corpus Bible uniquement).
+        self._on_verse_selected()
         if self.corpus_var.get() == CORPUS_MISHNA:
             self._run_mishnah(bhsa, fr.strip(), int(chap), int(verse))
             return
