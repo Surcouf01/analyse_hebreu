@@ -78,6 +78,7 @@ from bhsa_grammar.mishnah_analyzer import (
     analyze_mishnah_text,
     mishnah_analysis_block,
 )
+import verse_audio
 from verse_audio import (
     VersePlayer,
     VersePlayerError,
@@ -2677,9 +2678,12 @@ class AnalyseurGUI:
                                 "analyse_hebreu_verse.wav")
             duration = synthesize_wav(hebrew, path, speed=speed, voice=voice)
             if duration is None or duration <= 0:
+                detail = (("Détail : " + verse_audio.LAST_ERROR)
+                          if verse_audio.LAST_ERROR else
+                          "modèles phonikud-tts introuvables.")
                 self._work_queue.put(("audio_error",
                                       "Synthèse vocale indisponible "
-                                      "(modèles phonikud-tts)."))
+                                      f"({detail})"))
                 return
             self._work_queue.put(("audio_ready", (path, duration, reference)))
 
@@ -2748,9 +2752,12 @@ class AnalyseurGUI:
                                 "analyse_hebreu_verse.wav")
             duration = synthesize_wav(text, path, speed=speed, voice=voice)
             if duration is None or duration <= 0:
+                detail = (("Détail : " + verse_audio.LAST_ERROR)
+                          if verse_audio.LAST_ERROR else
+                          "modèles phonikud-tts introuvables.")
                 self._work_queue.put(("audio_error",
                                       "Synthèse vocale indisponible "
-                                      "(modèles phonikud-tts)."))
+                                      f"({detail})"))
                 return
             ratio = duration / float(old_dur)
             self._work_queue.put(

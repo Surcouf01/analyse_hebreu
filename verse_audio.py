@@ -118,6 +118,11 @@ def wave_duration_ms(path):
 
 _MODELS = {}
 
+# Dernière erreur de synthèse (None si succès) : l'interface l'affiche à
+# la place du message générique « Synthèse vocale indisponible », pour
+# que l'utilisateur (et le diagnostic) sache ce qui a échoué.
+LAST_ERROR = None
+
 # Voix disponibles dans le dépôt de checkpoints (Piper ONNX, mono-locuteur).
 # « grave » = f0 médian ≈ 111 Hz, « shaul » ≈ 133 Hz (mesuré sur Gen 1:1).
 VOICES = {
@@ -127,27 +132,35 @@ VOICES = {
 
 
 def _download_quiet(repo, filename):
-    """Télécharge un fichier du Hub en neutralisant l'avertissement stderr
-    « You are sending unauthenticated requests to the HF Hub » émis par le
-    backend de téléchargement (hf_xet) : le téléchargement anonyme est
-    normal ici (modèles publics, pas de compte requis), le message n'a
-    donc pas lieu d'apparaître dans la console de l'utilisateur."""
-    import contextlib
-    import os
-    import sys
-    from huggingface_hub import hf_hub_download
+    """Télécharge un fichier du Hub en neutralisant les messages de
+    progression/avertissement de huggingface_hub (barres tqdm, warning
+    « You are sending unauthenticated requests to the HF Hub ») : le
+    téléchargement anonyme est normal ici (modèles publics, pas de
+    compte requis).
 
-    sys.stderr.flush()
-    saved = os.dup(2)
-    devnull = os.open(os.devnull, os.O_WRONLY)
+    IMPORTANT : aucune manipulation de descripteur de fichier (os.dup2)
+    ni de sys.stderr — dans l'exécutable GUI (console=False, mode
+    fenêtré de PyInstaller), sys.stderr vaut None et le fd 2 est
+    invalide : sys.stderr.flush() lèverait AttributeError et os.dup(2)
+    une OSError, tuant la synthèse au PREMIER téléchargement des
+    modèles (message « Synthèse vocale indisponible »). On agit
+    uniquement sur le logger et les variables d'environnement du Hub,
+    ce qui est sûr avec stderr=None."""
+    import contextlib
+    import io
+    import logging
+    import os
+    from huggingface_hub import hf_hub_download
+    os.environ.setdefault("HF_HUB_DISABLE_PROGRESS_BARS", "1")
+    os.environ.setdefault("HF_HUB_DISABLE_TELEMETRY", "1")
+    hub_logger = logging.getLogger("huggingface_hub")
+    saved_level = hub_logger.level
+    hub_logger.setLevel(logging.ERROR)
     try:
-        os.dup2(devnull, 2)
-        with contextlib.redirect_stderr(sys.stderr):
+        with contextlib.redirect_stderr(io.StringIO()):
             return hf_hub_download(repo, filename)
     finally:
-        os.dup2(saved, 2)
-        os.close(devnull)
-        os.close(saved)
+        hub_logger.setLevel(saved_level)
 
 
 def _get_models(voice="shaul"):
@@ -178,6 +191,8 @@ def synthesize_wav(text, path, speed=1.0, voice="shaul"):
     import soundfile as sf
     from phonikud import phonemize
 
+    global LAST_ERROR
+    LAST_ERROR = None
     try:
         piper = _get_models(voice)
         phonemes = phonemize(substitute_tetragrammaton(strip_teamim(text)))
@@ -189,7 +204,8 @@ def synthesize_wav(text, path, speed=1.0, voice="shaul"):
         if samples is None or len(samples) == 0:
             return None
         sf.write(path, samples, rate)
-    except Exception:  # noqa: BLE001
+    except Exception as exc:  # noqa: BLE001
+        LAST_ERROR = "%s: %s" % (type(exc).__name__, exc)
         return None
     try:
         return wave_duration_ms(path)
