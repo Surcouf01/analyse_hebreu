@@ -163,18 +163,40 @@ def _download_quiet(repo, filename):
         hub_logger.setLevel(saved_level)
 
 
+def _utf8_open(file, mode="r", *args, **kwargs):
+    """builtins.open forcé en UTF-8 pour les lectures texte.
+
+    piper_onnx.Piper.setup() ouvre le model.config.json SANS encoding :
+    sous Windows, l'encodage par défaut est cp1252 et le JSON (cartes de
+    phonèmes IPA) contient des octets invalides dans ce codec
+    (UnicodeDecodeError: 'charmap' codec). Ce wrapper force UTF-8 pour
+    toute lecture/écriture texte sans encoding explicite — sans effet
+    sur les accès binaires ni sur ceux qui précisent un encoding."""
+    import builtins
+    if ("b" not in mode and kwargs.get("encoding") is None):
+        kwargs["encoding"] = "utf-8"
+    return builtins._analyse_hebreu_orig_open(file, mode, *args, **kwargs)
+
 def _get_models(voice="shaul"):
     """Charge (une seule fois par voix) le modèle Piper correspondant."""
     voice = voice if voice in VOICES else "shaul"
     if voice in _MODELS:
         return _MODELS[voice]
     from phonikud_tts import Piper
-
     tts_dir = _download_quiet("thewh1teagle/phonikud-tts-checkpoints",
                               VOICES[voice]["model"])
     cfg = _download_quiet("thewh1teagle/phonikud-tts-checkpoints",
                           "model.config.json")
-    _MODELS[voice] = Piper(tts_dir, cfg)
+    # Piper.setup() lit le config JSON sans encoding (voir _utf8_open) :
+    # on force UTF-8 le temps de la construction, puis on restaure open.
+    import builtins
+    if not hasattr(builtins, "_analyse_hebreu_orig_open"):
+        builtins._analyse_hebreu_orig_open = builtins.open
+    builtins.open = _utf8_open
+    try:
+        _MODELS[voice] = Piper(tts_dir, cfg)
+    finally:
+        builtins.open = builtins._analyse_hebreu_orig_open
     return _MODELS[voice]
 
 
