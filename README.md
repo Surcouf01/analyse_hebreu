@@ -162,7 +162,10 @@ git push origin v1.0
 Le workflow construit Windows + Linux puis crée la **Release GitHub** `v1.0`
 (« Version 1.0 ») avec le zip du bundle GUI (`analyse_hebreu-onedir-windows.zip`,
 `analyse_hebreu-onedir-linux.zip` — exécutable + `README.md` +
-`gui.properties`) et les archives complètes du build en pièces jointes.
+`gui.properties` + `requirements.txt` + `VERSION` + `DATE`) et les
+archives complètes du build en pièces jointes. `DATE` contient la
+date/heure UTC du build (ISO 8601) : elle permet de vérifier que
+l'exécutable testé est bien le dernier build.
 La page publique est `https://github.com/Surcouf01/analyse_hebreu/releases`.
 
 ### Base BHSA et exécutable (build sans base embarquée)
