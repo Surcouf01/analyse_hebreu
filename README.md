@@ -162,7 +162,10 @@ git push origin v1.0
 Le workflow construit Windows + Linux puis crée la **Release GitHub** `v1.0`
 (« Version 1.0 ») avec le zip du bundle GUI (`analyse_hebreu-onedir-windows.zip`,
 `analyse_hebreu-onedir-linux.zip` — exécutable + `README.md` +
-`gui.properties`) et les archives complètes du build en pièces jointes.
+`gui.properties` + `requirements.txt` + `VERSION` + `DATE`) et les
+archives complètes du build en pièces jointes. `DATE` contient la
+date/heure UTC du build (ISO 8601) : elle permet de vérifier que
+l'exécutable testé est bien le dernier build.
 La page publique est `https://github.com/Surcouf01/analyse_hebreu/releases`.
 
 ### Base BHSA et exécutable (build sans base embarquée)
@@ -232,7 +235,11 @@ L'interface comporte quatre onglets :
   grave) — sélectionnables dans l'onglet (le choix est mémorisé dans
   `gui.properties` avec la vitesse). Les modèles (~370 Mo par voix) sont
   téléchargés automatiquement au premier usage de chaque voix dans le
-  cache Hugging Face, puis la synthèse est quasi instantanée. La **durée
+  cache Hugging Face, puis la synthèse est quasi instantanée.
+  En cas de problème, lancer avec l'argument **`--console`**
+  (`analyse_hebreu.exe --console`) : une console est attachée à la
+  fenêtre et affiche la trace complète des erreurs (synthèse vocale,
+  chargement de la base…), visible même dans l'exécutable fenêtré. La **durée
   exacte** du WAV est déduite de
   son en-tête, et un lecteur offre un **curseur de position déplaçable** :
   glisser le curseur déplace la lecture, les boutons Pause/Reprendre et

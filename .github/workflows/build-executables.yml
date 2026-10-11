@@ -140,7 +140,9 @@ jobs:
               - analyse_hebreu(.exe) + ressources embarquées (base BHSA, traductions) ;
               - README.md ;
               - gui.properties (valeurs par défaut, personnalisable) ;
-              - requirements.txt (dépendances Python, pour usage sans exécutable).
+              - requirements.txt (dépendances Python, pour usage sans exécutable) ;
+              - VERSION (numéro de version du build) ;
+              - DATE (date/heure UTC du build, format ISO 8601).
 
               Autres fichiers : archive complète du build (GUI + CLI) pour chaque plateforme."
           fi

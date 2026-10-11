@@ -78,6 +78,7 @@ from bhsa_grammar.mishnah_analyzer import (
     analyze_mishnah_text,
     mishnah_analysis_block,
 )
+import verse_audio
 from verse_audio import (
     VersePlayer,
     VersePlayerError,
@@ -2677,9 +2678,12 @@ class AnalyseurGUI:
                                 "analyse_hebreu_verse.wav")
             duration = synthesize_wav(hebrew, path, speed=speed, voice=voice)
             if duration is None or duration <= 0:
+                detail = (("Détail : " + verse_audio.LAST_ERROR)
+                          if verse_audio.LAST_ERROR else
+                          "modèles phonikud-tts introuvables.")
                 self._work_queue.put(("audio_error",
                                       "Synthèse vocale indisponible "
-                                      "(modèles phonikud-tts)."))
+                                      f"({detail})"))
                 return
             self._work_queue.put(("audio_ready", (path, duration, reference)))
 
@@ -2748,9 +2752,12 @@ class AnalyseurGUI:
                                 "analyse_hebreu_verse.wav")
             duration = synthesize_wav(text, path, speed=speed, voice=voice)
             if duration is None or duration <= 0:
+                detail = (("Détail : " + verse_audio.LAST_ERROR)
+                          if verse_audio.LAST_ERROR else
+                          "modèles phonikud-tts introuvables.")
                 self._work_queue.put(("audio_error",
                                       "Synthèse vocale indisponible "
-                                      "(modèles phonikud-tts)."))
+                                      f"({detail})"))
                 return
             ratio = duration / float(old_dur)
             self._work_queue.put(
@@ -3267,7 +3274,57 @@ def _apply_window_icon(root):
     except (tk.TclError, OSError):
          pass
 
+def _enable_console(argv):
+    """Option --console : attache une console au processus pour rendre
+    visibles stdout/stderr (traces, erreurs).
+
+    Utile pour l'exécutable GUI (build PyInstaller console=False) : le
+    mode fenêtré n'attache aucune console, sys.stdout/stderr valent None
+    et les erreurs sont invisibles. Avec --console, une console est
+    allouée (AllocConsole sous Windows) et les flux sont rebranchés
+    dessus ; ailleurs l'option est sans effet (les flux existent déjà).
+
+    Renvoie True si les flux sont utilisables après l'appel."""
+    if "--console" not in argv:
+        return False
+    if sys.stdout is not None and sys.stderr is not None:
+        return True
+    if os.name == "nt":
+        try:
+            ctypes.windll.kernel32.AllocConsole()
+        except OSError:
+            pass
+        try:
+            # Réouverture des flux sur la console allouée ; en mode
+            # fenêtré, les handles d'origine sont invalides, on passe
+            # donc par CONOUT$ / CONIN$ plutôt que par les fds 0/1/2.
+            conout = os.open("CONOUT$", os.O_WRONLY)
+            os.dup2(conout, 1)
+            os.dup2(conout, 2)
+            if conout > 2:
+                os.close(conout)
+            conin = os.open("CONIN$", os.O_RDONLY)
+            os.dup2(conin, 0)
+            if conin > 2:
+                os.close(conin)
+        except OSError:
+            pass
+    # Rebrancher sys.stdout/stderr sur les fds fraîchement valides :
+    # dans l'exécutable fenêtré ils valent None à cet endroit.
+    try:
+        if sys.stdout is None:
+            sys.stdout = open(1, "w", encoding="utf-8",
+                              errors="replace", closefd=False)
+        if sys.stderr is None:
+            sys.stderr = open(2, "w", encoding="utf-8",
+                              errors="replace", closefd=False)
+    except OSError:
+        pass
+    return sys.stdout is not None and sys.stderr is not None
+
+
 def main():
+    _enable_console(sys.argv[1:])
     _set_app_user_model_id()
     root = tk.Tk()
     _set_app_user_model_id()

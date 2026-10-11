@@ -316,6 +316,19 @@ if target == "gui":
     if os.path.isfile(req_src):
         shutil.copy2(req_src, os.path.join(dist_dir, "requirements.txt"))
 
+    # VERSION : numéro de version du build (lu du fichier VERSION à la
+    # racine, embarqué aussi dans la ressource de l'exécutable).
+    if version:
+        with open(os.path.join(dist_dir, "VERSION"), "w", encoding="utf-8") as fh:
+            fh.write(version + "\n")
+
+    # DATE : date/heure du build, générée au moment du packaging (UTC,
+    # format ISO 8601) — permet d'identifier le build exact téléchargé.
+    import datetime
+    with open(os.path.join(dist_dir, "DATE"), "w", encoding="utf-8") as fh:
+        fh.write(datetime.datetime.now(datetime.timezone.utc)
+                 .strftime("%Y-%m-%dT%H:%M:%SZ") + "\n")
+
     default_props = """# Propriétés d'affichage de l'interface graphique (gui_hebreu.py).
 # Format : clé = valeur, encodage UTF-8. Les tailles sont en points.
 # Ce fichier, placé à côté de l'exécutable, personnalise l'affichage sans
@@ -355,6 +368,7 @@ translation.es = true
             fpath = os.path.join(folder, fname)
             if onefile and fname not in (
                 "README.md", "gui.properties", "requirements.txt",
+                "VERSION", "DATE",
                 "analyse_hebreu", "analyse_hebreu.exe",
             ):
                 continue
@@ -367,5 +381,5 @@ translation.es = true
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
         for fpath, arcname in entries:
             zf.write(fpath, arcname)
-    print("[spec] Post-build : README.md, gui.properties et requirements.txt copiés ; zip -> %s"
+    print("[spec] Post-build : README.md, gui.properties, requirements.txt, VERSION et DATE copiés ; zip -> %s"
           % zip_path)
