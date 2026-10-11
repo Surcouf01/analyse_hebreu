@@ -235,7 +235,11 @@ L'interface comporte quatre onglets :
   grave) — sélectionnables dans l'onglet (le choix est mémorisé dans
   `gui.properties` avec la vitesse). Les modèles (~370 Mo par voix) sont
   téléchargés automatiquement au premier usage de chaque voix dans le
-  cache Hugging Face, puis la synthèse est quasi instantanée. La **durée
+  cache Hugging Face, puis la synthèse est quasi instantanée.
+  En cas de problème, lancer avec l'argument **`--console`**
+  (`analyse_hebreu.exe --console`) : une console est attachée à la
+  fenêtre et affiche la trace complète des erreurs (synthèse vocale,
+  chargement de la base…), visible même dans l'exécutable fenêtré. La **durée
   exacte** du WAV est déduite de
   son en-tête, et un lecteur offre un **curseur de position déplaçable** :
   glisser le curseur déplace la lecture, les boutons Pause/Reprendre et
