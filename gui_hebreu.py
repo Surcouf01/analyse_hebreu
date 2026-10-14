@@ -1820,18 +1820,37 @@ class AnalyseurGUI:
         self.book_combo.grid(row=0, column=3, sticky="w", padx=4, pady=6)
         self.book_combo.bind("<<ComboboxSelected>>", self._on_book_change)
 
-        ttk.Label(form, text="Chapitre :").grid(row=0, column=4, sticky="w", padx=(16, 4), pady=6)
+        # Navigation rapide entre livres : ▲/▼ sélectionne le livre
+        # précédent/suivant (ordre canonique de la liste) et affiche
+        # automatiquement son premier chapitre/premier verset.
+        self.btn_book_prev = ttk.Button(form, text="▲", width=2,
+                                        command=lambda: self._nav_book(-1))
+        self.btn_book_prev.grid(row=0, column=4, sticky="w", padx=(0, 2), pady=6)
+        self.btn_book_next = ttk.Button(form, text="▼", width=2,
+                                        command=lambda: self._nav_book(1))
+        self.btn_book_next.grid(row=0, column=5, sticky="w", padx=(0, 2), pady=6)
+
+        ttk.Label(form, text="Chapitre :").grid(row=0, column=6, sticky="w", padx=(16, 4), pady=6)
         self.chapter_var = tk.StringVar()
         self.chapter_combo = ttk.Combobox(form, textvariable=self.chapter_var,
                                           state="readonly", width=8)
-        self.chapter_combo.grid(row=0, column=5, sticky="w", padx=4, pady=6)
+        self.chapter_combo.grid(row=0, column=7, sticky="w", padx=4, pady=6)
         self.chapter_combo.bind("<<ComboboxSelected>>", self._on_chapter_change)
 
-        ttk.Label(form, text="Verset :").grid(row=0, column=6, sticky="w", padx=(16, 4), pady=6)
+        ttk.Label(form, text="Verset :").grid(row=0, column=8, sticky="w", padx=(16, 4), pady=6)
         self.verse_var = tk.StringVar()
         self.verse_combo = ttk.Combobox(form, textvariable=self.verse_var,
                                         state="readonly", width=8)
-        self.verse_combo.grid(row=0, column=7, sticky="w", padx=4, pady=6)
+        self.verse_combo.grid(row=0, column=9, sticky="w", padx=4, pady=6)
+
+        # Navigation rapide entre versets : ▲/▼ sélectionne le verset
+        # précédent/suivant du chapitre courant et l'affiche aussitôt.
+        self.btn_verse_prev = ttk.Button(form, text="▲", width=2,
+                                         command=lambda: self._nav_verse(-1))
+        self.btn_verse_prev.grid(row=0, column=10, sticky="w", padx=(0, 2), pady=6)
+        self.btn_verse_next = ttk.Button(form, text="▼", width=2,
+                                         command=lambda: self._nav_verse(1))
+        self.btn_verse_next.grid(row=0, column=11, sticky="w", padx=(0, 2), pady=6)
 
         # Options de format (analyse BHSA uniquement ; sans effet en mode
         # Mishna, qui affiche texte hébreu + traduction).
@@ -2195,6 +2214,49 @@ class AnalyseurGUI:
         if display:
             self.book_combo.current(0)
             self._on_book_change()
+
+    # --- Navigation rapide (livre / verset) ------------------------------
+    def _nav_book(self, step):
+        """Sélectionne le livre précédent (step=-1) ou suivant (step=+1)
+        dans la liste affichée, puis affiche automatiquement son premier
+        chapitre / premier verset. Reste silencieux aux bornes de la liste."""
+        values = list(self.book_combo["values"])
+        if not values:
+            return
+        try:
+            idx = values.index(self.book_var.get())
+        except ValueError:
+            return
+        new_idx = idx + step
+        if not 0 <= new_idx < len(values):
+            return
+        # En mode Mishna, ignorer les entrées « seder » (non sélectionnables
+        # : ce sont les titres de section, pas des traités).
+        if self.corpus_var.get() == CORPUS_MISHNA:
+            while 0 <= new_idx < len(values) and not values[new_idx].startswith("    "):
+                new_idx += step
+            if not 0 <= new_idx < len(values):
+                return
+        self.book_combo.current(new_idx)
+        self._on_book_change()
+        self._run_verse()
+
+    def _nav_verse(self, step):
+        """Sélectionne le verset précédent (step=-1) ou suivant (step=+1)
+        du chapitre courant, puis l'affiche automatiquement. Reste
+        silencieux aux bornes du chapitre."""
+        values = list(self.verse_combo["values"])
+        if not values:
+            return
+        try:
+            idx = values.index(self.verse_var.get())
+        except ValueError:
+            return
+        new_idx = idx + step
+        if not 0 <= new_idx < len(values):
+            return
+        self.verse_combo.current(new_idx)
+        self._run_verse()
 
     def _on_corpus_change(self, event=None):
         """Bascule entre Bible et Mishna : repeuple la liste des livres.
