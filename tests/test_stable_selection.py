@@ -14,7 +14,7 @@ try:
 except ImportError:
     tk = None
 
-from stable_selection import StableSelection
+from stable_selection import LRE, PDF, RLE, StableSelection
 
 
 class FakeText:
@@ -120,6 +120,41 @@ GEN11 = "בְּרֵאשִׁית בָּרָא"
 # Colonnes : ב(0) ְ(1) ר(2) ֵ(3) א(4) ִ(5) ׁ(6) ת(7) ' '(8)
 # Colonnes : ב(0) ְ(1) ּ(2) | ר(3) ֵ(4) | א(5) | ש(6) ִ(7) ׁ(8) | י(9) |
 #            ת(10) | ' '(11) | ב(12) ָ(13) ּ(14) | ר(15) ָ(16) | א(17)
+
+class TestMixedDirectionStrings(unittest.TestCase):
+    """embed_ltr / embed_rtl : construction de chaînes mixtes RTL/LTR
+    dont les délimiteurs (parenthèses, etc.) s'affichent correctement."""
+
+    def test_embed_ltr_wraps_with_lre_pdf(self):
+        self.assertEqual(
+            StableSelection.embed_ltr("(Gen 1:1)"),
+            LRE + "(Gen 1:1)" + PDF,
+        )
+
+    def test_embed_rtl_wraps_with_rle_pdf(self):
+        self.assertEqual(
+            StableSelection.embed_rtl("שלום"),
+            RLE + "שלום" + PDF,
+        )
+
+    def test_reembedding_is_idempotent(self):
+        once = StableSelection.embed_ltr("(abc)")
+        twice = StableSelection.embed_ltr(once)
+        self.assertEqual(twice, once)
+        r_once = StableSelection.embed_rtl("א")
+        r_twice = StableSelection.embed_rtl(r_once)
+        self.assertEqual(r_twice, r_once)
+
+    def test_round_trip_via_bidi_display(self):
+        import bidi_display
+        line = "הפסוק " + StableSelection.embed_ltr("(Gen 1:1)") + " למעלה"
+        visual = bidi_display.to_visual(line)
+        self.assertEqual(bidi_display.to_logical(visual),
+                         "הפסוק (Gen 1:1) למעלה")
+        # Les embeddings ne polluent pas le stockage visuel du widget.
+        self.assertNotIn(LRE, visual)
+        self.assertNotIn(PDF, visual)
+
 
 class TestClusters(unittest.TestCase):
     def setUp(self):

@@ -13,6 +13,7 @@ widget ``tk.Text`` donné.
 """
 
 
+import re
 import unicodedata
 import tkinter as tk
 
@@ -20,6 +21,14 @@ import tkinter as tk
 RLM = "\u200F"
 RLE = "\u202B"
 PDF = "\u202C"
+LRE = "\u202A"
+
+# Marques de directionnalité (contrôle bidi) : retirées avant tout
+# ré-embarquement pour éviter les embeddings imbriqués (LRE, RLE, PDF,
+# LRM, RLM).
+_BIDI_MARKS_RE = re.compile(
+    "[\u200E\u200F\u202A-\u202E\u2066-\u2069]"
+)
 
 
 class StableSelection:
@@ -71,6 +80,40 @@ class StableSelection:
         w.bind("<Triple-Button-1>", self._triple_click)
         w.bind("<Shift-Button-1>", self._shift_press)
         w.bind("<Shift-B1-Motion>", self._drag)
+
+    # --- Construction de chaînes mixtes RTL/LTR --------------------------
+
+    @staticmethod
+    def embed_ltr(ltr_text):
+        """Enveloppe un segment LTR pour l'insérer dans une ligne à base RTL.
+
+        Dans une ligne à base RTL (hébreu), un segment latin inséré à cru
+        garde son ordre interne mais ses délimiteurs — parenthèses,
+        crochets, guillemets — sont « miroités » par l'algorithme bidi
+        (UAX #9) : « (abc) » s'affiche « )abc( » une fois replacé dans son
+        contexte RTL. L'embedding explicite LRE...PDF force le segment
+        (contenu ET délimiteurs) en direction LTR : il s'affiche tel
+        quel, du premier au dernier caractère.
+
+        :param ltr_text: segment à direction latine (latin, chiffres,
+            ponctuation) ; les marques de directionnalité existantes sont
+            d'abord retirées pour éviter les embeddings imbriqués.
+        :return: le segment enveloppé LRE...PDF, prêt à être inséré dans
+            une ligne à base RTL.
+        """
+        clean = _BIDI_MARKS_RE.sub("", ltr_text)
+        return LRE + clean + PDF
+
+    @staticmethod
+    def embed_rtl(rtl_text):
+        """Enveloppe un segment RTL pour l'insérer dans une ligne à base LTR.
+
+        Pendant de :meth:`embed_ltr` : l'embedding RLE...PDF force le
+        segment hébreu (contenu et délimiteurs) en direction RTL, afin
+        que ses parenthèses ne soient pas miroitées par le contexte LTR.
+        """
+        clean = _BIDI_MARKS_RE.sub("", rtl_text)
+        return RLE + clean + PDF
 
     # --- Marques et clusters ---------------------------------------------
 
