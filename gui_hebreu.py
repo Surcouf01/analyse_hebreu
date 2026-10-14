@@ -1791,10 +1791,17 @@ class AnalyseurGUI:
         self._build_phrase_tab()
         self._build_binyanim_tab()
 
-        # Raccourcis globaux de navigation du verset : Ctrl+↑ / Ctrl+↓,
-        # équivalents aux boutons ▲/▼ de l'onglet « Livre ».
-        for seq, step in (("<Control-Up>", -1), ("<Control-Down>", 1)):
-            self.root.bind_all(seq, lambda e, s=step: self._on_nav_verse_key(s))
+        # Raccourcis globaux de navigation : Ctrl+↑/↓ verset, Shift+↑/↓
+        # chapitre, Alt+↑/↓ livre — équivalents aux boutons ▲/▼ de
+        # l'onglet « Livre ».
+        for seq, handler in (("<Control-Up>", self._on_nav_verse_key),
+                             ("<Control-Down>", self._on_nav_verse_key),
+                             ("<Shift-Up>", self._on_nav_chapter_key),
+                             ("<Shift-Down>", self._on_nav_chapter_key),
+                             ("<Alt-Up>", self._on_nav_book_key),
+                             ("<Alt-Down>", self._on_nav_book_key)):
+            step = -1 if seq.endswith("Up>") else 1
+            self.root.bind_all(seq, lambda e, h=handler, s=step: h(s))
 
         # Barre d'état (chargement de la base / analyse en cours).
         self.status = ttk.Label(self.root,
@@ -2311,6 +2318,18 @@ class AnalyseurGUI:
         """Raccourci clavier Ctrl+↑ / Ctrl+↓ : même comportement que les
         boutons ▲/▼ du verset (navigation + affichage, son aux bornes)."""
         self._nav_verse(step)
+        return "break"
+
+    def _on_nav_chapter_key(self, step):
+        """Raccourci clavier Shift+↑ / Shift+↓ : même comportement que les
+        boutons ▲/▼ du chapitre (navigation + affichage, son aux bornes)."""
+        self._nav_chapter(step)
+        return "break"
+
+    def _on_nav_book_key(self, step):
+        """Raccourci clavier Alt+↑ / Alt+↓ : même comportement que les
+        boutons ▲/▼ du livre (navigation + affichage, son aux bornes)."""
+        self._nav_book(step)
         return "break"
 
     def _on_corpus_change(self, event=None):
