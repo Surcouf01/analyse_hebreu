@@ -1791,6 +1791,11 @@ class AnalyseurGUI:
         self._build_phrase_tab()
         self._build_binyanim_tab()
 
+        # Raccourcis globaux de navigation du verset : Ctrl+↑ / Ctrl+↓,
+        # équivalents aux boutons ▲/▼ de l'onglet « Livre ».
+        for seq, step in (("<Control-Up>", -1), ("<Control-Down>", 1)):
+            self.root.bind_all(seq, lambda e, s=step: self._on_nav_verse_key(s))
+
         # Barre d'état (chargement de la base / analyse en cours).
         self.status = ttk.Label(self.root,
                                 text=f"Chargement de la base BHSA… (v{__version__})",
@@ -1843,7 +1848,7 @@ class AnalyseurGUI:
                                         state="readonly", width=8)
         self.verse_combo.grid(row=0, column=9, sticky="w", padx=4, pady=6)
 
-        # Navigation rapide entre versets : ▲/▼ sélectionne le verset
+        # Navigation rapide entre versets (boutons ci-dessous et raccourcis Ctrl+↑ / Ctrl+↓). : ▲/▼ sélectionne le verset
         # précédent/suivant du chapitre courant et l'affiche aussitôt.
         self.btn_verse_prev = ttk.Button(form, text="▲", width=2,
                                          command=lambda: self._nav_verse(-1))
@@ -2243,20 +2248,37 @@ class AnalyseurGUI:
 
     def _nav_verse(self, step):
         """Sélectionne le verset précédent (step=-1) ou suivant (step=+1)
-        du chapitre courant, puis l'affiche automatiquement. Reste
-        silencieux aux bornes du chapitre."""
+        du chapitre courant, puis l'affiche automatiquement. Retourne
+        False (et joue un son) aux bornes du chapitre."""
         values = list(self.verse_combo["values"])
         if not values:
-            return
+            self._nav_boundary_sound()
+            return False
         try:
             idx = values.index(self.verse_var.get())
         except ValueError:
-            return
+            self._nav_boundary_sound()
+            return False
         new_idx = idx + step
         if not 0 <= new_idx < len(values):
-            return
+            self._nav_boundary_sound()
+            return False
         self.verse_combo.current(new_idx)
         self._run_verse()
+        return True
+
+    def _nav_boundary_sound(self):
+        """Son système (« cloche » Tk) signalant un début ou une fin de liste."""
+        try:
+            self.root.bell()
+        except tk.TclError:
+            pass
+
+    def _on_nav_verse_key(self, step):
+        """Raccourci clavier Ctrl+↑ / Ctrl+↓ : même comportement que les
+        boutons ▲/▼ du verset (navigation + affichage, son aux bornes)."""
+        self._nav_verse(step)
+        return "break"
 
     def _on_corpus_change(self, event=None):
         """Bascule entre Bible et Mishna : repeuple la liste des livres.
