@@ -90,10 +90,10 @@ from verse_audio import (
 # Langues de traduction disponibles, avec leur libellé.
 TRANSLATIONS = (
     ("fr", "Louis Segond 1910 (fr)"),
+    ("rab", "Bible du Rabbinat 1899 (fr)"),
     ("en", "King James Version 1611 (en)"),
     ("es", "Torres Amat 1823 (es)"),
     ("it", "Riveduta Luzzi 1927 (it)"),
-    ("rab", "Bible du Rabbinat 1899 (fr)"),
 )
 
 

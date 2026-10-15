@@ -349,9 +349,9 @@ font.tabs.size = 20
 
 # Traductions affichées par défaut dans l'onglet Livre (true/false).
 translation.fr = true
+translation.rab = true
 translation.en = true
 translation.es = true
-translation.rab = true
 """
     props_path = os.path.join(dist_dir, "gui.properties")
     if not os.path.isfile(props_path):
