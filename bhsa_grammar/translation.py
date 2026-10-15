@@ -30,6 +30,10 @@ Une quatrième traduction (italienne) est supportée : la **Riveduta**
 (Luzzi, 1927, public domain), stockée au même format texte plat dans
 ``data/riveduta_1927.txt``.
 
+Une seconde traduction française est supportée : la **Bible du Rabbinat**
+(1899, direction Zadoc Kahn, domaine public), stockée au même format
+texte plat dans ``data/rabbinat_1899.txt`` (langue ``"rab"``).
+
 Localisation du fichier (priorité) :
   - traduction française : variable d'env ``TRANSLATION_DATA`` puis
     ``data/louis_segond_1910.txt`` (ou ``.json``) à côté du paquet ;
@@ -38,7 +42,9 @@ Localisation du fichier (priorité) :
   - traduction espagnole : variable d'env ``TRANSLATION_ES_DATA`` puis
     ``data/torres_amat_1823.txt`` à côté du paquet ;
   - traduction italienne : variable d'env ``TRANSLATION_IT_DATA`` puis
-    ``data/riveduta_1927.txt`` à côté du paquet.
+    ``data/riveduta_1927.txt`` à côté du paquet ;
+  - Bible du Rabbinat : variable d'env ``TRANSLATION_RAB_DATA`` puis
+    ``data/rabbinat_1899.txt`` à côté du paquet.
 """
 
 import json
@@ -62,6 +68,9 @@ def _candidate_paths(language="fr"):
     elif language == "it":
         env = os.environ.get("TRANSLATION_IT_DATA")
         names = ("riveduta_1927.txt",)
+    elif language == "rab":
+        env = os.environ.get("TRANSLATION_RAB_DATA")
+        names = ("rabbinat_1899.txt",)
     else:
         env = os.environ.get("TRANSLATION_EN_DATA")
         names = ("kjv_1611.txt",)
@@ -154,6 +163,7 @@ def load_translation(path=None, language="fr"):
         "en": ("kjv_1611.txt", "TRANSLATION_EN_DATA"),
         "es": ("torres_amat_1823.txt", "TRANSLATION_ES_DATA"),
         "it": ("riveduta_1927.txt", "TRANSLATION_IT_DATA"),
+        "rab": ("rabbinat_1899.txt", "TRANSLATION_RAB_DATA"),
     }
     name, var = defaults.get(language, defaults["en"])
     raise TranslationNotFoundError(
