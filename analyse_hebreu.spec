@@ -349,6 +349,7 @@ font.tabs.size = 20
 
 # Traductions affichées par défaut dans l'onglet Livre (true/false).
 translation.fr = true
+translation.rab = true
 translation.en = true
 translation.es = true
 """

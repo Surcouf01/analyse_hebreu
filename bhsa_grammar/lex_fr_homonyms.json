@@ -5149,6 +5149,12 @@
   "sp": "subs",
   "en": "low place"
  },
+ "MJM/": {
+  "voc": "מַיִם",
+  "gloss_fr": "eaux",
+  "sp": "subs",
+  "en": "water"
+ },
  "MKBR=/": {
   "voc": "מַכְבֵּר",
   "gloss_fr": "cover (en)",
@@ -10131,6 +10137,12 @@
   "gloss_fr": "stream (en)",
   "sp": "subs",
   "en": "stream"
+ },
+ "CJMCM/": {
+  "voc": "שֶׁמֶשׁ",
+  "gloss_fr": "soleil",
+  "sp": "subs",
+  "en": "sun"
  },
  "CJR/": {
   "voc": "שִׁיר",

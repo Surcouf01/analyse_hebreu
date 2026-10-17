@@ -133,6 +133,12 @@ def build_parser():
              "public domain) du verset analysé.",
     )
     p.add_argument(
+        "--translation-rab",
+        action="store_true",
+        help="Affiche aussi la traduction française de la Bible du Rabbinat "
+             "(1899, direction Zadoc Kahn, domaine public) du verset analysé.",
+    )
+    p.add_argument(
         "--mishna",
         action="store_true",
         help="Affiche une mishna (argument = référence, ex. 'Bérakhot 1:1', "
@@ -389,6 +395,7 @@ def main(argv=None):
     _print_translation("en", "King James Version 1611", args.translation_en)
     _print_translation("es", "Torres Amat 1823", args.translation_es)
     _print_translation("it", "Riveduta Luzzi 1927", args.translation_it)
+    _print_translation("rab", "Bible du Rabbinat 1899", args.translation_rab)
 
     if args.format == "json":
         print(format_json(analysis))

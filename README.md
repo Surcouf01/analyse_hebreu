@@ -344,18 +344,23 @@ traductions du verset analysé, toutes **domaine public** :
 - **Louis Segond 1910** (français) — fichier `data/louis_segond_1910.txt` ;
 - **King James Version 1611** (anglais) — fichier `data/kjv_1611.txt` ;
 - **Torres Amat 1823** (espagnol) — fichier `data/torres_amat_1823.txt` ;
-- **Riveduta Luzzi 1927** (italien) — fichier `data/riveduta_1927.txt`.
+- **Riveduta Luzzi 1927** (italien) — fichier `data/riveduta_1927.txt` ;
+- **Bible du Rabbinat 1899** (français, direction Zadoc Kahn) — fichier
+  `data/rabbinat_1899.txt` (source Sefaria « Bible du Rabbinat 1899 [fr] »,
+  fr.wikisource.org ; numérotation déjà massorétique, aucun renumérotage).
 
-Les quatre fichiers sont fournis avec le projet (un verset par ligne, indexé
+Les cinq fichiers sont fournis avec le projet (un verset par ligne, indexé
 par nom BHSA / chapitre / verset). La provenance de chaque traduction, son
 rendu du nom divin et ses particularités sont documentés dans `docs/`
 (`traduction_louis_segond_1910.md`, `traduction_kjv_1611.md`,
-`traduction_riveduta_1927.md`), de même que la renumérotation vers la
+`traduction_riveduta_1927.md`, `traduction_rabbinat_1899.md`), de même
+que la renumérotation vers la
 versification BHSA (`renumerotation_torres_amat.md`,
 `renumerotation_traductions.md`). Dans le GUI, chaque traduction est
 activable individuellement par une case à cocher. En ligne de commande,
 options `--translation` (français), `--translation-en` (anglais),
-`--translation-es` (espagnol) et `--translation-it` (italien).
+`--translation-es` (espagnol), `--translation-it` (italien) et
+`--translation-rab` (Bible du Rabbinat).
 
 Le chargement est automatique si les fichiers sont présents ; s'ils sont
 absents, l'analyse grammaticale fonctionne normalement (sans traduction). On
@@ -576,6 +581,7 @@ data/
   louis_segond_1910.txt  # traduction française Louis Segond 1910 (domaine public)
   kjv_1611.txt          # traduction anglaise King James Version 1611 (domaine public)
   riveduta_1927.txt     # traduction italienne Riveduta Luzzi 1927 (public domain)
+  rabbinat_1899.txt     # traduction française Bible du Rabbinat 1899 (domaine public)
 bhsa_grammar/
   __init__.py            # API publique (load_corpus, analyze_*, format_*)
   loader.py              # localisation + chargement de la base BHSA (Text-Fabric)
