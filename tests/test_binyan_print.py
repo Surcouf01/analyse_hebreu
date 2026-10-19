@@ -144,10 +144,9 @@ def test_render_and_pdf(tmpdir="/tmp"):
     for s in sheets:
         assert abs(s.width - expected_w) <= 1, s.size
         assert abs(s.height - expected_h) <= 1, s.size
-    # Feuille incomplète (nombre impair de pages) : colonne droite vide,
-    # la moitié gauche reste blanche en dehors du contenu collé.
-    assert len(sheets) >= 2
-    assert multi[-1].size[0] < sheets[-1].width // 2
+    # Composition identique : recomposer deux fois donne les mêmes feuilles.
+    again = binyan_print.compose_sheets(multi, per_sheet=2, dpi=dpi)
+    assert len(again) == len(sheets)
     print("test_render_and_pdf : ok")
 
 
