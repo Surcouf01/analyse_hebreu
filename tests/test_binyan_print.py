@@ -16,6 +16,7 @@ Usage :
 
 import os
 import sys
+import tempfile
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
@@ -108,7 +109,8 @@ def test_document():
     print("test_document : ok")
 
 
-def test_render_and_pdf(tmpdir="/tmp"):
+def test_render_and_pdf():
+    tmpdir = tempfile.mkdtemp(prefix="binyan_print_")
     analysis = _sample_analysis()
     parsed = parse_binyanim_text(binyanim_to_text(analysis))
     doc = binyan_print.build_binyan_document(parsed, "qal")
@@ -134,6 +136,7 @@ def test_render_and_pdf(tmpdir="/tmp"):
     with open(pdf_path, "rb") as fh:
         assert fh.read(4) == b"%PDF"
     os.remove(pdf_path)
+    os.rmdir(tmpdir)
 
     # 2 pages par feuille : N pages portrait -> ceil(N/2) feuilles A4
     # paysage, contenu réduit et sans chevauchement des colonnes.
