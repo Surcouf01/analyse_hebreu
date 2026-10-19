@@ -134,6 +134,20 @@ def test_render_and_pdf(tmpdir="/tmp"):
     with open(pdf_path, "rb") as fh:
         assert fh.read(4) == b"%PDF"
     os.remove(pdf_path)
+
+    # 2 pages par feuille : N pages portrait -> ceil(N/2) feuilles A4
+    # paysage, contenu réduit et sans chevauchement des colonnes.
+    sheets = binyan_print.compose_sheets(multi, per_sheet=2, dpi=dpi)
+    assert len(sheets) == (len(multi) + 1) // 2, (len(sheets), len(multi))
+    expected_w = round(11.69 * dpi)
+    expected_h = round(8.27 * dpi)
+    for s in sheets:
+        assert abs(s.width - expected_w) <= 1, s.size
+        assert abs(s.height - expected_h) <= 1, s.size
+    # Feuille incomplète (nombre impair de pages) : colonne droite vide,
+    # la moitié gauche reste blanche en dehors du contenu collé.
+    assert len(sheets) >= 2
+    assert multi[-1].size[0] < sheets[-1].width // 2
     print("test_render_and_pdf : ok")
 
 

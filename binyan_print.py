@@ -289,6 +289,42 @@ def render_binyan_pages(doc, dpi=150):
     return [pimg for pimg, _ in pages]
 
 
+def compose_sheets(pages, per_sheet=2, dpi=150):
+    """Regroupe les pages en feuilles A4 paysage, 2 pages par feuille.
+
+    Chaque page portrait est réduite pour tenir dans sa demi-colonne
+    (marge + gouttière centraux) et centrée verticalement. Une feuille
+    incomplète garde sa colonne droite vide.
+    """
+    if not pages:
+        raise ValueError("Aucune page à composer.")
+    if per_sheet != 2:
+        raise ValueError(f"Disposition non supportée : {per_sheet} "
+                         "pages par feuille.")
+    from PIL import Image
+
+    sheet_w = round(11.69 * dpi)   # 297 mm (paysage)
+    sheet_h = round(8.27 * dpi)    # 210 mm
+    margin = round(0.4 * dpi)
+    gutter = round(0.5 * dpi)
+    cell_w = (sheet_w - 2 * margin - gutter) // 2
+
+    sheets = []
+    for i in range(0, len(pages), per_sheet):
+        sheet = Image.new("RGB", (sheet_w, sheet_h), "white")
+        for col, page in enumerate(pages[i:i + per_sheet]):
+            scale = min(cell_w / page.width,
+                        (sheet_h - 2 * margin) / page.height, 1.0)
+            size = (max(1, round(page.width * scale)),
+                    max(1, round(page.height * scale)))
+            reduced = page if size == page.size else page.resize(size)
+            x = margin + col * (cell_w + gutter) + (cell_w - size[0]) // 2
+            y = (sheet_h - size[1]) // 2
+            sheet.paste(reduced, (x, y))
+        sheets.append(sheet)
+    return sheets
+
+
 def save_pdf(pages, path, dpi=150):
     """Écrit les pages dans un PDF (une page A4 par image)."""
     if not pages:
@@ -360,6 +396,8 @@ class BinyanPrintPreview:
         self._messagebox = messagebox
         self._ImageTk = ImageTk
         self.pages = pages
+        self._two_up = tk.BooleanVar(value=False)
+        self._sheets_cache = None
         self._page = 0
         self._zoom = 1.0
         self._photo = None
@@ -390,6 +428,12 @@ class BinyanPrintPreview:
                    command=lambda: self._zoom_by(1.25)).pack(side="left")
         ttk.Button(bar, text="Ajuster", command=self._fit_width).pack(
             side="left", padx=4)
+        # Impression économe : deux pages du paradigme côte à côte sur
+        # une même feuille A4 paysage (colonnes réduites).
+        ttk.Checkbutton(bar, text="2 pages/feuille",
+                        variable=self._two_up,
+                        command=self._on_two_up).pack(side="left", padx=8)
+        self._two_up.trace_add("write", self._invalidate_sheets)
 
         ttk.Button(bar, text="Enregistrer en PDF…",
                    command=self._save_pdf).pack(side="right", padx=4)
@@ -415,10 +459,33 @@ class BinyanPrintPreview:
 
         self._fit_width(first=True)
 
+    # --- disposition 2 pages/feuille ----------------------------------------
+
+    def _invalidate_sheets(self, *_args):
+        """La case « 2 pages/feuille » a changé : composition à refaire."""
+        self._sheets_cache = None
+
+    def _on_two_up(self):
+        """Bascule 1/2 pages par feuille : recompose et rafraîchit l'aperçu."""
+        self._page = 0
+        self._fit_width(first=True)
+
+    def _current_pages(self):
+        """Pages affichées/imprimées selon la case « 2 pages/feuille ».
+
+        La composition est mise en cache : recomposer à chaque affichage
+        serait coûteux (redimensionnement des deux pages complètes)."""
+        if not self._two_up.get() or len(self.pages) <= 1:
+            return self.pages
+        if self._sheets_cache is None:
+            self._sheets_cache = compose_sheets(self.pages, per_sheet=2)
+        return self._sheets_cache
+
     # --- pages et zoom ------------------------------------------------------
 
     def _show_page(self):
-        img = self.pages[self._page]
+        shown_pages = self._current_pages()
+        img = shown_pages[self._page]
         size = (max(1, round(img.width * self._zoom)),
                 max(1, round(img.height * self._zoom)))
         shown = img if size == img.size else img.resize(size)
@@ -427,10 +494,10 @@ class BinyanPrintPreview:
         self.canvas.configure(scrollregion=(0, 0, size[0], size[1]))
         self.canvas.create_image(0, 0, image=self._photo, anchor="nw")
         self.label_page.configure(
-            text=f"page {self._page + 1}/{len(self.pages)}")
+            text=f"page {self._page + 1}/{len(shown_pages)}")
         self.label_zoom.configure(text=f"{round(self._zoom * 100)} %")
         self.btn_prev.state(["!disabled"] if self._page > 0 else ["disabled"])
-        self.btn_next.state(["!disabled"] if self._page < len(self.pages) - 1
+        self.btn_next.state(["!disabled"] if self._page < len(shown_pages) - 1
                             else ["disabled"])
 
     def _prev_page(self):
@@ -439,7 +506,7 @@ class BinyanPrintPreview:
             self._show_page()
 
     def _next_page(self):
-        if self._page < len(self.pages) - 1:
+        if self._page < len(self._current_pages()) - 1:
             self._page += 1
             self._show_page()
 
@@ -454,7 +521,8 @@ class BinyanPrintPreview:
             self._zoom = 0.65
         else:
             self._zoom = min(self._MAX_ZOOM, max(
-                self._MIN_ZOOM, (canvas_w - 24) / self.pages[0].width))
+                self._MIN_ZOOM,
+                (canvas_w - 24) / self._current_pages()[0].width))
         self._show_page()
 
     def _fit_if_needed(self):
@@ -467,7 +535,7 @@ class BinyanPrintPreview:
     def _print(self):
         pdf = os.path.join(tempfile.gettempdir(), "analyse_hebreu_binyan.pdf")
         try:
-            save_pdf(self.pages, pdf)
+            save_pdf(self._current_pages(), pdf)
         except (OSError, ValueError) as exc:
             self._messagebox.showerror(
                 "Impression", f"Échec de la génération du PDF : {exc}")
@@ -493,7 +561,7 @@ class BinyanPrintPreview:
         if not path:
             return
         try:
-            save_pdf(self.pages, path)
+            save_pdf(self._current_pages(), path)
         except (OSError, ValueError) as exc:
             self._messagebox.showerror(
                 "Enregistrement", f"Échec de l'enregistrement : {exc}")
