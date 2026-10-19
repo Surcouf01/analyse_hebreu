@@ -21,13 +21,14 @@ SKIPPED_PREFIXES = ("tkinter", "win32con", "win32gui", "win32ui")
 # Modules locaux du dépôt : résolus relativement au répertoire racine du
 # projet (cwd du script), pas via site-packages.
 LOCAL_PACKAGES = ("bhsa_grammar", "bidi_display", "verse_audio", "curation",
-                  "stable_selection")
+                  "stable_selection", "binyan_print")
 
 DEFAULT_TARGETS = (
     "gui_hebreu.py",
     "analyse_hebreu.py",
     "verse_audio.py",
     "bidi_display.py",
+    "binyan_print.py",
 )
 
 

@@ -78,6 +78,7 @@ from bhsa_grammar.mishnah_analyzer import (
     mishnah_analysis_block,
 )
 import verse_audio
+import binyan_print
 from stable_selection import StableSelection
 from verse_audio import (
     VersePlayer,
@@ -2264,6 +2265,9 @@ class AnalyseurGUI:
         self.binyanim_fixed_ids = set(self.binyanim_notebook.tabs())
         frame.rowconfigure(0, weight=1)
         frame.columnconfigure(0, weight=1)
+        # Résultat binyanim courant (structure parse_binyanim_text) : garde
+        # par le bouton « Imprimer ce binyan… » de chaque sous-onglet.
+        self.binyanim_parsed = None
 
     def _make_binyanim_output(self, parent):
         """Zone de texte défilable (ascenseurs vertical + horizontal)."""
@@ -2417,7 +2421,17 @@ class AnalyseurGUI:
             # Insérer avant l'onglet « Sortie complète ».
             self.binyanim_notebook.insert(raw_index, tab, text=label)
             raw_index += 1
-            text = self._make_binyanim_output(tab)
+            header = ttk.Frame(tab)
+            header.grid(row=0, column=0, sticky="ew")
+            ttk.Button(header, text="Imprimer ce binyan…",
+                       style="Toolbutton",
+                       command=lambda b=b: self._print_binyan(b["code"])
+                       ).pack(side="right", padx=8, pady=4)
+            body = ttk.Frame(tab)
+            body.grid(row=1, column=0, sticky="nsew")
+            tab.rowconfigure(1, weight=1)
+            tab.columnconfigure(0, weight=1)
+            text = self._make_binyanim_output(body)
             content = b.get("text", "")
             tr_fr = b.get("translation_fr") or ""
             tr_en = b.get("translation_en") or ""
@@ -2455,8 +2469,34 @@ class AnalyseurGUI:
             # Sélectionner le premier binyan.
             first = self.binyanim_notebook.tabs()[0]
             self.binyanim_notebook.select(first)
+        self.binyanim_parsed = parsed
         self.status.configure(text="Prêt.")
         self._enable_buttons()
+
+    def _print_binyan(self, binyan_code):
+        """Aperçu avant impression du paradigme d'un binyan (onglet actif).
+
+        Le document est construit depuis le résultat binyanim courant
+        (self.binyanim_parsed, structure parse_binyanim_text) : l'aperçu
+        reflète exactement le sous-onglet affiché, y compris les
+        traductions et le statut d'attestation (BHSA/Mishna).
+        """
+        if not self.binyanim_parsed:
+            messagebox.showwarning(
+                "Binyanim",
+                "Conjuguez d'abord un verbe (bouton « Conjuguer le verbe »).")
+            return
+        try:
+            binyan_print.open_binyan_preview(self, self.binyanim_parsed,
+                                              binyan_code)
+            self.status.configure(text="Aperçu d'impression ouvert.")
+        except ValueError:
+            messagebox.showwarning(
+                "Binyanim",
+                f"Binyan « {binyan_code} » introuvable dans le résultat courant.")
+        except Exception as exc:
+            messagebox.showerror(
+                "Impression", f"Échec de la préparation de l'aperçu : {exc}")
 
     # --- Lancement des analyses (en arrière-plan) -----------------------
     def _set_output(self, widget, text):
