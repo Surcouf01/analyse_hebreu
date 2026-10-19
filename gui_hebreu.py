@@ -2487,7 +2487,7 @@ class AnalyseurGUI:
                 "Conjuguez d'abord un verbe (bouton « Conjuguer le verbe »).")
             return
         try:
-            binyan_print.open_binyan_preview(self, self.binyanim_parsed,
+            binyan_print.open_binyan_preview(self.root, self.binyanim_parsed,
                                               binyan_code)
             self.status.configure(text="Aperçu d'impression ouvert.")
         except ValueError:
