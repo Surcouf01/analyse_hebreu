@@ -454,12 +454,16 @@ class BinyanPrintPreview:
         # quelques centaines de ms).
         ttk.Label(bar, text="Police :").pack(side="left", padx=(8, 2))
         self.font_scale_var = tk.StringVar(value=str(int(font_scale)))
-        font_spin = ttk.Spinbox(bar, from_=60, to=200, increment=10,
-                                width=5, textvariable=self.font_scale_var,
-                                command=self._on_font_scale)
-        font_spin.pack(side="left")
+        self._font_spin = ttk.Spinbox(bar, from_=60, to=200, increment=10,
+                                      width=5, textvariable=self.font_scale_var,
+                                      command=self._rerender)
+        self._font_spin.pack(side="left")
         ttk.Label(bar, text="%").pack(side="left")
-        font_spin.bind("<KeyRelease>", lambda e: self._on_font_scale())
+        # Flèches de la spinbox : rendu immédiat (command ci-dessus) ;
+        # frappe clavier : rendu différé, le temps de taper la valeur.
+        self._font_spin.bind("<KeyRelease>", lambda e: self._on_font_scale())
+        self._font_spin.bind("<Return>", lambda e: self._rerender())
+        self._font_spin.bind("<FocusOut>", lambda e: self._rerender())
 
         ttk.Button(bar, text="Enregistrer en PDF…",
                    command=self._save_pdf).pack(side="right", padx=4)
@@ -505,27 +509,49 @@ class BinyanPrintPreview:
         self._sheets_cache = None
 
     def _on_font_scale(self):
-        """Nouvelle taille de police : re-rend le document (différé).
+        """Nouvelle taille de police : re-rend le document.
 
-        Sans document source (aperçu ouvert sur des pages déjà rendues),
-        le contrôle est sans effet.
+        Rendu immédiat sur les flèches de la spinbox (retour tactile) ;
+        différé de 400 ms sur la frappe clavier (le temps de finir de
+        taper la valeur). Sans document source (aperçu ouvert sur des
+        pages déjà rendues), le contrôle est sans effet.
         """
         if self.doc is None:
             return
         if self._font_job is not None:
-            self.win.after_cancel(self._font_job)
+            try:
+                self.win.after_cancel(self._font_job)
+            except self._tk.TclError:
+                pass
+            self._font_job = None
         self._font_job = self.win.after(400, self._rerender)
 
     def _rerender(self):
         self._font_job = None
+        raw = self.font_scale_var.get().strip()
+        if not raw:
+            return
         try:
-            scale = int(self.font_scale_var.get()) / 100.0
+            scale = float(raw) / 100.0
         except ValueError:
             return
         if not (0.6 <= scale <= 2.0):
             return
-        self.pages = render_binyan_pages(self.doc, dpi=self._dpi,
-                                         font_scale=scale)
+        # Le rendu d'un paradigme multi-pages peut prendre plusieurs
+        # secondes : montrer l'activité (curseur, libellé) et forcer le
+        # rafraîchissement avant de bloquer la boucle d'événements.
+        self.win.configure(cursor="watch")
+        self.label_page.configure(text="re-rendu…")
+        self.win.update_idletasks()
+        try:
+            self.pages = render_binyan_pages(self.doc, dpi=self._dpi,
+                                             font_scale=scale)
+        except Exception as exc:
+            self.win.configure(cursor="")
+            self._messagebox.showerror(
+                "Impression", f"Échec du re-rendu : {exc}")
+            return
+        self.win.configure(cursor="")
         self._sheets_cache = None
         self._page = 0
         self._fit_width(first=True)
