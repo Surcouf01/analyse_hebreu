@@ -130,9 +130,40 @@ def _gpos_anchors(font):
         tt = TTFont(path, lazy=False)
         if "GPOS" in tt:
             cmap = tt.getBestCmap()
-            table = {}
             gpos = tt["GPOS"].table
-            for lookup in gpos.LookupList.Lookup:
+            # Lookups mark-to-base du script hébreu, comme HarfBuzz les
+            # sélectionne (feature « mark » du script « hebr », repli
+            # « DFLT »). Prendre TOUS les lookups de type 4 attraperait
+            # des ancrages d'autres scripts/contexts, avec des positions
+            # fausses pour l'hébreu.
+            feature_indices = []
+            for tag in ("hebr", "DFLT"):
+                for srec in gpos.ScriptList.ScriptRecord:
+                    if srec.ScriptTag != tag:
+                        continue
+                    default = srec.Script.DefaultLangSys
+                    if default:
+                        feature_indices = list(default.FeatureIndex)
+                        for lrec in (srec.Script.LangSysRecord or []):
+                            feature_indices += list(lrec.LangSys.FeatureIndex)
+                    break
+                if feature_indices:
+                    break
+            lookup_indices = set()
+            for fi in feature_indices:
+                if fi >= len(gpos.FeatureList.FeatureRecord):
+                    continue
+                frec = gpos.FeatureList.FeatureRecord[fi]
+                if frec.FeatureTag == "mark":
+                    lookup_indices.update(frec.Feature.LookupListIndex)
+            lookups = [gpos.LookupList.Lookup[i]
+                       for i in sorted(lookup_indices)
+                       if i < len(gpos.LookupList.Lookup)]
+            if not lookups:
+                lookups = [lk for lk in gpos.LookupList.Lookup
+                           if lk.LookupType == 4]
+            table = {}
+            for lookup in lookups:
                 if lookup.LookupType != 4:  # MarkBasePos
                     continue
                 for sub in lookup.SubTable:
@@ -151,9 +182,13 @@ def _gpos_anchors(font):
                             ab = recs[bi].BaseAnchor[klass]
                             if ab is None or am is None:
                                 continue
-                            table.setdefault(base, {})[mark] = (
+                            # Première ancre rencontrée prioritaire (une
+                            # même paire peut apparaître dans plusieurs
+                            # lookups, l'ordre de HarfBuzz va du plus
+                            # spécifique au plus général).
+                            table.setdefault(base, {}).setdefault(mark, (
                                 ab.XCoordinate - am.XCoordinate,
-                                ab.YCoordinate - am.YCoordinate)
+                                ab.YCoordinate - am.YCoordinate))
             # Indexer par caractère : cmap inverse (glyphe -> codepoint).
             glyph_to_cp = {}
             for cp, gname in cmap.items():
