@@ -274,17 +274,15 @@ def test_shuruq_centering():
         assert diff, "le dagesh du shuruq n'est pas dessiné"
         assert max(x for x, _ in diff) <= max(pts_bare) + 2, \
             (max(x for x, _ in diff), max(pts_bare))
-        # Position : ancre GPOS si disponible (à gauche du pied du vav
-        # dans DejaVu), sinon centrage d'encre (dans la lettre).
+        # Position : ancre GPOS si disponible (indexée par caractère,
+        # résolue via la cmap — les noms de glyphes varient selon la
+        # police), sinon centrage d'encre (dans la lettre).
         anchors = binyan_print._gpos_anchors(font)
-        if anchors and anchors.get("uni05D5", {}).get("uni05BC"):
-            bx, by, mx, my = None, None, None, None
-            # Vérifier la cohérence : le dx du dessin correspond à
-            # l'ancre GPOS (à l'échelle de la police).
+        if anchors and anchors.get("\u05d5", {}).get("\u05bc") is not None:
             dx, dy = binyan_print._mark_offset(vav, "\u05bc", font)
             upem = binyan_print._font_upem(font)
             scale = font.size / upem
-            gdx, gdy = anchors["uni05D5"]["uni05BC"]
+            gdx, gdy = anchors["\u05d5"]["\u05bc"]
             assert abs(dx - gdx * scale) < 1.0, (dx, gdx * scale)
             assert abs(dy + gdy * scale) < 1.0, (dy, gdy * scale)
     finally:

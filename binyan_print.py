@@ -95,10 +95,12 @@ def _ink_bbox(glyph, font):
     return result
 
 
-# Ancrages GPOS de la police : chemin -> {glyphe_base: {marque: (dx, dy)}}
-# en unités upem. C'est la position officielle de chaque marque (ce
-# qu'HarfBuzz/raqm appliquent) ; sans elle, le repli est le centrage
-# d'encre (cf. _mark_offset).
+# Ancrages GPOS de la police : chemin -> {base: {marque: (dx, dy)}} en
+# unités upem, indexés par CARACTÈRE (résolus via la cmap de la police :
+# les noms de glyphes ne sont pas normalisés — « uni05D5 » dans DejaVu,
+# autrement nommé dans Arial, etc.). C'est la position officielle de
+# chaque marque (ce qu'HarfBuzz/raqm appliquent) ; sans elle, le repli
+# est le centrage d'encre (cf. _mark_offset).
 _GPOS_CACHE = {}
 
 
@@ -127,6 +129,7 @@ def _gpos_anchors(font):
         from fontTools.ttLib import TTFont
         tt = TTFont(path, lazy=False)
         if "GPOS" in tt:
+            cmap = tt.getBestCmap()
             table = {}
             gpos = tt["GPOS"].table
             for lookup in gpos.LookupList.Lookup:
@@ -151,7 +154,21 @@ def _gpos_anchors(font):
                             table.setdefault(base, {})[mark] = (
                                 ab.XCoordinate - am.XCoordinate,
                                 ab.YCoordinate - am.YCoordinate)
-            anchors = table or {}
+            # Indexer par caractère : cmap inverse (glyphe -> codepoint).
+            glyph_to_cp = {}
+            for cp, gname in cmap.items():
+                glyph_to_cp.setdefault(gname, cp)
+            anchors = {}
+            for base_g, marks_d in table.items():
+                bcp = glyph_to_cp.get(base_g)
+                if bcp is None:
+                    continue
+                for mark_g, off in marks_d.items():
+                    mcp = glyph_to_cp.get(mark_g)
+                    if mcp is None:
+                        continue
+                    anchors.setdefault(chr(bcp), {})[chr(mcp)] = off
+            anchors = anchors or {}
     except Exception:
         anchors = {}
     _GPOS_CACHE[path] = anchors
@@ -171,18 +188,11 @@ def _mark_offset(base, marks, font):
         return 0.0, 0.0
     anchors = _gpos_anchors(font)
     if anchors:
-        def uni(ch):
-            return "uni%04X" % ord(ch)
-        base_g = None
-        marks_g = []
-        cmap_hint = uni
-        base_g = cmap_hint(base)
-        marks_g = [(ch, cmap_hint(ch)) for ch in centered]
-        entry = anchors.get(base_g)
+        entry = anchors.get(base)
         if entry:
             dx = dy = None
-            for ch, g in marks_g:
-                off = entry.get(g)
+            for ch in centered:
+                off = entry.get(ch)
                 if off is not None:
                     dx = off[0] if dx is None else dx + off[0]
                     dy = off[1] if dy is None else dy + off[1]
