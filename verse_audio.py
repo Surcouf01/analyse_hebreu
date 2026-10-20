@@ -217,6 +217,12 @@ def synthesize_wav(text, path, speed=1.0, voice="shaul"):
     LAST_ERROR = None
     try:
         piper = _get_models(voice)
+        # Qamats qatan : conversion explicite (U+05C7) avant le retrait des
+        # teamim — le texte biblique n'encode pas la distinction (BHSA :
+        # 0 occurrence de U+05C7) et phonikud lirait l'ambigu U+05B8
+        # comme /a/ (ex. כָּל kal au lieu de kol).
+        import qamats_qatan
+        text = qamats_qatan.apply_for_speech(text)
         phonemes = phonemize(substitute_tetragrammaton(strip_teamim(text)))
         length_scale = piper.config["inference"]["length_scale"]
         if speed and speed > 0 and speed != 1.0:
