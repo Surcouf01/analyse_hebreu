@@ -54,6 +54,35 @@ def _is_mark(ch):
     return 0x0591 <= ord(ch) <= 0x05C7 and ch not in ("\u05be", "\u05c0", "\u05c3", "\u05c6")
 
 
+# Points shin/sin : leur position latérale sur le ש distingue שׁ/שׂ —
+# ils ne doivent PAS être recentrés.
+_LATERAL_DOTS = ("\u05c1", "\u05c2")
+
+
+def _centering_offset(base, marks, font):
+    """Décalage horizontal pour centrer les marques sur la consonne.
+
+    Sans moteur de shaping, Pillow dessine la marque depuis l'origine
+    du cluster : selon les métriques, elle tombe trop à gauche (ex. le
+    holam sur le bord gauche du ש). On centre l'encre des marques sur
+    l'encre de la consonne via les bounding boxes de la police.
+    Les points shin/sin gardent leur position d'origine (latérale).
+    Renvoie un flottant en pixels (dépend de la taille de police).
+    """
+    centered = "".join(ch for ch in marks if ch not in _LATERAL_DOTS)
+    if not centered or not base:
+        return 0.0
+    bb_base = font.getbbox(base)
+    bb_marks = font.getbbox(centered)
+    if not bb_base or not bb_marks:
+        return 0.0
+    base_ink_w = bb_base[2] - bb_base[0]
+    marks_ink_w = bb_marks[2] - bb_marks[0]
+    # Origine du dessin de la marque : aligner les centres d'encre.
+    target = bb_base[0] + (base_ink_w - marks_ink_w) / 2 - bb_marks[0]
+    return target
+
+
 def _split_clusters(s):
     """Découpe une chaîne en clusters (consonne + marques qui la portent).
 
@@ -127,7 +156,8 @@ def _draw_hebrew_run(draw, x_left, y, run, font, fill):
             x -= draw.textlength(base, font=font)
             draw.text((x, y), base, font=font, fill=fill)
             if marks:
-                draw.text((x, y), marks, font=font, fill=fill)
+                dx = _centering_offset(base, marks, font)
+                draw.text((x + dx, y), marks, font=font, fill=fill)
         elif marks:
             draw.text((x, y), marks, font=font, fill=fill)
 
