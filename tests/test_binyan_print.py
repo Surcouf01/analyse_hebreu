@@ -229,6 +229,59 @@ def test_draw_text_nikud_anchor():
     print("test_draw_text_nikud_anchor : ok")
 
 
+def test_shuruq_centering():
+    """Le dagesh du shuruq (וּ) tombe dans l'encre du vav, pas à côté.
+
+    Régression : le centrage sur la chasse (advance) du vav — large mais
+    à l'encre étroite — posait le point à droite de la lettre.
+    """
+    from PIL import Image, ImageDraw, ImageFont
+    saved = binyan_print._RAQM
+    font_path = None
+    for regular, _bold in binyan_print._font_pairs():
+        if os.path.isfile(regular):
+            font_path = regular
+            break
+    if font_path is None:
+        print("test_shuruq_centering : ignoré (aucune police)")
+        return
+    font = ImageFont.truetype(font_path, 96)
+
+    def render(s):
+        img = Image.new("RGB", (600, 200), "white")
+        d = ImageDraw.Draw(img)
+        binyan_print._draw_text(d, (100, 30), s, font=font, fill="black")
+        return img
+
+    try:
+        binyan_print._RAQM = False
+        vav = "\u05d5"
+        vav_dagesh = "\u05d5\u05bc"
+        img_with, img_bare = render(vav_dagesh), render(vav)
+        p1 = img_with.convert("L").load()
+        p2 = img_bare.convert("L").load()
+        pts_bare = sorted({x for x in range(600) for y in range(200)
+                           if p2[x, y] < 180})
+        # Encre totale du vav+shuruq : ne doit pas déborder à droite
+        # de l'encre du vav seul de plus d'un point du dagesh.
+        pts_with = sorted({x for x in range(600) for y in range(200)
+                           if p1[x, y] < 180})
+        assert max(pts_with) <= max(pts_bare) + 2, \
+            (max(pts_with), max(pts_bare))
+        assert min(pts_with) >= min(pts_bare) - 2
+        # Le décalage de centrage place l'encre du dagesh dans la
+        # largeur d'encre du vav (méthode _ink_bbox, rendu réel).
+        bx0, bx1 = binyan_print._ink_bbox(vav, font)
+        dx0, dx1 = binyan_print._ink_bbox("\u05bc", font)
+        off = binyan_print._centering_offset(vav, "\u05bc", font)
+        marked = (dx0 + off, dx1 + off)
+        assert bx0 - 1 <= marked[0] and marked[1] <= bx1 + 1, \
+            (bx0, bx1, marked)
+    finally:
+        binyan_print._RAQM = saved
+    print("test_shuruq_centering : ok")
+
+
 def test_font_scale():
     """font_scale agrandit/réduit les polices et borne les excès."""
     analysis = _sample_analysis()
@@ -256,5 +309,6 @@ if __name__ == "__main__":
     test_render_and_pdf()
     test_visual_raqm_modes()
     test_draw_text_nikud_anchor()
+    test_shuruq_centering()
     test_font_scale()
     print("tests/test_binyan_print.py : tous les tests sont passés.")

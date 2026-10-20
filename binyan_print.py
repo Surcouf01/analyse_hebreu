@@ -59,27 +59,65 @@ def _is_mark(ch):
 _LATERAL_DOTS = ("\u05c1", "\u05c2")
 
 
+# Encre réelle d'un glyphe : (nom_police, taille, glyphe) -> (x_min, x_max)
+# mesurée par rendu (getbbox de la police est trompeur pour certains
+# glyphes étroits, ex. le vav dont la chasse dépasse largement l'encre).
+_INK_BBOX_CACHE = {}
+
+
+def _ink_bbox(glyph, font):
+    """Bounding box d'encre horizontale d'un glyphe, par rendu (cache).
+
+    Rendu sur une image temporaire et scan des pixels non blancs :
+    les métriques getbbox de la police couvrent la chasse complète,
+    pas l'encre réelle (le vav est étroit mais sa chasse est large) ;
+    centrer sur la chasse posait le shuruq (וּ) à droite du corps du
+    vav.
+    """
+    from PIL import Image, ImageDraw
+    key = (getattr(font, "path", None), getattr(font, "size", None), glyph)
+    cached = _INK_BBOX_CACHE.get(key)
+    if cached is not None:
+        return cached
+    size = max(8, int(getattr(font, "size", 16)))
+    pad = size
+    img = Image.new("L", (size * 4 + 2 * pad, size * 3), 255)
+    draw = ImageDraw.Draw(img)
+    draw.text((pad, size), glyph, font=font, fill=0)
+    px = img.load()
+    w, h = img.size
+    xs = [x for x in range(w) for y in range(h) if px[x, y] < 160]
+    if not xs:
+        result = (0.0, 0.0)
+    else:
+        result = (min(xs) - pad, max(xs) - pad)
+    _INK_BBOX_CACHE[key] = result
+    return result
+
+
 def _centering_offset(base, marks, font):
     """Décalage horizontal pour centrer les marques sur la consonne.
 
     Sans moteur de shaping, Pillow dessine la marque depuis l'origine
     du cluster : selon les métriques, elle tombe trop à gauche (ex. le
-    holam sur le bord gauche du ש). On centre l'encre des marques sur
-    l'encre de la consonne via les bounding boxes de la police.
+    holam sur le bord gauche du ש) ou trop à droite (ex. le shuruq
+    sur le vav, dont la chasse dépasse l'encre). On centre l'encre
+    réelle des marques sur l'encre réelle de la consonne, mesurée
+    par rendu (cf. _ink_bbox).
     Les points shin/sin gardent leur position d'origine (latérale).
     Renvoie un flottant en pixels (dépend de la taille de police).
     """
     centered = "".join(ch for ch in marks if ch not in _LATERAL_DOTS)
     if not centered or not base:
         return 0.0
-    bb_base = font.getbbox(base)
-    bb_marks = font.getbbox(centered)
-    if not bb_base or not bb_marks:
+    bx0, bx1 = _ink_bbox(base, font)
+    mx0, mx1 = _ink_bbox(centered, font)
+    base_ink_w = bx1 - bx0
+    marks_ink_w = mx1 - mx0
+    if base_ink_w <= 0 or marks_ink_w < 0:
         return 0.0
-    base_ink_w = bb_base[2] - bb_base[0]
-    marks_ink_w = bb_marks[2] - bb_marks[0]
     # Origine du dessin de la marque : aligner les centres d'encre.
-    target = bb_base[0] + (base_ink_w - marks_ink_w) / 2 - bb_marks[0]
+    target = bx0 + (base_ink_w - marks_ink_w) / 2 - mx0
     return target
 
 
