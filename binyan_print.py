@@ -48,22 +48,157 @@ _ROW_RE = re.compile(r"^ {4}(\S.*?)\s{2,}(\S.*)$")
 # Ordre pédagogique des temps (cf. binyanim_to_text).
 _TENSE_ORDER = ("perf", "impf", "impv", "juss", "coh")
 
+
+def _is_mark(ch):
+    """Marque combinante hébraïque (nikkud, dagesh…) à largeur nulle."""
+    return 0x0591 <= ord(ch) <= 0x05C7 and ch not in ("\u05be", "\u05c0", "\u05c3", "\u05c6")
+
+
+def _split_clusters(s):
+    """Découpe une chaîne en clusters (consonne + marques qui la portent).
+
+    Renvoie une liste de chaînes ; les marques non combinantes (maqqef,
+    nun inversé, grande alef…) et tout ce qui n'est pas une marque
+    forment leur propre cluster.
+    """
+    out = []
+    cur = ""
+    for ch in s:
+        if _is_mark(ch):
+            cur += ch
+        else:
+            if cur:
+                out.append(cur)
+            cur = ch
+    if cur:
+        out.append(cur)
+    return out
+
+
+def _is_hebrew_cluster(cluster):
+    return any(0x05D0 <= ord(ch) <= 0x05EA for ch in cluster)
+
+
+def _hebrew_runs(text):
+    """Découpe en runs « hébreu » / « autre », dans l'ordre logique.
+
+    Chaque run hébreu est la concaténation de clusters contenant des
+    lettres hébraïques ; tout le reste (latin, chiffres, ponctuation,
+    espaces) forme des runs « autre ».
+    """
+    clusters = _split_clusters(text)
+    runs = []
+    cur = ""
+    cur_heb = None
+    for cluster in clusters:
+        heb = _is_hebrew_cluster(cluster)
+        if cur_heb is None or heb == cur_heb:
+            cur += cluster
+            cur_heb = heb
+        else:
+            runs.append((cur_heb, cur))
+            cur = cluster
+            cur_heb = heb
+    if cur:
+        runs.append((cur_heb, cur))
+    return runs
+
+
+def _run_width(draw, run, font):
+    if not run:
+        return 0.0
+    return sum(draw.textlength("".join(ch for ch in cluster
+                                       if not _is_mark(ch))
+                                or cluster, font=font)
+               for cluster in _split_clusters(run))
+
+
+def _draw_hebrew_run(draw, x_left, y, run, font, fill):
+    """Dessine un run hébreu : clusters de droite à gauche.
+
+    ``x_left`` est le bord GAUCHE du run ; le premier cluster logique
+    se pose au bord droit. Retourne rien — largeur via _run_width.
+    """
+    x = x_left + _run_width(draw, run, font)
+    for cluster in _split_clusters(run):
+        base = "".join(ch for ch in cluster if not _is_mark(ch))
+        marks = "".join(ch for ch in cluster if _is_mark(ch))
+        if base:
+            x -= draw.textlength(base, font=font)
+            draw.text((x, y), base, font=font, fill=fill)
+            if marks:
+                draw.text((x, y), marks, font=font, fill=fill)
+        elif marks:
+            draw.text((x, y), marks, font=font, fill=fill)
+
+
+def _draw_text(draw, xy, text, font, fill):
+    """Dessine un texte hébreu/mixte avec ancrage correct du nikkud.
+
+    Sans raqm, Pillow dessine chaque caractère à la position du curseur
+    et l'avance : le nikkud, à largeur nulle en théorie, se retrouve
+    décalé après sa consonne. On dessine donc cluster par cluster :
+    consonne à la position du curseur, puis ses marques À LA MÊME
+    ORIGINE (elles se superposent à la consonne).
+
+    La chaîne est découpée en runs hébreu/autre (ordre logique) :
+    chaque run occupe sa place, les runs hébreux sont dessinés en
+    interne de droite à gauche, les autres de gauche à droite. Le
+    premier caractère fort donne la direction de base (un libellé
+    français contenant un mot hébreu reste globalement LTR).
+    Avec raqm, le moteur gère bidi et ancrage : simple délégation.
+    """
+    if _RAQM:
+        draw.text(xy, text, font=font, fill=fill)
+        return
+    runs = _hebrew_runs(text)
+    if not any(heb for heb, _ in runs):
+        draw.text(xy, text, font=font, fill=fill)
+        return
+    base_rtl = runs[0][0]
+    x, y = xy
+    if not base_rtl:
+        # Base LTR : runs de gauche à droite, chaque run à sa place.
+        for heb, run in runs:
+            if heb:
+                _draw_hebrew_run(draw, x, y, run, font, fill)
+            else:
+                draw.text((x, y), run, font=font, fill=fill)
+            x += _run_width(draw, run, font)
+    else:
+        # Base RTL : le premier run logique se pose au bord droit, les
+        # suivants vers la gauche ; un run latin s'écrit en interne LTR.
+        total = _text_width(draw, text, font)
+        x += total
+        for heb, run in runs:
+            w = _run_width(draw, run, font)
+            if heb:
+                _draw_hebrew_run(draw, x - w, y, run, font, fill)
+            else:
+                draw.text((x - w, y), run, font=font, fill=fill)
+            x -= w
+
+
+def _text_width(draw, text, font):
+    """Largeur d'un texte tel que dessiné par _draw_text."""
+    if _RAQM:
+        return draw.textlength(text, font=font)
+    return sum(_run_width(draw, run, font)
+               for _, run in _hebrew_runs(text))
+
 _NON_FINITE_TITLE = "Formes non finies"
 
 
 def _visual(text):
     """Texte prêt au dessin Pillow, sans marques de directionnalité.
 
-    Avec raqm : chaîne logique intacte (raqm applique le bidi et place
-    le nikkud sur sa consonne). Sans raqm : conversion en ordre visuel
-    (bidi_display) car Pillow dessine les caractères de gauche à droite.
+    Le dessin est fait par _draw_text (ancrage du nikkud) ; ici on ne
+    fait que nettoyer les marques de direction (LRM/RLM), jamais
+    inverser : l'ordre des clusters est géré au dessin.
     """
     if not text:
         return ""
-    text = str(text)
-    if _RAQM:
-        return _BIDI_MARKS_RE.sub("", text)
-    return _BIDI_MARKS_RE.sub("", bidi_display.to_visual(text))
+    return _BIDI_MARKS_RE.sub("", str(text))
 
 
 def _binyan_entry(parsed, binyan_code):
@@ -267,12 +402,12 @@ def render_binyan_pages(doc, dpi=150, font_scale=1.0):
     img, draw, y = new_page()
 
     def text(x, yy, s, font, fill=ink):
-        draw.text((x, yy), _visual(s), font=font, fill=fill)
+        _draw_text(draw, (x, yy), _visual(s), font=font, fill=fill)
 
     def text_right(x_right, yy, s, font, fill=ink):
         s = _visual(s)
-        w = draw.textlength(s, font=font)
-        draw.text((x_right - w, yy), s, font=font, fill=fill)
+        w = _text_width(draw, s, font)
+        _draw_text(draw, (x_right - w, yy), s, font=font, fill=fill)
 
     def ensure_room(needed):
         nonlocal img, draw, y

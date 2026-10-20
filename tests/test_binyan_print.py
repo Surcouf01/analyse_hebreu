@@ -154,27 +154,79 @@ def test_render_and_pdf():
 
 
 def test_visual_raqm_modes():
-    """Ordre de dessin selon le moteur : raqm reçoit du logique, sans
-    raqm la chaîne est pré-inversée (ordre visuel)."""
+    """_visual ne fait que nettoyer les marques de direction ; l'ordre
+    (bidi) et l'ancrage du nikkud sont gérés au dessin (_draw_text)."""
     form = "\u05e9\u05b9\u05c1\u05de\u05b5\u05e8"  # shin+holam+sin, mem, tsere, resh
+    out = binyan_print._visual(form)
+    # Chaîne logique intacte : le dessin s'en charge, pas _visual.
+    assert out == form, (out, form)
+    # Les marques de direction (LRM/RLM) sont retirées.
+    marked = "\u200e" + form + "\u200f"
+    assert binyan_print._visual(marked) == form
+    print("test_visual_raqm_modes : ok")
+
+
+def test_draw_text_nikud_anchor():
+    """Sans raqm : le nikkud est ancré sur sa consonne, l'hébreu est
+    dessiné de droite à gauche, les textes mixtes gardent leur ordre
+    de lecture."""
+    from PIL import Image, ImageDraw, ImageFont
     saved = binyan_print._RAQM
+    font_path = None
+    for regular, _bold in binyan_print._font_pairs():
+        if os.path.isfile(regular):
+            font_path = regular
+            break
+    if font_path is None:
+        print("test_draw_text_nikud_anchor : ignoré (aucune police)")
+        return
+    font = ImageFont.truetype(font_path, 64)
+
+    def render(s):
+        img = Image.new("RGB", (600, 160), "white")
+        d = ImageDraw.Draw(img)
+        binyan_print._draw_text(d, (50, 30), s, font=font, fill="black")
+        return img
+
+    def ink(img):
+        px = img.convert("L").load()
+        w, h = img.size
+        return {(x, y) for x in range(w) for y in range(h)
+                if px[x, y] < 180}
+
     try:
-        binyan_print._RAQM = True
-        out = binyan_print._visual(form)
-        assert out == form, "raqm : la chaîne logique doit être intacte"
         binyan_print._RAQM = False
-        out = binyan_print._visual(form)
-        # Sans raqm : ordre visuel — la dernière consonne (resh) en tête.
-        assert out[0] == "\u05e8", out
-        assert out[-1] == "\u05c1", out
-        # Tous les caractères d'origine sont conservés (permutation).
-        assert sorted(out) == sorted(form), (out, form)
-        # Sans marques de directionnalité dans les deux cas.
-        for ch in out:
-            assert ord(ch) not in (0x200e, 0x200f), hex(ord(ch))
+        # Le holam (point haut) de שֹׁמֵר doit être sur le shin, à
+        # DROITE du mot (premier cluster logique = bord droit).
+        img = render("\u05e9\u05b9\u05c1\u05de\u05b5\u05e8")
+        px = ink(img)
+        xs = sorted({x for x, _ in px})
+        mid = (xs[0] + xs[-1]) / 2
+        top_of = lambda side: min((y for x, y in px
+                                   if (x > mid) == side), default=999)
+        # Côté droit : encre haute (tête du shin + holam au-dessus).
+        # Côté gauche : le resh est une lettre haute aussi — on compare
+        # les MINIMUMS : le holam dépasse la hauteur des corps lettres.
+        right_top = top_of(True)
+        left_top = top_of(False)
+        # Sans ancrage correct, le holam tomberait après le mot (hors
+        # colonnes) ; avec l'ancrage il est au-dessus du shin, plus haut
+        # que le corps du resh.
+        assert right_top < left_top, (right_top, left_top)
+
+        # Texte mixte : la largeur mesure tout, le rendon ne déborde pas
+        # à gauche de l'origine.
+        mixed = "Racine \u05e9\u05b8\u05c1\u05de\u05b7\u05e8"
+        img2 = Image.new("RGB", (900, 160), "white")
+        d2 = ImageDraw.Draw(img2)
+        w = binyan_print._text_width(d2, mixed, font)
+        binyan_print._draw_text(d2, (50, 30), mixed, font=font, fill="black")
+        xs2 = sorted({x for x, _ in ink(img2)})
+        assert xs2[0] >= 45, xs2[0]        # ne part pas avant l'origine
+        assert xs2[-1] <= 55 + w + 2, (xs2[-1], w)  # ne déborde pas
     finally:
         binyan_print._RAQM = saved
-    print("test_visual_raqm_modes : ok")
+    print("test_draw_text_nikud_anchor : ok")
 
 
 def test_font_scale():
@@ -203,5 +255,6 @@ if __name__ == "__main__":
     test_document()
     test_render_and_pdf()
     test_visual_raqm_modes()
+    test_draw_text_nikud_anchor()
     test_font_scale()
     print("tests/test_binyan_print.py : tous les tests sont passés.")
