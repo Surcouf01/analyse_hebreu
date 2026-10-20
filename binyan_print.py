@@ -738,21 +738,70 @@ def save_pdf(pages, path, dpi=150):
 
 # --- Impression -------------------------------------------------------------
 
-def print_pdf_file(path):
-    """Imprime un PDF via la commande d'impression de la plateforme.
+def list_printers():
+    """Imprimantes installées, par ordre de préférence système.
+
+    La première est l'imprimante par défaut quand elle est identifiable.
+    Renvoie une liste (éventuellement vide) de noms.
+    """
+    try:
+        if sys.platform == "win32":
+            import win32print
+            names = []
+            for flags, name, _desc in win32print.EnumPrinters(
+                    win32print.PRINTER_ENUM_LOCAL | win32print.PRINTER_ENUM_CONNECTIONS):
+                names.append(name)
+            default = None
+            try:
+                default = win32print.GetDefaultPrinter()
+            except Exception:
+                pass
+            if default in names:
+                names.remove(default)
+                names.insert(0, default)
+            return names
+        # Linux et macOS : lpstat (CUPS)
+        for cmd in ("lpstat -e", "lpstat -a"):
+            try:
+                out = subprocess.run(cmd.split(), check=True, capture_output=True,
+                                     timeout=15)
+                names = [l.strip() for l in
+                        out.stdout.decode(errors="replace").splitlines()
+                        if l.strip()]
+                if names:
+                    return names
+            except (OSError, subprocess.SubprocessError):
+                continue
+        return []
+    except Exception:
+        return []
+
+
+def print_pdf_file(path, printer=None):
+    """Imprime un PDF sur l'imprimante donnée (défaut si None).
+
+    Sous Windows : verbe shell « printto » qui accepte une imprimante
+    cible (l'association PDF du système gère l'impression).
+    Sous Linux/macOS : lp -d / lpr -P (CUPS).
 
     Renvoie True si une commande a été lancée, False si le fichier
     doit être ouvert manuellement pour impression.
     """
     try:
         if sys.platform == "win32":
-            os.startfile(path, "print")  # noqa: S606 (association PDF)
+            if printer:
+                import win32api
+                win32api.ShellExecute(0, "printto", path,
+                                      f'"{printer}"', ".", 0)
+            else:
+                os.startfile(path, "print")  # noqa: S606 (association PDF)
             return True
         if sys.platform == "darwin":
-            subprocess.run(["lpr", path], check=True,
-                           capture_output=True, timeout=30)
+            cmd = ["lpr", path] if not printer else ["lpr", "-P", printer, path]
+            subprocess.run(cmd, check=True, capture_output=True, timeout=30)
             return True
-        for cmd in (["lp", path], ["lpr", path]):
+        for cmd in ((["lp", "-d", printer, path] if printer else ["lp", path]),
+                    (["lpr", "-P", printer, path] if printer else ["lpr", path])):
             try:
                 subprocess.run(cmd, check=True, capture_output=True,
                                timeout=30)
@@ -778,6 +827,60 @@ def open_pdf_file(path):
         return False
 
 
+def choose_printer_dialog(parent, printers, default=None):
+    """Dialogue Tk de sélection d'imprimante ; renvoie le nom ou None.
+
+    Liste des imprimantes (la première/défaut présélectionnée), boutons
+    Imprimer et Annuler. Renvoie None si la liste est vide (l'appelant
+    imprime sur la défaut) ou si l'utilisateur annule.
+    """
+    if not printers:
+        return None
+    import tkinter as tk
+    from tkinter import ttk
+
+    choice = {"printer": None}
+    dlg = tk.Toplevel(parent)
+    dlg.title("Imprimer")
+    dlg.transient(parent)
+    dlg.resizable(False, False)
+    dlg.grab_set()
+
+    frm = ttk.Frame(dlg, padding=12)
+    frm.pack(fill="both", expand=True)
+    ttk.Label(frm, text="Imprimante :").grid(row=0, column=0,
+                                             sticky="w", pady=(0, 6))
+    var = tk.StringVar(value=default if default in printers else printers[0])
+    lst = ttk.Combobox(frm, textvariable=var, values=printers,
+                       state="readonly", width=44)
+    lst.grid(row=1, column=0, sticky="ew", pady=(0, 12))
+    frm.columnconfigure(0, weight=1)
+
+    def ok():
+        choice["printer"] = var.get()
+        dlg.destroy()
+
+    def cancel():
+        choice["printer"] = None
+        dlg.destroy()
+
+    btns = ttk.Frame(frm)
+    btns.grid(row=2, column=0, sticky="e")
+    ttk.Button(btns, text="Annuler", command=cancel).pack(side="left",
+                                                          padx=(0, 6))
+    ttk.Button(btns, text="Imprimer", command=ok).pack(side="left")
+
+    parent.update_idletasks()
+    x = parent.winfo_rootx() + (parent.winfo_width() - dlg.winfo_reqwidth()) // 2
+    y = parent.winfo_rooty() + (parent.winfo_height() - dlg.winfo_reqheight()) // 2
+    dlg.geometry(f"+{max(0, x)}+{max(0, y)}")
+    dlg.bind("<Return>", lambda e: ok())
+    dlg.bind("<Escape>", lambda e: cancel())
+    dlg.protocol("WM_DELETE_WINDOW", cancel)
+    dlg.wait_window()
+    return choice["printer"]
+
+
 # --- Aperçu (Tkinter) -------------------------------------------------------
 
 class BinyanPrintPreview:
@@ -793,7 +896,7 @@ class BinyanPrintPreview:
     def __init__(self, parent, pages, title="Binyan", doc=None, dpi=150,
                  two_up=False, font_scale=100, on_close=None):
         import tkinter as tk
-        from tkinter import ttk, filedialog, messagebox
+        from tkinter import ttk, messagebox
         from PIL import ImageTk
 
         self._tk = tk
@@ -860,8 +963,6 @@ class BinyanPrintPreview:
         self._font_spin.bind("<Return>", lambda e: self._rerender())
         self._font_spin.bind("<FocusOut>", lambda e: self._rerender())
 
-        ttk.Button(bar, text="Enregistrer en PDF…",
-                   command=self._save_pdf).pack(side="right", padx=4)
         self.btn_print = ttk.Button(bar, text="Imprimer…", command=self._print)
         self.btn_print.pack(side="right", padx=4)
         ttk.Button(bar, text="Fermer",
@@ -1019,6 +1120,14 @@ class BinyanPrintPreview:
     # --- impression et export ----------------------------------------------
 
     def _print(self):
+        # Sélection de l'imprimante : liste système, défaut présélectionnée.
+        # Pas d'imprimante détectée : repli sur l'imprimante par défaut.
+        printers = list_printers()
+        printer = None
+        if printers:
+            printer = choose_printer_dialog(self.win, printers)
+            if printer is None:
+                return  # annulé
         pdf = os.path.join(tempfile.gettempdir(), "analyse_hebreu_binyan.pdf")
         try:
             save_pdf(self._current_pages(), pdf)
@@ -1026,34 +1135,20 @@ class BinyanPrintPreview:
             self._messagebox.showerror(
                 "Impression", f"Échec de la génération du PDF : {exc}")
             return
-        if print_pdf_file(pdf):
+        if print_pdf_file(pdf, printer=printer):
             self._messagebox.showinfo(
-                "Impression", "Document envoyé à l'imprimante.")
+                "Impression",
+                (f"Document envoyé à « {printer} »." if printer
+                 else "Document envoyé à l'imprimante par défaut."))
         elif open_pdf_file(pdf):
             self._messagebox.showinfo(
                 "Impression",
-                "Aucune imprimante en ligne de commande n'est disponible.\n"
+                "Aucune imprimante n'est accessible en ligne de commande.\n"
                 "Le PDF a été ouvert : imprimez-le depuis sa visionneuse.")
         else:
             self._messagebox.showwarning(
                 "Impression",
                 f"Impossible de lancer l'impression.\nPDF : {pdf}")
-
-    def _save_pdf(self):
-        from tkinter import filedialog
-        path = filedialog.asksaveasfilename(
-            parent=self.win, defaultextension=".pdf",
-            filetypes=[("Fichier PDF", "*.pdf")])
-        if not path:
-            return
-        try:
-            save_pdf(self._current_pages(), path)
-        except (OSError, ValueError) as exc:
-            self._messagebox.showerror(
-                "Enregistrement", f"Échec de l'enregistrement : {exc}")
-            return
-        self._messagebox.showinfo(
-            "Enregistrement", f"PDF enregistré :\n{path}")
 
 
 def open_binyan_preview(parent, parsed, binyan_code,
