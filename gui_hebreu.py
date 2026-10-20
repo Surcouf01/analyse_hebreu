@@ -2457,7 +2457,7 @@ class AnalyseurGUI:
             ttk.Button(header, text="Imprimer ce binyan…",
                        style="Toolbutton",
                        command=lambda b=b: self._print_binyan(b["code"])
-                       ).pack(side="right", padx=8, pady=4)
+                       ).pack(side="left", padx=8, pady=4)
             body = ttk.Frame(tab)
             body.grid(row=1, column=0, sticky="nsew")
             tab.rowconfigure(1, weight=1)
