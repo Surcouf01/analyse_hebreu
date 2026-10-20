@@ -395,7 +395,8 @@ class BinyanPrintPreview:
     _MIN_ZOOM = 0.25
     _MAX_ZOOM = 3.0
 
-    def __init__(self, parent, pages, title="Binyan", doc=None, dpi=150):
+    def __init__(self, parent, pages, title="Binyan", doc=None, dpi=150,
+                 two_up=False, font_scale=100, on_close=None):
         import tkinter as tk
         from tkinter import ttk, filedialog, messagebox
         from PIL import ImageTk
@@ -405,8 +406,9 @@ class BinyanPrintPreview:
         self._ImageTk = ImageTk
         self.doc = doc
         self._dpi = dpi
+        self._on_close = on_close
         self.pages = pages
-        self._two_up = tk.BooleanVar(value=False)
+        self._two_up = tk.BooleanVar(value=bool(two_up))
         self._sheets_cache = None
         self._page = 0
         self._zoom = 1.0
@@ -451,20 +453,24 @@ class BinyanPrintPreview:
         # rendu 400 ms plus tard (le rendu complet d'un paradigme prend
         # quelques centaines de ms).
         ttk.Label(bar, text="Police :").pack(side="left", padx=(8, 2))
-        self.font_scale_var = tk.StringVar(value="100")
-        font_spin = ttk.Spinbox(bar, from_=60, to=200, increment=10,
-                                width=5, textvariable=self.font_scale_var,
-                                command=self._on_font_scale)
-        font_spin.pack(side="left")
+        self.font_scale_var = tk.StringVar(value=str(int(font_scale)))
+        self._font_spin = ttk.Spinbox(bar, from_=60, to=200, increment=10,
+                                      width=5, textvariable=self.font_scale_var,
+                                      command=self._rerender)
+        self._font_spin.pack(side="left")
         ttk.Label(bar, text="%").pack(side="left")
-        font_spin.bind("<KeyRelease>", lambda e: self._on_font_scale())
+        # Flèches de la spinbox : rendu immédiat (command ci-dessus) ;
+        # frappe clavier : rendu différé, le temps de taper la valeur.
+        self._font_spin.bind("<KeyRelease>", lambda e: self._on_font_scale())
+        self._font_spin.bind("<Return>", lambda e: self._rerender())
+        self._font_spin.bind("<FocusOut>", lambda e: self._rerender())
 
         ttk.Button(bar, text="Enregistrer en PDF…",
                    command=self._save_pdf).pack(side="right", padx=4)
         self.btn_print = ttk.Button(bar, text="Imprimer…", command=self._print)
         self.btn_print.pack(side="right", padx=4)
         ttk.Button(bar, text="Fermer",
-                   command=self.win.destroy).pack(side="right", padx=4)
+                   command=self._close).pack(side="right", padx=4)
 
         wrap = ttk.Frame(self.win)
         wrap.pack(fill="both", expand=True)
@@ -480,37 +486,72 @@ class BinyanPrintPreview:
         self.win.bind("<Escape>", lambda e: self.win.destroy())
         self.win.bind("<Prior>", lambda e: self._prev_page())
         self.win.bind("<Next>", lambda e: self._next_page())
+        # Fermeture (Échap, croix, bouton) : propager les réglages à
+        # l'appelant (persistance gui.properties) avant de détruire.
+        self.win.protocol("WM_DELETE_WINDOW", self._close)
 
         self._fit_width(first=True)
 
     # --- disposition 2 pages/feuille ----------------------------------------
+
+    def _close(self):
+        """Ferme l'aperçu en propageant les réglages courants."""
+        if self._on_close is not None:
+            try:
+                self._on_close(self._two_up.get(),
+                               int(self.font_scale_var.get()))
+            except (ValueError, TypeError):
+                pass
+        self.win.destroy()
 
     def _invalidate_sheets(self, *_args):
         """La case « 2 pages/feuille » a changé : composition à refaire."""
         self._sheets_cache = None
 
     def _on_font_scale(self):
-        """Nouvelle taille de police : re-rend le document (différé).
+        """Nouvelle taille de police : re-rend le document.
 
-        Sans document source (aperçu ouvert sur des pages déjà rendues),
-        le contrôle est sans effet.
+        Rendu immédiat sur les flèches de la spinbox (retour tactile) ;
+        différé de 400 ms sur la frappe clavier (le temps de finir de
+        taper la valeur). Sans document source (aperçu ouvert sur des
+        pages déjà rendues), le contrôle est sans effet.
         """
         if self.doc is None:
             return
         if self._font_job is not None:
-            self.win.after_cancel(self._font_job)
+            try:
+                self.win.after_cancel(self._font_job)
+            except self._tk.TclError:
+                pass
+            self._font_job = None
         self._font_job = self.win.after(400, self._rerender)
 
     def _rerender(self):
         self._font_job = None
+        raw = self.font_scale_var.get().strip()
+        if not raw:
+            return
         try:
-            scale = int(self.font_scale_var.get()) / 100.0
+            scale = float(raw) / 100.0
         except ValueError:
             return
         if not (0.6 <= scale <= 2.0):
             return
-        self.pages = render_binyan_pages(self.doc, dpi=self._dpi,
-                                         font_scale=scale)
+        # Le rendu d'un paradigme multi-pages peut prendre plusieurs
+        # secondes : montrer l'activité (curseur, libellé) et forcer le
+        # rafraîchissement avant de bloquer la boucle d'événements.
+        self.win.configure(cursor="watch")
+        self.label_page.configure(text="re-rendu…")
+        self.win.update_idletasks()
+        try:
+            self.pages = render_binyan_pages(self.doc, dpi=self._dpi,
+                                             font_scale=scale)
+        except Exception as exc:
+            self.win.configure(cursor="")
+            self._messagebox.showerror(
+                "Impression", f"Échec du re-rendu : {exc}")
+            return
+        self.win.configure(cursor="")
         self._sheets_cache = None
         self._page = 0
         self._fit_width(first=True)
@@ -620,12 +661,19 @@ class BinyanPrintPreview:
             "Enregistrement", f"PDF enregistré :\n{path}")
 
 
-def open_binyan_preview(parent, parsed, binyan_code):
+def open_binyan_preview(parent, parsed, binyan_code,
+                        two_up=False, font_scale=100, on_close=None):
     """Construit le document du binyan, le met en pages et ouvre l'aperçu.
+
+    ``two_up`` et ``font_scale`` (pourcentage) sont les réglages
+    initiaux de disposition ; ``on_close(two_up, font_scale)`` est
+    appelé à la fermeture pour persister les réglages.
 
     Renvoie la fenêtre d'aperçu, ou None si le binyan est introuvable
     (l'erreur est signalée par l'appelant).
     """
     doc = build_binyan_document(parsed, binyan_code)
-    pages = render_binyan_pages(doc)
-    return BinyanPrintPreview(parent, pages, title=doc["title"], doc=doc)
+    pages = render_binyan_pages(doc, font_scale=font_scale / 100.0)
+    return BinyanPrintPreview(parent, pages, title=doc["title"], doc=doc,
+                              two_up=two_up, font_scale=font_scale,
+                              on_close=on_close)

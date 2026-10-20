@@ -149,6 +149,28 @@ _PROPS = _load_properties()
 # Géométrie par défaut de la fenêtre principale.
 DEFAULT_GEOMETRY = "1200x1000"
 
+# Réglages d'impression des binyanim (aperçu avant impression) : pages
+# par feuille (1 ou 2) et taille de police du document (pourcentage des
+# tailles de base), persistés dans gui.properties.
+PRINT_PER_SHEET_DEFAULT = "1"
+PRINT_FONT_SCALE_DEFAULT = "100"
+
+
+def _saved_print_settings():
+    """Réglages d'impression sauvegardés (pages/feuille, taille police)."""
+    per_sheet = _PROPS.get("print.pages.per.sheet",
+                           PRINT_PER_SHEET_DEFAULT).strip()
+    if per_sheet not in ("1", "2"):
+        per_sheet = PRINT_PER_SHEET_DEFAULT
+    try:
+        font_scale = int(float(_PROPS.get("print.font.scale",
+                                          PRINT_FONT_SCALE_DEFAULT)))
+    except ValueError:
+        font_scale = int(PRINT_FONT_SCALE_DEFAULT)
+    if not 60 <= font_scale <= 200:
+        font_scale = int(PRINT_FONT_SCALE_DEFAULT)
+    return per_sheet == "2", font_scale
+
 
 def _saved_geometry():
     """Géométrie sauvegardée dans gui.properties, si elle est valide.
@@ -202,6 +224,10 @@ def _save_properties(root, updates):
                          "1.0 = normale).\n")
         if "audio.voice" in missing:
             lines.append("# Voix de lecture du verset (shaul ou michael).\n")
+        if any(k.startswith("print.") for k in missing):
+            lines.append("# Aperçu avant impression des binyanim : pages par "
+                         "feuille (1 ou 2) et taille de police du "
+                         "document (60 à 200, en pourcentage).\n")
         for k, v in missing.items():
             lines.append(f"{k} = {v}\n")
     try:
@@ -2487,8 +2513,11 @@ class AnalyseurGUI:
                 "Conjuguez d'abord un verbe (bouton « Conjuguer le verbe »).")
             return
         try:
-            binyan_print.open_binyan_preview(self.root, self.binyanim_parsed,
-                                              binyan_code)
+            two_up, font_scale = _saved_print_settings()
+            binyan_print.open_binyan_preview(
+                self.root, self.binyanim_parsed, binyan_code,
+                two_up=two_up, font_scale=font_scale,
+                on_close=self._save_print_settings)
             self.status.configure(text="Aperçu d'impression ouvert.")
         except ValueError:
             messagebox.showwarning(
@@ -2497,6 +2526,13 @@ class AnalyseurGUI:
         except Exception as exc:
             messagebox.showerror(
                 "Impression", f"Échec de la préparation de l'aperçu : {exc}")
+
+    def _save_print_settings(self, two_up, font_scale):
+        """Persiste les réglages d'aperçu (gui.properties) à la fermeture."""
+        _save_properties(self.root, {
+            "print.pages.per.sheet": "2" if two_up else "1",
+            "print.font.scale": str(int(font_scale)),
+        })
 
     # --- Lancement des analyses (en arrière-plan) -----------------------
     def _set_output(self, widget, text):
