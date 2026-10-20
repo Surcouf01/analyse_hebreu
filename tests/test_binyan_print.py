@@ -153,7 +153,30 @@ def test_render_and_pdf():
     print("test_render_and_pdf : ok")
 
 
+def test_font_scale():
+    """font_scale agrandit/réduit les polices et borne les excès."""
+    analysis = _sample_analysis()
+    parsed = parse_binyanim_text(binyanim_to_text(analysis))
+    doc = binyan_print.build_binyan_document(parsed, "qal")
+    # Document long : la pagination varie avec la taille de police.
+    long_doc = binyan_print.build_binyan_document(parsed, "qal")
+    long_doc["sections"] = long_doc["sections"] * 8
+
+    small = binyan_print.render_binyan_pages(long_doc, font_scale=0.7)
+    base = binyan_print.render_binyan_pages(long_doc, font_scale=1.0)
+    big = binyan_print.render_binyan_pages(long_doc, font_scale=1.6)
+    assert len(big) >= len(base) >= len(small), \
+        (len(small), len(base), len(big))
+
+    # Hors bornes : valeur clampée silencieusement (0.6-2.0).
+    clamped = binyan_print.render_binyan_pages(doc, font_scale=5.0)
+    maxed = binyan_print.render_binyan_pages(doc, font_scale=2.0)
+    assert len(clamped) == len(maxed)
+    print("test_font_scale : ok")
+
+
 if __name__ == "__main__":
     test_document()
     test_render_and_pdf()
+    test_font_scale()
     print("tests/test_binyan_print.py : tous les tests sont passés.")

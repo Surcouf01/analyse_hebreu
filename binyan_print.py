@@ -201,22 +201,30 @@ def _load_font(bold, pt, dpi):
 
 # --- Rendu ------------------------------------------------------------------
 
-def render_binyan_pages(doc, dpi=150):
-    """Met le document en pages A4 ; renvoie une liste de PIL.Image."""
+def render_binyan_pages(doc, dpi=150, font_scale=1.0):
+    """Met le document en pages A4 ; renvoie une liste de PIL.Image.
+
+    ``font_scale`` (0.6 à 2.0) agrandit/réduit toutes les polices du
+    document — utile pour compenser la réduction du mode 2 pages/
+    feuille ou pour un rendu plus aéré (les tailles de base sont en
+    points : 17/11/9/12/9,5/12/8 pour titre/sous-titre/méta/section/
+    libellé/forme/pied de page).
+    """
     from PIL import Image, ImageDraw
 
+    font_scale = min(2.0, max(0.6, float(font_scale)))
     scale = dpi / 72.0
     width = round(8.27 * dpi)   # 210 mm
     height = round(11.69 * dpi)  # 297 mm
     margin = round(0.85 * dpi)
     footer_zone = round(0.55 * dpi)
 
-    f_title = _load_font(True, 17, dpi)
-    f_subtitle = _load_font(False, 11, dpi)
-    f_meta = _load_font(False, 9, dpi)
-    f_section = _load_font(True, 12, dpi)
-    f_label = _load_font(False, 9.5, dpi)
-    f_form = _load_font(True, 12, dpi)
+    f_title = _load_font(True, 17 * font_scale, dpi)
+    f_subtitle = _load_font(False, 11 * font_scale, dpi)
+    f_meta = _load_font(False, 9 * font_scale, dpi)
+    f_section = _load_font(True, 12 * font_scale, dpi)
+    f_label = _load_font(False, 9.5 * font_scale, dpi)
+    f_form = _load_font(True, 12 * font_scale, dpi)
     f_footer = _load_font(False, 8, dpi)
 
     ink = "#1a1a1a"
@@ -387,7 +395,7 @@ class BinyanPrintPreview:
     _MIN_ZOOM = 0.25
     _MAX_ZOOM = 3.0
 
-    def __init__(self, parent, pages, title="Binyan"):
+    def __init__(self, parent, pages, title="Binyan", doc=None, dpi=150):
         import tkinter as tk
         from tkinter import ttk, filedialog, messagebox
         from PIL import ImageTk
@@ -395,6 +403,8 @@ class BinyanPrintPreview:
         self._tk = tk
         self._messagebox = messagebox
         self._ImageTk = ImageTk
+        self.doc = doc
+        self._dpi = dpi
         self.pages = pages
         self._two_up = tk.BooleanVar(value=False)
         self._sheets_cache = None
@@ -402,6 +412,7 @@ class BinyanPrintPreview:
         self._zoom = 1.0
         self._photo = None
         self._fit_job = None
+        self._font_job = None
 
         self.win = tk.Toplevel(parent)
         self.win.title(f"Aperçu avant impression — {title}")
@@ -435,6 +446,19 @@ class BinyanPrintPreview:
                         command=self._on_two_up).pack(side="left", padx=8)
         self._two_up.trace_add("write", self._invalidate_sheets)
 
+        # Taille de police du document (pourcentage des tailles de base).
+        # Re-rendu différé : chaque frappe dans le champ re-programme le
+        # rendu 400 ms plus tard (le rendu complet d'un paradigme prend
+        # quelques centaines de ms).
+        ttk.Label(bar, text="Police :").pack(side="left", padx=(8, 2))
+        self.font_scale_var = tk.StringVar(value="100")
+        font_spin = ttk.Spinbox(bar, from_=60, to=200, increment=10,
+                                width=5, textvariable=self.font_scale_var,
+                                command=self._on_font_scale)
+        font_spin.pack(side="left")
+        ttk.Label(bar, text="%").pack(side="left")
+        font_spin.bind("<KeyRelease>", lambda e: self._on_font_scale())
+
         ttk.Button(bar, text="Enregistrer en PDF…",
                    command=self._save_pdf).pack(side="right", padx=4)
         self.btn_print = ttk.Button(bar, text="Imprimer…", command=self._print)
@@ -464,6 +488,32 @@ class BinyanPrintPreview:
     def _invalidate_sheets(self, *_args):
         """La case « 2 pages/feuille » a changé : composition à refaire."""
         self._sheets_cache = None
+
+    def _on_font_scale(self):
+        """Nouvelle taille de police : re-rend le document (différé).
+
+        Sans document source (aperçu ouvert sur des pages déjà rendues),
+        le contrôle est sans effet.
+        """
+        if self.doc is None:
+            return
+        if self._font_job is not None:
+            self.win.after_cancel(self._font_job)
+        self._font_job = self.win.after(400, self._rerender)
+
+    def _rerender(self):
+        self._font_job = None
+        try:
+            scale = int(self.font_scale_var.get()) / 100.0
+        except ValueError:
+            return
+        if not (0.6 <= scale <= 2.0):
+            return
+        self.pages = render_binyan_pages(self.doc, dpi=self._dpi,
+                                         font_scale=scale)
+        self._sheets_cache = None
+        self._page = 0
+        self._fit_width(first=True)
 
     def _on_two_up(self):
         """Bascule 1/2 pages par feuille : recompose et rafraîchit l'aperçu."""
@@ -578,4 +628,4 @@ def open_binyan_preview(parent, parsed, binyan_code):
     """
     doc = build_binyan_document(parsed, binyan_code)
     pages = render_binyan_pages(doc)
-    return BinyanPrintPreview(parent, pages, title=doc["title"])
+    return BinyanPrintPreview(parent, pages, title=doc["title"], doc=doc)
