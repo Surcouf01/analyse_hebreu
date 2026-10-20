@@ -4775,7 +4775,7 @@
   },
   "כתב": {
     "qal": [
-      "écrire",
+      "écrire, inscrire",
       "write"
     ],
     "nif": [
@@ -4783,8 +4783,24 @@
       "be written, be recorded"
     ],
     "piel": [
-      "écrire (intensif)",
-      "write persistently"
+      "mettre par écrit, consigner, décréter",
+      "write persistently, decree"
+    ],
+    "pual": [
+      "être consigné par écrit",
+      "be written (intensive)"
+    ],
+    "hit": [
+      "s'écrire",
+      "write oneself"
+    ],
+    "hif": [
+      "faire écrire, faire consigner",
+      "cause to write"
+    ],
+    "hof": [
+      "être fait écrire",
+      "be made to write"
     ]
   },
   "כתם": {
@@ -10343,12 +10359,12 @@
   },
   "שיר": {
     "qal": [
-      "",
-      "sing; singers"
+      "chanter",
+      "sing"
     ],
     "hof": [
-      "",
-      "be sung: Imperfect"
+      "être chanté",
+      "be sung"
     ]
   },
   "שית": {

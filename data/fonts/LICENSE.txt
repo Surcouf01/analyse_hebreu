@@ -1,0 +1,29 @@
+DejaVu fonts — Copyright (c) 2003 Bitstream, Inc. (Bitstream Vera base,
+reserved font name "Bitstream Vera"), with DejaVu changes in the public
+domain (Tavmjong Bah et al., http://dejavu-fonts.org).
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the fonts to copy, merge, publish, distribute, and/or sell
+copies of the Font Software, subject to the conditions of the Bitstream
+Vera license (below) and to the following:
+  - The original or modified Font Software may NOT be sold by itself
+    but only as part of a larger software distribution.
+  - The copyright notice and this permission notice shall be included
+    in all copies or substantial portions of the Font Software.
+
+The fonts are embedded for the print preview of analyse_hebreu because
+Windows has no font with reliable Hebrew GPOS tables available to the
+bundled Pillow (which ships without libraqm); DejaVu Sans provides
+correct nikud positioning.
+
+--- Bitstream Vera License (excerpts) ---
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this font software, to deal in the Font Software without
+restriction, including without limitation the rights to use, copy,
+merge, publish, distribute, and/or sell copies of the Font Software,
+and to permit persons to whom the Font Software is furnished to do so,
+subject to the following conditions:
+The above copyright notice and this permission notice shall be
+included in all copies of the Font Software.
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND...

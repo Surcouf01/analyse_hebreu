@@ -16,18 +16,20 @@ from pathlib import Path
 # Modules graphiques/Win32 fournis par l'interpréteur ou optionnels selon la
 # plateforme : non vérifiés par find_spec (tkinter est inclus dans l'install
 # Windows/macOS de Python ; win32* sont couverts par pywin32 sous Windows).
-SKIPPED_PREFIXES = ("tkinter", "win32con", "win32gui", "win32ui")
+SKIPPED_PREFIXES = ("tkinter", "win32con", "win32gui", "win32ui",
+                    "win32api", "win32print")
 
 # Modules locaux du dépôt : résolus relativement au répertoire racine du
 # projet (cwd du script), pas via site-packages.
 LOCAL_PACKAGES = ("bhsa_grammar", "bidi_display", "verse_audio", "curation",
-                  "stable_selection")
+                  "stable_selection", "binyan_print", "qamats_qatan")
 
 DEFAULT_TARGETS = (
     "gui_hebreu.py",
     "analyse_hebreu.py",
     "verse_audio.py",
     "bidi_display.py",
+    "binyan_print.py",
 )
 
 

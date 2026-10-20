@@ -78,6 +78,7 @@ from bhsa_grammar.mishnah_analyzer import (
     mishnah_analysis_block,
 )
 import verse_audio
+import binyan_print
 from stable_selection import StableSelection
 from verse_audio import (
     VersePlayer,
@@ -148,6 +149,28 @@ _PROPS = _load_properties()
 # Géométrie par défaut de la fenêtre principale.
 DEFAULT_GEOMETRY = "1200x1000"
 
+# Réglages d'impression des binyanim (aperçu avant impression) : pages
+# par feuille (1 ou 2) et taille de police du document (pourcentage des
+# tailles de base), persistés dans gui.properties.
+PRINT_PER_SHEET_DEFAULT = "1"
+PRINT_FONT_SCALE_DEFAULT = "100"
+
+
+def _saved_print_settings():
+    """Réglages d'impression sauvegardés (pages/feuille, taille police)."""
+    per_sheet = _PROPS.get("print.pages.per.sheet",
+                           PRINT_PER_SHEET_DEFAULT).strip()
+    if per_sheet not in ("1", "2"):
+        per_sheet = PRINT_PER_SHEET_DEFAULT
+    try:
+        font_scale = int(float(_PROPS.get("print.font.scale",
+                                          PRINT_FONT_SCALE_DEFAULT)))
+    except ValueError:
+        font_scale = int(PRINT_FONT_SCALE_DEFAULT)
+    if not 60 <= font_scale <= 200:
+        font_scale = int(PRINT_FONT_SCALE_DEFAULT)
+    return per_sheet == "2", font_scale
+
 
 def _saved_geometry():
     """Géométrie sauvegardée dans gui.properties, si elle est valide.
@@ -201,13 +224,22 @@ def _save_properties(root, updates):
                          "1.0 = normale).\n")
         if "audio.voice" in missing:
             lines.append("# Voix de lecture du verset (shaul ou michael).\n")
+        if any(k.startswith("print.") for k in missing):
+            lines.append("# Aperçu avant impression des binyanim : pages par "
+                         "feuille (1 ou 2) et taille de police du "
+                         "document (60 à 200, en pourcentage).\n")
         for k, v in missing.items():
             lines.append(f"{k} = {v}\n")
     try:
         with open(path, "w", encoding="utf-8") as fh:
             fh.writelines(lines)
     except OSError:
-        pass
+        return
+    # Écriture réussie : répercuter en mémoire (_PROPS est chargé une
+    # seule fois au démarrage ; sans ça, une relecture dans la même
+    # session — ex. réouverture de l'aperçu d'impression — verrait les
+    # anciennes valeurs).
+    _PROPS.update(updates)
 
 
 def _font(prop_family, prop_size):
@@ -1506,6 +1538,18 @@ class AnalyseurGUI:
         self._work_queue = queue.Queue()
         self._target_widget = None  # widget actuellement ciblé par le clavier
 
+        # Style « lien hypertexte » (bleu, souligné, fond plat) pour le
+        # bouton d'impression des binyanim.
+        link_font = tkfont.Font(root=root, font=HEBREW_FONT_MONO)
+        link_font.configure(underline=True)
+        self._link_style = ttk.Style(root)
+        self._link_style.configure("Link.TButton", foreground="#0000EE",
+                                   font=link_font, relief="flat",
+                                   borderwidth=0, padding=(0, 2))
+        self._link_style.map("Link.TButton",
+                             foreground=[("active", "#0000EE"),
+                                         ("pressed", "#551A8B")])
+
         root.title(
             "Analyseur grammatical de l'hébreu biblique — כָּבוֹד לַיהוָה"
             + (f" (v{__version__})" if __version__ else "")
@@ -1598,6 +1642,26 @@ class AnalyseurGUI:
                              ("<Alt-Down>", self._on_nav_book_key)):
             step = -1 if seq.endswith("Up>") else 1
             self.root.bind_all(seq, lambda e, h=handler, s=step: h(s))
+
+        # Raccourcis VS combobox : quand une combobox de référence a le
+        # focus, le class binding natif de ttk.Combobox réagit AUSSI à
+        # Alt+↓ (ouverture de sa liste déroulante) — et l'ordre Tk
+        # (widget → class → toplevel → all) l'exécute AVANT le bind_all
+        # ci-dessus. La popdown restait alors ouverte sur l'ancien livre
+        # pendant que la navigation repeuplait chapitres/versets, et sa
+        # fermeture émettait un <<ComboboxSelected>> en retard qui
+        # cassait la cascade. Binder au niveau widget (avant le class
+        # binding) court-circute l'ouverture : « break » l'emporte.
+        for seq, handler in (("<Control-Up>", self._on_nav_verse_key),
+                             ("<Control-Down>", self._on_nav_verse_key),
+                             ("<Shift-Up>", self._on_nav_chapter_key),
+                             ("<Shift-Down>", self._on_nav_chapter_key),
+                             ("<Alt-Up>", self._on_nav_book_key),
+                             ("<Alt-Down>", self._on_nav_book_key)):
+            step = -1 if seq.endswith("Up>") else 1
+            for combo in (self.corpus_combo, self.book_combo,
+                          self.chapter_combo, self.verse_combo):
+                combo.bind(seq, lambda e, h=handler, s=step: h(s))
 
         # Barre d'état (chargement de la base / analyse en cours).
         self.status = ttk.Label(self.root,
@@ -2264,6 +2328,9 @@ class AnalyseurGUI:
         self.binyanim_fixed_ids = set(self.binyanim_notebook.tabs())
         frame.rowconfigure(0, weight=1)
         frame.columnconfigure(0, weight=1)
+        # Résultat binyanim courant (structure parse_binyanim_text) : garde
+        # par le bouton « Imprimer ce binyan… » de chaque sous-onglet.
+        self.binyanim_parsed = None
 
     def _make_binyanim_output(self, parent):
         """Zone de texte défilable (ascenseurs vertical + horizontal)."""
@@ -2417,7 +2484,17 @@ class AnalyseurGUI:
             # Insérer avant l'onglet « Sortie complète ».
             self.binyanim_notebook.insert(raw_index, tab, text=label)
             raw_index += 1
-            text = self._make_binyanim_output(tab)
+            header = ttk.Frame(tab)
+            header.grid(row=0, column=0, sticky="ew")
+            ttk.Button(header, text="Imprimer ce binyan…",
+                       style="Link.TButton",
+                       command=lambda b=b: self._print_binyan(b["code"])
+                       ).pack(side="left", padx=8, pady=4)
+            body = ttk.Frame(tab)
+            body.grid(row=1, column=0, sticky="nsew")
+            tab.rowconfigure(1, weight=1)
+            tab.columnconfigure(0, weight=1)
+            text = self._make_binyanim_output(body)
             content = b.get("text", "")
             tr_fr = b.get("translation_fr") or ""
             tr_en = b.get("translation_en") or ""
@@ -2455,8 +2532,44 @@ class AnalyseurGUI:
             # Sélectionner le premier binyan.
             first = self.binyanim_notebook.tabs()[0]
             self.binyanim_notebook.select(first)
+        self.binyanim_parsed = parsed
         self.status.configure(text="Prêt.")
         self._enable_buttons()
+
+    def _print_binyan(self, binyan_code):
+        """Aperçu avant impression du paradigme d'un binyan (onglet actif).
+
+        Le document est construit depuis le résultat binyanim courant
+        (self.binyanim_parsed, structure parse_binyanim_text) : l'aperçu
+        reflète exactement le sous-onglet affiché, y compris les
+        traductions et le statut d'attestation (BHSA/Mishna).
+        """
+        if not self.binyanim_parsed:
+            messagebox.showwarning(
+                "Binyanim",
+                "Conjuguez d'abord un verbe (bouton « Conjuguer le verbe »).")
+            return
+        try:
+            two_up, font_scale = _saved_print_settings()
+            binyan_print.open_binyan_preview(
+                self.root, self.binyanim_parsed, binyan_code,
+                two_up=two_up, font_scale=font_scale,
+                on_close=self._save_print_settings)
+            self.status.configure(text="Aperçu d'impression ouvert.")
+        except ValueError:
+            messagebox.showwarning(
+                "Binyanim",
+                f"Binyan « {binyan_code} » introuvable dans le résultat courant.")
+        except Exception as exc:
+            messagebox.showerror(
+                "Impression", f"Échec de la préparation de l'aperçu : {exc}")
+
+    def _save_print_settings(self, two_up, font_scale):
+        """Persiste les réglages d'aperçu (gui.properties) à la fermeture."""
+        _save_properties(self.root, {
+            "print.pages.per.sheet": "2" if two_up else "1",
+            "print.font.scale": str(int(font_scale)),
+        })
 
     # --- Lancement des analyses (en arrière-plan) -----------------------
     def _set_output(self, widget, text):
