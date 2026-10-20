@@ -252,6 +252,10 @@ def test_shuruq_centering():
         print("test_shuruq_centering : ignoré (aucune police)")
         return
     font = ImageFont.truetype(font_path, 96)
+    print(f"[diag shuruq] police: {font_path}")
+    _anchors = binyan_print._gpos_anchors(font)
+    print(f"[diag shuruq] ancre vav/dagesh: "
+          f"{_anchors.get(chr(0x05d5), {}).get(chr(0x05bc)) if _anchors else None}")
 
     def render(s):
         img = Image.new("RGB", (600, 200), "white")
