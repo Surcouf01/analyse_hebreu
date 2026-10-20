@@ -1643,6 +1643,26 @@ class AnalyseurGUI:
             step = -1 if seq.endswith("Up>") else 1
             self.root.bind_all(seq, lambda e, h=handler, s=step: h(s))
 
+        # Raccourcis VS combobox : quand une combobox de référence a le
+        # focus, le class binding natif de ttk.Combobox réagit AUSSI à
+        # Alt+↓ (ouverture de sa liste déroulante) — et l'ordre Tk
+        # (widget → class → toplevel → all) l'exécute AVANT le bind_all
+        # ci-dessus. La popdown restait alors ouverte sur l'ancien livre
+        # pendant que la navigation repeuplait chapitres/versets, et sa
+        # fermeture émettait un <<ComboboxSelected>> en retard qui
+        # cassait la cascade. Binder au niveau widget (avant le class
+        # binding) court-circute l'ouverture : « break » l'emporte.
+        for seq, handler in (("<Control-Up>", self._on_nav_verse_key),
+                             ("<Control-Down>", self._on_nav_verse_key),
+                             ("<Shift-Up>", self._on_nav_chapter_key),
+                             ("<Shift-Down>", self._on_nav_chapter_key),
+                             ("<Alt-Up>", self._on_nav_book_key),
+                             ("<Alt-Down>", self._on_nav_book_key)):
+            step = -1 if seq.endswith("Up>") else 1
+            for combo in (self.corpus_combo, self.book_combo,
+                          self.chapter_combo, self.verse_combo):
+                combo.bind(seq, lambda e, h=handler, s=step: h(s))
+
         # Barre d'état (chargement de la base / analyse en cours).
         self.status = ttk.Label(self.root,
                                 text=f"Chargement de la base BHSA… (v{__version__})",
