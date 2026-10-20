@@ -483,7 +483,7 @@ class BinyanPrintPreview:
         self.canvas.configure(yscrollcommand=yscroll.set)
         self.canvas.bind("<Configure>",
                          lambda e: self.win.after_idle(self._fit_if_needed))
-        self.win.bind("<Escape>", lambda e: self.win.destroy())
+        self.win.bind("<Escape>", lambda e: self._close())
         self.win.bind("<Prior>", lambda e: self._prev_page())
         self.win.bind("<Next>", lambda e: self._next_page())
         # Fermeture (Échap, croix, bouton) : propager les réglages à

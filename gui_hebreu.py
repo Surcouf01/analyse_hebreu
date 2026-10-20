@@ -234,7 +234,12 @@ def _save_properties(root, updates):
         with open(path, "w", encoding="utf-8") as fh:
             fh.writelines(lines)
     except OSError:
-        pass
+        return
+    # Écriture réussie : répercuter en mémoire (_PROPS est chargé une
+    # seule fois au démarrage ; sans ça, une relecture dans la même
+    # session — ex. réouverture de l'aperçu d'impression — verrait les
+    # anciennes valeurs).
+    _PROPS.update(updates)
 
 
 def _font(prop_family, prop_size):
