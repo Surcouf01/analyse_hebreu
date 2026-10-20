@@ -506,12 +506,39 @@ def build_binyan_document(parsed, binyan_code):
 # --- Polices ----------------------------------------------------------------
 
 # Paires (régulière, grasse) par ordre de priorité, par plateforme.
-# Les polices doivent couvrir l'hébreu avec nikkud (DejaVu Sans, Arial,
-# Tahoma, Noto Sans Hebrew).
+# Priorité absolue : les polices DejaVu embarquées (data/fonts), dont
+# les tables GPOS hébraïques positionnent correctement le nikkud même
+# sans moteur de shaping (le Pillow Windows n'embarque pas libraqm).
+# Repli : polices système couvrant l'hébreu avec nikkud.
+def _bundled_fonts():
+    """Polices DejaVu embarquées avec l'application (data/fonts).
+
+    Sources : dossier data/fonts à côté du script (exécution depuis les
+    sources) ; sous PyInstaller, sys._MEIPASS où le .spec recrée
+    l'arborescence data/ (le dossier data est embarqué tel quel).
+    """
+    here = os.path.dirname(os.path.abspath(__file__))
+    for base in (os.path.join(here, "data", "fonts"),
+                 os.path.join(os.path.dirname(here), "data", "fonts")):
+        regular = os.path.join(base, "DejaVuSans.ttf")
+        if os.path.isfile(regular):
+            bold = os.path.join(base, "DejaVuSans-Bold.ttf")
+            return [(regular, bold if os.path.isfile(bold) else regular)]
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        regular = os.path.join(sys._MEIPASS, "data", "fonts",
+                              "DejaVuSans.ttf")
+        if os.path.isfile(regular):
+            bold = os.path.join(sys._MEIPASS, "data", "fonts",
+                                "DejaVuSans-Bold.ttf")
+            return [(regular, bold if os.path.isfile(bold) else regular)]
+    return []
+
+
 def _font_pairs():
+    bundled = _bundled_fonts()
     if sys.platform == "win32":
         fonts = os.path.join(os.environ.get("WINDIR", r"C:\Windows"), "Fonts")
-        return [
+        return bundled + [
             (os.path.join(fonts, "dejavusans.ttf"),
              os.path.join(fonts, "dejavusans-bold.ttf")),
             (os.path.join(fonts, "arial.ttf"),
@@ -523,7 +550,7 @@ def _font_pairs():
         ]
     if sys.platform == "darwin":
         supp = "/System/Library/Fonts/Supplemental"
-        return [
+        return bundled + [
             (os.path.join(supp, "DejaVuSans.ttf"),
              os.path.join(supp, "DejaVuSans-Bold.ttf")),
             (os.path.join(supp, "Arial Unicode.ttf"),
@@ -531,7 +558,7 @@ def _font_pairs():
             (os.path.join(supp, "Arial.ttf"),
              os.path.join(supp, "Arial Bold.ttf")),
         ]
-    return [
+    return bundled + [
         ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
          "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"),
         ("/usr/share/fonts/dejavu/DejaVuSans.ttf",
