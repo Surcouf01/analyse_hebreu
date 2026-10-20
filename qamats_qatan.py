@@ -53,6 +53,8 @@ NIKKUD = (SHEVA, HIREQ, TSERE, SEGOL, PATAH, QAMATS, HOLAM, QUBUTS,
           QUBUTS, QAMATS_QATAN,
           "\u05C1", "\u05C2")  # + points shin/sin
 VOWELS = (HIREQ, TSERE, SEGOL, PATAH, QAMATS, HOLAM, QUBUTS) + HATAF
+HOLAM_HASER = "\u05BA"    # וֺ holam haser (sur le vav)
+VOWELS = VOWELS + (HOLAM_HASER,)
 GUTTURALS = "\u05D0\u05D4\u05D7\u05E2"   # א ה ח ע
 BEGADKEFAT = "\u05D1\u05D2\u05D3\u05DB\u05E4\u05EA"  # בגדכפת
 LETTERS = "\u05D0-\u05EA"
@@ -106,8 +108,10 @@ def _letters_after(text, i):
                 k += 1
             out.append((ch, marks))
             j = k
-        elif ch in "\u05BE\u05BF":   # maqqef, rafe
+        elif ch == "\u05BF":       # rafe : marque, on continue
             j += 1
+        elif ch == "\u05BE":       # maqqef : fin du mot logique
+            break
         else:
             break
     return out
@@ -173,9 +177,20 @@ def _is_closed_unstressed(word, qamats_idx, accents_pos):
         # consonne portant une voyelle : la syllabe du qamats est ouverte.
         return False
     else:
-        # consonne muette en fin de mot ou suivie d'une autre consonne
-        # sans sheva écrit : fermée (ex. כָּל, מַלְכֵי).
-        closed = True
+        # Pas de voyelle NI sheva écrit sur la consonne suivante :
+        # - fin de mot (כָּל) : fermée ;
+        # - suivie d'une consonne vocalisée (שָׁלוֹם : lamed nu puis
+        #   vav+holam) : le sheva non écrit est naʿ, la syllabe du
+        #   qamats est OUVERTE — gadol. Un sheva ÉCRIT (חָכְמָה)
+        #   marque seul la fermeture certaine.
+        if nxt is not None:
+            ncons, nmarks = nxt
+            if any(v in nmarks for v in VOWELS) or ncons in "\u05D5\u05D9":
+                closed = False
+            else:
+                closed = True
+        else:
+            closed = True
 
     if not closed:
         return False

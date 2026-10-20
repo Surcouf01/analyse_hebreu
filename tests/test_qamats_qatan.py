@@ -31,7 +31,7 @@ CASES = (
     ("קָדְשֵׁי", 1),              # qodshei
     ("יָדְךָ֖", 1),              # yodkha (teamim ailleurs)
     ("אָמְנָם", 1),              # omnam
-    ("עָשׂוֹר", 1),              # asor
+    ("עָשׂוֹר", 0),              # ʿasor (pattern katol, gadol)
     ("חָשְׁכָה", 1),              # khoshkhā
     # Gadol : syllabe ouverte.
     ("שָׁמַר", 0),               # shamar
