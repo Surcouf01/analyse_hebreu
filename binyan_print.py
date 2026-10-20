@@ -6,10 +6,12 @@ d'analyse --binyanim (structure produite par parse_binyanim_text),
 le met en pages via Pillow, l'affiche en aperçu (Tkinter) puis
 l'imprime ou l'exporte en PDF.
 
-Le rendu de l'hébreu est fait en ordre visuel (bidi_display.to_visual) :
-sans libraqm, Pillow dessine les glyphes de gauche à droite ; la
-conversion préalable garantit un ordre d'affichage correct, comme
-dans les zones de résultat du GUI (cf. ResultText).
+Le rendu de l'hébreu s'adapte au moteur de Pillow : avec libraqm
+(Windows, macOS, wheels récentes), la chaîne logique est transmise
+telle quelle — raqm applique le bidi et ancre le nikkud sur sa
+consonne ; sans raqm (certaines installations Linux), le texte est
+converti en ordre visuel (bidi_display.to_visual), Pillow dessinant
+les caractères un à un de gauche à droite.
 """
 
 import os
@@ -24,6 +26,22 @@ import bidi_display
 # stable), sans effet au dessin Pillow — retirées avant rendu.
 _BIDI_MARKS_RE = re.compile("[\u200e\u200f\u202a-\u202e\u2066-\u2069]")
 
+# Moteur de rendu Pillow : avec libraqm (Windows, macOS, wheels récentes),
+# le texte logique est mis en forme par raqm (bidi + shaping + ancrage
+# correct du nikkud) — le pré-traitement en ordre visuel serait une
+# double inversion. Sans raqm (certaines installations Linux), Pillow
+# dessine les caractères un à un de gauche à droite : la conversion
+# préalable en ordre visuel (bidi_display) reste alors nécessaire.
+def _has_raqm():
+    try:
+        import PIL.features
+        return bool(PIL.features.check("raqm"))
+    except Exception:
+        return False
+
+
+_RAQM = _has_raqm()
+
 # Ligne de paradigme du texte marqué : «    <libellé>  <forme> »
 _ROW_RE = re.compile(r"^ {4}(\S.*?)\s{2,}(\S.*)$")
 
@@ -34,10 +52,18 @@ _NON_FINITE_TITLE = "Formes non finies"
 
 
 def _visual(text):
-    """Texte en ordre visuel, sans marques de directionnalité (dessin)."""
+    """Texte prêt au dessin Pillow, sans marques de directionnalité.
+
+    Avec raqm : chaîne logique intacte (raqm applique le bidi et place
+    le nikkud sur sa consonne). Sans raqm : conversion en ordre visuel
+    (bidi_display) car Pillow dessine les caractères de gauche à droite.
+    """
     if not text:
         return ""
-    return _BIDI_MARKS_RE.sub("", bidi_display.to_visual(str(text)))
+    text = str(text)
+    if _RAQM:
+        return _BIDI_MARKS_RE.sub("", text)
+    return _BIDI_MARKS_RE.sub("", bidi_display.to_visual(text))
 
 
 def _binyan_entry(parsed, binyan_code):

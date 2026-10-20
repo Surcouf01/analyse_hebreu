@@ -153,6 +153,30 @@ def test_render_and_pdf():
     print("test_render_and_pdf : ok")
 
 
+def test_visual_raqm_modes():
+    """Ordre de dessin selon le moteur : raqm reçoit du logique, sans
+    raqm la chaîne est pré-inversée (ordre visuel)."""
+    form = "\u05e9\u05b9\u05c1\u05de\u05b5\u05e8"  # shin+holam+sin, mem, tsere, resh
+    saved = binyan_print._RAQM
+    try:
+        binyan_print._RAQM = True
+        out = binyan_print._visual(form)
+        assert out == form, "raqm : la chaîne logique doit être intacte"
+        binyan_print._RAQM = False
+        out = binyan_print._visual(form)
+        # Sans raqm : ordre visuel — la dernière consonne (resh) en tête.
+        assert out[0] == "\u05e8", out
+        assert out[-1] == "\u05c1", out
+        # Tous les caractères d'origine sont conservés (permutation).
+        assert sorted(out) == sorted(form), (out, form)
+        # Sans marques de directionnalité dans les deux cas.
+        for ch in out:
+            assert ord(ch) not in (0x200e, 0x200f), hex(ord(ch))
+    finally:
+        binyan_print._RAQM = saved
+    print("test_visual_raqm_modes : ok")
+
+
 def test_font_scale():
     """font_scale agrandit/réduit les polices et borne les excès."""
     analysis = _sample_analysis()
@@ -178,5 +202,6 @@ def test_font_scale():
 if __name__ == "__main__":
     test_document()
     test_render_and_pdf()
+    test_visual_raqm_modes()
     test_font_scale()
     print("tests/test_binyan_print.py : tous les tests sont passés.")
