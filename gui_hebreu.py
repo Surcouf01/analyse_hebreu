@@ -1538,6 +1538,18 @@ class AnalyseurGUI:
         self._work_queue = queue.Queue()
         self._target_widget = None  # widget actuellement ciblé par le clavier
 
+        # Style « lien hypertexte » (bleu, souligné, fond plat) pour le
+        # bouton d'impression des binyanim.
+        link_font = tkfont.Font(root=root, font=HEBREW_FONT_MONO)
+        link_font.configure(underline=True)
+        self._link_style = ttk.Style(root)
+        self._link_style.configure("Link.TButton", foreground="#0000EE",
+                                   font=link_font, relief="flat",
+                                   borderwidth=0, padding=(0, 2))
+        self._link_style.map("Link.TButton",
+                             foreground=[("active", "#0000EE"),
+                                         ("pressed", "#551A8B")])
+
         root.title(
             "Analyseur grammatical de l'hébreu biblique — כָּבוֹד לַיהוָה"
             + (f" (v{__version__})" if __version__ else "")
@@ -2455,7 +2467,7 @@ class AnalyseurGUI:
             header = ttk.Frame(tab)
             header.grid(row=0, column=0, sticky="ew")
             ttk.Button(header, text="Imprimer ce binyan…",
-                       style="Toolbutton",
+                       style="Link.TButton",
                        command=lambda b=b: self._print_binyan(b["code"])
                        ).pack(side="left", padx=8, pady=4)
             body = ttk.Frame(tab)
