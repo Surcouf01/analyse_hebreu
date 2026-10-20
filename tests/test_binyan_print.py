@@ -260,6 +260,17 @@ def test_shuruq_centering():
     _dx, _dy = binyan_print._mark_offset(chr(0x05d5), chr(0x05bc), font)
     print(f"[diag shuruq] _mark_offset dx={_dx} dy={_dy} "
           f"font.size={font.size} upem={binyan_print._font_upem(font)}")
+    _vb = binyan_print._ink_bbox(chr(0x05d5), font)
+    _db = binyan_print._ink_bbox(chr(0x05bc), font)
+    print(f"[diag shuruq] ink vav={_vb} ink dagesh={_db}")
+    try:
+        from fontTools.ttLib import TTFont as _TTF
+        _tt = _TTF(font_path, lazy=False)
+        _ver = next((r.toUnicode() for r in _tt["name"].names
+                     if r.nameID == 5), "?")
+        print(f"[diag shuruq] version police: {_ver}")
+    except Exception as _e:
+        print(f"[diag shuruq] version police: erreur {_e}")
     binyan_print._RAQM = saved
 
     def render(s):
