@@ -395,7 +395,8 @@ class BinyanPrintPreview:
     _MIN_ZOOM = 0.25
     _MAX_ZOOM = 3.0
 
-    def __init__(self, parent, pages, title="Binyan", doc=None, dpi=150):
+    def __init__(self, parent, pages, title="Binyan", doc=None, dpi=150,
+                 two_up=False, font_scale=100, on_close=None):
         import tkinter as tk
         from tkinter import ttk, filedialog, messagebox
         from PIL import ImageTk
@@ -405,8 +406,9 @@ class BinyanPrintPreview:
         self._ImageTk = ImageTk
         self.doc = doc
         self._dpi = dpi
+        self._on_close = on_close
         self.pages = pages
-        self._two_up = tk.BooleanVar(value=False)
+        self._two_up = tk.BooleanVar(value=bool(two_up))
         self._sheets_cache = None
         self._page = 0
         self._zoom = 1.0
@@ -451,7 +453,7 @@ class BinyanPrintPreview:
         # rendu 400 ms plus tard (le rendu complet d'un paradigme prend
         # quelques centaines de ms).
         ttk.Label(bar, text="Police :").pack(side="left", padx=(8, 2))
-        self.font_scale_var = tk.StringVar(value="100")
+        self.font_scale_var = tk.StringVar(value=str(int(font_scale)))
         font_spin = ttk.Spinbox(bar, from_=60, to=200, increment=10,
                                 width=5, textvariable=self.font_scale_var,
                                 command=self._on_font_scale)
@@ -464,7 +466,7 @@ class BinyanPrintPreview:
         self.btn_print = ttk.Button(bar, text="Imprimer…", command=self._print)
         self.btn_print.pack(side="right", padx=4)
         ttk.Button(bar, text="Fermer",
-                   command=self.win.destroy).pack(side="right", padx=4)
+                   command=self._close).pack(side="right", padx=4)
 
         wrap = ttk.Frame(self.win)
         wrap.pack(fill="both", expand=True)
@@ -480,10 +482,23 @@ class BinyanPrintPreview:
         self.win.bind("<Escape>", lambda e: self.win.destroy())
         self.win.bind("<Prior>", lambda e: self._prev_page())
         self.win.bind("<Next>", lambda e: self._next_page())
+        # Fermeture (Échap, croix, bouton) : propager les réglages à
+        # l'appelant (persistance gui.properties) avant de détruire.
+        self.win.protocol("WM_DELETE_WINDOW", self._close)
 
         self._fit_width(first=True)
 
     # --- disposition 2 pages/feuille ----------------------------------------
+
+    def _close(self):
+        """Ferme l'aperçu en propageant les réglages courants."""
+        if self._on_close is not None:
+            try:
+                self._on_close(self._two_up.get(),
+                               int(self.font_scale_var.get()))
+            except (ValueError, TypeError):
+                pass
+        self.win.destroy()
 
     def _invalidate_sheets(self, *_args):
         """La case « 2 pages/feuille » a changé : composition à refaire."""
@@ -620,12 +635,19 @@ class BinyanPrintPreview:
             "Enregistrement", f"PDF enregistré :\n{path}")
 
 
-def open_binyan_preview(parent, parsed, binyan_code):
+def open_binyan_preview(parent, parsed, binyan_code,
+                        two_up=False, font_scale=100, on_close=None):
     """Construit le document du binyan, le met en pages et ouvre l'aperçu.
+
+    ``two_up`` et ``font_scale`` (pourcentage) sont les réglages
+    initiaux de disposition ; ``on_close(two_up, font_scale)`` est
+    appelé à la fermeture pour persister les réglages.
 
     Renvoie la fenêtre d'aperçu, ou None si le binyan est introuvable
     (l'erreur est signalée par l'appelant).
     """
     doc = build_binyan_document(parsed, binyan_code)
-    pages = render_binyan_pages(doc)
-    return BinyanPrintPreview(parent, pages, title=doc["title"], doc=doc)
+    pages = render_binyan_pages(doc, font_scale=font_scale / 100.0)
+    return BinyanPrintPreview(parent, pages, title=doc["title"], doc=doc,
+                              two_up=two_up, font_scale=font_scale,
+                              on_close=on_close)
