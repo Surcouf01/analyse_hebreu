@@ -256,6 +256,11 @@ def test_shuruq_centering():
     _anchors = binyan_print._gpos_anchors(font)
     print(f"[diag shuruq] ancre vav/dagesh: "
           f"{_anchors.get(chr(0x05d5), {}).get(chr(0x05bc)) if _anchors else None}")
+    binyan_print._RAQM = False
+    _dx, _dy = binyan_print._mark_offset(chr(0x05d5), chr(0x05bc), font)
+    print(f"[diag shuruq] _mark_offset dx={_dx} dy={_dy} "
+          f"font.size={font.size} upem={binyan_print._font_upem(font)}")
+    binyan_print._RAQM = saved
 
     def render(s):
         img = Image.new("RGB", (600, 200), "white")
