@@ -747,10 +747,17 @@ def list_printers():
     try:
         if sys.platform == "win32":
             import win32print
+            flags = (win32print.PRINTER_ENUM_LOCAL
+                     | win32print.PRINTER_ENUM_CONNECTIONS)
             names = []
-            for flags, name, _desc in win32print.EnumPrinters(
-                    win32print.PRINTER_ENUM_LOCAL | win32print.PRINTER_ENUM_CONNECTIONS):
-                names.append(name)
+            # EnumPrinters(flags, name, level) — level 1 renvoie des
+            # PRINTER_INFO_1 (flags, description, name, comment) ; le
+            # nom de l'imprimante est à l'index 2.
+            for info in win32print.EnumPrinters(flags, None, 1):
+                try:
+                    names.append(info[2])
+                except (IndexError, TypeError):
+                    continue
             default = None
             try:
                 default = win32print.GetDefaultPrinter()
