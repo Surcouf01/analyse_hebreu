@@ -230,10 +230,13 @@ def test_draw_text_nikud_anchor():
 
 
 def test_shuruq_centering():
-    """Le dagesh du shuruq (וּ) tombe dans l'encre du vav, pas à côté.
+    """Le dagesh du shuruq (וּ) est visible et ancré au vav.
 
-    Régression : le centrage sur la chasse (advance) du vav — large mais
-    à l'encre étroite — posait le point à droite de la lettre.
+    Régressions successives : centrage sur la chasse (point à droite de
+    la lettre), puis centrage dans l'encre (point avalé par la hampe
+    pleine du vav DejaVu). La position de référence est l'ancre GPOS
+    de la police (celle d'HarfBuzz/raqm) : dans DejaVu, le point se
+    pose à gauche du pied du vav.
     """
     from PIL import Image, ImageDraw, ImageFont
     saved = binyan_print._RAQM
@@ -262,21 +265,28 @@ def test_shuruq_centering():
         p2 = img_bare.convert("L").load()
         pts_bare = sorted({x for x in range(600) for y in range(200)
                            if p2[x, y] < 180})
-        # Encre totale du vav+shuruq : ne doit pas déborder à droite
-        # de l'encre du vav seul de plus d'un point du dagesh.
         pts_with = sorted({x for x in range(600) for y in range(200)
                            if p1[x, y] < 180})
-        assert max(pts_with) <= max(pts_bare) + 2, \
-            (max(pts_with), max(pts_bare))
-        assert min(pts_with) >= min(pts_bare) - 2
-        # Le décalage de centrage place l'encre du dagesh dans la
-        # largeur d'encre du vav (méthode _ink_bbox, rendu réel).
-        bx0, bx1 = binyan_print._ink_bbox(vav, font)
-        dx0, dx1 = binyan_print._ink_bbox("\u05bc", font)
-        off = binyan_print._centering_offset(vav, "\u05bc", font)
-        marked = (dx0 + off, dx1 + off)
-        assert bx0 - 1 <= marked[0] and marked[1] <= bx1 + 1, \
-            (bx0, bx1, marked)
+        diff = [(x, y) for x in range(600) for y in range(200)
+                if (p1[x, y] < 180) != (p2[x, y] < 180)]
+        # Le point doit être DESSINÉ (visible en diff d'images) et ne
+        # pas déborder à droite de la lettre.
+        assert diff, "le dagesh du shuruq n'est pas dessiné"
+        assert max(x for x, _ in diff) <= max(pts_bare) + 2, \
+            (max(x for x, _ in diff), max(pts_bare))
+        # Position : ancre GPOS si disponible (à gauche du pied du vav
+        # dans DejaVu), sinon centrage d'encre (dans la lettre).
+        anchors = binyan_print._gpos_anchors(font)
+        if anchors and anchors.get("uni05D5", {}).get("uni05BC"):
+            bx, by, mx, my = None, None, None, None
+            # Vérifier la cohérence : le dx du dessin correspond à
+            # l'ancre GPOS (à l'échelle de la police).
+            dx, dy = binyan_print._mark_offset(vav, "\u05bc", font)
+            upem = binyan_print._font_upem(font)
+            scale = font.size / upem
+            gdx, gdy = anchors["uni05D5"]["uni05BC"]
+            assert abs(dx - gdx * scale) < 1.0, (dx, gdx * scale)
+            assert abs(dy + gdy * scale) < 1.0, (dy, gdy * scale)
     finally:
         binyan_print._RAQM = saved
     print("test_shuruq_centering : ok")

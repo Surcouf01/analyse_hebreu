@@ -95,30 +95,122 @@ def _ink_bbox(glyph, font):
     return result
 
 
-def _centering_offset(base, marks, font):
-    """Décalage horizontal pour centrer les marques sur la consonne.
+# Ancrages GPOS de la police : chemin -> {glyphe_base: {marque: (dx, dy)}}
+# en unités upem. C'est la position officielle de chaque marque (ce
+# qu'HarfBuzz/raqm appliquent) ; sans elle, le repli est le centrage
+# d'encre (cf. _mark_offset).
+_GPOS_CACHE = {}
 
-    Sans moteur de shaping, Pillow dessine la marque depuis l'origine
-    du cluster : selon les métriques, elle tombe trop à gauche (ex. le
-    holam sur le bord gauche du ש) ou trop à droite (ex. le shuruq
-    sur le vav, dont la chasse dépasse l'encre). On centre l'encre
-    réelle des marques sur l'encre réelle de la consonne, mesurée
-    par rendu (cf. _ink_bbox).
-    Les points shin/sin gardent leur position d'origine (latérale).
-    Renvoie un flottant en pixels (dépend de la taille de police).
+
+def _gpos_path(font):
+    """Chemin de fichier de la police (clé de cache), ou None."""
+    path = getattr(font, "path", None)
+    return path if isinstance(path, str) and path else None
+
+
+def _gpos_anchors(font):
+    """Ancrages mark->base (MarkBasePos) de la police, en upem.
+
+    Renvoie {base: {mark: (dx, dy)}} — dx/dy = décalage de dessin de
+    la marque relativement à l'origine de sa consonne (ancre base
+    moins ancre marque). None si fontTools est absent, si la police
+    n'a pas de table GPOS exploitable ou au premier échec (cache
+    négatif : {}).
+    """
+    path = _gpos_path(font)
+    if path is None:
+        return None
+    if path in _GPOS_CACHE:
+        return _GPOS_CACHE[path] or None
+    anchors = None
+    try:
+        from fontTools.ttLib import TTFont
+        tt = TTFont(path, lazy=False)
+        if "GPOS" in tt:
+            table = {}
+            gpos = tt["GPOS"].table
+            for lookup in gpos.LookupList.Lookup:
+                if lookup.LookupType != 4:  # MarkBasePos
+                    continue
+                for sub in lookup.SubTable:
+                    marks = sub.MarkCoverage.glyphs
+                    bases = sub.BaseCoverage.glyphs
+                    for mi, rec in enumerate(sub.MarkArray.MarkRecord):
+                        mark = marks[mi] if mi < len(marks) else None
+                        if mark is None:
+                            continue
+                        am = rec.MarkAnchor
+                        klass = rec.Class
+                        for bi, base in enumerate(bases):
+                            recs = sub.BaseArray.BaseRecord
+                            if bi >= len(recs):
+                                continue
+                            ab = recs[bi].BaseAnchor[klass]
+                            if ab is None or am is None:
+                                continue
+                            table.setdefault(base, {})[mark] = (
+                                ab.XCoordinate - am.XCoordinate,
+                                ab.YCoordinate - am.YCoordinate)
+            anchors = table or {}
+    except Exception:
+        anchors = {}
+    _GPOS_CACHE[path] = anchors
+    return anchors or None
+
+
+def _mark_offset(base, marks, font):
+    """Décalage (dx, dy) de dessin des marques sur leur consonne.
+
+    Priorité : ancrages GPOS officiels de la police (via fontTools,
+    déjà présent avec Pillow) ; sinon centrage de l'encre des marques
+    sur celle de la consonne (mesuré par rendu, cf. _ink_bbox).
+    Les points shin/sin ne sont jamais déplacés (position latérale).
     """
     centered = "".join(ch for ch in marks if ch not in _LATERAL_DOTS)
     if not centered or not base:
-        return 0.0
+        return 0.0, 0.0
+    anchors = _gpos_anchors(font)
+    if anchors:
+        def uni(ch):
+            return "uni%04X" % ord(ch)
+        base_g = None
+        marks_g = []
+        cmap_hint = uni
+        base_g = cmap_hint(base)
+        marks_g = [(ch, cmap_hint(ch)) for ch in centered]
+        entry = anchors.get(base_g)
+        if entry:
+            dx = dy = None
+            for ch, g in marks_g:
+                off = entry.get(g)
+                if off is not None:
+                    dx = off[0] if dx is None else dx + off[0]
+                    dy = off[1] if dy is None else dy + off[1]
+            if dx is not None:
+                scale = getattr(font, "size", 16) / _font_upem(font)
+                return dx * scale, -dy * scale
+    # Repli : centrage horizontal sur l'encre (comportement précédent).
     bx0, bx1 = _ink_bbox(base, font)
     mx0, mx1 = _ink_bbox(centered, font)
     base_ink_w = bx1 - bx0
     marks_ink_w = mx1 - mx0
     if base_ink_w <= 0 or marks_ink_w < 0:
-        return 0.0
-    # Origine du dessin de la marque : aligner les centres d'encre.
+        return 0.0, 0.0
     target = bx0 + (base_ink_w - marks_ink_w) / 2 - mx0
-    return target
+    return target, 0.0
+
+
+def _font_upem(font):
+    """Unités par em de la police (1000 par défaut), via fontTools."""
+    path = _gpos_path(font)
+    if path is None:
+        return 1000
+    try:
+        from fontTools.ttLib import TTFont
+        tt = TTFont(path, lazy=True, fontNumber=0)
+        return tt["head"].unitsPerEm or 1000
+    except Exception:
+        return 1000
 
 
 def _split_clusters(s):
@@ -194,8 +286,8 @@ def _draw_hebrew_run(draw, x_left, y, run, font, fill):
             x -= draw.textlength(base, font=font)
             draw.text((x, y), base, font=font, fill=fill)
             if marks:
-                dx = _centering_offset(base, marks, font)
-                draw.text((x + dx, y), marks, font=font, fill=fill)
+                dx, dy = _mark_offset(base, marks, font)
+                draw.text((x + dx, y + dy), marks, font=font, fill=fill)
         elif marks:
             draw.text((x, y), marks, font=font, fill=fill)
 
@@ -399,6 +491,8 @@ def _font_pairs():
          "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"),
         ("/usr/share/fonts/dejavu/DejaVuSans.ttf",
          "/usr/share/fonts/dejavu/DejaVuSans-Bold.ttf"),
+        (os.path.expanduser("~/.fonts/DejaVuSans.ttf"),
+         os.path.expanduser("~/.fonts/DejaVuSans-Bold.ttf")),
         ("/usr/share/fonts/truetype/noto/NotoSansHebrew-Regular.ttf",
          "/usr/share/fonts/truetype/noto/NotoSansHebrew-Bold.ttf"),
         ("/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
