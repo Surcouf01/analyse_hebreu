@@ -67,11 +67,19 @@ def gloss_fr(lex_id, sp=None):
     """
     if not lex_id:
         return ""
+    generic = _load().get(lex_id, "")
     if sp:
         hom = _load_homonyms().get(lex_id)
         if hom and hom.get("sp") == sp and hom.get("gloss_fr"):
-            return hom["gloss_fr"]
-    return _load().get(lex_id, "")
+            hom_gloss = hom["gloss_fr"]
+            # Suffixe "(en)" : traduction anglaise par défaut faute de
+            # curation française (cf. build_lex_fr_homonyms.py). Ne la
+            # préférer au gloss du lexique principal que si celui-ci est
+            # vide — sinon elle écraserait un gloss français correct
+            # (ex. KTB[ "écrire" écrasé par "write (en)").
+            if not hom_gloss.endswith("(en)") or not generic:
+                return hom_gloss
+    return generic
 
 
 def best_gloss(lex_id, en_gloss, sp=None):
