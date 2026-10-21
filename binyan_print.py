@@ -57,6 +57,12 @@ def _is_mark(ch):
 # Points shin/sin : leur position latérale sur le ש distingue שׁ/שׂ —
 # ils ne doivent PAS être recentrés.
 _LATERAL_DOTS = ("\u05c1", "\u05c2")
+# Holam (haser U+05B9, malé U+05BA) : la typographie hébraïque le pose
+# au-dessus du bord GAUCHE de la consonne (il « penche » vers la gauche,
+# comme le qamats) — jamais centré. DejaVu ne lui donne pas d'ancre
+# GPOS : sans règle dédiée, le repli général (centrage) le posait au
+# milieu de la lettre.
+_HOLAM = ("\u05b9", "\u05ba")
 
 
 # Encre réelle d'un glyphe : (nom_police, taille, glyphe) -> (x_min, x_max)
@@ -239,16 +245,39 @@ def _mark_offsets(base, marks, font):
             out.append((ch, None, None))
     if entry and all(off is not None for _ch, off, _dy in out):
         return out
-    # Repli : centrage horizontal sur l'encre (comportement précédent).
-    centered = "".join(ch for ch in marks if ch not in _LATERAL_DOTS)
+    # Repli : centrage horizontal sur l'encre (comportement précédent),
+    # sauf holam aligné sur le bord gauche de la consonne.
+    centered = "".join(ch for ch in marks if ch not in _LATERAL_DOTS
+                       and ch not in _HOLAM)
+    holam = "".join(ch for ch in marks if ch in _HOLAM)
     bx0, bx1 = _ink_bbox(base, font)
-    mx0, mx1 = _ink_bbox(centered, font)
-    base_ink_w = bx1 - bx0
-    marks_ink_w = mx1 - mx0
-    target = 0.0
-    if base and base_ink_w > 0 and marks_ink_w >= 0:
-        target = bx0 + (base_ink_w - marks_ink_w) / 2 - mx0
-    return [(ch, target, 0.0) for ch in marks]
+    out = []
+    if holam:
+        mx0, mx1 = _ink_bbox(holam, font)
+        if base and bx1 > bx0:
+            out.append((holam, bx0 - mx0, 0.0))
+        else:
+            out.append((holam, 0.0, 0.0))
+    if centered:
+        mx0, mx1 = _ink_bbox(centered, font)
+        base_ink_w = bx1 - bx0
+        marks_ink_w = mx1 - mx0
+        target = 0.0
+        if base and base_ink_w > 0 and marks_ink_w >= 0:
+            target = bx0 + (base_ink_w - marks_ink_w) / 2 - mx0
+        out.append((centered, target, 0.0))
+    # Conserver l'ordre des marques d'origine (holam et voyelles peuvent
+    # être mélangés dans le cluster, ex. shin + point shin + holam).
+    result = []
+    for ch in marks:
+        if ch in _LATERAL_DOTS:
+            result.append((ch, 0.0, 0.0))
+        else:
+            group = holam if ch in _HOLAM else centered
+            dx, dy = next(((o, d2) for g, o, d2 in out if g == group),
+                          (0.0, 0.0))
+            result.append((ch, dx, dy))
+    return result
 
 
 def _mark_offset(base, marks, font):
@@ -495,6 +524,11 @@ def build_binyan_document(parsed, binyan_code):
                 "Binyan non attesté dans la Bible hébraïque pour cette "
                 "racine, mais attesté dans la Mishna (paradigme "
                 "théorique, construit par analogie).")
+        elif entry.get("modern_forms"):
+            doc["meta"].append(
+                "Binyan non attesté dans la Bible hébraïque pour cette "
+                "racine, mais attesté en hébreu moderne (paradigme "
+                "théorique, construit par analogie).")
         else:
             doc["meta"].append(
                 "Binyan non attesté dans la Bible hébraïque pour cette "
@@ -514,6 +548,15 @@ def build_binyan_document(parsed, binyan_code):
         doc["notes"].append(
             "Formes attestées dans la Mishna : "
             + ", ".join(entry["mishnah_forms"]))
+    modern = entry.get("modern_forms") or {}
+    if modern:
+        modern_txt = ("Attesté en hébreu moderne : "
+                      + (modern.get("lemma") or ""))
+        if modern.get("gloss"):
+            modern_txt += f" ({modern['gloss']})"
+        doc["notes"].append(modern_txt)
+        if modern.get("url"):
+            doc["notes"].append(modern["url"])
 
     # Sections de paradigme : parsées depuis le texte du binyan. Les
     # en-têtes de temps («  Parfait (qatal) : ») ouvrent une section,
@@ -523,7 +566,8 @@ def build_binyan_document(parsed, binyan_code):
         if not line.strip():
             continue
         if (line.startswith("--") or line.startswith("Traduction")
-                or line.startswith("⚠") or line.startswith("✸")):
+                or line.startswith("⚠") or line.startswith("✸")
+                or line.startswith("◈")):
             continue
         row = _ROW_RE.match(line)
         if row and current is not None:

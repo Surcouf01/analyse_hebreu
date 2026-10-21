@@ -94,6 +94,13 @@ def build_parser():
              "de la Bible hébraïque, avec des formes d'attestation.",
     )
     p.add_argument(
+        "--modern-binyanim",
+        action="store_true",
+        help="En mode --binyanim, signale aussi les binyanim attestés en "
+             "hébreu moderne (dictionnaire Pealim, fichier "
+             "modern_binyanim.json), avec lemme et sens.",
+    )
+    p.add_argument(
         "--file",
         help="Fichier contenant un mot/ligne (--word/--binyanim) ou une phrase/ligne (--phrase).",
     )
@@ -326,7 +333,8 @@ def main(argv=None):
         for i, w in enumerate(verbs):
             if len(verbs) > 1:
                 print(f"\n{'='*20} Verbe {i+1}/{len(verbs)} : {w} {'='*20}")
-            analysis = analyze_binyanim(F, w, use_mishnah=args.mishna_binyanim)
+            analysis = analyze_binyanim(F, w, use_mishnah=args.mishna_binyanim,
+                                        use_modern=args.modern_binyanim)
             if analysis["found"]:
                 any_found = True
             if args.format == "json":

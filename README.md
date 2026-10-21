@@ -12,6 +12,11 @@ L'analyse s'appuie sur la base morphologique et syntaxique **BHSA** de l'ETCBC
 contient l'annotation de chacun des ~426 000 mots de la Bible hébraïque, organisés
 en mots, syntagmes (phrase), clauses, phrases et versets.
 
+## Shareware
+
+Ce logiciel est un Shareware (cf. LICENSE.txt), vous pouvez supporter le logiciel et
+ses futures développement en faisant un don à https://buy.stripe.com/8x228r4TO3CG68ofr76g801.
+
 ## Installation
 
 ```bash
@@ -442,6 +447,7 @@ python analyse_hebreu.py --binyanim "בָּנָה"          # verbe lamed-he (fa
 python analyse_hebreu.py --binyanim --file verbes.txt  # un verbe par ligne
 python analyse_hebreu.py --binyanim "קום" --format json
 python analyse_hebreu.py --binyanim --mishna-binyanim "אכל"  # + binyanim mishnaïques
+python analyse_hebreu.py --binyanim --modern-binyanim "שמר" # + binyanim modernes
 ```
 
 Le mode `--binyanim` identifie le verbe (lemme BHSA ou racine), détecte sa
@@ -468,6 +474,35 @@ du Rabbinat 1899** (domaine public), récupérée via l'API Sefaria
 (`bhsa_grammar/sefaria_client.py`). Sefaria ne fournit pas de lexique
 hébreu→français : les versets français servent de contexte d'occurrence,
 la traduction des sens reste une curation manuelle.
+
+#### Binyanim modernes (Pealim)
+
+Avec `--modern-binyanim` (CLI) ou la case « Binyanim modernes (Pealim) »
+(GUI, onglet Binyanim), les binyanim attestés en **hébreu moderne** sont
+signalés, avec lemme et sens : pour un binyan absent de la Bible, le libellé
+de l'onglet GUI passe en **vert** (au lieu du rouge « pas de sens
+biblique ») et le texte affiche « ◈ Attesté en hébreu moderne : … » ;
+pour un binyan biblique, l'attestation moderne complète l'onglet sans
+en changer la couleur.
+
+Les données viennent de `bhsa_grammar/modern_binyanim.json` :
+`scripts/extract_modern_binyanim.py` parcourt le dictionnaire d'hébreu
+moderne [Pealim](https://www.pealim.com) (conjugaisons vocalisées,
+domaine public, liste paginée des verbes), relève pour chaque verbe sa
+racine et son binyan (pa'al, nif'al, pi'el, pu'al, huf'al, hif'il,
+hitpa'el, ramenés aux codes du projet) et produit, par racine
+trilitaire, les binyanim modernes avec lemme vocalisé, sens anglais et
+lien Pealim. À la différence de la Mishna, tous les binyanim modernes
+sont conservés (bibliques inclus) : le mode binyanim croise ensuite
+avec le champ `exists` de la BHSA pour colorer uniquement les binyanim
+modernes non bibliques.
+
+Régénération (n'écrase jamais sans `--force`, les curations manuelles
+devant être préservées) :
+```bash
+python scripts/extract_modern_binyanim.py --force            # ~230 pages
+python scripts/extract_modern_binyanim.py --pages 3 --out /tmp/t.json --force  # test
+```
 
 #### Binyanim mishnaïques (Sefaria)
 

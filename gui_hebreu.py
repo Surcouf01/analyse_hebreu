@@ -228,6 +228,10 @@ def _save_properties(root, updates):
             lines.append("# Aperçu avant impression des binyanim : pages par "
                          "feuille (1 ou 2) et taille de police du "
                          "document (60 à 200, en pourcentage).\n")
+        if any(k.startswith("binyanim.") for k in missing):
+            lines.append("# Onglet Binyanim : signaler les binyanim "
+                         "mishnaïques (Sefaria) et modernes (Pealim) "
+                         "(true/false).\n")
         for k, v in missing.items():
             lines.append(f"{k} = {v}\n")
     try:
@@ -363,7 +367,8 @@ class BinyanimNotebook(ttk.Frame):
     Contrairement à ttk.Notebook, chaque titre d'onglet est un tk.Label :
     son libellé peut être coloré individuellement (rouge pour un binyan
     qui n'a pas de sens pour la racine analysée, orange pour un binyan
-    attesté dans la Mishna mais absent de la Bible), ce que l'API
+    attesté dans la Mishna mais absent de la Bible, vert pour un binyan
+    attesté en hébreu moderne — Pealim — mais absent de la Bible), ce que l'API
     ttk.Notebook ne permet pas.
 
     Repris l'API utile de ttk.Notebook : add/insert/forget/select/tabs/
@@ -375,6 +380,7 @@ class BinyanimNotebook(ttk.Frame):
     _FG_INACTIVE = "gray40"
     _FG_MISSING = "#b00020"
     _FG_MISHNAH = "#c06000"
+    _FG_MODERN = "#007000"
 
     def __init__(self, parent, **kwargs):
         super().__init__(parent, **kwargs)
@@ -2301,10 +2307,31 @@ class AnalyseurGUI:
                         value="text").pack(side="left")
         ttk.Radiobutton(opts, text="JSON", variable=self.binyanim_format,
                         value="json").pack(side="left")
-        self.binyanim_use_mishnah = tk.BooleanVar(value=False)
+        # Les libellés des deux cases reprennent la couleur que prend
+        # l'onglet d'un binyan attesté dans ce corpus : orange pour la
+        # Mishna, vert pour l'hébreu moderne (cf. BinyanimNotebook).
+        # La couleur passe par des styles dédiés : selon le thème ttk
+        # (ex. « vista » sous Windows), l'option -foreground est
+        # refusée sur les widgets ttk (TclError unknown option).
+        opts_style = ttk.Style(self.root)
+        opts_style.configure("BinyanimMishnah.TCheckbutton",
+                              foreground=BinyanimNotebook._FG_MISHNAH)
+        opts_style.configure("BinyanimModern.TCheckbutton",
+                              foreground=BinyanimNotebook._FG_MODERN)
+        self.binyanim_use_mishnah = tk.BooleanVar(
+            value=_PROPS.get("binyanim.mishnah", "false").strip().lower()
+            == "true")
         ttk.Checkbutton(opts, text="Binyanim mishnaïques (Sefaria)",
                         variable=self.binyanim_use_mishnah,
-                        style="Toolbutton").pack(side="left", padx=(16, 0))
+                        style="BinyanimMishnah.TCheckbutton").pack(
+                            side="left", padx=(16, 0))
+        self.binyanim_use_modern = tk.BooleanVar(
+            value=_PROPS.get("binyanim.modern", "false").strip().lower()
+            == "true")
+        ttk.Checkbutton(opts, text="Binyanim modernes (Pealim)",
+                        variable=self.binyanim_use_modern,
+                        style="BinyanimModern.TCheckbutton").pack(
+                            side="left", padx=(8, 0))
 
         self.btn_binyanim = ttk.Button(tab, text="Conjuguer le verbe",
                                        command=self._run_binyanim)
@@ -2359,12 +2386,14 @@ class AnalyseurGUI:
             return
         fmt = self.binyanim_format.get()
         use_mishnah = bool(self.binyanim_use_mishnah.get())
+        use_modern = bool(self.binyanim_use_modern.get())
         F = self.api.F
         self._disable_buttons()
         self.status.configure(text=f"Conjugaison de « {form} »…")
 
         def worker():
-            analysis = analyze_binyanim(F, form, use_mishnah=use_mishnah)
+            analysis = analyze_binyanim(F, form, use_mishnah=use_mishnah,
+                                        use_modern=use_modern)
             if not analysis.get("found"):
                 verb = analysis.get("verb", {})
                 reason = verb.get("reason") or analysis.get("reason")
@@ -2428,7 +2457,11 @@ class AnalyseurGUI:
         coloré en rouge et l'onglet affiche un avertissement. Si des formes
         de ce binyan sont attestées dans la Mishna (option « Binyanim
         mishnaïques »), le libellé passe en orange et l'avertissement
-        mentionne ces formes.
+        mentionne ces formes. Si le binyan est attesté en hébreu moderne
+        (option « Binyanim modernes », dictionnaire Pealim) mais absent
+        de la Bible, le libellé passe en vert et l'avertissement mentionne
+        le lemme moderne ; un binyan biblique attesté en hébreu moderne
+        garde sa couleur mais l'onglet affiche l'attestation moderne.
         """
         # Nettoyer les sous-onglets de binyanim précédents (garder Verbe
         # et Sortie complète, toujours en fin de notebook).
@@ -2504,6 +2537,17 @@ class AnalyseurGUI:
                 head = ("Traduction : " + "  |  ".join(trads) + "\n\n")
                 content = head + content
             mishnah_forms = b.get("mishnah_forms") or []
+            modern = b.get("modern_forms") or None
+            if modern:
+                modern_txt = ("◈ Attesté en hébreu moderne : "
+                              + (modern.get("lemma") or ""))
+                if modern.get("gloss"):
+                    modern_txt += f" ({modern['gloss']})"
+                if modern.get("url"):
+                    modern_txt += f"\n  {modern['url']}"
+                modern_note = modern_txt + "\n\n"
+            else:
+                modern_note = ""
             if b.get("exists") is False:
                 if mishnah_forms:
                     self.binyanim_notebook.tab(
@@ -2515,7 +2559,17 @@ class AnalyseurGUI:
                             ".\n"
                             "Le paradigme ci-dessous est théorique, "
                             "construit par analogie.\n\n")
-                    content = warn + content
+                    content = warn + modern_note + content
+                elif modern:
+                    self.binyanim_notebook.tab(
+                        tab, fg=BinyanimNotebook._FG_MODERN)
+                    warn = ("⚠ Pas de sens biblique dans ce binyan "
+                            f"({b['name_fr']} / {b['name_he']}), mais "
+                            "attesté en hébreu moderne (binyan non "
+                            "biblique).\n"
+                            "Le paradigme ci-dessous est théorique, "
+                            "construit par analogie.\n\n")
+                    content = warn + modern_note + content
                 else:
                     self.binyanim_notebook.tab(
                         tab, fg=BinyanimNotebook._FG_MISSING)
@@ -2526,6 +2580,8 @@ class AnalyseurGUI:
                             "Le paradigme ci-dessous est théorique, construit "
                             "par analogie.\n\n")
                     content = warn + content
+            elif modern:
+                content = modern_note + content
             self._set_output(text, content)
 
         if parsed.get("binyanim"):
@@ -3166,6 +3222,14 @@ def _save_all_preferences(root):
             key = gui._voice_labels.get(voice.get())
             if key is not None:
                 updates["audio.voice"] = key
+        mishnah = getattr(gui, "binyanim_use_mishnah", None)
+        if mishnah is not None:
+            updates["binyanim.mishnah"] = ("true" if mishnah.get()
+                                           else "false")
+        modern = getattr(gui, "binyanim_use_modern", None)
+        if modern is not None:
+            updates["binyanim.modern"] = ("true" if modern.get()
+                                          else "false")
     if updates:
         _save_properties(root, updates)
 
