@@ -210,14 +210,49 @@ def _gpos_anchors(font):
     return anchors or None
 
 
-def _mark_offset(base, marks, font):
-    """Décalage (dx, dy) de dessin des marques sur leur consonne.
+def _mark_offsets(base, marks, font):
+    """Décalages (dx, dy) de dessin de CHAQUE marque sur sa consonne.
 
     Priorité : ancrages GPOS officiels de la police (via fontTools,
     déjà présent avec Pillow) ; sinon centrage de l'encre des marques
     sur celle de la consonne (mesuré par rendu, cf. _ink_bbox).
     Les points shin/sin ne sont jamais déplacés (position latérale).
+
+    Chaque marque reçoit son propre ancrage : dessiner la chaîne
+    complète à un offset unique reviendrait à SOMMER les ancres (le
+    daguesh U+05BC a une ancre très à gauche, ex. -296 upem sur le
+    kaf dans DejaVu) et déporter les voyelles hors de la consonne
+    quand un daguesh lene est présent (ex. כְּ) ; HarfBuzz/raqm
+    posent chaque marque indépendamment sur la base.
     """
+    out = []
+    anchors = _gpos_anchors(font)
+    entry = anchors.get(base) if anchors and base else None
+    scale = getattr(font, "size", 16) / _font_upem(font)
+    for ch in marks:
+        if ch in _LATERAL_DOTS or not base:
+            out.append((ch, 0.0, 0.0))
+        elif entry and entry.get(ch) is not None:
+            dx, dy = entry[ch]
+            out.append((ch, dx * scale, -dy * scale))
+        else:
+            out.append((ch, None, None))
+    if entry and all(off is not None for _ch, off, _dy in out):
+        return out
+    # Repli : centrage horizontal sur l'encre (comportement précédent).
+    centered = "".join(ch for ch in marks if ch not in _LATERAL_DOTS)
+    bx0, bx1 = _ink_bbox(base, font)
+    mx0, mx1 = _ink_bbox(centered, font)
+    base_ink_w = bx1 - bx0
+    marks_ink_w = mx1 - mx0
+    target = 0.0
+    if base and base_ink_w > 0 and marks_ink_w >= 0:
+        target = bx0 + (base_ink_w - marks_ink_w) / 2 - mx0
+    return [(ch, target, 0.0) for ch in marks]
+
+
+def _mark_offset(base, marks, font):
+    """Décalage (dx, dy) unique du blob de marques (rétro-compatibilité)."""
     centered = "".join(ch for ch in marks if ch not in _LATERAL_DOTS)
     if not centered or not base:
         return 0.0, 0.0
@@ -330,9 +365,8 @@ def _draw_hebrew_run(draw, x_left, y, run, font, fill):
         if base:
             x -= draw.textlength(base, font=font)
             draw.text((x, y), base, font=font, fill=fill)
-            if marks:
-                dx, dy = _mark_offset(base, marks, font)
-                draw.text((x + dx, y + dy), marks, font=font, fill=fill)
+            for ch, dx, dy in _mark_offsets(base, marks, font):
+                draw.text((x + dx, y + dy), ch, font=font, fill=fill)
         elif marks:
             draw.text((x, y), marks, font=font, fill=fill)
 
@@ -970,6 +1004,8 @@ class BinyanPrintPreview:
         self._font_spin.bind("<Return>", lambda e: self._rerender())
         self._font_spin.bind("<FocusOut>", lambda e: self._rerender())
 
+        ttk.Button(bar, text="Enregistrer en PDF…",
+                   command=self._save_pdf).pack(side="right", padx=4)
         self.btn_print = ttk.Button(bar, text="Imprimer…", command=self._print)
         self.btn_print.pack(side="right", padx=4)
         ttk.Button(bar, text="Fermer",
@@ -1125,6 +1161,22 @@ class BinyanPrintPreview:
         self._fit_job = self.win.after(150, self._fit_width)
 
     # --- impression et export ----------------------------------------------
+
+    def _save_pdf(self):
+        from tkinter import filedialog
+        path = filedialog.asksaveasfilename(
+            parent=self.win, defaultextension=".pdf",
+            filetypes=[("Fichier PDF", "*.pdf")])
+        if not path:
+            return
+        try:
+            save_pdf(self._current_pages(), path)
+        except (OSError, ValueError) as exc:
+            self._messagebox.showerror(
+                "Enregistrement", f"Échec de l'enregistrement : {exc}")
+            return
+        self._messagebox.showinfo(
+            "Enregistrement", f"PDF enregistré :\n{path}")
 
     def _print(self):
         # Sélection de l'imprimante : liste système, défaut présélectionnée.
