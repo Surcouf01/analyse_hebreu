@@ -1225,9 +1225,9 @@ def _initial_dagesh(form):
         return form
     i = 1
     while i < len(form) and unicodedata.combining(form[i]):
+        if form[i] == DAGESH:
+            return form
         i += 1
-    if i < len(form) and form[i] == DAGESH:
-        return form
     return form[0] + DAGESH + form[1:]
 
 
