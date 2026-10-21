@@ -325,6 +325,68 @@ def test_shuruq_centering():
     print("test_shuruq_centering : ok")
 
 
+def test_holam_left_placement():
+    """Le holam (U+05B9/U+05BA) se pose sur le bord gauche de la consonne.
+
+    Régression du repli sans raqm : le centrage d'encre posait le
+    holam au milieu de la lettre (DejaVu ne lui donne pas d'ancre
+    GPOS) ; la typographie hébraïque le veut au-dessus du bord gauche,
+    penché vers la gauche comme le qamats.
+    """
+    from PIL import Image, ImageDraw, ImageFont
+    saved = binyan_print._RAQM
+    font_path = None
+    for regular, _bold in binyan_print._font_pairs():
+        if os.path.isfile(regular):
+            font_path = regular
+            break
+    if font_path is None:
+        print("test_holam_left_placement : ignoré (aucune police)")
+        return
+    font = ImageFont.truetype(font_path, 96)
+    if binyan_print._RAQM:
+        # Avec raqm, le moteur de shaping positionne le holam selon les
+        # tables de la police : délégation (chemin de production).
+        print("test_holam_left_placement : ok (raqm, délégation)")
+        return
+
+    def render(s):
+        img = Image.new("RGB", (600, 200), "white")
+        d = ImageDraw.Draw(img)
+        binyan_print._draw_text(d, (100, 30), s, font=font, fill="black")
+        return img.convert("L").load()
+
+    try:
+        binyan_print._RAQM = False
+        for base, holam in (("\u05e9", "\u05b9"), ("\u05d1", "\u05b9"),
+                            ("\u05d5", "\u05ba")):
+            anchors = binyan_print._gpos_anchors(font)
+            if anchors and anchors.get(base, {}).get(holam) is not None:
+                # La police fournit une ancre officielle : elle fait foi.
+                continue
+            px_with = render(base + holam)
+            px_bare = render(base)
+            w, h = 600, 200
+            bare = sorted({x for x in range(w) for y in range(h)
+                           if px_bare[x, y] < 180})
+            # Le holam : pixels ajoutés par rapport à la lettre nue
+            # (différence de rendu), indépendamment de la hauteur du corps.
+            added = sorted({x for x in range(w) for y in range(h)
+                            if (px_with[x, y] < 180)
+                            != (px_bare[x, y] < 180)})
+            ink_min, ink_max = min(bare), max(bare)
+            mid = (ink_min + ink_max) / 2
+            assert added, f"holam invisible sur {base!r}"
+            # Le centre du holam doit être dans la moitié GAUCHE de
+            # l'encre de la lettre (tolérance : 10 % de la largeur).
+            center = sum(added) / len(added)
+            assert center <= mid + (ink_max - ink_min) * 0.10, \
+                (base, center, mid, bare)
+    finally:
+        binyan_print._RAQM = saved
+    print("test_holam_left_placement : ok")
+
+
 def test_font_scale():
     """font_scale agrandit/réduit les polices et borne les excès."""
     analysis = _sample_analysis()
@@ -353,5 +415,6 @@ if __name__ == "__main__":
     test_visual_raqm_modes()
     test_draw_text_nikud_anchor()
     test_shuruq_centering()
+    test_holam_left_placement()
     test_font_scale()
     print("tests/test_binyan_print.py : tous les tests sont passés.")
