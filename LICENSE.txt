@@ -1,0 +1,194 @@
+LICENCE SHAREWARE / DONATIONWARE — SHAREWARE / DONATIONWARE LICENSE
+==================================================================
+
+(C) Arnault Bonafos. Tous droits réservés. / All rights reserved.
+Version 1.0 — Octobre 2026 / October 2026
+
+------------------------------------------------------------------
+FRANÇAIS
+------------------------------------------------------------------
+
+1. DÉFINITION DU LOGICIEL
+
+   Le terme « Logiciel » désigne le programme, son code exécutable,
+   sa documentation, ses fichiers de configuration et tout élément
+   fourni dans le présent dépôt, par Arnault Bonafos (« l'Éditeur »).
+
+2. MODE DE DISTRIBUTION : SHAREWARE / DONATIONWARE
+
+   Ce Logiciel est distribué selon le principe du shareware
+   (partagiciel) avec don libre :
+
+   a) Vous êtes autorisé à installer et à utiliser le Logiciel
+      gratuitement à des fins d'évaluation pendant une période de
+      30 (trente) jours à compter de la première installation.
+
+   b) Passé ce délai, vous êtes invité — mais pas obligé — à
+      soutenir le développement du Logiciel par un don libre d'un
+      montant de votre choix auprès de l'Éditeur.
+
+   c) Le Logiciel n'est pas bloqué par une clé d'activation : le don
+      est un soutien volontaire, mais il conditionne le
+      développement des versions futures.
+
+3. AUTORISATIONS
+
+   Sous réserve du respect de la présente licence, vous pouvez :
+
+   a) installer et utiliser le Logiciel sur autant de machines que
+      vous le souhaitez ;
+   b) redistribuer gratuitement et intégralement l'archive
+      d'installation originale, sans modification ;
+   c) faire connaître le Logiciel autour de vous.
+
+4. RESTRICTIONS
+
+   Vous ne pouvez PAS :
+
+   a) modifier, adapter, traduire, désassembler, décompiler ou
+      procéder à de la rétro-ingénierie du Logiciel, sauf
+      autorisation écrite préalable de l'Éditeur ou si cela est
+      expressément permis par la loi applicable ;
+   b) vendre, louer, sous-licencier ou intégrer le Logiciel dans un
+      produit commercial sans autorisation écrite préalable de
+      l'Éditeur ;
+   c) retirer, masquer ou modifier tout mention de copyright, de
+      marque ou de crédit présente dans le Logiciel ;
+   d) distribuer des copies modifiées ou des versions dérivées du
+      Logiciel.
+
+5. CODE SOURCE
+
+   Le code source est fourni à titre d'information. La consultation
+   du code source ne vous confère aucun droit de modification, de
+   redistribution ou de création d'œuvres dérivées au-delà de ceux
+   expressément accordés par la présente licence.
+
+6. ABSENCE DE GARANTIE
+
+   LE LOGICIEL EST FOURNI « EN L'ÉTAT », SANS GARANTIE D'AUCUNE
+   SORTE, EXPRESSE OU IMPLICITE, NOTAMMENT SANS GARANTIE DE
+   QUALITÉ MARCHANDE, D'ADÉQUATION À UN USAGE PARTICULIER OU
+   D'ABSENCE DE CONTREFAÇON. L'ÉDITEUR NE PEUT EN AUCUN CAS ÊTRE
+   TENU RESPONSABLE DE TOUT DOMMAGE, DIRECT OU INDIRECT, RÉSULTANT
+   DE L'UTILISATION OU DE L'IMPOSSIBILITÉ D'UTILISER LE LOGICIEL.
+
+7. DON
+
+   Les dons peuvent être effectués via le lien indiqué dans le
+   fichier README du dépôt ou sur la page du projet. Le montant,
+   la fréquence et le caractère du don relèvent de votre seule
+   décision.
+
+8. ACCEPTATION
+
+   En installant ou en utilisant le Logiciel, vous acceptez
+   l'intégralité des termes de la présente licence. Si vous ne les
+   acceptez pas, vous devez cesser d'utiliser le Logiciel et en
+   supprimer toute copie.
+
+9. LOI APPLICABLE
+
+   La présente licence est régie par le droit français. Tout litige
+   relatif à l'interprétation ou à l'exécution de la présente
+   licence sera soumis aux tribunaux compétents français, sauf
+   disposition impérative contraire.
+
+10. CONTACT ET AUTORISATIONS SPÉCIALES
+
+    Pour toute autorisation commerciale, partenariat ou question
+    relative à la licence, contactez Arnault Bonafos via la page
+    GitHub du projet.
+
+------------------------------------------------------------------
+ENGLISH
+------------------------------------------------------------------
+
+1. DEFINITION OF THE SOFTWARE
+
+   "Software" refers to the program, its executable code, its
+   documentation, its configuration files and any element provided
+   in this repository, by Arnault Bonafos ("the Publisher").
+
+2. DISTRIBUTION MODEL: SHAREWARE / DONATIONWARE
+
+   This Software is distributed under a shareware model with
+   voluntary donations:
+
+   a) You may install and use the Software free of charge for
+      evaluation purposes for a period of 30 (thirty) days from
+      first installation.
+
+   b) After this period, you are invited — but not required — to
+      support the development of the Software with a voluntary
+      donation of an amount of your choice to the Publisher.
+
+   c) The Software is not locked by an activation key: donations
+      are voluntary, but they make future versions possible.
+
+3. PERMITTED USES
+
+   Provided you comply with this license, you may:
+
+   a) install and use the Software on as many machines as you
+      wish;
+   b) redistribute the original, unmodified installation archive
+      free of charge;
+   c) recommend and share the Software with others.
+
+4. RESTRICTIONS
+
+   You may NOT:
+
+   a) modify, adapt, translate, disassemble, decompile or
+      reverse-engineer the Software, except with the prior written
+      consent of the Publisher or where expressly permitted by
+      applicable law;
+   b) sell, rent, sublicense or embed the Software into a
+      commercial product without the prior written consent of the
+      Publisher;
+   c) remove, obscure or alter any copyright, trademark or credit
+      notice contained in the Software;
+   d) distribute modified copies or derivative versions of the
+      Software.
+
+5. SOURCE CODE
+
+   The source code is provided for informational purposes. Viewing
+   the source code grants you no right to modify, redistribute or
+   create derivative works beyond what is expressly granted by this
+   license.
+
+6. NO WARRANTY
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+   OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+   NONINFRINGEMENT. IN NO EVENT SHALL THE PUBLISHER BE LIABLE FOR
+   ANY DAMAGES, DIRECT OR INDIRECT, ARISING FROM THE USE OF, OR
+   INABILITY TO USE, THE SOFTWARE.
+
+7. DONATIONS
+
+   Donations may be made via the link provided in the repository's
+   README file or on the project page. The amount, frequency and
+   nature of any donation are entirely your decision.
+
+8. ACCEPTANCE
+
+   By installing or using the Software, you accept all the terms of
+   this license. If you do not accept them, you must stop using the
+   Software and delete all copies of it.
+
+9. GOVERNING LAW
+
+   This license is governed by French law. Any dispute relating
+   to the interpretation or performance of this license shall be
+   submitted to the competent French courts, unless mandatory
+   provisions state otherwise.
+
+10. CONTACT AND SPECIAL PERMISSIONS
+
+    For commercial licensing, partnerships or any question about
+    this license, contact Arnault Bonafos via the project's GitHub
+    page.

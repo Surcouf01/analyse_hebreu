@@ -12,6 +12,11 @@ L'analyse s'appuie sur la base morphologique et syntaxique **BHSA** de l'ETCBC
 contient l'annotation de chacun des ~426 000 mots de la Bible hébraïque, organisés
 en mots, syntagmes (phrase), clauses, phrases et versets.
 
+## Shareware
+
+Ce logiciel est un Shareware (cf. LICENSE.txt), vous pouvez supporter le logiciel et
+ses futures développement en faisant un don à https://buy.stripe.com/8x228r4TO3CG68ofr76g801.
+
 ## Installation
 
 ```bash
