@@ -1004,6 +1004,8 @@ class BinyanPrintPreview:
         self._font_spin.bind("<Return>", lambda e: self._rerender())
         self._font_spin.bind("<FocusOut>", lambda e: self._rerender())
 
+        ttk.Button(bar, text="Enregistrer en PDF…",
+                   command=self._save_pdf).pack(side="right", padx=4)
         self.btn_print = ttk.Button(bar, text="Imprimer…", command=self._print)
         self.btn_print.pack(side="right", padx=4)
         ttk.Button(bar, text="Fermer",
@@ -1159,6 +1161,22 @@ class BinyanPrintPreview:
         self._fit_job = self.win.after(150, self._fit_width)
 
     # --- impression et export ----------------------------------------------
+
+    def _save_pdf(self):
+        from tkinter import filedialog
+        path = filedialog.asksaveasfilename(
+            parent=self.win, defaultextension=".pdf",
+            filetypes=[("Fichier PDF", "*.pdf")])
+        if not path:
+            return
+        try:
+            save_pdf(self._current_pages(), path)
+        except (OSError, ValueError) as exc:
+            self._messagebox.showerror(
+                "Enregistrement", f"Échec de l'enregistrement : {exc}")
+            return
+        self._messagebox.showinfo(
+            "Enregistrement", f"PDF enregistré :\n{path}")
 
     def _print(self):
         # Sélection de l'imprimante : liste système, défaut présélectionnée.
