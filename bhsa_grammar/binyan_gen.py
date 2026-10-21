@@ -282,7 +282,7 @@ def _qal_perf(p1, p2, p3):
         ("p3", "m", "pl"): p1 + QAMATS + p2 + SHEVA + p3 + SHUREQ,
         ("p3", "f", "pl"): p1 + QAMATS + p2 + SHEVA + p3 + QAMATS + HE,
         ("p2", "m", "pl"): p1 + SHEVA + p2 + PATAH + p3 + S_PERF[("p2", "m", "pl")],
-        ("p2", "f", "pl"): p1 + QAMATS + p2 + PATAH + p3 + S_PERF[("p2", "f", "pl")],
+        ("p2", "f", "pl"): p1 + SHEVA + p2 + PATAH + p3 + S_PERF[("p2", "f", "pl")],
         ("p1", "c", "pl"): p1 + QAMATS + p2 + PATAH + p3 + S_PERF[("p1", "c", "pl")],
     }
 
