@@ -316,10 +316,10 @@ def nu_is_pl(key):
 def _qal_impv(p1, p2, p3):
     dash = DAGESH if p1 in BEGADKEFAT else ""
     return {
-        ("p2", "m", "sg"): p1 + SHEVA + p2 + HOLAM + p3,
-        ("p2", "f", "sg"): p1 + HIREQ + p2 + SHEVA + DAGESH + p3 + HIREQ + YOD,
-        ("p2", "m", "pl"): p1 + HIREQ + p2 + SHEVA + p3 + SHUREQ,
-        ("p2", "f", "pl"): p1 + SHEVA + p2 + HOLAM + p3 + SHEVA + NUN + QAMATS + HE,
+        ("p2", "m", "sg"): p1 + dash + SHEVA + p2 + HOLAM + p3,
+        ("p2", "f", "sg"): p1 + dash + HIREQ + p2 + SHEVA + DAGESH + p3 + HIREQ + YOD,
+        ("p2", "m", "pl"): p1 + dash + HIREQ + p2 + SHEVA + p3 + SHUREQ,
+        ("p2", "f", "pl"): p1 + dash + SHEVA + p2 + HOLAM + p3 + SHEVA + NUN + QAMATS + HE,
     }
 
 
@@ -1216,6 +1216,21 @@ def _fix_finals(form):
     return head + form[-1]
 
 
+def _initial_dagesh(form):
+    """Daguesh lene sur une begadkefat en début de mot (ex. כְּתֹב,
+    כָּתַב) : les gabarits dominants, extraits de racines non
+    begadkefat, ne le portent pas ; il est systématique en position
+    initiale. Idempotent."""
+    if not form or form[0] not in BEGADKEFAT:
+        return form
+    i = 1
+    while i < len(form) and unicodedata.combining(form[i]):
+        i += 1
+    if i < len(form) and form[i] == DAGESH:
+        return form
+    return form[0] + DAGESH + form[1:]
+
+
 def _elide_p3(template):
     """Élide la 3e radicale d'un gabarit strong (verbes lamed-he).
 
@@ -1650,6 +1665,7 @@ def generate_binyan_paradigm(vs, root, category):
                 if builtin is None:
                     builtin = _builtin_paradigm(vs, root, category)
                 forms[cell] = builtin[tense].get(cell, "")
+            forms[cell] = _initial_dagesh(forms[cell])
         out[tense] = forms
     return out
 
@@ -1681,7 +1697,7 @@ def generate_binyan_non_finite(vs, root, category):
         # ps=unknown dans la base. La clé JSON est cat|vs|vt|unknown|gn|nu.
         tpl = _lookup_template(category, vs, vt, ("unknown", gn, nu))
         if tpl:
-            out[(vt, gn, nu)] = _render(tpl, root, category, vs)
+            out[(vt, gn, nu)] = _initial_dagesh(_render(tpl, root, category, vs))
     return out
 
 
