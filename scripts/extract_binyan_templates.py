@@ -22,6 +22,7 @@ Usage :
 import collections
 import json
 import os
+import re
 import sys
 import unicodedata
 
@@ -192,6 +193,25 @@ def _to_template(form, root, assimilate=False):
     return tpl
 
 
+def _canon_tpl(s):
+    """Canonique d'un gabarit pour dédupliquer les variantes.
+
+    Neutralise les différences orthographiques mineures du texte
+    massorétique : daguesh, meteg, point shin/sin, hatef vs sheva,
+    mater du holam, hireq-yod, tsere-yod, segol vs patah. Deux
+    gabarits qui ne diffèrent que par ces signes sont une même
+    conjuguaison.
+    """
+    s = unicodedata.normalize("NFC", s or "")
+    s = re.sub(r"[\u05BC\u05BD\u05C1\u05C2]", "", s)
+    s = re.sub(r"[\u05B1\u05B2\u05B3]", "\u05B0", s)
+    s = s.replace("\u05B9\u05D5", "\u05B9")
+    s = s.replace("\u05B4\u05D9", "\u05B4")
+    s = s.replace("\u05B5\u05D9", "\u05B5")
+    s = s.replace("\u05B6", "\u05B7")
+    return s
+
+
 def main():
     api = load_corpus()
     F = api.F
@@ -323,12 +343,25 @@ def main():
                 pass  # unique source, on garde (verbe fort de référence)
             else:
                 continue
+        # Variantes : dédupliquées par canon orthographique (daguesh,
+        # meteg, hatef vs sheva, maters, segol vs patah) — une seule
+        # graphie par conjuguaison, la mieux classée — pour que les
+        # vraies alternances vocaliques (ex. qal impf 1cs אֶP1ְP2ֹP3
+        # vs אֶP1ְP2ַּP3) restent dans le top 3 au lieu d'être éjectées
+        # par des doublons orthographiques du gabarit dominant.
+        by_canon = {}
+        for t, e in ranked:
+            by_canon.setdefault(_canon_tpl(t), (t, e))
+        dedup = sorted(by_canon.values(),
+                       key=lambda te: (-len(te[1]["lexes"]), -te[1]["n"]))
+        variants = [t for t, _ in dedup[:4]
+                    if _canon_tpl(t) != _canon_tpl(tpl)]
         out_key = "|".join([cat, vs, vt, *map(str, key)])
         out[out_key] = {
             "template": tpl,
             "count": entry["n"],
             "lexemes": len(entry["lexes"]),
-            "variants": [t for t, _ in ranked[:3]],
+            "variants": variants,
         }
 
     dest = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",

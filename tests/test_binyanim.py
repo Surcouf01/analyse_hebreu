@@ -355,6 +355,45 @@ def main():
         if not r_legit["found"] or root_legit != want_root:
             failures.append(f"{good!r}: attendu racine {want_root!r}, "
                             f"obtenu {r_legit['found']}/{root_legit!r}")
+    # Variantes attestées d'une même cellule : plusieurs conjuguaisons
+    # du même binyan coexistent dans la BHSA (ex. qal yiqtol 1cs :
+    # אֶקְטֹל holam dominant, אֶקְטַל patah attesté ; שָׁמַע : אֶשְׁמַע/
+    # אֶשְׁמָע). Le paradigme porte la dominante, « variants » les
+    # conjuguaisons concurrentes réellement attestées, et le texte les
+    # affiche sur la même ligne séparées par « / ».
+    r_ktb = analyze_binyanim(F, "\u05DB\u05BC\u05B8\u05EA\u05B7\u05D1")
+    ktb_qal = r_ktb["binyanim"][0]
+    cell_1cs = ("p1", "c", "sg")
+    vars_1cs = (ktb_qal["paradigm"].get("variants", {})
+                .get("impf", {}).get(cell_1cs) or [])
+    if "\u05D0\u05B6\u05DB\u05B0\u05EA\u05B7\u05BC\u05D1" not in vars_1cs:
+        failures.append(f"\u05db\u05bc\u05ea\u05d1 qal impf 1cs : la variante "
+                        f"patah \u05d0\u05b6\u05db\u05b0\u05ea\u05b7\u05bc\u05d1 devrait "
+                        f"\u00eatre list\u00e9e : {vars_1cs!r}")
+    if ktb_qal["paradigm"]["impf"].get(cell_1cs) == "\u05D0\u05B6\u05DB\u05B0\u05EA\u05B7\u05BC\u05D1":
+        failures.append("\u05db\u05bc\u05ea\u05d1 qal impf 1cs : le holam "
+                        "\u05d0\u05b6\u05db\u05b0\u05ea\u05b9\u05d1 doit rester la forme "
+                        "dominante")
+    r_sma = analyze_binyanim(F, "\u05E9\u05C1\u05DE\u05B7\u05E2" if False else "\u05E9\u05B8\u05C1\u05DE\u05B7\u05E2")
+    sma_qal = r_sma["binyanim"][0]
+    vars_sma = (sma_qal["paradigm"].get("variants", {})
+                .get("impf", {}).get(cell_1cs) or [])
+    if "\u05D0\u05B6\u05E9\u05C1\u05B0\u05DE\u05B7\u05E2" not in (sma_qal["paradigm"]["impf"].get(cell_1cs),
+                         *vars_sma):
+        failures.append(f"\u05e9\u05c1\u05de\u05e2 qal impf 1cs : \u05d0\u05b6\u05e9\u05c1\u05b0\u05de\u05b7\u05e2 "
+                        f"manquant : {vars_sma!r}")
+    if "\u05D0\u05B6\u05E9\u05C1\u05B0\u05DE\u05B8\u05E2" not in vars_sma:
+        failures.append(f"\u05e9\u05c1\u05de\u05e2 qal impf 1cs : la variante qamats "
+                        f"\u05d0\u05b6\u05e9\u05c1\u05b0\u05de\u05b8\u05e2 devrait \u00eatre "
+                        f"list\u00e9e : {vars_sma!r}")
+    # Le texte marqué affiche les variantes sur la ligne de la cellule.
+    text_ktb = binyanim_to_text(r_ktb)
+    line_1cs = [ln for ln in text_ktb.split("\n")
+                if "1re pers. sing. (je)" in ln]
+    if not any("\u05D0\u05B6\u05DB\u05B0\u05EA\u05B9\u05D1 / " in ln for ln in line_1cs):
+        failures.append(f"texte : variante absente de la ligne 1cs "
+                        f"de l'imparfait : {line_1cs!r}")
+
     if failures:
         print(f"ÉCHECS ({len(failures)}) :")
         for f in failures:

@@ -1083,7 +1083,18 @@ def _exact_template(cat, vs, vt, cell):
 
 
 def _lookup_template(cat, vs, vt, cell):
-    """Cherche le gabarit d'une cellule : catégorie, puis « strong ».
+    """Gabarit dominant d'une cellule (chaîne), voir _lookup_template_entry."""
+    entry = _lookup_template_entry(cat, vs, vt, cell)
+    return entry["template"] if entry else None
+
+
+def _lookup_template_entry(cat, vs, vt, cell):
+    """Cherche l'entrée de gabarit d'une cellule : catégorie, puis « strong ».
+
+    Renvoie le dict complet du JSON (template, count, lexemes, variants)
+    ou None. La forme dominante est dans "template" ; "variants" liste
+    les gabarits concurrents attestés (au plus 3, par nombre de lemmes
+    puis d'occurrences).
 
     Les cellules finies ont une clé à 6 champs (cat|vs|vt|ps|gn|nu) ;
     les non finies une clé à 5 champs (cat|vs|vt|gn|nu, ps=unknown).
@@ -1114,7 +1125,63 @@ def _lookup_template(cat, vs, vt, cell):
             entry = t.get(key.replace(cat, "strong", 1))
             if entry:
                 break
-    return entry["template"] if entry else None
+    return entry
+
+
+def _variant_canon(s):
+    """Canonique d'une forme pour la comparaison des variantes.
+
+    Neutralise les différences orthographiques mineures du texte
+    massorétique (mêmes tolérances que tests/test_binyanim.py) :
+    daguesh, meteg, point shin/sin, hatef vs sheva, maters du holam,
+    hireq-yod et tsere-yod, segol vs patah. Deux formes qui ne
+    diffèrent que par ces signes sont une même conjuguaison.
+    """
+    import re
+    s = _normalize(s)
+    s = re.sub(r"[\u05BC\u05BD\u05C1\u05C2]", "", s)
+    s = re.sub(r"[\u05B1\u05B2\u05B3]", SHEVA, s)
+    s = s.replace(HOLAM + VAV, HOLAM)
+    s = s.replace(HIREQ + YOD, HIREQ)
+    s = s.replace(TSERE + YOD, TSERE)
+    s = s.replace(SEGOL, PATAH)
+    return s
+
+
+def _cell_variants(vs, root, category, tense, cell, entry, form):
+    """Variantes attestées d'une cellule, rendues avec la racine.
+
+    Les gabarits concurrents du dominant (champ « variants » du JSON,
+    classés par nombre de lemmes puis d'occurrences) sont rendus comme
+    la forme principale : mêmes radicales effectives, mêmes règles
+    (daguesh lene parasite, métathèse hitpael). Les variantes sont
+    dédupliquées et débarrassées de la forme dominante déjà affichée ;
+    une variante qui se réduit, après rendu, à la forme principale
+    (différence d'orthographe du gabarit uniquement) est écartée.
+
+    Seules les cellules conjuguées par gabarit extrait ont des
+    variantes : les volitifs dérivés (jussif, cohortatif) et le repli
+    du générateur intégré n'en produisent pas.
+    """
+    if not entry:
+        return []
+    import re
+    out = []
+    seen = {_variant_canon(form)}
+    for tpl in entry.get("variants") or ():
+        if tpl == entry.get("template"):
+            continue
+        try:
+            v = _initial_dagesh(_render(tpl, root, category, vs))
+        except Exception:  # noqa: BLE001
+            continue
+        if not v:
+            continue
+        key = _variant_canon(v)
+        if key not in seen:
+            seen.add(key)
+            out.append(v)
+    return out
 
 
 def _root_map(category, root):
@@ -1637,6 +1704,7 @@ def generate_binyan_paradigm(vs, root, category):
         return out
     for tense, persons in TENSE_PERSONS.items():
         forms = {}
+        variants = {}
         for ps, gn, nu, _label in persons:
             cell = (ps, gn, nu)
             if tense == "juss":
@@ -1658,15 +1726,22 @@ def generate_binyan_paradigm(vs, root, category):
                     form = builtin["impf"].get(cell, "")
                 forms[cell] = form
                 continue
-            tpl = _lookup_template(category, vs, tense, cell)
+            tpl_entry = _lookup_template_entry(category, vs, tense, cell)
+            tpl = tpl_entry["template"] if tpl_entry else None
             if tpl:
                 forms[cell] = _render(tpl, root, category, vs)
+                vars_ = _cell_variants(vs, root, category, tense, cell,
+                                       tpl_entry, forms[cell])
+                if vars_:
+                    variants[cell] = vars_
             else:
                 if builtin is None:
                     builtin = _builtin_paradigm(vs, root, category)
                 forms[cell] = builtin[tense].get(cell, "")
             forms[cell] = _initial_dagesh(forms[cell])
         out[tense] = forms
+        if variants:
+            out.setdefault("variants", {})[tense] = variants
     return out
 
 
@@ -1695,9 +1770,16 @@ def generate_binyan_non_finite(vs, root, category):
     for vt, (gn, nu), _label in NON_FINITE_CELLS:
         # Les infinitifs n'ont ni genre ni nombre ; les participes ont
         # ps=unknown dans la base. La clé JSON est cat|vs|vt|unknown|gn|nu.
-        tpl = _lookup_template(category, vs, vt, ("unknown", gn, nu))
+        entry = _lookup_template_entry(category, vs, vt, ("unknown", gn, nu))
+        tpl = entry["template"] if entry else None
         if tpl:
             out[(vt, gn, nu)] = _initial_dagesh(_render(tpl, root, category, vs))
+            vars_ = _cell_variants(vs, root, category, vt,
+                                   ("unknown", gn, nu), entry,
+                                   out[(vt, gn, nu)])
+            if vars_:
+                out.setdefault("variants", {})
+                out["variants"][(vt, gn, nu)] = vars_
     return out
 
 
@@ -1977,17 +2059,23 @@ def binyanim_to_text(analysis):
             lines.append(modern_txt)
         for tense in ("perf", "impf", "impv", "juss", "coh"):
             lines.append(f"  {TENSE_LABELS[tense]} :")
+            cell_variants = b["paradigm"].get("variants", {}).get(tense, {})
             for ps, gn, nu, label in TENSE_PERSONS[tense]:
                 form = b["paradigm"][tense].get((ps, gn, nu), "")
                 if form:
-                    lines.append(f"    {label:34} {form}")
+                    vars_ = cell_variants.get((ps, gn, nu)) or []
+                    shown = " / ".join([form] + vars_)
+                    lines.append(f"    {label:34} {shown}")
         nf = b["non_finite"]
         if nf:
             lines.append("  Formes non finies :")
+            nf_variants = nf.get("variants", {})
             for vt, (gn, nu), label in NON_FINITE_CELLS:
                 form = nf.get((vt, gn, nu), "")
                 if form:
-                    lines.append(f"    {label:34} {form}")
+                    vars_ = nf_variants.get((vt, gn, nu)) or []
+                    shown = " / ".join([form] + vars_)
+                    lines.append(f"    {label:34} {shown}")
         lines.append("")
     return "\n".join(lines)
 
@@ -2083,9 +2171,21 @@ def binyanim_to_json(analysis, indent=2, ensure_ascii=False):
                     tense: {_key(cell): form
                            for cell, form in forms.items() if form}
                     for tense, forms in b["paradigm"].items()
+                    if tense != "variants"
+                },
+                "paradigm_variants": {
+                    f"{tense}|{_key(cell)}": forms
+                    for tense, cells in b["paradigm"]
+                    .get("variants", {}).items()
+                    for cell, forms in cells.items() if forms
                 },
                 "non_finite": {_key(cell): form
-                               for cell, form in b["non_finite"].items() if form},
+                               for cell, form in b["non_finite"].items()
+                               if form and cell != "variants"},
+                "non_finite_variants": {
+                    _key(cell): forms
+                    for cell, forms in b["non_finite"]
+                    .get("variants", {}).items() if forms},
             }
             for b in analysis["binyanim"]
         ],
