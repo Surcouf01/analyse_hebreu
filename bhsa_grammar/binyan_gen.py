@@ -242,7 +242,7 @@ S_PERF = {
     ("p3", "m", "pl"): SHUREQ,
     ("p3", "f", "pl"): QAMATS + HE,
     ("p2", "m", "pl"): SHEVA + TAV + SEGOL + DAGESH + END_MEM,
-    ("p2", "f", "pl"): SHEVA + TAV + SEGOL + DAGESH + END_NUN,
+    ("p2", "f", "pl"): TAV + SEGOL + DAGESH + END_NUN,
     ("p1", "c", "pl"): SHEVA + NUN + SHUREQ,
 }
 
