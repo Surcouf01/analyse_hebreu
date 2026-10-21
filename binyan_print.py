@@ -495,6 +495,11 @@ def build_binyan_document(parsed, binyan_code):
                 "Binyan non attesté dans la Bible hébraïque pour cette "
                 "racine, mais attesté dans la Mishna (paradigme "
                 "théorique, construit par analogie).")
+        elif entry.get("modern_forms"):
+            doc["meta"].append(
+                "Binyan non attesté dans la Bible hébraïque pour cette "
+                "racine, mais attesté en hébreu moderne (paradigme "
+                "théorique, construit par analogie).")
         else:
             doc["meta"].append(
                 "Binyan non attesté dans la Bible hébraïque pour cette "
@@ -514,6 +519,15 @@ def build_binyan_document(parsed, binyan_code):
         doc["notes"].append(
             "Formes attestées dans la Mishna : "
             + ", ".join(entry["mishnah_forms"]))
+    modern = entry.get("modern_forms") or {}
+    if modern:
+        modern_txt = ("Attesté en hébreu moderne : "
+                      + (modern.get("lemma") or ""))
+        if modern.get("gloss"):
+            modern_txt += f" ({modern['gloss']})"
+        if modern.get("url"):
+            modern_txt += f"\n{modern['url']}"
+        doc["notes"].append(modern_txt)
 
     # Sections de paradigme : parsées depuis le texte du binyan. Les
     # en-têtes de temps («  Parfait (qatal) : ») ouvrent une section,
@@ -523,7 +537,8 @@ def build_binyan_document(parsed, binyan_code):
         if not line.strip():
             continue
         if (line.startswith("--") or line.startswith("Traduction")
-                or line.startswith("⚠") or line.startswith("✸")):
+                or line.startswith("⚠") or line.startswith("✸")
+                or line.startswith("◈")):
             continue
         row = _ROW_RE.match(line)
         if row and current is not None:

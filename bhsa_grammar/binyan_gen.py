@@ -1705,7 +1705,7 @@ def generate_binyan_non_finite(vs, root, category):
 # API principale
 # =============================================================================
 
-def analyze_binyanim(F, form, use_mishnah=False):
+def analyze_binyanim(F, form, use_mishnah=False, use_modern=False):
     """Analyse « binyanim » complète d'un mot hébreu conjugué ou d'une
     racine trilitaire.
 
@@ -1713,6 +1713,11 @@ def analyze_binyanim(F, form, use_mishnah=False):
     (fichier ``mishnah_binyanim.json``, extrait du corpus Sefaria) mais
     absents de la Bible hébraïque sont signalés dans chaque entrée via
     le champ ``mishnah_forms`` (liste de formes attestées ; vide sinon).
+
+    Si ``use_modern`` est vrai, les binyanim attestés en hébreu moderne
+    (fichier ``modern_binyanim.json``, extrait du dictionnaire Pealim)
+    sont signalés dans chaque entrée via le champ ``modern_forms``
+    (dict ``{"lemma", "gloss", "url"}`` ; None sinon).
 
     Renvoie :
         {
@@ -1738,6 +1743,8 @@ def analyze_binyanim(F, form, use_mishnah=False):
                     "sense": "actif simple",
                     "attested": bool,
                     "exists": bool | None,
+                    "mishnah_forms": ["forme", ...],
+                    "modern_forms": {"lemma": ..., "gloss": ..., "url": ...} | None,
                     "paradigm": {"perf": {...}, "impf": {...}, "impv": {...}},
                     "non_finite": {(vt, gn, nu): forme},
                 },
@@ -1798,6 +1805,8 @@ def analyze_binyanim(F, form, use_mishnah=False):
     gloss_en = verb.get("gloss") or ""
     mishnah_data = load_mishnah_binyanim() if use_mishnah else {}
     mishnah_root = mishnah_data.get(verb.get("root_display") or "", {})
+    modern_data = load_modern_binyanim() if use_modern else {}
+    modern_root = modern_data.get(verb.get("root_display") or "", {})
     for code, name_fr, name_he in BINYANIM:
         tr_fr, tr_en = binyan_translation(code, gloss_fr, gloss_en,
                                          root=verb.get("root_display"))
@@ -1811,6 +1820,7 @@ def analyze_binyanim(F, form, use_mishnah=False):
             "attested": (attested == code),
             "exists": (code in binyanim_of_lex) if binyanim_of_lex is not None else None,
             "mishnah_forms": list(mishnah_root.get(code, [])),
+            "modern_forms": modern_root.get(code),
             "paradigm": generate_binyan_paradigm(code, root, category),
             "non_finite": generate_binyan_non_finite(code, root, category),
         }
@@ -1835,6 +1845,36 @@ if not os.path.isfile(_MISHNAH_JSON_DEFAULT):
     _MISHNAH_JSON_DEFAULT = os.path.join(resource_dir(), "mishnah_binyanim.json")
 MISHNAH_JSON = _MISHNAH_JSON_DEFAULT
 _MISHNAH_CACHE = {"path": None, "data": {}}
+
+
+_MODERN_JSON_DEFAULT = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "modern_binyanim.json")
+if not os.path.isfile(_MODERN_JSON_DEFAULT):
+    _MODERN_JSON_DEFAULT = os.path.join(resource_dir(), "modern_binyanim.json")
+MODERN_JSON = _MODERN_JSON_DEFAULT
+_MODERN_CACHE = {"path": None, "data": {}}
+
+
+def load_modern_binyanim():
+    """Charge modern_binyanim.json (binyanim modernes par racine).
+
+    Format : {"<racine>": {"<code>": {"lemma", "gloss", "url"}}}, extrait
+    du dictionnaire d'hébreu moderne Pealim (cf. scripts/
+    extract_modern_binyanim.py). Tolérant si le fichier est absent.
+    Mis en cache tant que le fichier ne change pas de chemin.
+    """
+    if not os.path.isfile(MODERN_JSON):
+        return {}
+    if _MODERN_CACHE["path"] != MODERN_JSON:
+        import json
+        try:
+            with open(MODERN_JSON, encoding="utf-8") as fh:
+                _MODERN_CACHE["data"] = json.load(fh)
+            _MODERN_CACHE["path"] = MODERN_JSON
+        except (OSError, ValueError):
+            _MODERN_CACHE["data"] = {}
+            _MODERN_CACHE["path"] = None
+    return _MODERN_CACHE["data"]
 
 
 def load_mishnah_binyanim():
@@ -1862,12 +1902,14 @@ def binyanim_to_text(analysis):
     """Formate le résultat d'analyze_binyanim en texte lisible.
 
     Les en-têtes de binyan portent un marqueur parsable :
-        ###BINYAN|<code>|<nom fr>|<nom hébreu>|<attesté 0/1>|<existant 0/1/vide>|<trad fr>|<trad en>|<formes mishna ; ;>###
+        ###BINYAN|<code>|<nom fr>|<nom hébreu>|<attesté 0/1>|<existant 0/1/vide>|<trad fr>|<trad en>|<formes mishna ; ;>|<lemme moderne~sens moderne~url Pealim>###
     (le champ « existant » dit si le binyan est attesté pour cette racine
     dans la BHSA : vide = information indisponible, racine non attestée ;
-    les traductions du verbe dans ce binyan suivent, fr puis en ; le
-    dernier champ liste les formes attestées dans la Mishna pour ce
-    binyan non biblique, jointes par « ; », vide si aucune).
+    les traductions du verbe dans ce binyan suivent, fr puis en ; puis
+    les formes attestées dans la Mishna pour ce binyan non biblique,
+    jointes par « ; », vide si aucune ; puis l'attestation en hébreu
+    moderne — lemme Pealim, sens anglais et page, joints par « ~ »,
+    vide si le binyan n'y est pas attesté).
     ainsi que l'en-tête de verbe et la catégorie de verbe faible :
         ###VERB|<racine>|<lemme>|<traduction fr>###
         ###WEAK|<code>|<libellé>|<description>###
@@ -1903,7 +1945,12 @@ def binyanim_to_text(analysis):
         exists_flag = "" if exists is None else ("1" if exists else "0")
         mishnah_forms = b.get("mishnah_forms") or []
         mishnah_part = ";".join(mishnah_forms)
-        lines.append(MARK_BINYAN + f"|{b['code']}|{b['name_fr']}|{b['name_he']}|{att}|{exists_flag}|{b.get('translation_fr', '')}|{b.get('translation_en', '')}|{mishnah_part}###")
+        modern = b.get("modern_forms") or {}
+        modern_part = "" if not modern else "~".join((
+            (modern.get("lemma") or "").replace("~", " "),
+            (modern.get("gloss") or "").replace("~", " "),
+            (modern.get("url") or "").replace("~", " ")))
+        lines.append(MARK_BINYAN + f"|{b['code']}|{b['name_fr']}|{b['name_he']}|{att}|{exists_flag}|{b.get('translation_fr', '')}|{b.get('translation_en', '')}|{mishnah_part}|{modern_part}###")
         attest = " (binyan attesté dans la BHSA pour cette forme)" if b["attested"] else ""
         lines.append(f"-- {b['name_fr']} / {b['name_he']} — {b['sense']}{attest} --")
         tr_fr = b.get("translation_fr") or ""
@@ -1921,6 +1968,13 @@ def binyanim_to_text(analysis):
                              "aucune occurrence de ce binyan pour cette racine "
                              "dans la Bible hébraïque (paradigme théorique, "
                              "construit par analogie).")
+        modern = b.get("modern_forms") or {}
+        if modern:
+            modern_txt = ("\u25c8 Attest\u00e9 en h\u00e9breu moderne : "
+                          + (modern.get("lemma") or ""))
+            if modern.get("gloss"):
+                modern_txt += f" ({modern['gloss']})"
+            lines.append(modern_txt)
         for tense in ("perf", "impf", "impv", "juss", "coh"):
             lines.append(f"  {TENSE_LABELS[tense]} :")
             for ps, gn, nu, label in TENSE_PERSONS[tense]:
@@ -1947,11 +2001,13 @@ def parse_binyanim_text(text):
             "weak": {"code":..., "label":..., "desc":...},
             "binyanim": [{"code","name_fr","name_he","attested","exists",
                         "translation_fr","translation_en","mishnah_forms",
-                        "text"}, ...],
+                        "modern_forms","text"}, ...],
         }
     ("exists" vaut True, False ou None si l'information est indisponible ;
     "mishnah_forms" liste les formes attestées dans la Mishna pour ce
-    binyan, vide si aucune.)
+    binyan, vide si aucune ; "modern_forms" vaut {"lemma", "gloss",
+    "url"} si le binyan est attesté en hébreu moderne (Pealim), None
+    sinon.)
     """
     import re
     verb = {}
@@ -1975,12 +2031,20 @@ def parse_binyanim_text(text):
             if len(parts) >= 4:
                 exists_part = parts[4] if len(parts) >= 5 else None
                 mishnah_part = parts[7] if len(parts) > 7 else ""
+                modern_part = parts[8] if len(parts) > 8 else ""
+                modern_fields = modern_part.split("~") if modern_part else []
+                modern_forms = None
+                if len(modern_fields) == 3 and any(modern_fields):
+                    modern_forms = {"lemma": modern_fields[0],
+                                    "gloss": modern_fields[1],
+                                    "url": modern_fields[2]}
                 current = {"code": parts[0], "name_fr": parts[1],
                            "name_he": parts[2], "attested": parts[3] == "1",
                            "exists": (exists_part == "1") if exists_part else None,
                            "translation_fr": parts[5] if len(parts) > 5 else "",
                            "translation_en": parts[6] if len(parts) > 6 else "",
                            "mishnah_forms": [f for f in mishnah_part.split(";") if f],
+                           "modern_forms": modern_forms,
                            "text": []}
                 binyanim.append(current)
             continue
@@ -2014,6 +2078,7 @@ def binyanim_to_json(analysis, indent=2, ensure_ascii=False):
                 "attested": b["attested"],
                 "exists": b.get("exists"),
                 "mishnah_forms": b.get("mishnah_forms") or [],
+                "modern_forms": b.get("modern_forms"),
                 "paradigm": {
                     tense: {_key(cell): form
                            for cell, form in forms.items() if form}

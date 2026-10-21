@@ -204,6 +204,36 @@ def main():
         if "Traduction" not in b["text"]:
             failures.append(f"parse trad בנה: ligne Traduction manquante pour {b['code']}")
 
+    # Binyanim modernes (Pealim, modern_binyanim.json) : שמר y est
+    # attesté en qal, nifal, pi'el et hitpa'el, mais pas en pual/hifil/
+    # hufal ; le champ modern_forms porte lemme/gloss/url, le texte
+    # marqué l'attestation (◈) et le parse la restitue.
+    r_mod = analyze_binyanim(F, "שמר", use_modern=True)
+    modern_smr = {b["code"]: b.get("modern_forms") for b in r_mod["binyanim"]}
+    for code in ("qal", "nif", "piel", "hit"):
+        if not modern_smr.get(code):
+            failures.append(f"שמר moderne: binyan {code} devrait être attesté "
+                            f"en hébreu moderne : {modern_smr}")
+    for code in ("pual", "hif", "hof"):
+        if modern_smr.get(code):
+            failures.append(f"שמר moderne: binyan {code} ne devrait pas être "
+                            f"attesté en hébreu moderne : {modern_smr}")
+    if modern_smr.get("qal") and "url" not in modern_smr["qal"]:
+        failures.append("שמר moderne: modern_forms devrait porter l'url Pealim")
+    parsed_mod = parse_binyanim_text(binyanim_to_text(r_mod))
+    for b in parsed_mod["binyanim"]:
+        want = bool(modern_smr[b["code"]])
+        got = bool(b.get("modern_forms"))
+        if got != want:
+            failures.append(f"parse שמר moderne: {b['code']} "
+                            f"modern={got} != {want}")
+        if want and "hébreu moderne" not in b["text"]:
+            failures.append(f"parse שמר moderne: attestation ◈ manquante "
+                            f"pour {b['code']}")
+        if not want and "hébreu moderne" in b["text"]:
+            failures.append(f"parse שמר moderne: attestation ◈ indue pour "
+                            f"{b['code']}")
+
     # Vérification contre les formes réellement attestées : pour le verbe
     # FORT de référence et les cellules clés du qal, les formes générées
     # doivent coïncider avec la base. Pour les verbes faibles, chaque lemme
