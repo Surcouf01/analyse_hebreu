@@ -228,6 +228,10 @@ def _save_properties(root, updates):
             lines.append("# Aperçu avant impression des binyanim : pages par "
                          "feuille (1 ou 2) et taille de police du "
                          "document (60 à 200, en pourcentage).\n")
+        if any(k.startswith("binyanim.") for k in missing):
+            lines.append("# Onglet Binyanim : signaler les binyanim "
+                         "mishnaïques (Sefaria) et modernes (Pealim) "
+                         "(true/false).\n")
         for k, v in missing.items():
             lines.append(f"{k} = {v}\n")
     try:
@@ -2303,14 +2307,18 @@ class AnalyseurGUI:
                         value="text").pack(side="left")
         ttk.Radiobutton(opts, text="JSON", variable=self.binyanim_format,
                         value="json").pack(side="left")
-        self.binyanim_use_mishnah = tk.BooleanVar(value=False)
+        self.binyanim_use_mishnah = tk.BooleanVar(
+            value=_PROPS.get("binyanim.mishnah", "false").strip().lower()
+            == "true")
         ttk.Checkbutton(opts, text="Binyanim mishnaïques (Sefaria)",
-                        variable=self.binyanim_use_mishnah,
-                        style="Toolbutton").pack(side="left", padx=(16, 0))
-        self.binyanim_use_modern = tk.BooleanVar(value=False)
+                        variable=self.binyanim_use_mishnah).pack(
+                            side="left", padx=(16, 0))
+        self.binyanim_use_modern = tk.BooleanVar(
+            value=_PROPS.get("binyanim.modern", "false").strip().lower()
+            == "true")
         ttk.Checkbutton(opts, text="Binyanim modernes (Pealim)",
-                        variable=self.binyanim_use_modern,
-                        style="Toolbutton").pack(side="left", padx=(8, 0))
+                        variable=self.binyanim_use_modern).pack(
+                            side="left", padx=(8, 0))
 
         self.btn_binyanim = ttk.Button(tab, text="Conjuguer le verbe",
                                        command=self._run_binyanim)
@@ -3201,6 +3209,14 @@ def _save_all_preferences(root):
             key = gui._voice_labels.get(voice.get())
             if key is not None:
                 updates["audio.voice"] = key
+        mishnah = getattr(gui, "binyanim_use_mishnah", None)
+        if mishnah is not None:
+            updates["binyanim.mishnah"] = ("true" if mishnah.get()
+                                           else "false")
+        modern = getattr(gui, "binyanim_use_modern", None)
+        if modern is not None:
+            updates["binyanim.modern"] = ("true" if modern.get()
+                                          else "false")
     if updates:
         _save_properties(root, updates)
 
