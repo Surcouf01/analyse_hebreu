@@ -2310,19 +2310,27 @@ class AnalyseurGUI:
         # Les libellés des deux cases reprennent la couleur que prend
         # l'onglet d'un binyan attesté dans ce corpus : orange pour la
         # Mishna, vert pour l'hébreu moderne (cf. BinyanimNotebook).
+        # La couleur passe par des styles dédiés : selon le thème ttk
+        # (ex. « vista » sous Windows), l'option -foreground est
+        # refusée sur les widgets ttk (TclError unknown option).
+        opts_style = ttk.Style(self.root)
+        opts_style.configure("BinyanimMishnah.TCheckbutton",
+                              foreground=BinyanimNotebook._FG_MISHNAH)
+        opts_style.configure("BinyanimModern.TCheckbutton",
+                              foreground=BinyanimNotebook._FG_MODERN)
         self.binyanim_use_mishnah = tk.BooleanVar(
             value=_PROPS.get("binyanim.mishnah", "false").strip().lower()
             == "true")
         ttk.Checkbutton(opts, text="Binyanim mishnaïques (Sefaria)",
                         variable=self.binyanim_use_mishnah,
-                        foreground=BinyanimNotebook._FG_MISHNAH).pack(
+                        style="BinyanimMishnah.TCheckbutton").pack(
                             side="left", padx=(16, 0))
         self.binyanim_use_modern = tk.BooleanVar(
             value=_PROPS.get("binyanim.modern", "false").strip().lower()
             == "true")
         ttk.Checkbutton(opts, text="Binyanim modernes (Pealim)",
                         variable=self.binyanim_use_modern,
-                        foreground=BinyanimNotebook._FG_MODERN).pack(
+                        style="BinyanimModern.TCheckbutton").pack(
                             side="left", padx=(8, 0))
 
         self.btn_binyanim = ttk.Button(tab, text="Conjuguer le verbe",
