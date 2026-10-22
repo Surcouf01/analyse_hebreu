@@ -366,7 +366,7 @@ class BinyanimNotebook(ttk.Frame):
 
     Contrairement à ttk.Notebook, chaque titre d'onglet est un tk.Label :
     son libellé peut être coloré individuellement (rouge pour un binyan
-    qui n'a pas de sens pour la racine analysée, orange pour un binyan
+    qui n'a pas de sens pour la racine analysée, jaune pour un binyan
     attesté dans la Mishna mais absent de la Bible, vert pour un binyan
     attesté en hébreu moderne — Pealim — mais absent de la Bible), ce que l'API
     ttk.Notebook ne permet pas.
@@ -379,7 +379,7 @@ class BinyanimNotebook(ttk.Frame):
     _FG_ACTIVE = "black"
     _FG_INACTIVE = "gray40"
     _FG_MISSING = "#b00020"
-    _FG_MISHNAH = "#c06000"
+    _FG_MISHNAH = "#b8a000"
     _FG_MODERN = "#007000"
 
     def __init__(self, parent, **kwargs):
@@ -2308,7 +2308,7 @@ class AnalyseurGUI:
         ttk.Radiobutton(opts, text="JSON", variable=self.binyanim_format,
                         value="json").pack(side="left")
         # Les libellés des deux cases reprennent la couleur que prend
-        # l'onglet d'un binyan attesté dans ce corpus : orange pour la
+        # l'onglet d'un binyan attesté dans ce corpus : jaune pour la
         # Mishna, vert pour l'hébreu moderne (cf. BinyanimNotebook).
         # La couleur passe par des styles dédiés : selon le thème ttk
         # (ex. « vista » sous Windows), l'option -foreground est
@@ -2468,7 +2468,7 @@ class AnalyseurGUI:
         pour ce lemme dans la Bible hébraïque), le libellé de l'onglet est
         coloré en rouge et l'onglet affiche un avertissement. Si des formes
         de ce binyan sont attestées dans la Mishna (option « Binyanim
-        mishnaïques »), le libellé passe en orange et l'avertissement
+        mishnaïques »), le libellé passe en jaune et l'avertissement
         mentionne ces formes. Si le binyan est attesté en hébreu moderne
         (option « Binyanim modernes », dictionnaire Pealim) mais absent
         de la Bible, le libellé passe en vert et l'avertissement mentionne

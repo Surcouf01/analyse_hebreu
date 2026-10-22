@@ -509,7 +509,7 @@ python scripts/extract_modern_binyanim.py --pages 3 --out /tmp/t.json --force  #
 Avec `--mishna-binyanim` (CLI) ou la case « Binyanim mishnaïques (Sefaria) »
 (GUI, onglet Binyanim), les binyanim attestés dans la **Mishna** mais absents
 de la Bible hébraïque sont signalés, avec des formes d'attestation :
-le libellé de l'onglet GUI passe en **orange** (au lieu du rouge
+le libellé de l'onglet GUI passe en **jaune** (au lieu du rouge
 « pas de sens biblique ») et le texte affiche
 « ✸ Attesté dans la Mishna (binyan non biblique) : … ».
 
