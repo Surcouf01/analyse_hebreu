@@ -1641,7 +1641,7 @@ def _jussive_fallback(vs, root, category, cell):
     return ""
 
 
-def generate_binyan_paradigm(vs, root, category):
+def generate_binyan_paradigm(vs, root, category, with_variants=True):
     """Paradigme complet d'un binyan : {tense: {(ps,gn,nu): forme}}.
 
     Chaque cellule utilise le gabarit BHSA de la catégorie du verbe ;
@@ -1649,6 +1649,11 @@ def generate_binyan_paradigm(vs, root, category):
     Les volitifs (jussif, cohortatif) utilisent les gabarits extraits des
     formes attestées (wayyiqtol pour le jussif, impf+\u05b8\u05d4 pour le
     cohortatif) ; sans gabarit attesté, ils sont dérivés de l'imparfait.
+
+    ``with_variants`` : quand il est vrai, la clé "variants" recense,
+    par temps puis cellule, les conjuguaisons concurrentes
+    réellement attestées dans la BHSA (ex. qal yiqtol 1cs אֶקְטֹל /
+    אֶקְטַל), en plus de la forme dominante.
     """
     out = {}
     builtin = None
@@ -1730,8 +1735,9 @@ def generate_binyan_paradigm(vs, root, category):
             tpl = tpl_entry["template"] if tpl_entry else None
             if tpl:
                 forms[cell] = _render(tpl, root, category, vs)
-                vars_ = _cell_variants(vs, root, category, tense, cell,
+                vars_ = (_cell_variants(vs, root, category, tense, cell,
                                        tpl_entry, forms[cell])
+                        if with_variants else [])
                 if vars_:
                     variants[cell] = vars_
             else:
@@ -1760,8 +1766,12 @@ NON_FINITE_CELLS = (
 )
 
 
-def generate_binyan_non_finite(vs, root, category):
-    """Infinitifs et participes d'un binyan : {(vt, gn, nu): forme}."""
+def generate_binyan_non_finite(vs, root, category, with_variants=True):
+    """Infinitifs et participes d'un binyan : {(vt, gn, nu): forme}.
+
+    ``with_variants`` : conjuguaisons concurrentes attestées, sous la
+    clé "variants" (cf. generate_binyan_paradigm).
+    """
     out = {}
     if category == "ayin_vav" and vs == "hif":
         return _hif_hollow_non_finite(root[0], root[2])
@@ -1774,12 +1784,12 @@ def generate_binyan_non_finite(vs, root, category):
         tpl = entry["template"] if entry else None
         if tpl:
             out[(vt, gn, nu)] = _initial_dagesh(_render(tpl, root, category, vs))
-            vars_ = _cell_variants(vs, root, category, vt,
+            vars_ = (_cell_variants(vs, root, category, vt,
                                    ("unknown", gn, nu), entry,
                                    out[(vt, gn, nu)])
+                    if with_variants else [])
             if vars_:
-                out.setdefault("variants", {})
-                out["variants"][(vt, gn, nu)] = vars_
+                out.setdefault("variants", {})[(vt, gn, nu)] = vars_
     return out
 
 
@@ -1787,7 +1797,8 @@ def generate_binyan_non_finite(vs, root, category):
 # API principale
 # =============================================================================
 
-def analyze_binyanim(F, form, use_mishnah=False, use_modern=False):
+def analyze_binyanim(F, form, use_mishnah=False, use_modern=False,
+                     with_variants=True):
     """Analyse « binyanim » complète d'un mot hébreu conjugué ou d'une
     racine trilitaire.
 
@@ -1800,6 +1811,11 @@ def analyze_binyanim(F, form, use_mishnah=False, use_modern=False):
     (fichier ``modern_binyanim.json``, extrait du dictionnaire Pealim)
     sont signalés dans chaque entrée via le champ ``modern_forms``
     (dict ``{"lemma", "gloss", "url"}`` ; None sinon).
+
+    Si ``with_variants`` est faux, seules les formes dominantes sont
+    générées (les conjuguaisons concurrentes attestées par cellule ne
+    sont pas produites).
+
 
     Renvoie :
         {
@@ -1903,8 +1919,10 @@ def analyze_binyanim(F, form, use_mishnah=False, use_modern=False):
             "exists": (code in binyanim_of_lex) if binyanim_of_lex is not None else None,
             "mishnah_forms": list(mishnah_root.get(code, [])),
             "modern_forms": modern_root.get(code),
-            "paradigm": generate_binyan_paradigm(code, root, category),
-            "non_finite": generate_binyan_non_finite(code, root, category),
+            "paradigm": generate_binyan_paradigm(code, root, category,
+                                                 with_variants=with_variants),
+            "non_finite": generate_binyan_non_finite(code, root, category,
+                                                    with_variants=with_variants),
         }
         out["binyanim"].append(entry)
     return out

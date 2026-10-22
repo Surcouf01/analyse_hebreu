@@ -2332,6 +2332,15 @@ class AnalyseurGUI:
                         variable=self.binyanim_use_modern,
                         style="BinyanimModern.TCheckbutton").pack(
                             side="left", padx=(8, 0))
+        # Variantes attestées par cellule : toutes les conjuguaisons
+        # concurrentes (ex. qal yiqtol 1cs אֶקְטֹל / אֶקְטַל) ou la forme
+        # dominante seule.
+        self.binyanim_use_variants = tk.BooleanVar(
+            value=_PROPS.get("binyanim.variants", "true").strip().lower()
+            == "true")
+        ttk.Checkbutton(opts, text="Toutes les formes attestées",
+                        variable=self.binyanim_use_variants).pack(
+                            side="left", padx=(8, 0))
 
         self.btn_binyanim = ttk.Button(tab, text="Conjuguer le verbe",
                                        command=self._run_binyanim)
@@ -2387,13 +2396,16 @@ class AnalyseurGUI:
         fmt = self.binyanim_format.get()
         use_mishnah = bool(self.binyanim_use_mishnah.get())
         use_modern = bool(self.binyanim_use_modern.get())
+        use_variants = bool(getattr(self, "binyanim_use_variants", None)
+                            and self.binyanim_use_variants.get())
         F = self.api.F
         self._disable_buttons()
         self.status.configure(text=f"Conjugaison de « {form} »…")
 
         def worker():
             analysis = analyze_binyanim(F, form, use_mishnah=use_mishnah,
-                                        use_modern=use_modern)
+                                        use_modern=use_modern,
+                                        with_variants=use_variants)
             if not analysis.get("found"):
                 verb = analysis.get("verb", {})
                 reason = verb.get("reason") or analysis.get("reason")
@@ -3230,6 +3242,10 @@ def _save_all_preferences(root):
         if modern is not None:
             updates["binyanim.modern"] = ("true" if modern.get()
                                           else "false")
+        variants = getattr(gui, "binyanim_use_variants", None)
+        if variants is not None:
+            updates["binyanim.variants"] = ("true" if variants.get()
+                                            else "false")
     if updates:
         _save_properties(root, updates)
 
