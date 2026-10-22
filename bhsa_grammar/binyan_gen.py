@@ -210,17 +210,18 @@ SHUREQ = VAV + DAGESH
 
 # --- Personnes du paradigme (ps, gn, nu, libellé français) ---------------------
 # gn="c" : commun (m/f) pour les 1res personnes.
+# Ordre français : 1re, 2e, 3e personne ; singulier puis pluriel.
 PERSONS = (
-    ("p3", "m", "sg", "3e pers. masc. sing. (il)"),
-    ("p3", "f", "sg", "3e pers. fém. sing. (elle)"),
+    ("p1", "c", "sg", "1re pers. sing. (je)"),
     ("p2", "m", "sg", "2e pers. masc. sing. (tu)"),
     ("p2", "f", "sg", "2e pers. fém. sing. (tu)"),
-    ("p1", "c", "sg", "1re pers. sing. (je)"),
-    ("p3", "m", "pl", "3e pers. masc. pl. (ils)"),
-    ("p3", "f", "pl", "3e pers. fém. pl. (elles)"),
+    ("p3", "m", "sg", "3e pers. masc. sing. (il)"),
+    ("p3", "f", "sg", "3e pers. fém. sing. (elle)"),
+    ("p1", "c", "pl", "1re pers. pl. (nous)"),
     ("p2", "m", "pl", "2e pers. masc. pl. (vous)"),
     ("p2", "f", "pl", "2e pers. fém. pl. (vous)"),
-    ("p1", "c", "pl", "1re pers. pl. (nous)"),
+    ("p3", "m", "pl", "3e pers. masc. pl. (ils)"),
+    ("p3", "f", "pl", "3e pers. fém. pl. (elles)"),
 )
 
 PERSONS_IMPV = (
@@ -1518,19 +1519,7 @@ def _builtin_paradigm(vs, root, category=None):
 # =============================================================================
 # Génération des conjugaisons (toutes personnes, tous binyanim)
 # =============================================================================
-
-PERSONS = (
-    ("p3", "m", "sg", "3e pers. masc. sing. (il)"),
-    ("p3", "f", "sg", "3e pers. fém. sing. (elle)"),
-    ("p2", "m", "sg", "2e pers. masc. sing. (tu)"),
-    ("p2", "f", "sg", "2e pers. fém. sing. (tu)"),
-    ("p1", "c", "sg", "1re pers. sing. (je)"),
-    ("p3", "m", "pl", "3e pers. masc. pl. (ils)"),
-    ("p3", "f", "pl", "3e pers. fém. pl. (elles)"),
-    ("p2", "m", "pl", "2e pers. masc. pl. (vous)"),
-    ("p2", "f", "pl", "2e pers. fém. pl. (vous)"),
-    ("p1", "c", "pl", "1re pers. pl. (nous)"),
-)
+# Ordre des personnes : cf. PERSONS (ordre français, 1re/2e/3e, sg puis pl).
 
 PERSONS_IMPV = (
     ("p2", "m", "sg", "2e pers. masc. sing. (tu)"),
@@ -1550,14 +1539,14 @@ TENSE_LABELS = {
 # Personnes du jussif : 2e/3e (la 1re personne courte est un yiqtol
 # ordinaire, couvert par l'imparfait).
 PERSONS_JUSS = (
-    ("p3", "m", "sg", "3e pers. masc. sing. (qu'il)"),
-    ("p3", "f", "sg", "3e pers. fém. sing. (qu'elle)"),
     ("p2", "m", "sg", "2e pers. masc. sing. (que tu)"),
     ("p2", "f", "sg", "2e pers. fém. sing. (que tu)"),
-    ("p3", "m", "pl", "3e pers. masc. pl. (qu'ils)"),
-    ("p3", "f", "pl", "3e pers. fém. pl. (qu'elles)"),
+    ("p3", "m", "sg", "3e pers. masc. sing. (qu'il)"),
+    ("p3", "f", "sg", "3e pers. fém. sing. (qu'elle)"),
     ("p2", "m", "pl", "2e pers. masc. pl. (que vous)"),
     ("p2", "f", "pl", "2e pers. fém. pl. (que vous)"),
+    ("p3", "m", "pl", "3e pers. masc. pl. (qu'ils)"),
+    ("p3", "f", "pl", "3e pers. fém. pl. (qu'elles)"),
 )
 PERSONS_COH = (
     ("p1", "c", "sg", "1re pers. sing. (que je)"),
