@@ -79,18 +79,6 @@ CELLS_BY_TENSE = {
 _COH_END = QAMATS + HE
 _PARAGOGIC_NUN = ("\u05E0",)
 
-# Lettres finales (sofit) équivalentes à leur forme médiane pour la
-# correspondance radicale/forme : un ם médian d'une forme (ex. participe
-# pl. שֹׁלְמִים de שׁלם) doit matcher la radicale finale ם de la racine
-# (lex_utf8 porte la forme sofit), sinon le ם serait figé en littéral dans
-# le gabarit (P1…P2ְמִים) et produirait des formes fausses pour toute
-# autre racine.
-_FINAL_EQUIV = {("\u05DD", "\u05DE"), ("\u05DE", "\u05DD"),
-                ("\u05DF", "\u05E0"), ("\u05E0", "\u05DF"),
-                ("\u05DA", "\u05DB"), ("\u05DB", "\u05DA"),
-                ("\u05E3", "\u05E4"), ("\u05E4", "\u05E3"),
-                ("\u05E5", "\u05E6"), ("\u05E6", "\u05E5")}
-
 
 def _is_cohortative(form, nu):
     """Vrai si la forme est un cohortatif (imparfait + \u05b8\u05d4)."""
@@ -184,7 +172,7 @@ def _to_template(form, root, assimilate=False):
                             i = j
                         break
                     j += 1
-            if cand == letters[idx] or (cand, letters[idx]) in _FINAL_EQUIV:
+            if cand == letters[idx]:
                 out.append(f"P{idx + offset}")
                 if pending:
                     out.append(pending)
