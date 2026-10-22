@@ -43,6 +43,14 @@
    "יַP1ְP2ֶP3"
   ]
  },
+ "ayin_guttural|hif|impv|p2|m|pl": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "הַP1ְP2ִיP3וּ",
+  "variants": [
+   "הֹוP2ִיP3וּ"
+  ]
+ },
  "ayin_guttural|hif|impv|p2|m|sg": {
   "count": 3,
   "lexemes": 3,
@@ -178,12 +186,19 @@
   ]
  },
  "ayin_guttural|hit|ptca|m|pl": {
-  "count": 2,
-  "lexemes": 2,
+  "count": 4,
+  "lexemes": 3,
   "template": "מִֽתְP1ַP2ֲP3ִים",
   "variants": [
-   "מִֽתְP1ַP2ֲמִיP3",
    "מִּֽP1ַּP2ֲP3ִים"
+  ]
+ },
+ "ayin_guttural|nif|coh|p1|c|pl": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "נִֽוָּP2ֲP3ָה",
+  "variants": [
+   "נִֽP1ָּP2ֲP3ָה"
   ]
  },
  "ayin_guttural|nif|impf|p1|c|sg": {
@@ -206,6 +221,8 @@
   "lexemes": 3,
   "template": "יִP1ָּP2ֲP3וּ",
   "variants": [
+   "יִP1ָּP2ֵP3וּ",
+   "P1ִֽוָּP2ֲP3וּ",
    "יִֽP1ָּP2ֵP3וּן"
   ]
  },
@@ -215,6 +232,14 @@
   "template": "יִP1ָּP2ֵP3",
   "variants": [
    "יִP1ָּP2ֶP3"
+  ]
+ },
+ "ayin_guttural|nif|impv|p2|m|pl": {
+  "count": 3,
+  "lexemes": 2,
+  "template": "הִֽP1ָּP2ֲP3וּ",
+  "variants": [
+   "הֵֽP1ָP2ֲP3וּ"
   ]
  },
  "ayin_guttural|nif|impv|p2|m|sg": {
@@ -248,8 +273,8 @@
   ]
  },
  "ayin_guttural|nif|juss|p3|m|pl": {
-  "count": 9,
-  "lexemes": 4,
+  "count": 18,
+  "lexemes": 6,
   "template": "יִּP1ָּP2ֲP3וּ",
   "variants": [
    "P1ִּוָּP2ֲP3וּ",
@@ -266,14 +291,32 @@
    "P1ִּיָּP2ֶP3"
   ]
  },
+ "ayin_guttural|nif|perf|p1|c|pl": {
+  "count": 3,
+  "lexemes": 2,
+  "template": "נִP1ְP2ַP3ְנוּ",
+  "variants": [
+   "נֹוP2ַP3ְנוּ",
+   "נִP1ְP2ָֽP3ְנוּ",
+   "נִP1ְP2ַP3ּוּ"
+  ]
+ },
  "ayin_guttural|nif|perf|p1|c|sg": {
-  "count": 4,
-  "lexemes": 3,
+  "count": 8,
+  "lexemes": 5,
   "template": "נִP1ְP2ַP3ְתִּי",
   "variants": [
    "P1ִP2ַP3ְתִּי",
    "נֹוP2ַP3ְתִּי",
-   "P1ִנְP2ַP3ְתִּי"
+   "P1ִP2ָֽP3ְתִּי"
+  ]
+ },
+ "ayin_guttural|nif|perf|p2|m|sg": {
+  "count": 4,
+  "lexemes": 3,
+  "template": "נִP1ְP2ַP3ְתָּ",
+  "variants": [
+   "נִP1ְP2ָֽP3ְתָּ"
   ]
  },
  "ayin_guttural|nif|perf|p3|f|sg": {
@@ -286,12 +329,12 @@
   ]
  },
  "ayin_guttural|nif|perf|p3|m|pl": {
-  "count": 19,
-  "lexemes": 5,
+  "count": 32,
+  "lexemes": 8,
   "template": "נִP1ְP2ֲP3וּ",
   "variants": [
    "נִP1ְP2ָֽP3וּ",
-   "נֹֽוP2ֲP3וּ",
+   "נֹוP2ֲP3וּ",
    "נֹֽP1P2ֲP3וּ"
   ]
  },
@@ -321,13 +364,13 @@
   ]
  },
  "ayin_guttural|nif|ptca|m|pl": {
-  "count": 27,
-  "lexemes": 2,
+  "count": 30,
+  "lexemes": 3,
   "template": "נִּP1ְP2ָP3ִים",
   "variants": [
-   "נִP1ְP2ָמִיP3",
    "נֹּוP2ָP3ִים",
-   "נֶּP1ֱP2ָP3ִים"
+   "נֶּP1ֱP2ָP3ִים",
+   "נִP1ְP2ֲP3ֵי"
   ]
  },
  "ayin_guttural|nif|ptca|m|sg": {
@@ -354,6 +397,7 @@
   "template": "תְP1ַP2ֲP3וּ",
   "variants": [
    "תְּP1ַP2ֲP3וּן",
+   "תְּP1ָP2ֲP3וּ",
    "תְּP1ַP2ֵP3וּ"
   ]
  },
@@ -376,13 +420,13 @@
   ]
  },
  "ayin_guttural|piel|impf|p3|m|pl": {
-  "count": 4,
+  "count": 5,
   "lexemes": 4,
-  "template": "יְP1ַֽP2ֲP3וּ",
+  "template": "יְP1ַP2ֲP3וּ",
   "variants": [
+   "יְP1ַP2ֵP3וּ",
    "יP1ַP2ֲP3וּ",
-   "יְP1ָP2ֲP3וּ",
-   "P1ְיַP2ֵֽיP3וּ"
+   "יְP1ָP2ֲP3וּ"
   ]
  },
  "ayin_guttural|piel|impf|p3|m|sg": {
@@ -400,6 +444,14 @@
   "lexemes": 2,
   "template": "P1ַP2ֲP3ִי",
   "variants": []
+ },
+ "ayin_guttural|piel|impv|p2|m|pl": {
+  "count": 6,
+  "lexemes": 2,
+  "template": "P1ַP2ֲP3וּ",
+  "variants": [
+   "P1ַP2ֵP3וּ"
+  ]
  },
  "ayin_guttural|piel|impv|p2|m|sg": {
   "count": 12,
@@ -445,10 +497,11 @@
   ]
  },
  "ayin_guttural|piel|juss|p3|m|pl": {
-  "count": 8,
-  "lexemes": 2,
+  "count": 10,
+  "lexemes": 4,
   "template": "יְP1ַP2ֲP3וּ",
   "variants": [
+   "יְP1ָP2ֲP3וּ",
    "יְP1ַP2ֵP3וּ",
    "יִּֽP1ַּP2ֲP3וּ"
   ]
@@ -468,20 +521,20 @@
   "variants": []
  },
  "ayin_guttural|piel|perf|p1|c|sg": {
-  "count": 9,
-  "lexemes": 5,
+  "count": 10,
+  "lexemes": 6,
   "template": "P1ִP2ַP3ְתִּי",
   "variants": [
    "P1ִP2ָֽP3ְתִּי"
   ]
  },
  "ayin_guttural|piel|perf|p2|m|sg": {
-  "count": 5,
-  "lexemes": 5,
+  "count": 6,
+  "lexemes": 6,
   "template": "P1ִP2ַP3ְתָּ",
   "variants": [
-   "P1ִP2ַP3ָּ",
    "P1ֵP2ַP3ְתָּ",
+   "P1ִP2ַP3ָּ",
    "P1ֵP2ַP3ְתָּה"
   ]
  },
@@ -489,14 +542,19 @@
   "count": 3,
   "lexemes": 3,
   "template": "P1ִP2ֲP3ָה",
-  "variants": []
+  "variants": [
+   "P1ֵP2ֲP3ָה",
+   "P1ִP2ֵֽP3ָה",
+   "P1ַP2ֲP3ָֽנָה"
+  ]
  },
  "ayin_guttural|piel|perf|p3|m|pl": {
-  "count": 11,
-  "lexemes": 8,
+  "count": 15,
+  "lexemes": 9,
   "template": "P1ִֽP2ֲP3וּ",
   "variants": [
    "P1ִP2ֵP3וּ",
+   "P1ֵP2ֲP3וּ",
    "P1ֶֽP2ֱP3וּ"
   ]
  },
@@ -507,16 +565,25 @@
   "variants": [
    "P1ִP2ֵP3",
    "P1ֵP2ֵP3",
-   "P1ַP2ֲנַP3"
+   "P1ַP2ֲP3ַן"
+  ]
+ },
+ "ayin_guttural|piel|ptca|f|sg": {
+  "count": 3,
+  "lexemes": 2,
+  "template": "מְP1ַP2ֶP3ֶת",
+  "variants": [
+   "מְP1ָP2ָP3ֶת"
   ]
  },
  "ayin_guttural|piel|ptca|m|pl": {
-  "count": 10,
-  "lexemes": 5,
+  "count": 13,
+  "lexemes": 6,
   "template": "מְP1ַP2ֲP3ִים",
   "variants": [
    "מְP1ַP2ֲP3ֵי",
-   "מְP1ַP2ֲמִיP3"
+   "מְP1ָP2ֲP3ִים",
+   "P1ֵּP2ֲP3ִים"
   ]
  },
  "ayin_guttural|piel|ptca|m|sg": {
@@ -540,6 +607,7 @@
   "lexemes": 2,
   "template": "אֶP1ְP2ֲP3ָה",
   "variants": [
+   "אִֽP1P2ֲP3ָה",
    "אֶP1ְP2ָP3ָה",
    "P1ֹֽP2ֲP3ָה"
   ]
@@ -555,9 +623,9 @@
   ]
  },
  "ayin_guttural|qal|impf|p2|m|pl": {
-  "count": 3,
-  "lexemes": 3,
-  "template": "תִּP1ְP2ָֽP3וּ",
+  "count": 4,
+  "lexemes": 4,
+  "template": "תִּP1ְP2ָP3וּ",
   "variants": [
    "תִP1ְP2ֲP3וּ",
    "תP1P2P3י",
@@ -585,13 +653,13 @@
   ]
  },
  "ayin_guttural|qal|impf|p3|m|pl": {
-  "count": 30,
-  "lexemes": 19,
+  "count": 37,
+  "lexemes": 23,
   "template": "יִP1ְP2ֲP3וּ",
   "variants": [
    "יִP1ְP2ָP3וּ",
    "יִP1ְP2ָP3וּן",
-   "יֹֽP1P2ֵP3וּן"
+   "יִP1ְP2ֲP3וּן"
   ]
  },
  "ayin_guttural|qal|impf|p3|m|sg": {
@@ -605,17 +673,17 @@
   ]
  },
  "ayin_guttural|qal|impv|p2|f|sg": {
-  "count": 4,
+  "count": 7,
   "lexemes": 4,
-  "template": "P1ַֽP2ֲP3ִי",
+  "template": "P1ַP2ֲP3ִי",
   "variants": [
    "P1ְP2ָP3ִי",
    "P2ָP3ִי"
   ]
  },
  "ayin_guttural|qal|impv|p2|m|pl": {
-  "count": 11,
-  "lexemes": 6,
+  "count": 16,
+  "lexemes": 9,
   "template": "P1ַP2ֲP3וּ",
   "variants": [
    "P2ָP3וּ",
@@ -660,12 +728,13 @@
   ]
  },
  "ayin_guttural|qal|juss|p3|m|pl": {
-  "count": 49,
-  "lexemes": 9,
+  "count": 54,
+  "lexemes": 13,
   "template": "יִּP1ְP2ֲP3וּ",
   "variants": [
+   "יִּP1ְP2ָP3וּ",
    "יֹּP1P2ֲP3וּ",
-   "יִּP1ְP2ָP3וּ"
+   "P1ֶּP2ֱP3וּ"
   ]
  },
  "ayin_guttural|qal|juss|p3|m|sg": {
@@ -685,54 +754,52 @@
   "variants": []
  },
  "ayin_guttural|qal|perf|p1|c|sg": {
-  "count": 34,
-  "lexemes": 16,
+  "count": 41,
+  "lexemes": 20,
   "template": "P1ָP2ַP3ְתִּי",
   "variants": [
    "P1ָP2ָֽP3ְתִּי"
   ]
  },
  "ayin_guttural|qal|perf|p2|f|sg": {
-  "count": 5,
-  "lexemes": 4,
+  "count": 7,
+  "lexemes": 5,
   "template": "P1ָP2ַP3ְתְּ",
   "variants": [
    "P1ָP2ָֽP3ְתְּ"
   ]
  },
  "ayin_guttural|qal|perf|p2|m|pl": {
-  "count": 13,
-  "lexemes": 7,
+  "count": 15,
+  "lexemes": 9,
   "template": "P1ְP2ַP3ְתֶּם",
-  "variants": [
-   "P1ְP2ַמְתֶּP3"
-  ]
+  "variants": []
  },
  "ayin_guttural|qal|perf|p2|m|sg": {
-  "count": 31,
-  "lexemes": 8,
+  "count": 41,
+  "lexemes": 14,
   "template": "P1ָP2ַP3ְתָּ",
   "variants": [
-   "P1ָּP2ָP3ְתָּ",
-   "P1ָP2ַP3ְתָּה"
+   "P1ָP2ַP3ְתָּה",
+   "P1ָּP2ָP3ְתָּ"
   ]
  },
  "ayin_guttural|qal|perf|p3|f|sg": {
-  "count": 37,
-  "lexemes": 18,
+  "count": 41,
+  "lexemes": 22,
   "template": "P1ָP2ֲP3ָה",
   "variants": [
    "P1ָP2ָP3ָה",
-   "P1ָP2ֵֽP3ָה"
+   "P1ָP2ֵP3ָה"
   ]
  },
  "ayin_guttural|qal|perf|p3|m|pl": {
-  "count": 59,
-  "lexemes": 25,
+  "count": 72,
+  "lexemes": 33,
   "template": "P1ָP2ֲP3וּ",
   "variants": [
    "P1ָP2ָP3וּ",
-   "P1ָP2ֵP3וּ"
+   "P1ָP2ֵֽP3וּ"
   ]
  },
  "ayin_guttural|qal|perf|p3|m|sg": {
@@ -745,23 +812,28 @@
    "P1P2P3"
   ]
  },
+ "ayin_guttural|qal|ptca|f|pl": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "P1ֹֽP2ֲP3ֹות",
+  "variants": []
+ },
  "ayin_guttural|qal|ptca|f|sg": {
-  "count": 7,
-  "lexemes": 5,
+  "count": 8,
+  "lexemes": 6,
   "template": "P1ֹP2ֶP3ֶת",
   "variants": [
+   "P1ֹּP2ָֽP3ֶת",
    "P1ֹּP2ֲP3ָה",
-   "P1ֹּP2ֵP3ָֽה",
-   "P1ֹP2ַP3ְתִּי"
+   "P1ֹּP2ֵP3ָֽה"
   ]
  },
  "ayin_guttural|qal|ptca|m|pl": {
-  "count": 22,
-  "lexemes": 6,
-  "template": "P1ֹP2ֲP3ֵי",
+  "count": 9,
+  "lexemes": 8,
+  "template": "P1ֹP2ֲP3ִים",
   "variants": [
-   "P1ֹP2ֲP3ִים",
-   "P1ֹP2ֲמִיP3"
+   "P1ֹP2ֲP3ֵי"
   ]
  },
  "ayin_guttural|qal|ptca|m|sg": {
@@ -771,8 +843,8 @@
   "variants": []
  },
  "ayin_guttural|qal|ptcp|f|sg": {
-  "count": 2,
-  "lexemes": 2,
+  "count": 3,
+  "lexemes": 3,
   "template": "P1ְּP2וּP3ָה",
   "variants": [
    "P1ְּP2ֻP3ַת",
@@ -784,7 +856,8 @@
   "lexemes": 2,
   "template": "P1ְּP2וּP3ֵי",
   "variants": [
-   "P1ְּP2וּP3ִֽים"
+   "P1ְּP2וּP3ִֽים",
+   "P1ְP2ֻP3ֵי"
   ]
  },
  "ayin_guttural|qal|ptcp|m|sg": {
@@ -808,15 +881,17 @@
   "lexemes": 12,
   "template": "אָP1ִיP2",
   "variants": [
-   "אP1וP2",
-   "אָP1ִיP2ָה"
+   "אָP1ִיP2ָה",
+   "אP1וP2"
   ]
  },
  "ayin_vav|hif|impf|p2|m|pl": {
-  "count": 3,
-  "lexemes": 3,
-  "template": "תָP1ִיP2וּ",
-  "variants": []
+  "count": 19,
+  "lexemes": 5,
+  "template": "תָּP1ִיP2וּ",
+  "variants": [
+   "תP1וP2ו"
+  ]
  },
  "ayin_vav|hif|impf|p2|m|sg": {
   "count": 21,
@@ -837,8 +912,8 @@
   ]
  },
  "ayin_vav|hif|impf|p3|m|pl": {
-  "count": 16,
-  "lexemes": 8,
+  "count": 27,
+  "lexemes": 15,
   "template": "יָP1ִיP2וּ",
   "variants": [
    "יְP1ִיP2וּן",
@@ -856,11 +931,19 @@
    "יP1וP2"
   ]
  },
- "ayin_vav|hif|impv|p2|m|pl": {
-  "count": 18,
-  "lexemes": 6,
-  "template": "הָP1ִיP2וּ",
+ "ayin_vav|hif|impv|p2|f|sg": {
+  "count": 4,
+  "lexemes": 3,
+  "template": "הָP1ִיP2ִי",
   "variants": []
+ },
+ "ayin_vav|hif|impv|p2|m|pl": {
+  "count": 36,
+  "lexemes": 12,
+  "template": "הָP1ִיP2וּ",
+  "variants": [
+   "הP1וP2ו"
+  ]
  },
  "ayin_vav|hif|impv|p2|m|sg": {
   "count": 48,
@@ -899,10 +982,12 @@
   "variants": []
  },
  "ayin_vav|hif|juss|p3|m|pl": {
-  "count": 13,
-  "lexemes": 6,
+  "count": 23,
+  "lexemes": 11,
   "template": "יָּP1ִיP2וּ",
-  "variants": []
+  "variants": [
+   "יP1וP2ו"
+  ]
  },
  "ayin_vav|hif|juss|p3|m|sg": {
   "count": 79,
@@ -914,13 +999,32 @@
   ]
  },
  "ayin_vav|hif|perf|p1|c|sg": {
-  "count": 4,
-  "lexemes": 3,
+  "count": 18,
+  "lexemes": 8,
   "template": "הֲP1ִיP2ֹותִי",
   "variants": [
    "הַP1ִיP2ֹתִי",
    "הֵP1ַP2ִּי",
    "הֵP1ַP2ְתִּי"
+  ]
+ },
+ "ayin_vav|hif|perf|p2|m|pl": {
+  "count": 3,
+  "lexemes": 2,
+  "template": "הֲP1ֵP2ֹתֶם",
+  "variants": [
+   "הֲP1ִP2ֶּם",
+   "הֲP1ִֽיP2ֹתֶם"
+  ]
+ },
+ "ayin_vav|hif|perf|p2|m|sg": {
+  "count": 6,
+  "lexemes": 3,
+  "template": "הֲP1ִיP2ֹותָ",
+  "variants": [
+   "הֲP1ֵP2ֹתָ",
+   "הֵP1ַP2ְתָּ",
+   "הֵP1ַP2ָּה"
   ]
  },
  "ayin_vav|hif|perf|p3|f|sg": {
@@ -932,8 +1036,8 @@
   ]
  },
  "ayin_vav|hif|perf|p3|m|pl": {
-  "count": 28,
-  "lexemes": 10,
+  "count": 47,
+  "lexemes": 14,
   "template": "הֵP1ִיP2וּ",
   "variants": []
  },
@@ -952,13 +1056,13 @@
   ]
  },
  "ayin_vav|hif|ptca|m|pl": {
-  "count": 4,
-  "lexemes": 3,
-  "template": "מְP1ִיP2ִים",
+  "count": 6,
+  "lexemes": 5,
+  "template": "מְP1ִיP2ֵי",
   "variants": [
-   "מְP1ִיP2ֵי",
-   "P1ְמִיP2ִים",
-   "מַP1ִּיP2ֵי"
+   "מְP1ִיP2ִים",
+   "מַP1ִּיP2ִם",
+   "P1ְמִיP2ִים"
   ]
  },
  "ayin_vav|hif|ptca|m|sg": {
@@ -967,7 +1071,8 @@
   "template": "מֵP1ִיP2",
   "variants": [
    "מַP1ִּיP2",
-   "P1ֵמִיP2"
+   "P1ֵמִיP2",
+   "מְP1ִֽיP2ִי"
   ]
  },
  "ayin_vav|hof|impf|p3|f|sg": {
@@ -996,6 +1101,15 @@
    "הP1יP2"
   ]
  },
+ "ayin_vav|hof|ptcp|m|pl": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "מוּP1ָP2ִים",
+  "variants": [
+   "P1מוP2תים",
+   "P1ּוּמָP2ִים"
+  ]
+ },
  "ayin_vav|hof|ptcp|m|sg": {
   "count": 3,
   "lexemes": 3,
@@ -1013,11 +1127,11 @@
   ]
  },
  "ayin_vav|nif|impf|p3|m|pl": {
-  "count": 3,
+  "count": 7,
   "lexemes": 2,
-  "template": "יֵP1ֹP2וּ",
+  "template": "יִP1ֹּP2וּ",
   "variants": [
-   "יִP1ֹּP2וּ",
+   "יֵP1ֹP2וּ",
    "יP1יP2ו"
   ]
  },
@@ -1040,16 +1154,25 @@
   ]
  },
  "ayin_vav|nif|juss|p3|m|pl": {
-  "count": 2,
-  "lexemes": 2,
+  "count": 6,
+  "lexemes": 3,
   "template": "יִּP1ֹּP2וּ",
   "variants": [
+   "יP1יP2ו",
    "יֵּP1ֹP2וּ"
   ]
  },
+ "ayin_vav|nif|perf|p3|f|sg": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "נָP1ֹֽוP2ָה",
+  "variants": [
+   "נָֽP1ְP2ָה"
+  ]
+ },
  "ayin_vav|nif|perf|p3|m|pl": {
-  "count": 9,
-  "lexemes": 4,
+  "count": 19,
+  "lexemes": 7,
   "template": "נָP1ֹP2וּ",
   "variants": [
    "נִP1ֹּP2וּ"
@@ -1065,6 +1188,15 @@
    "נָP1ָֽP2"
   ]
  },
+ "ayin_vav|nif|ptca|m|pl": {
+  "count": 5,
+  "lexemes": 4,
+  "template": "נְP1ֹP2ִים",
+  "variants": [
+   "נִP1ֹּP2ִֽים",
+   "נְP1ֻP2ִים"
+  ]
+ },
  "ayin_vav|nif|ptca|m|sg": {
   "count": 43,
   "lexemes": 5,
@@ -1078,7 +1210,7 @@
   "lexemes": 3,
   "template": "יְP1ַוֵּP2",
   "variants": [
-   "יְP1ֹומֵP2",
+   "יְP1ֹוP2ֵם",
    "יְP1ֹוP2ֵב",
    "יְP1ַP2ְכֵּל"
   ]
@@ -1088,24 +1220,24 @@
   "lexemes": 2,
   "template": "P1ֹוP2ֵר",
   "variants": [
-   "P1ֹּונֵP2",
+   "P1ֹּוP2ֵן",
    "P1ִוֵּP2",
    "P1ִיַּP2"
   ]
  },
  "ayin_vav|qal|coh|p1|c|pl": {
-  "count": 6,
-  "lexemes": 2,
-  "template": "נָP1וּP2ָה",
+  "count": 7,
+  "lexemes": 4,
+  "template": "נָP1ִיP2ָה",
   "variants": [
-   "נָP1ִיP2ָה",
+   "נָP1וּP2ָה",
    "P1ָנוּP2ָה",
    "נָP1ֻP2ָה"
   ]
  },
  "ayin_vav|qal|coh|p1|c|sg": {
-  "count": 10,
-  "lexemes": 4,
+  "count": 17,
+  "lexemes": 7,
   "template": "אָP1וּP2ָה",
   "variants": [
    "אָP1ִיP2ָה",
@@ -1133,23 +1265,23 @@
   ]
  },
  "ayin_vav|qal|impf|p2|f|sg": {
-  "count": 3,
-  "lexemes": 3,
+  "count": 4,
+  "lexemes": 4,
   "template": "תָּP1וּP2ִי",
   "variants": [
-   "תֵP1ֹוP2ִי",
    "תָּP1ִיP2ִי",
+   "תֵP1ֹוP2ִי",
    "תְּP1ִיP2ִֽין"
   ]
  },
  "ayin_vav|qal|impf|p2|m|pl": {
-  "count": 9,
-  "lexemes": 4,
+  "count": 10,
+  "lexemes": 5,
   "template": "תָּP1וּP2וּ",
   "variants": [
    "תָּP1ֻP2וּ",
-   "תְּP1וּP2וּן",
-   "תְּP1ֻP2וּן"
+   "תָּP1ִיP2וּ",
+   "תְּP1וּP2וּן"
   ]
  },
  "ayin_vav|qal|impf|p2|m|sg": {
@@ -1160,6 +1292,16 @@
    "תָּP1ִיP2",
    "תָּP1ֶP2",
    "תָּP1ֹP2"
+  ]
+ },
+ "ayin_vav|qal|impf|p3|f|pl": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "תְּP1וּP2ֶינָה",
+  "variants": [
+   "תָּP1ֹP2ְןָ",
+   "תָּP1ֵP2ְנָה",
+   "תְּP1וּP2ֶנָה"
   ]
  },
  "ayin_vav|qal|impf|p3|f|sg": {
@@ -1173,8 +1315,8 @@
   ]
  },
  "ayin_vav|qal|impf|p3|m|pl": {
-  "count": 42,
-  "lexemes": 11,
+  "count": 61,
+  "lexemes": 15,
   "template": "יָP1וּP2וּ",
   "variants": [
    "יָP1ֻP2וּ",
@@ -1192,9 +1334,15 @@
    "יָP1ֻP2"
   ]
  },
+ "ayin_vav|qal|impv|p2|f|pl": {
+  "count": 3,
+  "lexemes": 2,
+  "template": "P1ֹP2ְנָה",
+  "variants": []
+ },
  "ayin_vav|qal|impv|p2|f|sg": {
-  "count": 25,
-  "lexemes": 6,
+  "count": 39,
+  "lexemes": 7,
   "template": "P1וּP2ִי",
   "variants": [
    "P1ִיP2ִי",
@@ -1203,8 +1351,8 @@
   ]
  },
  "ayin_vav|qal|impv|p2|m|pl": {
-  "count": 27,
-  "lexemes": 7,
+  "count": 46,
+  "lexemes": 9,
   "template": "P1ִיP2וּ",
   "variants": [
    "P1וּP2וּ",
@@ -1213,8 +1361,8 @@
   ]
  },
  "ayin_vav|qal|impv|p2|m|sg": {
-  "count": 21,
-  "lexemes": 8,
+  "count": 40,
+  "lexemes": 10,
   "template": "P1וּP2ָה",
   "variants": [
    "P1וּP2",
@@ -1253,8 +1401,8 @@
   ]
  },
  "ayin_vav|qal|juss|p3|m|pl": {
-  "count": 79,
-  "lexemes": 9,
+  "count": 112,
+  "lexemes": 14,
   "template": "יָּP1ֻP2וּ",
   "variants": [
    "יָּP1וּP2וּ",
@@ -1273,36 +1421,44 @@
   ]
  },
  "ayin_vav|qal|perf|p1|c|pl": {
-  "count": 9,
-  "lexemes": 5,
+  "count": 10,
+  "lexemes": 6,
   "template": "P1ַP2ְנוּ",
   "variants": [
    "P1ָֽP2ְנוּ",
+   "P1ַP2ּוּ",
    "P1ֹּP2ְנֽוּ"
   ]
  },
  "ayin_vav|qal|perf|p1|c|sg": {
-  "count": 27,
-  "lexemes": 13,
+  "count": 75,
+  "lexemes": 20,
   "template": "P1ַP2ְתִּי",
   "variants": [
+   "P1ָP2ְתִּי",
    "P1ַP2ִּי",
-   "P1ֹּP2ְתִּי",
-   "P1ָֽיַP2ְתִּי"
+   "P1ֹּP2ְתִּי"
+  ]
+ },
+ "ayin_vav|qal|perf|p2|f|sg": {
+  "count": 8,
+  "lexemes": 2,
+  "template": "P1ַP2ְתְּ",
+  "variants": [
+   "P1ֹּP2ְתְּ"
   ]
  },
  "ayin_vav|qal|perf|p2|m|pl": {
-  "count": 24,
-  "lexemes": 4,
+  "count": 35,
+  "lexemes": 7,
   "template": "P1ַP2ְתֶּם",
   "variants": [
-   "P1ַמְתֶּP2",
    "P1ִP2ְתֶּם"
   ]
  },
  "ayin_vav|qal|perf|p2|m|sg": {
-  "count": 13,
-  "lexemes": 7,
+  "count": 47,
+  "lexemes": 12,
   "template": "P1ַP2ְתָּ",
   "variants": [
    "P1ַP2ְתָּה",
@@ -1311,18 +1467,18 @@
   ]
  },
  "ayin_vav|qal|perf|p3|f|sg": {
-  "count": 21,
-  "lexemes": 9,
+  "count": 32,
+  "lexemes": 13,
   "template": "P1ָP2ָה",
   "variants": [
    "P1ֵP2ָה",
    "P1ֹּוP2ָה",
-   "P1ָP2ַת"
+   "P1ָיְP2ָה"
   ]
  },
  "ayin_vav|qal|perf|p3|m|pl": {
-  "count": 79,
-  "lexemes": 18,
+  "count": 126,
+  "lexemes": 29,
   "template": "P1ָP2וּ",
   "variants": [
    "P1ֹּP2וּ",
@@ -1341,16 +1497,16 @@
   ]
  },
  "ayin_vav|qal|ptca|f|pl": {
-  "count": 8,
-  "lexemes": 3,
+  "count": 11,
+  "lexemes": 5,
   "template": "P1ָP2ֹות",
   "variants": [
    "P1ָּאP2ֹות"
   ]
  },
  "ayin_vav|qal|ptca|f|sg": {
-  "count": 3,
-  "lexemes": 3,
+  "count": 12,
+  "lexemes": 6,
   "template": "P1ָP2ָה",
   "variants": [
    "P1ָP2ַת",
@@ -1358,13 +1514,13 @@
   ]
  },
  "ayin_vav|qal|ptca|m|pl": {
-  "count": 21,
-  "lexemes": 8,
-  "template": "P1ָּP2ִים",
+  "count": 54,
+  "lexemes": 12,
+  "template": "P1ָP2ִים",
   "variants": [
-   "P1ָמִיP2",
+   "P1ֹּוP2ִים",
    "P1ָP2ֵי",
-   "P1ֹּוP2ִים"
+   "P1ֵּP2ִים"
   ]
  },
  "ayin_vav|qal|ptca|m|sg": {
@@ -1378,8 +1534,8 @@
   ]
  },
  "ayin_vav|qal|ptcp|f|sg": {
-  "count": 2,
-  "lexemes": 2,
+  "count": 3,
+  "lexemes": 3,
   "template": "P1וּP2ָה",
   "variants": [
    "P1ּוּP2ֶה"
@@ -3472,9 +3628,9 @@
   "lexemes": 2,
   "template": "תַP2ֶּה",
   "variants": [
+   "תֶּP1ֶP2",
    "תַּP1ְP2ֶה",
-   "תַּP2",
-   "תֹוP2ֶה"
+   "תַּP2"
   ]
  },
  "lamed_he|hif|impf|p3|m|pl": {
@@ -3512,9 +3668,9 @@
   "lexemes": 3,
   "template": "הַP2ֵּה",
   "variants": [
+   "הֶP1ֶP2",
    "הַP1ְP2ֵּה",
-   "הַP2",
-   "הַP1ַP2"
+   "הַP2ְ"
   ]
  },
  "lamed_he|hif|infa|unknown|unknown": {
@@ -3554,13 +3710,13 @@
   ]
  },
  "lamed_he|hif|juss|p3|m|sg": {
-  "count": 8,
-  "lexemes": 4,
+  "count": 10,
+  "lexemes": 6,
   "template": "יֶּP1ֶP2",
   "variants": [
    "יַּP2",
-   "יַּP2ֶּה",
-   "יַּP1ְP2ְ"
+   "יַּP2ְ",
+   "יַּP2ֶּה"
   ]
  },
  "lamed_he|hif|perf|p1|c|sg": {
@@ -3947,8 +4103,8 @@
   ]
  },
  "lamed_he|piel|impv|p2|m|sg": {
-  "count": 15,
-  "lexemes": 4,
+  "count": 16,
+  "lexemes": 5,
   "template": "P1ַP2",
   "variants": [
    "P1ַP2ֵּה",
@@ -3990,8 +4146,8 @@
   ]
  },
  "lamed_he|piel|juss|p3|m|sg": {
-  "count": 74,
-  "lexemes": 6,
+  "count": 93,
+  "lexemes": 9,
   "template": "יְP1ַP2",
   "variants": [
    "יְP1ַP2ֶּה",
@@ -4174,7 +4330,7 @@
   "template": "תִּP1ְP2ֶה",
   "variants": [
    "תַP1ֲP2ֶה",
-   "תְּP1ִP2",
+   "תֵּP1ֶP2",
    "תַּP1ַP2"
   ]
  },
@@ -4213,8 +4369,8 @@
   "lexemes": 24,
   "template": "יִP1ְP2ֶה",
   "variants": [
-   "יַֽP1ֲP2ֶה",
    "יִP1ֶP2",
+   "יַֽP1ֲP2ֶה",
    "יְP1ִP2"
   ]
  },
@@ -4282,13 +4438,13 @@
   ]
  },
  "lamed_he|qal|juss|p2|m|sg": {
-  "count": 2,
+  "count": 3,
   "lexemes": 2,
-  "template": "תֵּP1ֶP2",
+  "template": "תֵּP1ְP2ְּ",
   "variants": [
+   "תֵּP1ֶP2",
    "תַּP1ֲP2ֶה",
-   "תַּP1ַP2",
-   "תֵּP1ְP2ְּ"
+   "תַּP1ַP2"
   ]
  },
  "lamed_he|qal|juss|p3|f|pl": {
@@ -4302,13 +4458,13 @@
   ]
  },
  "lamed_he|qal|juss|p3|f|sg": {
-  "count": 46,
-  "lexemes": 4,
+  "count": 52,
+  "lexemes": 6,
   "template": "תַּP1ַP2",
   "variants": [
    "תֵּP1ֶP2",
-   "תְּP1ִP2",
-   "תַּP1ֲP2ֶה"
+   "תִּP1ֶP2",
+   "תְּP1ִP2"
   ]
  },
  "lamed_he|qal|juss|p3|m|pl": {
@@ -4322,8 +4478,8 @@
   ]
  },
  "lamed_he|qal|juss|p3|m|sg": {
-  "count": 10,
-  "lexemes": 6,
+  "count": 86,
+  "lexemes": 11,
   "template": "יִּP1ֶP2",
   "variants": [
    "יַּP1ַP2",
@@ -4467,6 +4623,23 @@
    "P1ָP2וּ"
   ]
  },
+ "pe_alef|hif|impf|p2|m|pl": {
+  "count": 5,
+  "lexemes": 2,
+  "template": "תַּP1ֲP2ִיP3וּ",
+  "variants": [
+   "תַP1ֲP2ִיP3ֻן"
+  ]
+ },
+ "pe_alef|hif|impf|p3|m|pl": {
+  "count": 9,
+  "lexemes": 3,
+  "template": "יַP1ֲP2ִיP3וּ",
+  "variants": [
+   "יַP1ֲP2ִP3וּן",
+   "יַP1ֲP2ִיP3ֻן"
+  ]
+ },
  "pe_alef|hif|impf|p3|m|sg": {
   "count": 8,
   "lexemes": 2,
@@ -4477,10 +4650,43 @@
    "יַֽP1ֲP2ֶP3"
   ]
  },
- "pe_alef|hif|perf|p1|c|sg": {
-  "count": 7,
+ "pe_alef|hif|impv|p2|f|sg": {
+  "count": 2,
   "lexemes": 2,
-  "template": "הַP1ֲP2ַP3ְתִּי",
+  "template": "הַP1ֲP2ִיP3ִי",
+  "variants": []
+ },
+ "pe_alef|hif|impv|p2|m|pl": {
+  "count": 11,
+  "lexemes": 2,
+  "template": "הַP1ֲP2ִיP3וּ",
+  "variants": []
+ },
+ "pe_alef|hif|juss|p3|m|pl": {
+  "count": 3,
+  "lexemes": 2,
+  "template": "יַּP1ֲP2ִיP3וּ",
+  "variants": []
+ },
+ "pe_alef|hif|perf|p1|c|sg": {
+  "count": 6,
+  "lexemes": 3,
+  "template": "הֶP1ֱP2ַP3ְתִּי",
+  "variants": [
+   "הַP1ַP2ַP3ְתִּי",
+   "הֶP1ֱP2ָֽP3ְתִּי"
+  ]
+ },
+ "pe_alef|hif|perf|p2|m|sg": {
+  "count": 3,
+  "lexemes": 2,
+  "template": "הַP1ֲP2ַP3ְתָּ",
+  "variants": []
+ },
+ "pe_alef|hif|perf|p3|m|pl": {
+  "count": 10,
+  "lexemes": 3,
+  "template": "הֶP1ֱP2ִיP3וּ",
   "variants": []
  },
  "pe_alef|hif|perf|p3|m|sg": {
@@ -4514,6 +4720,14 @@
   "template": "הִתְP1ַP2ֵּP3",
   "variants": []
  },
+ "pe_alef|hit|juss|p3|m|pl": {
+  "count": 4,
+  "lexemes": 3,
+  "template": "יִּֽתְP1ַP2ְּP3וּ",
+  "variants": [
+   "יִּתְP1ַP2ָּP3וּ"
+  ]
+ },
  "pe_alef|hit|juss|p3|m|sg": {
   "count": 5,
   "lexemes": 2,
@@ -4531,6 +4745,12 @@
    "הִתְP1ַP2ָּP3"
   ]
  },
+ "pe_alef|hit|ptca|f|sg": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "מִתְP1ַP2ֶּP3ֶת",
+  "variants": []
+ },
  "pe_alef|nif|impf|p2|m|sg": {
   "count": 2,
   "lexemes": 2,
@@ -4543,6 +4763,15 @@
   "template": "תֵּP1ָP2ֵֽP3",
   "variants": []
  },
+ "pe_alef|nif|impf|p3|m|pl": {
+  "count": 3,
+  "lexemes": 3,
+  "template": "יֵP1ָP2ְP3וּ",
+  "variants": [
+   "יֵP1ָP2ֵֽP3וּ",
+   "יֵP1ָP2ֵP3וּן"
+  ]
+ },
  "pe_alef|nif|impf|p3|m|sg": {
   "count": 39,
   "lexemes": 5,
@@ -4550,6 +4779,12 @@
   "variants": [
    "יֵP1ָP2ֶP3"
   ]
+ },
+ "pe_alef|nif|impv|p2|m|pl": {
+  "count": 3,
+  "lexemes": 2,
+  "template": "הֵP1ָP2ְP3וּ",
+  "variants": []
  },
  "pe_alef|nif|impv|p2|m|sg": {
   "count": 2,
@@ -4571,11 +4806,36 @@
    "יֵּP1ָP2ֶP3"
   ]
  },
+ "pe_alef|nif|perf|p3|f|sg": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "נֶP1ֶP2ְP3ָה",
+  "variants": [
+   "נֶP1ֱP2ָP3ָה"
+  ]
+ },
+ "pe_alef|nif|perf|p3|m|pl": {
+  "count": 18,
+  "lexemes": 2,
+  "template": "נֶP1ֶP2ְP3וּ",
+  "variants": [
+   "נֶP1ֱP2ָP3וּ",
+   "נֶֽP1ֱP2ְP3וּ"
+  ]
+ },
  "pe_alef|nif|perf|p3|m|sg": {
   "count": 6,
   "lexemes": 4,
   "template": "נֶP1ֱP2ַP3",
   "variants": []
+ },
+ "pe_alef|nif|ptca|m|pl": {
+  "count": 6,
+  "lexemes": 2,
+  "template": "נֶP1ֱP2ָP3ִים",
+  "variants": [
+   "נֶֽP1ֶP2ְP3ֵי"
+  ]
  },
  "pe_alef|nif|ptca|m|sg": {
   "count": 15,
@@ -4615,6 +4875,14 @@
   "template": "תְּP1ַP2ֵּP3",
   "variants": []
  },
+ "pe_alef|piel|perf|p2|m|sg": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "P1ִP2ַּP3ְתָּ",
+  "variants": [
+   "P1ִP2ַּP3ְתָּה"
+  ]
+ },
  "pe_alef|piel|perf|p3|m|sg": {
   "count": 2,
   "lexemes": 2,
@@ -4625,18 +4893,17 @@
   ]
  },
  "pe_alef|piel|ptca|m|pl": {
-  "count": 2,
-  "lexemes": 2,
-  "template": "מְP1ַP2ְּP3ֵי",
+  "count": 3,
+  "lexemes": 3,
+  "template": "מְP1ַP2ְּP3ִים",
   "variants": [
-   "מְP1ַP2ְּP3ִים",
-   "מְP1ַP2ְּמִיP3",
+   "מְP1ַP2ְּP3ֵי",
    "מְP1ָP2ְP3ִים"
   ]
  },
  "pe_alef|pual|perf|p3|m|pl": {
-  "count": 4,
-  "lexemes": 2,
+  "count": 6,
+  "lexemes": 3,
   "template": "P1ֻP2ְּP3וּ",
   "variants": [
    "P1ֻP2ְP3ָֽלוּ",
@@ -4654,8 +4921,8 @@
   ]
  },
  "pe_alef|qal|coh|p1|c|sg": {
-  "count": 2,
-  "lexemes": 2,
+  "count": 3,
+  "lexemes": 3,
   "template": "P1ֹֽP2ְP3ָה",
   "variants": [
    "P1ֹP2ֵP3ָה"
@@ -4731,7 +4998,7 @@
   "variants": [
    "יֹP1P2ֵP3וּ",
    "יֶP1ֱP2ֹP3וּ",
-   "יֹֽP1P2ְP3וּן"
+   "יֶP1ְP2ְP3וּ"
   ]
  },
  "pe_alef|qal|impf|p3|m|sg": {
@@ -4745,8 +5012,8 @@
   ]
  },
  "pe_alef|qal|impv|p2|m|pl": {
-  "count": 37,
-  "lexemes": 4,
+  "count": 46,
+  "lexemes": 6,
   "template": "P1ִP2ְP3וּ",
   "variants": [
    "P1P2וP3",
@@ -4776,7 +5043,7 @@
   "variants": [
    "P1ֱP2ָP3",
    "P1P2ֹP3",
-   "P1ָP2ְP3ָה"
+   "P1ַP2ְP3ַת"
   ]
  },
  "pe_alef|qal|juss|p3|f|pl": {
@@ -4784,7 +5051,8 @@
   "lexemes": 3,
   "template": "תֹּP1P2ַP3ְנָה",
   "variants": [
-   "תֹּP1P2ַP3ְןָ"
+   "תֹּP1P2ַP3ְןָ",
+   "תֶּP1ֱP2ַP3ְנָה"
   ]
  },
  "pe_alef|qal|juss|p3|f|sg": {
@@ -4798,9 +5066,9 @@
   "lexemes": 3,
   "template": "יֹּP1P2ְP3וּ",
   "variants": [
+   "יַּP1ַP2ְP3וּ",
    "יֹּP1P2ֵP3וּ",
-   "יֶּP1ֶP2ְP3וּ",
-   "יֹּֽP1P2P3וּ"
+   "יֶּP1ְP2ְP3וּ"
   ]
  },
  "pe_alef|qal|juss|p3|m|sg": {
@@ -4820,16 +5088,16 @@
   "variants": []
  },
  "pe_alef|qal|perf|p1|c|sg": {
-  "count": 96,
-  "lexemes": 4,
+  "count": 102,
+  "lexemes": 5,
   "template": "P1ָP2ַP3ְתִּי",
   "variants": [
    "P1ָP2ָֽP3ְתִּי"
   ]
  },
  "pe_alef|qal|perf|p2|f|sg": {
-  "count": 12,
-  "lexemes": 3,
+  "count": 13,
+  "lexemes": 4,
   "template": "P1ָP2ַP3ְתְּ",
   "variants": [
    "P1P2P3תי"
@@ -4842,11 +5110,12 @@
   "variants": []
  },
  "pe_alef|qal|perf|p2|m|sg": {
-  "count": 156,
-  "lexemes": 5,
+  "count": 165,
+  "lexemes": 7,
   "template": "P1ָP2ַP3ְתָּ",
   "variants": [
-   "P1ָP2ָֽP3ְתָּ"
+   "P1ָP2ָֽP3ְתָּ",
+   "P1ָP2ַP3ְתָּה"
   ]
  },
  "pe_alef|qal|perf|p3|f|sg": {
@@ -4859,13 +5128,13 @@
   ]
  },
  "pe_alef|qal|perf|p3|m|pl": {
-  "count": 99,
-  "lexemes": 7,
+  "count": 109,
+  "lexemes": 11,
   "template": "P1ָP2ְP3וּ",
   "variants": [
+   "P1ָP2ֵֽP3וּ",
    "P1P2P3",
-   "P1P2P3ו",
-   "P1ָP2ָֽP3וּ"
+   "P1P2P3ו"
   ]
  },
  "pe_alef|qal|perf|p3|m|sg": {
@@ -4894,9 +5163,9 @@
   ]
  },
  "pe_alef|qal|ptca|m|pl": {
-  "count": 20,
+  "count": 57,
   "lexemes": 5,
-  "template": "P1ֹֽP2ְP3ִים",
+  "template": "P1ֹP2ְP3ִים",
   "variants": [
    "P1ֹP2ְP3ֵי"
   ]
@@ -4911,12 +5180,19 @@
    "P1ֹP2ַP3"
   ]
  },
+ "pe_alef|qal|ptcp|f|pl": {
+  "count": 4,
+  "lexemes": 2,
+  "template": "P1ֲP2ֻP3ֹות",
+  "variants": []
+ },
  "pe_alef|qal|ptcp|m|pl": {
   "count": 2,
   "lexemes": 2,
   "template": "P1ֲP2וּP3ִֽים",
   "variants": [
-   "P1ֲP2ֻמִֽיP3",
+   "P1ֲP2ֻP3ִֽים",
+   "P1ֲP2ֻP3ֵי",
    "P2וּP3ִים"
   ]
  },
@@ -4936,6 +5212,14 @@
    "אP1ְP2ִP3"
   ]
  },
+ "pe_guttural|hif|impf|p2|m|pl": {
+  "count": 4,
+  "lexemes": 2,
+  "template": "תַּP1ֲP2ִיP3וּ",
+  "variants": [
+   "תַּP1ֲP2ִיP3ֽוּן"
+  ]
+ },
  "pe_guttural|hif|impf|p2|m|sg": {
   "count": 3,
   "lexemes": 3,
@@ -4945,8 +5229,8 @@
   ]
  },
  "pe_guttural|hif|impf|p3|m|pl": {
-  "count": 4,
-  "lexemes": 2,
+  "count": 7,
+  "lexemes": 4,
   "template": "יַP1ֲP2ִיP3וּ",
   "variants": [
    "יַP1ֲP2ִֽיP3וּן"
@@ -4966,13 +5250,17 @@
   "count": 3,
   "lexemes": 2,
   "template": "הַP1ֲP2ִיP3ִי",
-  "variants": []
+  "variants": [
+   "P1ֵיP2ִיP3ִי"
+  ]
  },
  "pe_guttural|hif|impv|p2|m|pl": {
-  "count": 3,
-  "lexemes": 2,
+  "count": 5,
+  "lexemes": 4,
   "template": "הַP1ֲP2ִיP3וּ",
-  "variants": []
+  "variants": [
+   "P1ֹP2ִיP3וּ"
+  ]
  },
  "pe_guttural|hif|impv|p2|m|sg": {
   "count": 11,
@@ -4999,10 +5287,12 @@
   ]
  },
  "pe_guttural|hif|juss|p3|m|pl": {
-  "count": 17,
-  "lexemes": 4,
+  "count": 20,
+  "lexemes": 5,
   "template": "יַּP1ֲP2ִיP3וּ",
-  "variants": []
+  "variants": [
+   "יֹּP2ִP3וּ"
+  ]
  },
  "pe_guttural|hif|juss|p3|m|sg": {
   "count": 30,
@@ -5018,6 +5308,14 @@
   "count": 11,
   "lexemes": 6,
   "template": "הֶP1ֱP2ַP3ְתִּי",
+  "variants": [
+   "P1ֹוP2ַP3ְתִּי"
+  ]
+ },
+ "pe_guttural|hif|perf|p2|m|pl": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "הַֽP1ֲP2ַP3ְתֶּם",
   "variants": []
  },
  "pe_guttural|hif|perf|p2|m|sg": {
@@ -5026,7 +5324,7 @@
   "template": "הַֽP1ֲP2ַP3ְתָּ",
   "variants": [
    "הֵP1ֲP2ַP3ְתָּ",
-   "הֶP1ֱP2ַP3ְתָּה"
+   "הַP1ֲP2ַP3ְתָּה"
   ]
  },
  "pe_guttural|hif|perf|p3|f|sg": {
@@ -5036,8 +5334,8 @@
   "variants": []
  },
  "pe_guttural|hif|perf|p3|m|pl": {
-  "count": 18,
-  "lexemes": 4,
+  "count": 19,
+  "lexemes": 5,
   "template": "הֶP1ֱP2ִיP3וּ",
   "variants": [
    "ויP1P2P3ו"
@@ -5059,7 +5357,7 @@
   "variants": [
    "מP1P2צP3ים",
    "מַP1ֲP2ִיP3ֵי",
-   "מַP1ְP2ְמִֽיP3"
+   "מַP1ְP2ְP3ִֽים"
   ]
  },
  "pe_guttural|hif|ptca|m|sg": {
@@ -5071,6 +5369,12 @@
    "מַP1ְP2ִיP3ְ"
   ]
  },
+ "pe_guttural|hit|coh|p1|c|pl": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "נִֽתְP1ַP2ְּP3ָה",
+  "variants": []
+ },
  "pe_guttural|hit|impf|p2|m|sg": {
   "count": 4,
   "lexemes": 4,
@@ -5081,6 +5385,15 @@
    "תִתְP1ָP2ָֽP3"
   ]
  },
+ "pe_guttural|hit|impf|p3|m|pl": {
+  "count": 4,
+  "lexemes": 2,
+  "template": "יִתְP1ַP2ָּP3וּ",
+  "variants": [
+   "יִתְP1ַP2ְּP3וּ",
+   "יִתְP1ַP2ָּP3וּן"
+  ]
+ },
  "pe_guttural|hit|impf|p3|m|sg": {
   "count": 3,
   "lexemes": 3,
@@ -5089,6 +5402,14 @@
    "יִתְP1ַP2ָּֽP3",
    "יִתְP1ַP2ָּֽP3ְ",
    "יִֽתְP1ַP2ֶּP3ְ"
+  ]
+ },
+ "pe_guttural|hit|impv|p2|m|pl": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "הִֽתְP1ַP2ְּP3וּ",
+  "variants": [
+   "P1ִתְהַP2ְּP3וּ"
   ]
  },
  "pe_guttural|hit|impv|p2|m|sg": {
@@ -5112,11 +5433,11 @@
   ]
  },
  "pe_guttural|hit|juss|p3|m|pl": {
-  "count": 2,
-  "lexemes": 2,
-  "template": "יִּתְP1ָP2ְP3וּ",
+  "count": 4,
+  "lexemes": 3,
+  "template": "יִּֽתְP1ַP2ְּP3וּ",
   "variants": [
-   "יִּֽתְP1ַP2ְּP3וּ"
+   "יִּתְP1ָP2ְP3וּ"
   ]
  },
  "pe_guttural|hit|juss|p3|m|sg": {
@@ -5129,17 +5450,36 @@
    "יִּתְP1ַP2ַּP3"
   ]
  },
+ "pe_guttural|hit|perf|p1|c|sg": {
+  "count": 3,
+  "lexemes": 2,
+  "template": "הִתְP1ַP2ַּP3ְתִּי",
+  "variants": [
+   "P1ִתְהַP2ַּP3ְתִּי",
+   "P1ִתְהַP2ָּP3ְתִּי"
+  ]
+ },
  "pe_guttural|hit|perf|p2|m|pl": {
   "count": 2,
   "lexemes": 2,
   "template": "הִתְP1ַP2ַּP3ְתֶּם",
   "variants": []
  },
- "pe_guttural|hit|perf|p3|m|pl": {
-  "count": 2,
+ "pe_guttural|hit|perf|p2|m|sg": {
+  "count": 3,
   "lexemes": 2,
+  "template": "הִתְP1ַP2ַּP3ְתָּ",
+  "variants": [
+   "P1ִתְהַP2ָּֽP3ְתָּ",
+   "הִתְP1ַP2ַּP3ְתָּה"
+  ]
+ },
+ "pe_guttural|hit|perf|p3|m|pl": {
+  "count": 6,
+  "lexemes": 3,
   "template": "הִֽתְP1ַP2ְּP3וּ",
   "variants": [
+   "P1ִתְהַP2ְּP3וּ",
    "הִתְP1ָֽP2ְP3וּ"
   ]
  },
@@ -5172,8 +5512,9 @@
   "lexemes": 4,
   "template": "יֵP1ָP2ְP3וּ",
   "variants": [
+   "יֵP1ָP2ְP3וּן",
    "יֵP1ָP2ֵP3וּן",
-   "יֵP1ָP2ְP3ֽוּן"
+   "יֵP1ָP2ֵֽP3וּ"
   ]
  },
  "pe_guttural|nif|impf|p3|m|sg": {
@@ -5212,19 +5553,29 @@
    "יֵּP1ָP2ֵP3ְ"
   ]
  },
+ "pe_guttural|nif|perf|p1|c|sg": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "נֶP1ֱP2ָP3ְתִּי",
+  "variants": [
+   "נֶP1ְP2ַP3ְתִּי"
+  ]
+ },
  "pe_guttural|nif|perf|p3|f|sg": {
   "count": 3,
   "lexemes": 3,
   "template": "נֶP1ֱP2ָֽP3ָה",
-  "variants": []
+  "variants": [
+   "נֶP1ֶP2ְP3ָה"
+  ]
  },
  "pe_guttural|nif|perf|p3|m|pl": {
-  "count": 4,
-  "lexemes": 2,
-  "template": "נֶP1ְP2ְP3וּ",
+  "count": 10,
+  "lexemes": 3,
+  "template": "נֶP1ֶP2ְP3וּ",
   "variants": [
-   "נֶP1ְP2ָּֽP3וּ",
-   "נֶP1ֶP2ְP3וּ"
+   "נֶP1ְP2ְP3וּ",
+   "נֶP1ְP2ָּֽP3וּ"
   ]
  },
  "pe_guttural|nif|perf|p3|m|sg": {
@@ -5243,13 +5594,21 @@
   "template": "נֶּP1ֱP2ָP3ֹות",
   "variants": []
  },
+ "pe_guttural|nif|ptca|f|sg": {
+  "count": 3,
+  "lexemes": 3,
+  "template": "נֶP1ֱP2ֶP3ֶת",
+  "variants": [
+   "נֶP1ְP2ָּֽP3ֶת",
+   "נֶP1ֱP2ָP3ָה"
+  ]
+ },
  "pe_guttural|nif|ptca|m|pl": {
   "count": 2,
   "lexemes": 2,
   "template": "נֶּP1ֱP2ָP3ִים",
   "variants": [
-   "נֵּֽP1ָP2ִיP3",
-   "נַP1ֲP2ָמִיP3"
+   "נֵּֽP1ָP2ִיP3"
   ]
  },
  "pe_guttural|nif|ptca|m|sg": {
@@ -5287,8 +5646,9 @@
   "lexemes": 4,
   "template": "יְP1ַP2ְּP3וּ",
   "variants": [
-   "יְP1ַP2ְּP3וּן",
-   "יְP1ַP2ֵּֽP3וּ"
+   "יְP1ַP2ֵּP3וּ",
+   "יְP1ַP2ֵּP3ֽוּן",
+   "יְP1ַP2ְּP3וּן"
   ]
  },
  "pe_guttural|piel|impf|p3|m|sg": {
@@ -5312,6 +5672,7 @@
   "lexemes": 3,
   "template": "P1ַP2ֵּP3",
   "variants": [
+   "P1ַP2ְּP3ָה",
    "P1ַP2ֵּP3ְ"
   ]
  },
@@ -5349,22 +5710,29 @@
   ]
  },
  "pe_guttural|piel|perf|p1|c|sg": {
-  "count": 7,
-  "lexemes": 4,
+  "count": 9,
+  "lexemes": 5,
   "template": "P1ִP2ַּP3ְתִּי",
-  "variants": []
+  "variants": [
+   "P1ֵP2ַP3ְתִּי",
+   "P1ִP2ָּֽP3ְתִּי"
+  ]
  },
  "pe_guttural|piel|perf|p2|m|pl": {
   "count": 2,
   "lexemes": 2,
   "template": "P1ִP2ַּP3ְתֶּם",
-  "variants": []
+  "variants": [
+   "P1ֵP2ַP3ְתֶּם"
+  ]
  },
  "pe_guttural|piel|perf|p2|m|sg": {
-  "count": 4,
-  "lexemes": 2,
+  "count": 5,
+  "lexemes": 3,
   "template": "P1ִP2ַּP3ְתָּ",
-  "variants": []
+  "variants": [
+   "P1ֵP2ַP3ְתָּ"
+  ]
  },
  "pe_guttural|piel|perf|p3|f|sg": {
   "count": 3,
@@ -5373,13 +5741,13 @@
   "variants": []
  },
  "pe_guttural|piel|perf|p3|m|pl": {
-  "count": 13,
-  "lexemes": 7,
+  "count": 17,
+  "lexemes": 10,
   "template": "P1ִP2ְּP3וּ",
   "variants": [
+   "P1ֵֽP2ְP3וּ",
    "P1ִP2ֵּֽP3וּ",
-   "P1P2P3מרה",
-   "P1ֳP2ַP3ְמָרוּ"
+   "P1P2P3מרה"
   ]
  },
  "pe_guttural|piel|perf|p3|m|sg": {
@@ -5393,10 +5761,12 @@
   ]
  },
  "pe_guttural|piel|ptca|m|pl": {
-  "count": 3,
-  "lexemes": 3,
+  "count": 4,
+  "lexemes": 4,
   "template": "מְP1ַP2ְּP3ִים",
   "variants": [
+   "מְP1ֹP2ְP3ִים",
+   "P1ֹֽP2ְP3ִים",
    "מP1P2צP3ים"
   ]
  },
@@ -5439,16 +5809,18 @@
   "template": "נַֽP1ַP2ְP3ָה",
   "variants": [
    "נַP1ְP2ְP3ָה",
-   "נַP1ֲP2ֹP3ָה"
+   "נֵP2ְP3ָה",
+   "נֵP2ֵP3ָה"
   ]
  },
  "pe_guttural|qal|coh|p1|c|sg": {
-  "count": 2,
-  "lexemes": 2,
-  "template": "אֶP1ֱP2ֹP3ָה",
+  "count": 3,
+  "lexemes": 3,
+  "template": "אֶP1ֶP2ְP3ָה",
   "variants": [
-   "אֶP1ְP2ְּP3ָה",
-   "אֶֽP1ֶP2ְP3ָה"
+   "אֶP1ֱP2ֹP3ָה",
+   "אֵP2ְP3ָה",
+   "אֶP1ְP2ְּP3ָה"
   ]
  },
  "pe_guttural|qal|impf|p1|c|pl": {
@@ -5472,13 +5844,13 @@
   ]
  },
  "pe_guttural|qal|impf|p2|m|pl": {
-  "count": 6,
-  "lexemes": 4,
-  "template": "תַּP1ֲP2ֹP3וּ",
+  "count": 7,
+  "lexemes": 5,
+  "template": "תַּP1ַP2ְP3וּ",
   "variants": [
-   "תַּP1ַP2ְP3וּ",
+   "תַּP1ֲP2ֹP3וּ",
    "תַּP1ְP2ְP3וּ",
-   "תַּֽP1ַP2ְP3וּן"
+   "תֵּP2ֵP3וּ"
   ]
  },
  "pe_guttural|qal|impf|p2|m|sg": {
@@ -5497,6 +5869,7 @@
   "template": "תֶּP1ֱP2ַP3ְנָה",
   "variants": [
    "תַּP1ֲP2ֹP3ְנָה",
+   "תֵּP2ַP3ְנָה",
    "יַP1ֲP2ֹP3ְנָה"
   ]
  },
@@ -5511,13 +5884,13 @@
   ]
  },
  "pe_guttural|qal|impf|p3|m|pl": {
-  "count": 14,
-  "lexemes": 6,
-  "template": "יַP1ֲP2ֹP3וּ",
+  "count": 20,
+  "lexemes": 7,
+  "template": "יַֽP1ַP2ְP3וּ",
   "variants": [
-   "יַP1ְP2ְּP3וּ",
-   "יַֽP1ַP2ְP3וּ",
-   "יֶP1ֱP2ָP3וּ"
+   "יַP1ֲP2ֹP3וּ",
+   "יַP1ְP2ְP3וּ",
+   "יֶP1ְP2ָּֽP3וּ"
   ]
  },
  "pe_guttural|qal|impf|p3|m|sg": {
@@ -5535,19 +5908,19 @@
   "lexemes": 3,
   "template": "P1ִP2ְP3ִי",
   "variants": [
-   "P1ֲP2ֹP3ִי",
-   "P1ֳP2ָP3ִי",
-   "P1ָP2ְP3ִי"
+   "P2ְP3ִי",
+   "P2ֵP3ִי",
+   "P1ֲP2ֹP3ִי"
   ]
  },
  "pe_guttural|qal|impv|p2|m|pl": {
-  "count": 64,
-  "lexemes": 14,
+  "count": 68,
+  "lexemes": 17,
   "template": "P1ִP2ְP3וּ",
   "variants": [
    "P1ֲP2ֹP3וּ",
-   "P1ָP2ְP3וּ",
-   "P1ֲP2ָP3וּ"
+   "P1ֲP2ָP3וּ",
+   "P2ְP3וּ"
   ]
  },
  "pe_guttural|qal|impv|p2|m|sg": {
@@ -5576,7 +5949,7 @@
   "variants": [
    "P1ֲP2ֹP3ְ",
    "P1ֲP2ָP3",
-   "P1P2יP3"
+   "P2ֶP3ֶת"
   ]
  },
  "pe_guttural|qal|juss|p2|m|pl": {
@@ -5584,6 +5957,7 @@
   "lexemes": 3,
   "template": "תַּP1ַP2ְP3וּ",
   "variants": [
+   "תֵּP2ְP3וּ",
    "תַּP1ְP2ְּP3וּ",
    "תַּֽP1ַP2ְP3וּן"
   ]
@@ -5599,8 +5973,8 @@
   ]
  },
  "pe_guttural|qal|juss|p3|m|pl": {
-  "count": 28,
-  "lexemes": 7,
+  "count": 34,
+  "lexemes": 10,
   "template": "יַּֽP1ַP2ְP3וּ",
   "variants": [
    "יַּP1ְP2ְּP3וּ",
@@ -5619,34 +5993,40 @@
   ]
  },
  "pe_guttural|qal|perf|p1|c|pl": {
-  "count": 14,
-  "lexemes": 6,
+  "count": 19,
+  "lexemes": 8,
   "template": "P1ָP2ַP3ְנוּ",
-  "variants": []
+  "variants": [
+   "P1ָP2ָֽP3ְנוּ"
+  ]
  },
  "pe_guttural|qal|perf|p1|c|sg": {
-  "count": 43,
-  "lexemes": 15,
+  "count": 80,
+  "lexemes": 23,
   "template": "P1ָP2ַP3ְתִּי",
   "variants": [
+   "P1ָP2ָֽP3ְתִּי",
    "P1ֳP2ַP3ְתִּי"
   ]
  },
  "pe_guttural|qal|perf|p2|f|sg": {
-  "count": 2,
-  "lexemes": 2,
+  "count": 6,
+  "lexemes": 3,
   "template": "P1ָP2ַP3ְתְּ",
-  "variants": []
+  "variants": [
+   "P1P2P3תי",
+   "P1ָP2ָP3ְתְּ"
+  ]
  },
  "pe_guttural|qal|perf|p2|m|pl": {
-  "count": 39,
-  "lexemes": 14,
+  "count": 57,
+  "lexemes": 18,
   "template": "P1ֲP2ַP3ְתֶּם",
   "variants": []
  },
  "pe_guttural|qal|perf|p2|m|sg": {
-  "count": 34,
-  "lexemes": 20,
+  "count": 66,
+  "lexemes": 28,
   "template": "P1ָP2ַP3ְתָּ",
   "variants": [
    "P1ָP2ָֽP3ְתָּ",
@@ -5654,22 +6034,22 @@
   ]
  },
  "pe_guttural|qal|perf|p3|f|sg": {
-  "count": 12,
-  "lexemes": 11,
-  "template": "P1ָֽP2ְP3ָה",
+  "count": 27,
+  "lexemes": 16,
+  "template": "P1ָP2ְP3ָה",
   "variants": [
-   "P1ָP2ָP3ָה",
-   "P1ָP2ֵP3ָה"
+   "P1ָP2ָֽP3ָה",
+   "P1ָP2ֵֽP3ָה"
   ]
  },
  "pe_guttural|qal|perf|p3|m|pl": {
-  "count": 122,
-  "lexemes": 29,
+  "count": 182,
+  "lexemes": 39,
   "template": "P1ָP2ְP3וּ",
   "variants": [
    "P1ָP2ָP3וּ",
-   "P1ָP2ֵP3ּוּ",
-   "יP1P2P3ו"
+   "P1ָP2ֵP3וּ",
+   "P1ָP2ְP3וּא"
   ]
  },
  "pe_guttural|qal|perf|p3|m|sg": {
@@ -5683,27 +6063,28 @@
   ]
  },
  "pe_guttural|qal|ptca|f|pl": {
-  "count": 4,
-  "lexemes": 3,
+  "count": 6,
+  "lexemes": 4,
   "template": "P1ֹP2ְP3ֹות",
   "variants": []
  },
  "pe_guttural|qal|ptca|f|sg": {
-  "count": 9,
-  "lexemes": 4,
+  "count": 13,
+  "lexemes": 7,
   "template": "P1ֹP2ֶP3ֶת",
   "variants": [
+   "P1P2P3תי",
+   "P1ֹP2ְP3ָה",
    "P1ֹP2ָֽP3ֶת"
   ]
  },
  "pe_guttural|qal|ptca|m|pl": {
-  "count": 78,
-  "lexemes": 13,
+  "count": 111,
+  "lexemes": 17,
   "template": "P1ֹP2ְP3ִים",
   "variants": [
    "P1ֹP2ְP3ֵי",
-   "P1P2P3ו",
-   "P1ֹP2ְמִֽיP3"
+   "P1P2P3ו"
   ]
  },
  "pe_guttural|qal|ptca|m|sg": {
@@ -5712,21 +6093,21 @@
   "template": "P1ֹP2ֵP3",
   "variants": [
    "P1ֹP2ֵP3ְ",
-   "P1ָP2ֵP3",
-   "P1ֹP2ְP3ִי"
+   "P1ֹP2ְP3ִי",
+   "P1ָP2ֵP3"
   ]
  },
  "pe_guttural|qal|ptcp|f|pl": {
-  "count": 3,
-  "lexemes": 2,
+  "count": 4,
+  "lexemes": 3,
   "template": "P1ֲP2ֻP3ֹות",
   "variants": [
    "P1ֲP2וּP3ֹות"
   ]
  },
  "pe_guttural|qal|ptcp|f|sg": {
-  "count": 7,
-  "lexemes": 2,
+  "count": 11,
+  "lexemes": 6,
   "template": "P1ֲP2וּP3ָה",
   "variants": [
    "P1ֲP2וּP3ַת",
@@ -5735,13 +6116,13 @@
   ]
  },
  "pe_guttural|qal|ptcp|m|pl": {
-  "count": 12,
-  "lexemes": 7,
-  "template": "P1ֲP2ֻP3ִים",
+  "count": 14,
+  "lexemes": 8,
+  "template": "P1ֲP2וּP3ִים",
   "variants": [
-   "P1ֲP2וּP3ִים",
-   "P1ֲP2ֻP3ֵי",
-   "P1ֲP2ֻמִיP3"
+   "P1ֲP2ֻP3ִים",
+   "P1ֲP2וּP3ֵי",
+   "P1ֲP2ֻP3ֵי"
   ]
  },
  "pe_guttural|qal|ptcp|m|sg": {
@@ -5798,8 +6179,8 @@
   "variants": []
  },
  "pe_nun|hif|impf|p3|m|pl": {
-  "count": 21,
-  "lexemes": 6,
+  "count": 22,
+  "lexemes": 7,
   "template": "יַP2ִּיP3וּ",
   "variants": [
    "יַP2ִּיP3וּן"
@@ -5870,8 +6251,8 @@
   ]
  },
  "pe_nun|hif|juss|p3|m|pl": {
-  "count": 28,
-  "lexemes": 5,
+  "count": 29,
+  "lexemes": 6,
   "template": "יַּP2ִּP3וּ",
   "variants": []
  },
@@ -5891,14 +6272,14 @@
   "variants": []
  },
  "pe_nun|hif|perf|p1|c|sg": {
-  "count": 24,
-  "lexemes": 4,
+  "count": 25,
+  "lexemes": 5,
   "template": "הִP2ַּP3ְתִּי",
   "variants": []
  },
  "pe_nun|hif|perf|p2|m|pl": {
-  "count": 6,
-  "lexemes": 4,
+  "count": 7,
+  "lexemes": 5,
   "template": "הִP2ַּP3ְתֶּם",
   "variants": []
  },
@@ -5911,14 +6292,14 @@
   ]
  },
  "pe_nun|hif|perf|p3|f|sg": {
-  "count": 7,
-  "lexemes": 3,
+  "count": 8,
+  "lexemes": 4,
   "template": "הִP2ִּיP3ָה",
   "variants": []
  },
  "pe_nun|hif|perf|p3|m|pl": {
-  "count": 34,
-  "lexemes": 9,
+  "count": 38,
+  "lexemes": 12,
   "template": "הִP2ִּיP3וּ",
   "variants": []
  },
@@ -5935,8 +6316,8 @@
   "variants": []
  },
  "pe_nun|hif|ptca|m|pl": {
-  "count": 4,
-  "lexemes": 3,
+  "count": 5,
+  "lexemes": 4,
   "template": "מַP2ִּיP3ִים",
   "variants": [
    "מַP2ִּיP3ֵי"
@@ -5996,6 +6377,12 @@
   "template": "מֻP2ָּP3",
   "variants": []
  },
+ "pe_nun|nif|coh|p1|c|sg": {
+  "count": 3,
+  "lexemes": 2,
+  "template": "אִP1ָּP2ְP3ָה",
+  "variants": []
+ },
  "pe_nun|nif|impf|p2|m|sg": {
   "count": 3,
   "lexemes": 2,
@@ -6011,8 +6398,8 @@
   ]
  },
  "pe_nun|nif|impf|p3|m|pl": {
-  "count": 3,
-  "lexemes": 2,
+  "count": 4,
+  "lexemes": 3,
   "template": "יִP1ָּP2ְP3וּ",
   "variants": [
    "יִP1ָּP2ֵֽP3וּ"
@@ -6039,22 +6426,36 @@
   "variants": []
  },
  "pe_nun|nif|juss|p3|m|pl": {
+  "count": 7,
+  "lexemes": 5,
+  "template": "יִּP1ָּP2ְP3וּ",
+  "variants": [
+   "יִּP1ָּP2ֵֽP3וּ"
+  ]
+ },
+ "pe_nun|nif|perf|p1|c|sg": {
   "count": 3,
   "lexemes": 2,
-  "template": "יִּP1ָּP2ְP3וּ",
+  "template": "P1ִP2ַּP3ְתִּי",
+  "variants": []
+ },
+ "pe_nun|nif|perf|p2|m|pl": {
+  "count": 4,
+  "lexemes": 3,
+  "template": "P1ִP2ַּP3ְתֶּם",
   "variants": []
  },
  "pe_nun|nif|perf|p3|f|sg": {
-  "count": 6,
-  "lexemes": 5,
+  "count": 28,
+  "lexemes": 7,
   "template": "P1ִP2ְּP3ָה",
   "variants": [
    "P1ִP2ָּP3ָה"
   ]
  },
  "pe_nun|nif|perf|p3|m|pl": {
-  "count": 19,
-  "lexemes": 7,
+  "count": 32,
+  "lexemes": 11,
   "template": "P1ִP2ְּP3וּ",
   "variants": [
    "P1ִP2ָּֽP3וּ"
@@ -6092,7 +6493,9 @@
   "count": 2,
   "lexemes": 2,
   "template": "יְP1ַP2ְּP3וּ",
-  "variants": []
+  "variants": [
+   "יְP1ַP2ֵּֽP3וּ"
+  ]
  },
  "pe_nun|piel|impf|p3|m|sg": {
   "count": 2,
@@ -6107,8 +6510,8 @@
   "variants": []
  },
  "pe_nun|piel|juss|p3|m|pl": {
-  "count": 4,
-  "lexemes": 3,
+  "count": 8,
+  "lexemes": 5,
   "template": "יְP1ַP2ְּP3וּ",
   "variants": []
  },
@@ -6121,9 +6524,21 @@
    "יְP1ַP2ֵּP3ְ"
   ]
  },
- "pe_nun|piel|perf|p3|m|pl": {
+ "pe_nun|piel|perf|p1|c|sg": {
+  "count": 11,
+  "lexemes": 2,
+  "template": "P1ִP2ַּP3ְתִּי",
+  "variants": []
+ },
+ "pe_nun|piel|perf|p2|m|pl": {
   "count": 2,
   "lexemes": 2,
+  "template": "P1ִP2ַּP3ְתֶּם",
+  "variants": []
+ },
+ "pe_nun|piel|perf|p3|m|pl": {
+  "count": 4,
+  "lexemes": 4,
   "template": "P1ִP2ְּP3וּ",
   "variants": []
  },
@@ -6142,6 +6557,12 @@
   "template": "מְP1ַP2ֵּP3",
   "variants": []
  },
+ "pe_nun|qal|coh|p1|c|pl": {
+  "count": 4,
+  "lexemes": 2,
+  "template": "P1ִP2ְּP3ָה",
+  "variants": []
+ },
  "pe_nun|qal|coh|p1|c|sg": {
   "count": 4,
   "lexemes": 3,
@@ -6156,8 +6577,8 @@
   "template": "אֶP2ֹּוP3",
   "variants": [
    "אֶP2ֵּP3",
-   "אֶP2ֶּP3",
-   "אֱP2ֹּP3"
+   "אֶP2ְּP3ָה",
+   "אֶP2ֶּP3"
   ]
  },
  "pe_nun|qal|impf|p2|m|pl": {
@@ -6165,9 +6586,9 @@
   "lexemes": 2,
   "template": "תִּP2ְּP3וּ",
   "variants": [
-   "תִּP1ְP2ֹּֽP3וּ",
-   "תִּP2ַּP3וּ",
-   "תִּP2ֹּP3וּ"
+   "P2ִּתְּP3וּ",
+   "P2ִּתֹּP3וּן",
+   "P2ִּתֵּP3וּ"
   ]
  },
  "pe_nun|qal|impf|p2|m|sg": {
@@ -6180,6 +6601,12 @@
    "תִּP2ַּP3"
   ]
  },
+ "pe_nun|qal|impf|p3|f|pl": {
+  "count": 3,
+  "lexemes": 2,
+  "template": "תִּP2ֹּP3ְנָה",
+  "variants": []
+ },
  "pe_nun|qal|impf|p3|f|sg": {
   "count": 6,
   "lexemes": 4,
@@ -6191,8 +6618,8 @@
   ]
  },
  "pe_nun|qal|impf|p3|m|pl": {
-  "count": 29,
-  "lexemes": 4,
+  "count": 51,
+  "lexemes": 7,
   "template": "יִP2ְּP3וּ",
   "variants": [
    "יִP2ֹּP3וּ",
@@ -6210,14 +6637,23 @@
    "יִP2ֵּP3"
   ]
  },
+ "pe_nun|qal|impv|p2|m|pl": {
+  "count": 23,
+  "lexemes": 2,
+  "template": "P2ְּP3וּ",
+  "variants": [
+   "P2ֹּP3וּ",
+   "P1ִP2ְP3וּ"
+  ]
+ },
  "pe_nun|qal|impv|p2|m|sg": {
   "count": 6,
   "lexemes": 3,
   "template": "P1ְP2ֹP3",
   "variants": [
+   "P2ְּP3ָה",
    "P2ֶּP3",
-   "P2ֵּP3",
-   "P2ְּP3ָה"
+   "P2ֵּP3"
   ]
  },
  "pe_nun|qal|infa|unknown|unknown": {
@@ -6247,8 +6683,8 @@
   ]
  },
  "pe_nun|qal|juss|p3|m|pl": {
-  "count": 41,
-  "lexemes": 4,
+  "count": 99,
+  "lexemes": 7,
   "template": "יִּP2ְּP3וּ",
   "variants": [
    "יִּP2ָּP3וּ"
@@ -6265,16 +6701,16 @@
   ]
  },
  "pe_nun|qal|perf|p1|c|sg": {
-  "count": 10,
-  "lexemes": 4,
+  "count": 11,
+  "lexemes": 5,
   "template": "P1ָP2ַP3ְתִּי",
   "variants": [
    "P1ָP2ָֽP3ְתִּי"
   ]
  },
  "pe_nun|qal|perf|p2|m|sg": {
-  "count": 8,
-  "lexemes": 6,
+  "count": 9,
+  "lexemes": 7,
   "template": "P1ָP2ַP3ְתָּ",
   "variants": [
    "P1ָP2ַP3ְתָּה",
@@ -6282,16 +6718,16 @@
   ]
  },
  "pe_nun|qal|perf|p3|f|sg": {
-  "count": 19,
-  "lexemes": 6,
+  "count": 28,
+  "lexemes": 7,
   "template": "P1ָP2ְP3ָה",
   "variants": [
    "P1ָP2ָP3ָה"
   ]
  },
  "pe_nun|qal|perf|p3|m|pl": {
-  "count": 32,
-  "lexemes": 4,
+  "count": 100,
+  "lexemes": 8,
   "template": "P1ָP2ְP3וּ",
   "variants": [
    "P1ָP2ָֽP3וּ"
@@ -6308,16 +6744,16 @@
   ]
  },
  "pe_nun|qal|ptca|f|sg": {
-  "count": 5,
-  "lexemes": 2,
+  "count": 6,
+  "lexemes": 3,
   "template": "P1ֹP2ֶP3ֶת",
   "variants": [
    "P1ֹP2ֵP3ָה"
   ]
  },
  "pe_nun|qal|ptca|m|pl": {
-  "count": 14,
-  "lexemes": 4,
+  "count": 18,
+  "lexemes": 7,
   "template": "P1ֹP2ְP3ִים",
   "variants": [
    "P1ֹP2ְP3ֵי"
@@ -6329,6 +6765,22 @@
   "template": "P1ֹP2ֵP3",
   "variants": [
    "P1ֹּP2ֵP3ְ"
+  ]
+ },
+ "pe_nun|qal|ptcp|f|pl": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "P1ְP2ֻP3ֹות",
+  "variants": []
+ },
+ "pe_nun|qal|ptcp|m|pl": {
+  "count": 6,
+  "lexemes": 2,
+  "template": "P1ְP2ֻP3ִים",
+  "variants": [
+   "P1ְP2וּP3ִם",
+   "P1P2יP3י",
+   "P1ְP2ֻP3ֵי"
   ]
  },
  "pe_nun|qal|ptcp|m|sg": {
@@ -6345,7 +6797,18 @@
   "template": "אֹוP2ִיP3",
   "variants": [
    "אֹP2ֵP3",
+   "אֵP1P2ִP3ָה",
    "אֵP1P2ִיP3"
+  ]
+ },
+ "pe_yod|hif|impf|p2|m|pl": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "תֹוP2ִיP3וּ",
+  "variants": [
+   "תֹP2ִP3וּן",
+   "P2ֹותִיP3וּ",
+   "תֵּP1P2ִיP3וּ"
   ]
  },
  "pe_yod|hif|impf|p2|m|sg": {
@@ -6359,12 +6822,12 @@
   ]
  },
  "pe_yod|hif|impf|p3|m|pl": {
-  "count": 3,
-  "lexemes": 2,
+  "count": 8,
+  "lexemes": 3,
   "template": "P1ֹוP2ִיP3וּ",
   "variants": [
-   "P1ֵיP2ִיP3וּ",
    "P1ֹוP2ִP3וּן",
+   "P1ֵיP2ִיP3וּ",
    "P1ַיְP2ִP3וּ"
   ]
  },
@@ -6426,11 +6889,11 @@
   ]
  },
  "pe_yod|hif|juss|p3|m|pl": {
-  "count": 3,
+  "count": 6,
   "lexemes": 3,
-  "template": "P1ַּP2ִּP3וּ",
+  "template": "P1ֹּוP2ִP3וּ",
   "variants": [
-   "P1ֹּוP2ִP3וּ"
+   "P1ַּP2ִּP3וּ"
   ]
  },
  "pe_yod|hif|juss|p3|m|sg": {
@@ -6444,8 +6907,8 @@
   ]
  },
  "pe_yod|hif|perf|p1|c|sg": {
-  "count": 7,
-  "lexemes": 4,
+  "count": 10,
+  "lexemes": 5,
   "template": "הֹוP2ַP3ְתִּי",
   "variants": [
    "הִP2ַּP3ִּי",
@@ -6459,8 +6922,8 @@
   "variants": []
  },
  "pe_yod|hif|perf|p2|m|sg": {
-  "count": 5,
-  "lexemes": 4,
+  "count": 6,
+  "lexemes": 5,
   "template": "הֹוP2ַP3ְתָּ",
   "variants": [
    "הֵP1P2ַP3ְתָּ"
@@ -6546,6 +7009,21 @@
   "template": "P1ִּוָּP2ֵP3",
   "variants": []
  },
+ "pe_yod|nif|perf|p2|m|pl": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "נֹוP2ַP3ְתֶּם",
+  "variants": []
+ },
+ "pe_yod|nif|perf|p3|f|sg": {
+  "count": 3,
+  "lexemes": 2,
+  "template": "נֹֽוP2ְP3ָה",
+  "variants": [
+   "נִP2ְּP3ָה",
+   "נֹוP2ָֽP3ָה"
+  ]
+ },
  "pe_yod|nif|perf|p3|m|pl": {
   "count": 3,
   "lexemes": 2,
@@ -6569,6 +7047,14 @@
   "lexemes": 2,
   "template": "נֹּֽוP2ָP3ֹות",
   "variants": []
+ },
+ "pe_yod|nif|ptca|f|sg": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "נֹוP2ֶP3ֶת",
+  "variants": [
+   "נֹוP2ָP3ֶת"
+  ]
  },
  "pe_yod|nif|ptca|m|pl": {
   "count": 21,
@@ -6648,6 +7134,12 @@
    "P1ֻP2ָּֽP3"
   ]
  },
+ "pe_yod|pual|ptcp|m|pl": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "מְP1ֻP2ָּP3ִים",
+  "variants": []
+ },
  "pe_yod|pual|ptcp|m|sg": {
   "count": 2,
   "lexemes": 2,
@@ -6699,7 +7191,8 @@
   "lexemes": 2,
   "template": "תֵP2ַP3ְנָה",
   "variants": [
-   "תִּP2ַּP3ְנָה"
+   "תִּP2ַּP3ְנָה",
+   "תִּP1P2ָP3ְנָה"
   ]
  },
  "pe_yod|qal|impf|p3|f|sg": {
@@ -6717,9 +7210,9 @@
   "lexemes": 3,
   "template": "P1ֵP2ְP3וּ",
   "variants": [
+   "P1ִֽP2ְP3וּ",
    "P1ִיP2ָP3וּ",
-   "P1וּP2ְP3וּ",
-   "P1ִֽיP2ְP3וּ"
+   "P1וּP2ְP3וּ"
   ]
  },
  "pe_yod|qal|impf|p3|m|sg": {
@@ -6741,8 +7234,8 @@
   ]
  },
  "pe_yod|qal|impv|p2|m|pl": {
-  "count": 21,
-  "lexemes": 3,
+  "count": 23,
+  "lexemes": 4,
   "template": "P2ְP3וּ",
   "variants": [
    "P2ֵP3וּ",
@@ -6808,14 +7301,14 @@
   ]
  },
  "pe_yod|qal|perf|p1|c|pl": {
-  "count": 10,
-  "lexemes": 4,
+  "count": 11,
+  "lexemes": 5,
   "template": "P1ָP2ַP3ְנוּ",
   "variants": []
  },
  "pe_yod|qal|perf|p1|c|sg": {
-  "count": 22,
-  "lexemes": 5,
+  "count": 25,
+  "lexemes": 7,
   "template": "P1ָP2ַP3ְתִּי",
   "variants": [
    "P1ָP2ֹP3ְתִּי",
@@ -6841,8 +7334,8 @@
   ]
  },
  "pe_yod|qal|perf|p2|m|sg": {
-  "count": 30,
-  "lexemes": 7,
+  "count": 34,
+  "lexemes": 8,
   "template": "P1ָP2ַP3ְתָּ",
   "variants": [
    "P1ָP2ָֽP3ְתָּ",
@@ -6851,16 +7344,16 @@
   ]
  },
  "pe_yod|qal|perf|p3|f|sg": {
-  "count": 47,
-  "lexemes": 9,
+  "count": 50,
+  "lexemes": 10,
   "template": "P1ָP2ְP3ָה",
   "variants": [
    "P1ָP2ָֽP3ָה"
   ]
  },
  "pe_yod|qal|perf|p3|m|pl": {
-  "count": 89,
-  "lexemes": 8,
+  "count": 98,
+  "lexemes": 10,
   "template": "P1ָP2ְP3וּ",
   "variants": [
    "P1ָP2ָֽP3וּ",
@@ -6895,8 +7388,8 @@
   ]
  },
  "pe_yod|qal|ptca|m|pl": {
-  "count": 26,
-  "lexemes": 4,
+  "count": 27,
+  "lexemes": 5,
   "template": "P1ֹP2ְP3ִים",
   "variants": [
    "P1ֹP2ְP3ֵי",
@@ -6923,8 +7416,8 @@
   ]
  },
  "strong|hif|coh|p1|c|pl": {
-  "count": 2,
-  "lexemes": 2,
+  "count": 3,
+  "lexemes": 3,
   "template": "נַP1ְP2ִיP3ָה",
   "variants": []
  },
@@ -6985,8 +7478,8 @@
   ]
  },
  "strong|hif|impf|p3|m|pl": {
-  "count": 6,
-  "lexemes": 4,
+  "count": 7,
+  "lexemes": 5,
   "template": "יַP1ְP2ִּיP3וּ",
   "variants": [
    "יַP1ְP2ִP3וּן",
@@ -7004,15 +7497,15 @@
   ]
  },
  "strong|hif|impv|p2|f|sg": {
-  "count": 2,
-  "lexemes": 1,
+  "count": 3,
+  "lexemes": 2,
   "template": "הַP1ְP2ִיP3ִי",
   "variants": []
  },
  "strong|hif|impv|p2|m|pl": {
-  "count": 5,
+  "count": 16,
   "lexemes": 4,
-  "template": "הַP1ְP2ִּיP3וּ",
+  "template": "הַP1ְP2ִיP3וּ",
   "variants": []
  },
  "strong|hif|impv|p2|m|sg": {
@@ -7045,10 +7538,10 @@
    "P1ְP2ֵּP3"
   ]
  },
- "strong|hif|juss|p2|m|pl": {
-  "count": 1,
-  "lexemes": 1,
-  "template": "תַּP1ְP2ִּיP3וּ",
+ "strong|hif|juss|p2|f|sg": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "תַּP1ְP2ִיP3ִי",
   "variants": []
  },
  "strong|hif|juss|p3|f|sg": {
@@ -7060,9 +7553,9 @@
   ]
  },
  "strong|hif|juss|p3|m|pl": {
-  "count": 8,
-  "lexemes": 4,
-  "template": "יַּP1ְP2ִּP3וּ",
+  "count": 30,
+  "lexemes": 8,
+  "template": "יַּP1ְP2ִיP3וּ",
   "variants": [
    "יַּP1ְP2ְּP3וּ"
   ]
@@ -7077,12 +7570,18 @@
   ]
  },
  "strong|hif|perf|p1|c|sg": {
-  "count": 24,
-  "lexemes": 12,
+  "count": 26,
+  "lexemes": 14,
   "template": "הִP1ְP2ַּP3ְתִּי",
   "variants": [
    "הִP1ְP2ַP3ִּי"
   ]
+ },
+ "strong|hif|perf|p2|f|pl": {
+  "count": 1,
+  "lexemes": 1,
+  "template": "הִP1ְP2ַP3ְתֶּנָה",
+  "variants": []
  },
  "strong|hif|perf|p2|f|sg": {
   "count": 1,
@@ -7091,33 +7590,33 @@
   "variants": []
  },
  "strong|hif|perf|p2|m|pl": {
-  "count": 13,
-  "lexemes": 2,
+  "count": 14,
+  "lexemes": 3,
   "template": "הִP1ְP2ַP3ְתֶּם",
   "variants": [
-   "הִP1ְP2ַּמְתֶּP3",
    "הִP1ְP2ַּP3ֶּם"
   ]
  },
  "strong|hif|perf|p2|m|sg": {
-  "count": 11,
-  "lexemes": 6,
-  "template": "הִP1ְP2ַּP3ְתָּ",
+  "count": 17,
+  "lexemes": 7,
+  "template": "הִP1ְP2ַP3ְתָּ",
   "variants": [
    "הִP1ְP2ַּP3ָּ",
-   "הִP1ְP2ַP3ָּה"
+   "הִP1ְP2ַP3ָּה",
+   "הִP1ְP2ַּֽP3ְתָּה"
   ]
  },
  "strong|hif|perf|p3|f|sg": {
-  "count": 5,
-  "lexemes": 4,
+  "count": 8,
+  "lexemes": 6,
   "template": "הִP1ְP2ִיP3ָה",
   "variants": []
  },
  "strong|hif|perf|p3|m|pl": {
-  "count": 15,
-  "lexemes": 9,
-  "template": "הִP1ְP2ִּיP3וּ",
+  "count": 25,
+  "lexemes": 11,
+  "template": "הִP1ְP2ִיP3וּ",
   "variants": []
  },
  "strong|hif|perf|p3|m|sg": {
@@ -7129,12 +7628,11 @@
   ]
  },
  "strong|hif|ptca|m|pl": {
-  "count": 4,
-  "lexemes": 3,
+  "count": 6,
+  "lexemes": 4,
   "template": "מַP1ְP2ִּיP3ֵי",
   "variants": [
-   "מַP1ְP2ִּP3ִים",
-   "מַP1ְP2ִמִיP3"
+   "מַP1ְP2ִּP3ִים"
   ]
  },
  "strong|hif|ptca|m|sg": {
@@ -7159,8 +7657,8 @@
   "template": "יִתְP1ַP2ְּP3וּ",
   "variants": [
    "יִתְP1ַּP2ָּֽP3וּ",
-   "יִתְP1ָּP2ָֽP3וּ",
-   "יִתְP1ָּP2ְP3וּ"
+   "יִתְP1ָּP2ְP3וּ",
+   "יִתְP1ָּP2ָֽP3וּ"
   ]
  },
  "strong|hit|impf|p3|m|sg": {
@@ -7172,12 +7670,22 @@
    "יִתְP1ָּP2ֵP3ְ"
   ]
  },
+ "strong|hit|impv|p2|m|pl": {
+  "count": 4,
+  "lexemes": 2,
+  "template": "הִֽתְP1ַP2ְּP3וּ",
+  "variants": [
+   "הִתְP1ָּP2ָP3וּ",
+   "הִתְP1ַP2ָּP3וּ"
+  ]
+ },
  "strong|hit|juss|p3|m|pl": {
-  "count": 6,
-  "lexemes": 3,
+  "count": 10,
+  "lexemes": 4,
   "template": "יִּֽתְP1ַP2ְּP3וּ",
   "variants": [
-   "יִּתְP1ָּֽP2ְP3וּ"
+   "יִּתְP1ָּֽP2ְP3וּ",
+   "יִּתְP1ֹֽP2ֲP3וּ"
   ]
  },
  "strong|hit|juss|p3|m|sg": {
@@ -7189,8 +7697,8 @@
   ]
  },
  "strong|hit|perf|p3|m|pl": {
-  "count": 2,
-  "lexemes": 2,
+  "count": 3,
+  "lexemes": 3,
   "template": "הִתְP1ָּP2ְP3וּ",
   "variants": [
    "הִתְP1ַP2ְּP3וּ",
@@ -7207,12 +7715,20 @@
   "count": 2,
   "lexemes": 2,
   "template": "מִּתְP1ַP2ְּP3ִים",
-  "variants": []
+  "variants": [
+   "מִּתְP1ָּP2ְP3ִים"
+  ]
  },
  "strong|hof|impf|p3|f|sg": {
   "count": 1,
   "lexemes": 1,
   "template": "תָּP1ְP2ָֽP3",
+  "variants": []
+ },
+ "strong|hof|impf|p3|m|pl": {
+  "count": 1,
+  "lexemes": 1,
+  "template": "יֻP1ְP2ָP3וּ",
   "variants": []
  },
  "strong|hof|impv|p2|m|sg": {
@@ -7221,10 +7737,22 @@
   "template": "הָP1ְP2ְּP3ָה",
   "variants": []
  },
- "strong|hof|perf|p1|c|sg": {
+ "strong|hof|juss|p2|f|sg": {
   "count": 1,
   "lexemes": 1,
-  "template": "הָP1ְP2ָּP3ְתִּי",
+  "template": "תֻּP1ְP2ְP3ִי",
+  "variants": []
+ },
+ "strong|hof|perf|p1|c|pl": {
+  "count": 1,
+  "lexemes": 1,
+  "template": "הָP1ְP2ַP3ְנוּ",
+  "variants": []
+ },
+ "strong|hof|perf|p2|m|sg": {
+  "count": 1,
+  "lexemes": 1,
+  "template": "הָP1ְP2ַP3ְתָּ",
   "variants": []
  },
  "strong|hof|perf|p3|m|sg": {
@@ -7238,8 +7766,8 @@
   ]
  },
  "strong|hof|ptcp|m|pl": {
-  "count": 2,
-  "lexemes": 2,
+  "count": 3,
+  "lexemes": 3,
   "template": "מֻP1ְP2ָP3ִים",
   "variants": [
    "P1P2P3ים"
@@ -7283,6 +7811,16 @@
    "אP1P2P3"
   ]
  },
+ "strong|nif|impf|p2|m|pl": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "תִּP1ָּP2ְP3וּ",
+  "variants": [
+   "תִּP1ָּP2ֵP3וּ",
+   "תִּP1ָּP2ֵP3ֽוּן",
+   "P1ִּתָּP2ֵֽP3וּ"
+  ]
+ },
  "strong|nif|impf|p2|m|sg": {
   "count": 6,
   "lexemes": 4,
@@ -7304,8 +7842,8 @@
   ]
  },
  "strong|nif|impf|p3|m|pl": {
-  "count": 22,
-  "lexemes": 12,
+  "count": 33,
+  "lexemes": 16,
   "template": "יִP1ָּP2ְP3וּ",
   "variants": [
    "יִP1ָּP2ֵP3וּ",
@@ -7329,8 +7867,8 @@
   "variants": []
  },
  "strong|nif|impv|p2|m|pl": {
-  "count": 4,
-  "lexemes": 2,
+  "count": 9,
+  "lexemes": 4,
   "template": "הִP1ָּP2ְP3וּ",
   "variants": [
    "הִP1ָּP2ֵP3וּ"
@@ -7353,6 +7891,12 @@
    "הִP1ָּP2ֵP3ְ"
   ]
  },
+ "strong|nif|juss|p2|m|pl": {
+  "count": 1,
+  "lexemes": 1,
+  "template": "תֵּP1ָP2ְP3וּ",
+  "variants": []
+ },
  "strong|nif|juss|p3|f|pl": {
   "count": 1,
   "lexemes": 1,
@@ -7368,11 +7912,12 @@
   ]
  },
  "strong|nif|juss|p3|m|pl": {
-  "count": 8,
-  "lexemes": 7,
+  "count": 19,
+  "lexemes": 10,
   "template": "יִּP1ָּP2ְP3וּ",
   "variants": [
-   "יִּP1ָּP2ֵP3וּ"
+   "יִּP1ָּP2ֵP3וּ",
+   "יֵּP1ָP2ְP3וּ"
   ]
  },
  "strong|nif|juss|p3|m|sg": {
@@ -7394,8 +7939,8 @@
   ]
  },
  "strong|nif|perf|p1|c|sg": {
-  "count": 16,
-  "lexemes": 7,
+  "count": 18,
+  "lexemes": 9,
   "template": "נִP1ְP2ַּP3ְתִּי",
   "variants": [
    "נִP1ְP2ָֽP3ְתִּי",
@@ -7420,20 +7965,21 @@
   "template": "נִP1ְP2ַּP3ְתָּ",
   "variants": [
    "נִP1ְP2ָּP3ְתָּ",
+   "נִP1ְP2ַP3ְתָּה",
    "נִP1ְP2ַP3ָּ"
   ]
  },
  "strong|nif|perf|p3|f|sg": {
-  "count": 24,
-  "lexemes": 7,
+  "count": 29,
+  "lexemes": 9,
   "template": "נִP1ְP2ְP3ָה",
   "variants": [
    "נִP1ְP2ָּֽP3ָה"
   ]
  },
  "strong|nif|perf|p3|m|pl": {
-  "count": 22,
-  "lexemes": 10,
+  "count": 27,
+  "lexemes": 12,
   "template": "נִP1ְP2ְP3וּ",
   "variants": [
    "נִP1ְP2ָP3וּ",
@@ -7471,7 +8017,6 @@
   "template": "נִP1ְP2ָּP3ִים",
   "variants": [
    "נִP1ְP2ַּP3ֵּי",
-   "נִP1ְP2ָמִיP3",
    "נִP1ְP2ְּP3ֵי"
   ]
  },
@@ -7482,17 +8027,18 @@
   "variants": []
  },
  "strong|piel|coh|p1|c|pl": {
-  "count": 2,
-  "lexemes": 2,
+  "count": 7,
+  "lexemes": 5,
   "template": "נְP1ַP2ְּP3ָה",
   "variants": []
  },
  "strong|piel|coh|p1|c|sg": {
-  "count": 39,
-  "lexemes": 10,
+  "count": 41,
+  "lexemes": 11,
   "template": "אֲP1ַP2ְּP3ָה",
   "variants": [
    "אֲP1ַP2ֵּP3ָה",
+   "אֲP1ָP2ֲP3ָה",
    "אַֽP1ַP2ְּP3ָה"
   ]
  },
@@ -7521,13 +8067,13 @@
   "variants": []
  },
  "strong|piel|impf|p2|m|pl": {
-  "count": 5,
-  "lexemes": 4,
+  "count": 7,
+  "lexemes": 5,
   "template": "תְּP1ַP2ְּP3וּ",
   "variants": [
    "תְּP1ַP2ֵּP3וּן",
    "תְּP1ַP2ְּP3וּן",
-   "תְּP1ַP2ֵּP3וּ"
+   "תְּP1ַP2ֵּֽP3וּ"
   ]
  },
  "strong|piel|impf|p2|m|sg": {
@@ -7551,8 +8097,8 @@
   ]
  },
  "strong|piel|impf|p3|m|pl": {
-  "count": 23,
-  "lexemes": 13,
+  "count": 27,
+  "lexemes": 14,
   "template": "יְP1ַP2ְּP3וּ",
   "variants": [
    "יְP1ַP2ֵּֽP3וּ",
@@ -7577,17 +8123,18 @@
   "variants": []
  },
  "strong|piel|impv|p2|f|sg": {
-  "count": 2,
-  "lexemes": 2,
-  "template": "P1ַּP2ְּP3ִי",
+  "count": 4,
+  "lexemes": 3,
+  "template": "P1ַP2ְּP3ִי",
   "variants": [
+   "P1ָּP2ֲP3ִי",
    "P1ַּP2ֵּֽP3ִי"
   ]
  },
  "strong|piel|impv|p2|m|pl": {
-  "count": 27,
+  "count": 38,
   "lexemes": 8,
-  "template": "P1ַּP2ְּP3וּ",
+  "template": "P1ַP2ְּP3וּ",
   "variants": [
    "P1ַP2ֵּP3וּ",
    "P1ָP2ְP3וּ"
@@ -7629,6 +8176,12 @@
   "template": "תְּP1ַP2ְּP3ִי",
   "variants": []
  },
+ "strong|piel|juss|p2|m|pl": {
+  "count": 1,
+  "lexemes": 1,
+  "template": "תְּP1ַP2ְּP3וּ",
+  "variants": []
+ },
  "strong|piel|juss|p2|m|sg": {
   "count": 10,
   "lexemes": 2,
@@ -7651,13 +8204,13 @@
   ]
  },
  "strong|piel|juss|p3|m|pl": {
-  "count": 49,
-  "lexemes": 12,
+  "count": 51,
+  "lexemes": 13,
   "template": "יְP1ַP2ְּP3וּ",
   "variants": [
+   "יְP1ָP2ֲP3וּ",
    "יְP1ַP2ֵּP3וּ",
-   "יְP1ָP2ְP3וּ",
-   "יP1P2P3"
+   "יְP1ֹֽP2ְP3וּ"
   ]
  },
  "strong|piel|juss|p3|m|sg": {
@@ -7674,14 +8227,17 @@
   "count": 2,
   "lexemes": 2,
   "template": "P1ִP2ַּP3ְנוּ",
-  "variants": []
+  "variants": [
+   "P1ֵּP2ַP3ְנוּ"
+  ]
  },
  "strong|piel|perf|p1|c|sg": {
-  "count": 33,
-  "lexemes": 13,
+  "count": 54,
+  "lexemes": 18,
   "template": "P1ִP2ַּP3ְתִּי",
   "variants": [
-   "P1ֵּP2ַP3ְתִּי"
+   "P1ֵּP2ַP3ְתִּי",
+   "P1ֹוP2ַP3ְתִּי"
   ]
  },
  "strong|piel|perf|p2|f|sg": {
@@ -7693,16 +8249,16 @@
   ]
  },
  "strong|piel|perf|p2|m|pl": {
-  "count": 19,
-  "lexemes": 10,
+  "count": 20,
+  "lexemes": 11,
   "template": "P1ִP2ַּP3ְתֶּם",
   "variants": [
-   "P1ִP2ַּמְתֶּP3"
+   "P1ֵֽP2ַP3ְתֶּם"
   ]
  },
  "strong|piel|perf|p2|m|sg": {
-  "count": 40,
-  "lexemes": 6,
+  "count": 44,
+  "lexemes": 9,
   "template": "P1ִP2ַּP3ְתָּ",
   "variants": [
    "P1ֵּP2ַP3ְתָּ",
@@ -7710,17 +8266,18 @@
   ]
  },
  "strong|piel|perf|p3|f|sg": {
-  "count": 5,
-  "lexemes": 3,
+  "count": 7,
+  "lexemes": 5,
   "template": "P1ִP2ְּP3ָה",
   "variants": [
    "P1ִP2ֵּP3ָה",
-   "P1ֵP2ְP3ָה"
+   "P1ֵP2ְP3ָה",
+   "P1ִP2ָּP3ָה"
   ]
  },
  "strong|piel|perf|p3|m|pl": {
-  "count": 24,
-  "lexemes": 10,
+  "count": 34,
+  "lexemes": 14,
   "template": "P1ִP2ְּP3וּ",
   "variants": [
    "P1ֵP2ְP3וּ",
@@ -7742,24 +8299,26 @@
   "count": 5,
   "lexemes": 5,
   "template": "מְP1ַP2ְּP3ֹות",
-  "variants": []
+  "variants": [
+   "מְP1ֹP2ְP3ֹת"
+  ]
  },
  "strong|piel|ptca|f|sg": {
   "count": 8,
   "lexemes": 4,
   "template": "מְP1ַP2ֶּP3ֶת",
   "variants": [
-   "מְP1ַP2ָּֽP3ֶת",
    "מְP1ַP2ֵּP3ָה",
+   "מְP1ַP2ָּֽP3ֶת",
    "מְP1ָP2ַP3"
   ]
  },
  "strong|piel|ptca|m|pl": {
-  "count": 34,
-  "lexemes": 10,
+  "count": 38,
+  "lexemes": 12,
   "template": "מְP1ַP2ְּP3ִים",
   "variants": [
-   "מְP1ַP2ְP3ֵי",
+   "מְP1ַP2ְּP3ֵי",
    "מְP1ָP2ְP3ִים",
    "מְP1ָP2ְP3ֵי"
   ]
@@ -7797,8 +8356,8 @@
   ]
  },
  "strong|pual|impf|p3|m|pl": {
-  "count": 2,
-  "lexemes": 2,
+  "count": 3,
+  "lexemes": 3,
   "template": "יְP1ֻP2ָּP3וּ",
   "variants": [
    "יְP1ֻP2ְּP3וּ",
@@ -7832,14 +8391,17 @@
   "count": 2,
   "lexemes": 2,
   "template": "P1ֻּP2ַּP3ְתִּי",
-  "variants": []
+  "variants": [
+   "P1ֹP2ַP3ְתִּי"
+  ]
  },
  "strong|pual|perf|p3|m|pl": {
   "count": 5,
   "lexemes": 3,
   "template": "P1ֻP2ְּP3וּ",
   "variants": [
-   "P1ֹP2ְP3וּ"
+   "P1ֹP2ְP3וּ",
+   "P1P2P3ה"
   ]
  },
  "strong|pual|perf|p3|m|sg": {
@@ -7853,23 +8415,24 @@
   ]
  },
  "strong|pual|ptcp|f|pl": {
-  "count": 2,
-  "lexemes": 2,
+  "count": 3,
+  "lexemes": 3,
   "template": "מְP1ֻP2ָּP3ֹות",
   "variants": []
  },
  "strong|pual|ptcp|f|sg": {
-  "count": 5,
-  "lexemes": 4,
+  "count": 6,
+  "lexemes": 5,
   "template": "מְP1ֻP2ֶּP3ֶת",
   "variants": [
    "מְP1ֻP2ָּP3ָה",
-   "מְP1ֻP2ָּֽP3ֶת"
+   "מְP1ֹP2ֶP3ֶת",
+   "מP1P2P3תי"
   ]
  },
  "strong|pual|ptcp|m|pl": {
-  "count": 11,
-  "lexemes": 4,
+  "count": 15,
+  "lexemes": 7,
   "template": "מְP1ֻP2ָּP3ִים",
   "variants": [
    "מְP1ֻP2ְּP3ֵי"
@@ -7886,16 +8449,16 @@
   ]
  },
  "strong|qal|coh|p1|c|pl": {
-  "count": 4,
-  "lexemes": 3,
+  "count": 7,
+  "lexemes": 6,
   "template": "נִP1ְP2ְּP3ָה",
   "variants": [
    "נִP1ְP2ָֽP3ָה"
   ]
  },
  "strong|qal|coh|p1|c|sg": {
-  "count": 9,
-  "lexemes": 4,
+  "count": 13,
+  "lexemes": 7,
   "template": "אֶP1ְP2ְּP3ָה",
   "variants": [
    "אֶP1ְP2ֹP3ָה"
@@ -7921,30 +8484,24 @@
    "אP1P2וP3"
   ]
  },
- "strong|qal|impf|p2|f|pl": {
-  "count": 1,
-  "lexemes": 1,
-  "template": "תִּP1ְP2ַּP3ְנָה",
-  "variants": []
- },
  "strong|qal|impf|p2|f|sg": {
   "count": 3,
   "lexemes": 2,
   "template": "תִP1ְP2ְּP3ִי",
   "variants": [
+   "תִּP1ְP2ֹP3ִי",
    "תִP1ְP2ָּP3ִי",
-   "תִP1ְP2ֹP3ִי",
    "תִP1ְP2ָּP3ִין"
   ]
  },
  "strong|qal|impf|p2|m|pl": {
-  "count": 17,
-  "lexemes": 9,
+  "count": 18,
+  "lexemes": 10,
   "template": "תִּP1ְP2ְP3וּ",
   "variants": [
    "תִּP1ְP2ֹP3וּ",
-   "תִּP1ְP2ָּP3וּ",
-   "תִּP1ְP2ְP3וּן"
+   "תִּP1ְP2ְP3וּן",
+   "תִּP1ְP2ָּP3וּ"
   ]
  },
  "strong|qal|impf|p2|m|sg": {
@@ -7955,6 +8512,16 @@
    "תִּP1ְP2ֹP3ְ",
    "תִP1ְP2ַּP3",
    "תִּP1ְP2ָּֽP3"
+  ]
+ },
+ "strong|qal|impf|p3|f|pl": {
+  "count": 2,
+  "lexemes": 2,
+  "template": "תִּP1ְP2ַּP3ְנָה",
+  "variants": [
+   "תִּP1ְP2ַּP3ְןָ",
+   "תִּP1ְP2ֹּֽP3ָּה",
+   "תִּP1ְP2ֹֽP3ְנָה"
   ]
  },
  "strong|qal|impf|p3|f|sg": {
@@ -7968,12 +8535,12 @@
   ]
  },
  "strong|qal|impf|p3|m|pl": {
-  "count": 39,
-  "lexemes": 21,
+  "count": 58,
+  "lexemes": 28,
   "template": "יִP1ְP2ְּP3וּ",
   "variants": [
-   "יִP1ְP2ָּP3וּ",
    "יִP1ְP2ֹP3וּ",
+   "יִP1ְP2ָּP3וּ",
    "יִP1ְP2ָּP3וּן"
   ]
  },
@@ -7994,17 +8561,21 @@
   "variants": []
  },
  "strong|qal|impv|p2|f|sg": {
-  "count": 9,
-  "lexemes": 4,
+  "count": 10,
+  "lexemes": 5,
   "template": "P1ִP2ְP3ִי",
-  "variants": []
+  "variants": [
+   "P1P2וP3י",
+   "P1ָP2ְP3ִי"
+  ]
  },
  "strong|qal|impv|p2|m|pl": {
-  "count": 58,
-  "lexemes": 21,
+  "count": 67,
+  "lexemes": 26,
   "template": "P1ִP2ְP3וּ",
   "variants": [
-   "P1ְP2ֹP3וּ"
+   "P1ְP2ֹP3וּ",
+   "P1ָP2ְP3וּ"
   ]
  },
  "strong|qal|impv|p2|m|sg": {
@@ -8036,8 +8607,8 @@
   ]
  },
  "strong|qal|juss|p2|f|sg": {
-  "count": 3,
-  "lexemes": 3,
+  "count": 4,
+  "lexemes": 4,
   "template": "תִּP1ְP2ְּP3ִי",
   "variants": []
  },
@@ -8068,9 +8639,9 @@
   ]
  },
  "strong|qal|juss|p3|m|pl": {
-  "count": 68,
-  "lexemes": 24,
-  "template": "יִּP1ְP2ְּP3וּ",
+  "count": 74,
+  "lexemes": 31,
+  "template": "יִּP1ְP2ְP3וּ",
   "variants": [
    "יִּP1ְP2ָּP3וּ"
   ]
@@ -8086,26 +8657,26 @@
   ]
  },
  "strong|qal|perf|p1|c|pl": {
-  "count": 6,
-  "lexemes": 5,
+  "count": 7,
+  "lexemes": 6,
   "template": "P1ָP2ַP3ְנוּ",
   "variants": [
    "P1ָP2ָֽP3ְנוּ"
   ]
  },
  "strong|qal|perf|p1|c|sg": {
-  "count": 79,
-  "lexemes": 30,
+  "count": 112,
+  "lexemes": 40,
   "template": "P1ָP2ַP3ְתִּי",
   "variants": [
    "P1ָP2ָֽP3ְתִּי",
-   "P1ָּP2ַP3ִּי",
-   "P1ָP2ֹP3ְתִּי"
+   "P1ָP2ֹP3ְתִּי",
+   "P1ָּP2ַP3ִּי"
   ]
  },
  "strong|qal|perf|p2|f|sg": {
-  "count": 6,
-  "lexemes": 4,
+  "count": 9,
+  "lexemes": 6,
   "template": "P1ָP2ַP3ְתְּ",
   "variants": [
    "P1P2P3תי",
@@ -8114,24 +8685,24 @@
   ]
  },
  "strong|qal|perf|p2|m|pl": {
-  "count": 53,
-  "lexemes": 14,
+  "count": 54,
+  "lexemes": 15,
   "template": "P1ְP2ַP3ְתֶּם",
   "variants": []
  },
  "strong|qal|perf|p2|m|sg": {
-  "count": 63,
-  "lexemes": 22,
+  "count": 86,
+  "lexemes": 34,
   "template": "P1ָP2ַP3ְתָּ",
   "variants": [
-   "P1ָP2ָP3ְתָּ",
    "P1ָP2ַP3ְתָּה",
+   "P1ָP2ָP3ְתָּ",
    "P1ָP2ָP3ָּ"
   ]
  },
  "strong|qal|perf|p3|f|sg": {
-  "count": 29,
-  "lexemes": 15,
+  "count": 37,
+  "lexemes": 22,
   "template": "P1ָP2ְP3ָה",
   "variants": [
    "P1ָP2ָP3ָה",
@@ -8139,13 +8710,13 @@
   ]
  },
  "strong|qal|perf|p3|m|pl": {
-  "count": 99,
-  "lexemes": 39,
+  "count": 145,
+  "lexemes": 56,
   "template": "P1ָP2ְP3וּ",
   "variants": [
    "P1ָP2ָP3וּ",
    "P1ָP2ֵֽP3וּ",
-   "P1P2P3ו"
+   "P1P2P3ה"
   ]
  },
  "strong|qal|perf|p3|m|sg": {
@@ -8159,29 +8730,31 @@
   ]
  },
  "strong|qal|ptca|f|pl": {
-  "count": 2,
-  "lexemes": 2,
-  "template": "P1ֹּP2ְP3ֹות",
-  "variants": []
+  "count": 5,
+  "lexemes": 3,
+  "template": "P1ֹP2ְP3ֹות",
+  "variants": [
+   "P1ֹP2ֵP3ֹֽות"
+  ]
  },
  "strong|qal|ptca|f|sg": {
-  "count": 8,
-  "lexemes": 6,
+  "count": 16,
+  "lexemes": 10,
   "template": "P1ֹP2ֶP3ֶת",
   "variants": [
    "P1ֹP2ְP3ָה",
-   "P1ֹּֽP2ֵP3ָה",
-   "P1ֹP2ָֽP3ֶת"
+   "P1ֹP2ֵP3ָה",
+   "P1P2P3תי"
   ]
  },
  "strong|qal|ptca|m|pl": {
-  "count": 47,
-  "lexemes": 21,
+  "count": 62,
+  "lexemes": 30,
   "template": "P1ֹP2ְP3ִים",
   "variants": [
    "P1ֹP2ְP3ֵי",
-   "P1ֹP2ְמִיP3",
-   "P1ֹֽוP2ֵמִיP3"
+   "P1ְּP2וּP3ֵי",
+   "P1ֹֽוP2ֵP3ִין"
   ]
  },
  "strong|qal|ptca|m|sg": {
@@ -8190,35 +8763,35 @@
   "template": "P1ֹP2ֵP3",
   "variants": [
    "P1ֹP2ֵP3ְ",
-   "P1ֹּP2ְP3ִי",
+   "P1ֹP2ְP3ִי",
    "P1ֹּוP2ִיP3ְ"
   ]
  },
  "strong|qal|ptcp|f|pl": {
-  "count": 3,
-  "lexemes": 3,
+  "count": 4,
+  "lexemes": 4,
   "template": "P1ְּP2ֻP3ֹות",
   "variants": [
    "P1ְּP2וּP3ֹות"
   ]
  },
  "strong|qal|ptcp|f|sg": {
-  "count": 19,
-  "lexemes": 7,
+  "count": 31,
+  "lexemes": 14,
   "template": "P1ְP2וּP3ָה",
   "variants": [
-   "P1ְּP2ֻֽP3ְתִי",
-   "P1ְP2ֻP3ָה"
+   "P1ְP2ֻP3ָה",
+   "P1ְּP2ֻֽP3ְתִי"
   ]
  },
  "strong|qal|ptcp|m|pl": {
-  "count": 13,
-  "lexemes": 5,
+  "count": 18,
+  "lexemes": 8,
   "template": "P1ְP2וּP3ֵי",
   "variants": [
-   "P1ְּP2וּP3ִים",
+   "P1ְP2וּP3ִים",
    "P1ְּP2ֻP3ִים",
-   "P1ְP2ֻמִיP3"
+   "P1ְP2ֻP3ֵי"
   ]
  },
  "strong|qal|ptcp|m|sg": {
