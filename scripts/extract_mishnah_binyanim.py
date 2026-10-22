@@ -135,11 +135,23 @@ def root_forms(code, root, category):
     from bhsa_grammar.binyan_gen import (generate_binyan_paradigm,
                                          generate_binyan_non_finite)
     out = set()
-    for forms in generate_binyan_paradigm(code, root, category).values():
+    for key, forms in generate_binyan_paradigm(code, root, category).items():
+        if key == "variants":
+            # Variantes attestées par cellule : {tense: {cell: [formes]}}.
+            for cells in forms.values():
+                for cell_forms in cells.values():
+                    for f in cell_forms:
+                        out.add(normalize_vocal(f))
+            continue
         for f in forms.values():
             if f:
                 out.add(normalize_vocal(f))
-    for f in generate_binyan_non_finite(code, root, category).values():
+    for key, f in generate_binyan_non_finite(code, root, category).items():
+        if key == "variants":
+            for cell_forms in f.values():
+                for v in cell_forms:
+                    out.add(normalize_vocal(v))
+            continue
         if f:
             out.add(normalize_vocal(f))
     return out

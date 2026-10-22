@@ -101,6 +101,13 @@ def build_parser():
              "modern_binyanim.json), avec lemme et sens.",
     )
     p.add_argument(
+        "--no-variants",
+        action="store_true",
+        help="En mode --binyanim, n'affiche que la forme dominante de "
+             "chaque cellule (par défaut : toutes les conjuguaisons "
+             "concurrentes attestées, ex. qal yiqtol 1cs אֶקְטֹל / אֶקְטַל).",
+    )
+    p.add_argument(
         "--file",
         help="Fichier contenant un mot/ligne (--word/--binyanim) ou une phrase/ligne (--phrase).",
     )
@@ -334,7 +341,8 @@ def main(argv=None):
             if len(verbs) > 1:
                 print(f"\n{'='*20} Verbe {i+1}/{len(verbs)} : {w} {'='*20}")
             analysis = analyze_binyanim(F, w, use_mishnah=args.mishna_binyanim,
-                                        use_modern=args.modern_binyanim)
+                                        use_modern=args.modern_binyanim,
+                                        with_variants=not args.no_variants)
             if analysis["found"]:
                 any_found = True
             if args.format == "json":

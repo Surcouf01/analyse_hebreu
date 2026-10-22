@@ -316,24 +316,31 @@ _NIKKUD = {
 # combinantes (nikkud/dagesh) sont portées par un cercle pointillé (U+25CC ◌),
 # convention standard pour afficher un signe diacritique isolé.
 _CARRIER = "\u25CC"
+# Cependant, selon la police du clavier (font.output.family), le moteur
+# de rendu ne sait pas toujours attacher la marque au cercle pointillé :
+# il la dessine alors sur son propre cercle de repli, et la touche
+# affiche DEUX cercles. Un porteur consonantique hébreu (comme ש pour
+# les points shin/sin) est attaché de façon fiable par toute police
+# supportant l'hébreu.
+_NIKKUD_CARRIER = "\u05D0"   # א
 NIKKUD_LABELS = {
-    "qamats": _CARRIER + "\u05B8",
-    "patach": _CARRIER + "\u05B7",
-    "segol": _CARRIER + "\u05B6",
-    "tsere": _CARRIER + "\u05B5",
-    "hireq": _CARRIER + "\u05B4",
-    "holem": _CARRIER + "\u05B9",
-    "qubuts": _CARRIER + "\u05BB",
-    "sheva": _CARRIER + "\u05B0",
-    "dagesh": _CARRIER + "\u05BC",
-    "qamats_qatan": _CARRIER + "\u05C7",
+    "qamats": _NIKKUD_CARRIER + "\u05B8",
+    "patach": _NIKKUD_CARRIER + "\u05B7",
+    "segol": _NIKKUD_CARRIER + "\u05B6",
+    "tsere": _NIKKUD_CARRIER + "\u05B5",
+    "hireq": _NIKKUD_CARRIER + "\u05B4",
+    "holem": _NIKKUD_CARRIER + "\u05B9",
+    "qubuts": _NIKKUD_CARRIER + "\u05BB",
+    "sheva": _NIKKUD_CARRIER + "\u05B0",
+    "dagesh": _NIKKUD_CARRIER + "\u05BC",
+    "qamats_qatan": _NIKKUD_CARRIER + "\u05C7",
     # Points de shin/sin.
     "shin_dot": "\u05E9\u05C1",
     "sin_dot": "\u05E9\u05C2",
     # Ratafim (hateph) : voyelles ultracourtes.
-    "hateph_segol": _CARRIER + "\u05B1",
-    "hateph_patach": _CARRIER + "\u05B2",
-    "hateph_qamats": _CARRIER + "\u05B3",
+    "hateph_segol": _NIKKUD_CARRIER + "\u05B1",
+    "hateph_patach": _NIKKUD_CARRIER + "\u05B2",
+    "hateph_qamats": _NIKKUD_CARRIER + "\u05B3",
 }
 
 # Points-voyelles répartis sur deux rangées : voyelles principales, puis
@@ -366,7 +373,7 @@ class BinyanimNotebook(ttk.Frame):
 
     Contrairement à ttk.Notebook, chaque titre d'onglet est un tk.Label :
     son libellé peut être coloré individuellement (rouge pour un binyan
-    qui n'a pas de sens pour la racine analysée, orange pour un binyan
+    qui n'a pas de sens pour la racine analysée, jaune pour un binyan
     attesté dans la Mishna mais absent de la Bible, vert pour un binyan
     attesté en hébreu moderne — Pealim — mais absent de la Bible), ce que l'API
     ttk.Notebook ne permet pas.
@@ -379,7 +386,7 @@ class BinyanimNotebook(ttk.Frame):
     _FG_ACTIVE = "black"
     _FG_INACTIVE = "gray40"
     _FG_MISSING = "#b00020"
-    _FG_MISHNAH = "#c06000"
+    _FG_MISHNAH = "#b8a000"
     _FG_MODERN = "#007000"
 
     def __init__(self, parent, **kwargs):
@@ -2308,7 +2315,7 @@ class AnalyseurGUI:
         ttk.Radiobutton(opts, text="JSON", variable=self.binyanim_format,
                         value="json").pack(side="left")
         # Les libellés des deux cases reprennent la couleur que prend
-        # l'onglet d'un binyan attesté dans ce corpus : orange pour la
+        # l'onglet d'un binyan attesté dans ce corpus : jaune pour la
         # Mishna, vert pour l'hébreu moderne (cf. BinyanimNotebook).
         # La couleur passe par des styles dédiés : selon le thème ttk
         # (ex. « vista » sous Windows), l'option -foreground est
@@ -2331,6 +2338,15 @@ class AnalyseurGUI:
         ttk.Checkbutton(opts, text="Binyanim modernes (Pealim)",
                         variable=self.binyanim_use_modern,
                         style="BinyanimModern.TCheckbutton").pack(
+                            side="left", padx=(8, 0))
+        # Variantes attestées par cellule : toutes les conjuguaisons
+        # concurrentes (ex. qal yiqtol 1cs אֶקְטֹל / אֶקְטַל) ou la forme
+        # dominante seule.
+        self.binyanim_use_variants = tk.BooleanVar(
+            value=_PROPS.get("binyanim.variants", "true").strip().lower()
+            == "true")
+        ttk.Checkbutton(opts, text="Toutes les formes attestées",
+                        variable=self.binyanim_use_variants).pack(
                             side="left", padx=(8, 0))
 
         self.btn_binyanim = ttk.Button(tab, text="Conjuguer le verbe",
@@ -2387,13 +2403,16 @@ class AnalyseurGUI:
         fmt = self.binyanim_format.get()
         use_mishnah = bool(self.binyanim_use_mishnah.get())
         use_modern = bool(self.binyanim_use_modern.get())
+        use_variants = bool(getattr(self, "binyanim_use_variants", None)
+                            and self.binyanim_use_variants.get())
         F = self.api.F
         self._disable_buttons()
         self.status.configure(text=f"Conjugaison de « {form} »…")
 
         def worker():
             analysis = analyze_binyanim(F, form, use_mishnah=use_mishnah,
-                                        use_modern=use_modern)
+                                        use_modern=use_modern,
+                                        with_variants=use_variants)
             if not analysis.get("found"):
                 verb = analysis.get("verb", {})
                 reason = verb.get("reason") or analysis.get("reason")
@@ -2456,7 +2475,7 @@ class AnalyseurGUI:
         pour ce lemme dans la Bible hébraïque), le libellé de l'onglet est
         coloré en rouge et l'onglet affiche un avertissement. Si des formes
         de ce binyan sont attestées dans la Mishna (option « Binyanim
-        mishnaïques »), le libellé passe en orange et l'avertissement
+        mishnaïques »), le libellé passe en jaune et l'avertissement
         mentionne ces formes. Si le binyan est attesté en hébreu moderne
         (option « Binyanim modernes », dictionnaire Pealim) mais absent
         de la Bible, le libellé passe en vert et l'avertissement mentionne
@@ -3230,6 +3249,10 @@ def _save_all_preferences(root):
         if modern is not None:
             updates["binyanim.modern"] = ("true" if modern.get()
                                           else "false")
+        variants = getattr(gui, "binyanim_use_variants", None)
+        if variants is not None:
+            updates["binyanim.variants"] = ("true" if variants.get()
+                                            else "false")
     if updates:
         _save_properties(root, updates)
 
