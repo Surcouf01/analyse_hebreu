@@ -316,24 +316,31 @@ _NIKKUD = {
 # combinantes (nikkud/dagesh) sont portées par un cercle pointillé (U+25CC ◌),
 # convention standard pour afficher un signe diacritique isolé.
 _CARRIER = "\u25CC"
+# Cependant, selon la police du clavier (font.output.family), le moteur
+# de rendu ne sait pas toujours attacher la marque au cercle pointillé :
+# il la dessine alors sur son propre cercle de repli, et la touche
+# affiche DEUX cercles. Un porteur consonantique hébreu (comme ש pour
+# les points shin/sin) est attaché de façon fiable par toute police
+# supportant l'hébreu.
+_NIKKUD_CARRIER = "\u05D0"   # א
 NIKKUD_LABELS = {
-    "qamats": _CARRIER + "\u05B8",
-    "patach": _CARRIER + "\u05B7",
-    "segol": _CARRIER + "\u05B6",
-    "tsere": _CARRIER + "\u05B5",
-    "hireq": _CARRIER + "\u05B4",
-    "holem": _CARRIER + "\u05B9",
-    "qubuts": _CARRIER + "\u05BB",
-    "sheva": _CARRIER + "\u05B0",
-    "dagesh": _CARRIER + "\u05BC",
-    "qamats_qatan": _CARRIER + "\u05C7",
+    "qamats": _NIKKUD_CARRIER + "\u05B8",
+    "patach": _NIKKUD_CARRIER + "\u05B7",
+    "segol": _NIKKUD_CARRIER + "\u05B6",
+    "tsere": _NIKKUD_CARRIER + "\u05B5",
+    "hireq": _NIKKUD_CARRIER + "\u05B4",
+    "holem": _NIKKUD_CARRIER + "\u05B9",
+    "qubuts": _NIKKUD_CARRIER + "\u05BB",
+    "sheva": _NIKKUD_CARRIER + "\u05B0",
+    "dagesh": _NIKKUD_CARRIER + "\u05BC",
+    "qamats_qatan": _NIKKUD_CARRIER + "\u05C7",
     # Points de shin/sin.
     "shin_dot": "\u05E9\u05C1",
     "sin_dot": "\u05E9\u05C2",
     # Ratafim (hateph) : voyelles ultracourtes.
-    "hateph_segol": _CARRIER + "\u05B1",
-    "hateph_patach": _CARRIER + "\u05B2",
-    "hateph_qamats": _CARRIER + "\u05B3",
+    "hateph_segol": _NIKKUD_CARRIER + "\u05B1",
+    "hateph_patach": _NIKKUD_CARRIER + "\u05B2",
+    "hateph_qamats": _NIKKUD_CARRIER + "\u05B3",
 }
 
 # Points-voyelles répartis sur deux rangées : voyelles principales, puis
