@@ -413,6 +413,15 @@ def _piel_perf(p1, p2, p3):
 
 
 def _piel_impf(p1, p2, p3):
+    """Imparfait piel.
+
+    Le sheva du préfixe personnel (תְּ, יְ, נְ) est simple : la 1re
+    radicale ne porte PAS de dagesh — même begadkefat (תְּדַבֵּרִי,
+    יְבָרֵךְ, אֲדַבֵּר ; la BHSA n'atteste aucun dagesh sur P1 dans
+    les 492 formes de piel impf à P1 begadkefat, y compris après le
+    hatef de la 1re personne). Le dagesh fort du piel est sur P2
+    (redoublement), pas sur P1.
+    """
     out = {}
     for key, (pref, _) in IMPF_PREF.items():
         if key[0] == "p1" and key[2] == "sg":
@@ -420,21 +429,21 @@ def _piel_impf(p1, p2, p3):
         elif key[0] == "p1" and key[2] == "pl":
             out[key] = NUN + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3
         elif key[0] == "p2" and key[1] == "f" and key[2] == "sg":
-            out[key] = TAV + SHEVA + DAGESH + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3 + HIREQ + YOD
+            out[key] = TAV + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3 + HIREQ + YOD
         elif key[0] == "p2" and key[1] == "f" and key[2] == "pl":
-            out[key] = TAV + SHEVA + DAGESH + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
+            out[key] = TAV + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
         elif key[0] == "p3" and key[1] == "f" and key[2] == "pl":
-            out[key] = TAV + SHEVA + DAGESH + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
+            out[key] = TAV + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
         elif key[0] == "p2" and key[1] == "m" and key[2] == "sg":
-            out[key] = TAV + SHEVA + DAGESH + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3
+            out[key] = TAV + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3
         elif key[0] == "p2" and key[1] == "m" and key[2] == "pl":
-            out[key] = TAV + SHEVA + DAGESH + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + SHUREQ
+            out[key] = TAV + SHEVA + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + SHUREQ
         elif key[0] == "p3" and key[1] == "m" and key[2] == "sg":
             out[key] = YOD + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3
         elif key[0] == "p3" and key[1] == "m" and key[2] == "pl":
             out[key] = YOD + SHEVA + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + SHUREQ
         elif key[0] == "p3" and key[1] == "f" and key[2] == "sg":
-            out[key] = TAV + SHEVA + DAGESH + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3
+            out[key] = TAV + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3
         else:
             out[key] = ""
     return out
@@ -479,6 +488,9 @@ def _pual_perf(p1, p2, p3):
     }
 
 def _pual_impf(p1, p2, p3):
+    """Imparfait pual : pas de dagesh sur P1 (cf. _piel_impf ; la BHSA
+    n'en atteste aucune sur les 37 formes à P1 begadkefat : תְּבֻשַּׁל,
+    יְכֻפַּר...)."""
     out = {}
     for key, (pref, _) in IMPF_PREF.items():
         if key[0] == "p1" and key[2] == "sg":
@@ -486,21 +498,21 @@ def _pual_impf(p1, p2, p3):
         elif key[0] == "p1" and key[2] == "pl":
             out[key] = NUN + SHEVA + p1 + QUBUTS + p2 + PATAH + DAGESH + p3
         elif key[0] == "p2" and key[1] == "f" and key[2] == "sg":
-            out[key] = TAV + SHEVA + DAGESH + p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + HIREQ + YOD
+            out[key] = TAV + SHEVA + p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + HIREQ + YOD
         elif key[0] == "p2" and key[1] == "f" and key[2] == "pl":
-            out[key] = TAV + SHEVA + DAGESH + p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
+            out[key] = TAV + SHEVA + p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
         elif key[0] == "p3" and key[1] == "f" and key[2] == "pl":
-            out[key] = TAV + SHEVA + DAGESH + p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
+            out[key] = TAV + SHEVA + p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
         elif key[0] == "p2" and key[1] == "m" and key[2] == "sg":
-            out[key] = TAV + SHEVA + DAGESH + p1 + QUBUTS + p2 + PATAH + DAGESH + p3
+            out[key] = TAV + SHEVA + p1 + QUBUTS + p2 + PATAH + DAGESH + p3
         elif key[0] == "p2" and key[1] == "m" and key[2] == "pl":
-            out[key] = TAV + SHEVA + DAGESH + p1 + QUBUTS + p2 + SHEVA + DAGESH + p3 + SHUREQ
+            out[key] = TAV + SHEVA + p1 + QUBUTS + p2 + SHEVA + DAGESH + p3 + SHUREQ
         elif key[0] == "p3" and key[1] == "m" and key[2] == "sg":
             out[key] = YOD + SHEVA + p1 + QUBUTS + p2 + PATAH + DAGESH + p3
         elif key[0] == "p3" and key[1] == "m" and key[2] == "pl":
             out[key] = YOD + SHEVA + p1 + QUBUTS + p2 + SHEVA + DAGESH + p3 + SHUREQ
         elif key[0] == "p3" and key[1] == "f" and key[2] == "sg":
-            out[key] = TAV + SHEVA + DAGESH + p1 + QUBUTS + p2 + PATAH + DAGESH + p3
+            out[key] = TAV + SHEVA + p1 + QUBUTS + p2 + PATAH + DAGESH + p3
         else:
             out[key] = ""
     return out
@@ -645,13 +657,22 @@ def _hif_perf(p1, p2, p3):
 
 
 def _hif_impf(p1, p2, p3):
+    """Imparfait hifil.
+
+    Le dagesh lene du préfixe porte sur le ת/נ/... du préfixe
+    (תַּדַבֵּרִי-type), jamais sur P1 : la BHSA n'atteste
+    aucun dagesh sur P1 dans les 369 formes de hifil impf à P1
+    begadkefat (יַפְקֵד, תַּדֵשׁא, תַּבִיא…).
+    """
     out = {}
     for key, (pref, dash) in IMPF_PREF.items():
         if key[0] == "p1" and key[2] == "sg":
-            out[key] = ALEF + PATAH + DAGESH + p1 + SHEVA + p2 + HIREQ + YOD + p3
+            out[key] = ALEF + PATAH + p1 + SHEVA + p2 + HIREQ + YOD + p3
         elif key[0] == "p1" and key[2] == "pl":
-            out[key] = NUN + PATAH + DAGESH + p1 + SHEVA + p2 + HIREQ + YOD + p3
+            out[key] = NUN + PATAH + p1 + SHEVA + p2 + HIREQ + YOD + p3
         elif key[0] == "p2" and key[1] == "f" and key[2] == "sg":
+            # Dagesh lene sur le ת du préfixe (תַּ), pas sur P1 :
+            # la BHSA n'atteste pas de dagesh sur P1 (יַפְקֵד, תַּדֵשׁא).
             out[key] = TAV + PATAH + DAGESH + p1 + SHEVA + p2 + HIREQ + YOD + p3 + HIREQ + YOD
         elif key[0] in ("p2", "p3") and key[2] == "pl" and key[1] == "f":
             out[key] = TAV + PATAH + DAGESH + p1 + SHEVA + p2 + HIREQ + YOD + p3 + SHEVA + NUN + QAMATS + HE
@@ -1272,6 +1293,15 @@ def _render(template, root, category, vs=None):
             if letter not in BEGADKEFAT:
                 template = template.replace(ph + SHEVA + DAGESH,
                                             ph + SHEVA)
+                # Daguesh lene après toute voyelle de la radicale
+                # (patah du piel : תְּP1ַּP2ֵּP3 issu de תְּבַקֵּשׁ) :
+                # illégitime pour une radicale non begadkefat
+                # (תְּדַבֵּר, pas תְּדַּבֵּר).
+                for vow in (PATAH, SEGOL, QAMATS, TSERE, HIREQ,
+                            HOLAM, QUBUTS, HATAF_QAMATS, HATEF_PATAH,
+                            HATEF_SEGOL):
+                    template = template.replace(ph + vow + DAGESH,
+                                                ph + vow)
     out = template
     for ph, letter in mapping.items():
         out = out.replace(ph, letter)
