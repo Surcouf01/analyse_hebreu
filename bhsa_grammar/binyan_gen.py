@@ -240,8 +240,16 @@ S_PERF = {
     ("p2", "m", "sg"): SHEVA + TAV + QAMATS + DAGESH,
     ("p2", "f", "sg"): SHEVA + TAV + SHEVA + DAGESH,
     ("p1", "c", "sg"): SHEVA + TAV + HIREQ + YOD,
+    # Parfait 3e pers. pl. : la BHSA ne connaît qu'une seule forme,
+    # commune aux masculin et féminin, en -ּוּ (shureq ; les 2756
+    # parfaites qal 3pl de la base sont toutes en -וּ, genre
+    # « unknown »). La terminaison féminine -ָה (qatlāh) ne survit
+    # qu'aux personnes du singulier ; au pluriel du parfait, l'hébreu
+    # biblique emploie la forme commune (Gesenius §44g, §47k).
+    # La 3fp distincte n'existe qu'à l'imparfait/jussif
+    # (תִּכְתֹּבְנָה).
     ("p3", "m", "pl"): SHUREQ,
-    ("p3", "f", "pl"): QAMATS + HE,
+    ("p3", "f", "pl"): SHUREQ,
     ("p2", "m", "pl"): SHEVA + TAV + SEGOL + DAGESH + END_MEM,
     ("p2", "f", "pl"): TAV + SEGOL + DAGESH + END_NUN,
     ("p1", "c", "pl"): SHEVA + NUN + SHUREQ,
@@ -281,7 +289,8 @@ def _qal_perf(p1, p2, p3):
         ("p2", "f", "sg"): p1 + QAMATS + p2 + PATAH + p3 + S_PERF[("p2", "f", "sg")],
         ("p1", "c", "sg"): p1 + QAMATS + p2 + PATAH + p3 + S_PERF[("p1", "c", "sg")],
         ("p3", "m", "pl"): p1 + QAMATS + p2 + SHEVA + p3 + SHUREQ,
-        ("p3", "f", "pl"): p1 + QAMATS + p2 + SHEVA + p3 + QAMATS + HE,
+        # 3fp = forme commune en -ו׼ (cf. S_PERF).
+        ("p3", "f", "pl"): p1 + QAMATS + p2 + SHEVA + p3 + SHUREQ,
         ("p2", "m", "pl"): p1 + SHEVA + p2 + PATAH + p3 + S_PERF[("p2", "m", "pl")],
         ("p2", "f", "pl"): p1 + SHEVA + p2 + PATAH + p3 + S_PERF[("p2", "f", "pl")],
         ("p1", "c", "pl"): p1 + QAMATS + p2 + PATAH + p3 + S_PERF[("p1", "c", "pl")],
@@ -333,7 +342,8 @@ def _nif_perf(p1, p2, p3):
         ("p2", "f", "sg"): NUN + HIREQ + p1 + SHEVA + p2 + PATAH + DAGESH + p3 + S_PERF[("p2", "f", "sg")],
         ("p1", "c", "sg"): NUN + HIREQ + p1 + SHEVA + p2 + PATAH + DAGESH + p3 + S_PERF[("p1", "c", "sg")],
         ("p3", "m", "pl"): NUN + HIREQ + p1 + SHEVA + p2 + SHEVA + p3 + SHUREQ,
-        ("p3", "f", "pl"): NUN + HIREQ + p1 + SHEVA + p2 + SHEVA + p3 + QAMATS + HE,
+        # 3fp = forme commune en -ו׼ (cf. S_PERF).
+        ("p3", "f", "pl"): NUN + HIREQ + p1 + SHEVA + p2 + SHEVA + p3 + SHUREQ,
         ("p2", "m", "pl"): NUN + HIREQ + p1 + SHEVA + p2 + PATAH + DAGESH + p3 + S_PERF[("p2", "m", "pl")],
         ("p2", "f", "pl"): NUN + HIREQ + p1 + SHEVA + p2 + PATAH + DAGESH + p3 + S_PERF[("p2", "f", "pl")],
         ("p1", "c", "pl"): NUN + HIREQ + p1 + SHEVA + p2 + PATAH + DAGESH + p3 + S_PERF[("p1", "c", "pl")],
@@ -393,7 +403,9 @@ def _piel_perf(p1, p2, p3):
         ("p2", "f", "sg"): p1 + HIREQ + DAGESH + p2 + SEGOL + DAGESH + p3 + S_PERF[("p2", "f", "sg")],
         ("p1", "c", "sg"): p1 + HIREQ + DAGESH + p2 + SEGOL + DAGESH + p3 + S_PERF[("p1", "c", "sg")],
         ("p3", "m", "pl"): p1 + HIREQ + DAGESH + p2 + SHEVA + DAGESH + p3 + SHUREQ,
-        ("p3", "f", "pl"): p1 + HIREQ + DAGESH + p2 + SHEVA + DAGESH + p3 + QAMATS + HE,
+        # 3fp = forme commune en -וּ (cf. S_PERF) : le parfait 3fp
+        # biblique n'a pas de terminaison propre.
+        ("p3", "f", "pl"): p1 + HIREQ + DAGESH + p2 + SHEVA + DAGESH + p3 + SHUREQ,
         ("p2", "m", "pl"): p1 + HIREQ + DAGESH + p2 + SEGOL + DAGESH + p3 + S_PERF[("p2", "m", "pl")],
         ("p2", "f", "pl"): p1 + HIREQ + DAGESH + p2 + SEGOL + DAGESH + p3 + S_PERF[("p2", "f", "pl")],
         ("p1", "c", "pl"): p1 + HIREQ + DAGESH + p2 + SEGOL + DAGESH + p3 + S_PERF[("p1", "c", "pl")],
@@ -459,7 +471,8 @@ def _pual_perf(p1, p2, p3):
         ("p2", "f", "sg"): p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + S_PERF[("p2", "f", "sg")],
         ("p1", "c", "sg"): p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + S_PERF[("p1", "c", "sg")],
         ("p3", "m", "pl"): p1 + QUBUTS + p2 + SHEVA + DAGESH + p3 + SHUREQ,
-        ("p3", "f", "pl"): p1 + QUBUTS + p2 + SHEVA + DAGESH + p3 + QAMATS + HE,
+        # 3fp = forme commune en -וּ (cf. S_PERF).
+        ("p3", "f", "pl"): p1 + QUBUTS + p2 + SHEVA + DAGESH + p3 + SHUREQ,
         ("p2", "m", "pl"): p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + S_PERF[("p2", "m", "pl")],
         ("p2", "f", "pl"): p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + S_PERF[("p2", "f", "pl")],
         ("p1", "c", "pl"): p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + S_PERF[("p1", "c", "pl")],
@@ -623,10 +636,9 @@ def _hif_perf(p1, p2, p3):
             out[key] = base + HIREQ + YOD + p3
         elif key == ("p3", "f", "sg"):
             out[key] = base + HIREQ + YOD + p3 + QAMATS + HE
-        elif key[2] == "pl" and key[0] == "p3" and key[1] == "m":
+        elif key[2] == "pl" and key[0] == "p3":
+            # 3mp et 3fp : forme commune en -וּ (cf. S_PERF).
             out[key] = base + HIREQ + YOD + p3 + SHUREQ
-        elif key[2] == "pl" and key[0] == "p3" and key[1] == "f":
-            out[key] = base + HIREQ + YOD + p3 + QAMATS + HE
         else:
             out[key] = HE + HIREQ + p1 + SHEVA + p2 + PATAH + p3 + end
     return out
@@ -1357,7 +1369,8 @@ def _hitpolel_perf(p1, p3):
             ("p2", "f", "sg"): pre + p3 + PATAH + p3 + SHEVA + TAV + SHEVA + DAGESH,
             ("p1", "c", "sg"): pre + p3 + PATAH + p3 + SHEVA + TAV + HIREQ + YOD,
             ("p3", "m", "pl"): pre + p3 + QAMATS + p3 + SHUREQ,
-            ("p3", "f", "pl"): pre + p3 + SHEVA + p3 + QAMATS + HE,
+            # 3fp = forme commune en -ו׼ (cf. S_PERF).
+            ("p3", "f", "pl"): pre + p3 + SHEVA + p3 + SHUREQ,
             ("p2", "m", "pl"): pre + p3 + PATAH + p3 + SHEVA + TAV + SEGOL + DAGESH + END_MEM,
             ("p2", "f", "pl"): pre + p3 + PATAH + p3 + SHEVA + TAV + SEGOL + DAGESH + END_NUN,
             ("p1", "c", "pl"): pre + p3 + PATAH + p3 + SHEVA + NUN + SHUREQ,
@@ -1441,7 +1454,8 @@ def _hif_hollow_perf(p1, p3):
         ("p2", "f", "sg"): pre_h + p3 + HOLAM + TAV + SHEVA + DAGESH,
         ("p1", "c", "sg"): pre_h + p3 + HOLAM + TAV + HIREQ + YOD,
         ("p3", "m", "pl"): pre + p3 + SHUREQ,
-        ("p3", "f", "pl"): pre + p3 + QAMATS + HE,
+        # 3fp = forme commune en -ו׼ (cf. S_PERF).
+        ("p3", "f", "pl"): pre + p3 + SHUREQ,
         ("p2", "m", "pl"): pre_h + p3 + HOLAM + TAV + SEGOL + DAGESH + END_MEM,
         ("p2", "f", "pl"): pre_h + p3 + HOLAM + TAV + SEGOL + DAGESH + END_NUN,
         ("p1", "c", "pl"): pre_h + p3 + HOLAM + NUN + SHUREQ,

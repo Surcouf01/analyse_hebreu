@@ -394,6 +394,37 @@ def main():
         failures.append(f"texte : variante absente de la ligne 1cs "
                         f"de l'imparfait : {line_1cs!r}")
 
+    # Parfait 3e pers. fém. pl. : la BHSA n'atteste AUCUNE forme de
+    # parfait 3fp en hébreu — les 2756 parfaites qal 3pl de la base
+    # sont toutes en -\u05d5\u05bc (shureq, genre « unknown », commun).
+    # La terminaison -\u05b8\u05d4 (qatl\u0101h) ne survit qu'au singulier ; au
+    # pluriel du parfait, l'hébreu biblique emploie la forme commune
+    # (Gesenius §44g, §47k). Le paradigme doit donc générer la 3fp
+    # IDENTIQUE à la 3mp (כָּתְבוּ), et non le théorique כָּתְבָה.
+    cell_3fp = ("p3", "f", "pl")
+    cell_3mp = ("p3", "m", "pl")
+    r_3fp = analyze_binyanim(F, "\u05DB\u05BC\u05B8\u05EA\u05B7\u05D1")
+    for b in r_3fp["binyanim"]:
+        fp = b["paradigm"]["perf"].get(cell_3fp, "")
+        mp = b["paradigm"]["perf"].get(cell_3mp, "")
+        if not fp:
+            continue
+        # La forme 3fp est COMMUNE (même terminaison -\u05d5\u05bc que la
+        # 3mp) ; les sources peuvent différer (gabarit BHSA vs builtin,
+        # orthographe du dagesh) — on compare les terminaisons.
+        if fp[-2:] != mp[-2:]:
+            failures.append(f"parfait 3fp {b['code']} : {fp!r} devrait "
+                            f"partager la terminaison de {mp!r} "
+                            f"(cf. S_PERF)")
+        if fp.endswith("\u05B8\u05D4"):
+            failures.append(f"parfait 3fp {b['code']} : terminaison "
+                            f"-\u05b8\u05d4 non biblique : {fp!r}")
+    # L'imparfait 3fp garde sa terminaison propre (תִּכְתֹּבְנָה).
+    impf_3fp = r_3fp["binyanim"][0]["paradigm"]["impf"].get(cell_3fp, "")
+    if impf_3fp and not impf_3fp.endswith("\u05E0\u05B8\u05D4"):
+        failures.append(f"imparfait 3fp qal : {impf_3fp!r} devrait "
+                        "se terminer en -\u05e0\u05b8\u05d4")
+
     if failures:
         print(f"ÉCHECS ({len(failures)}) :")
         for f in failures:
