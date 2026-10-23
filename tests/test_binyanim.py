@@ -394,6 +394,30 @@ def main():
         failures.append(f"texte : variante absente de la ligne 1cs "
                         f"de l'imparfait : {line_1cs!r}")
 
+    # Dagesh parasite sur P1 après le patah (piel/hitpael imparfait) : un
+    # signe combinant s'attache à la lettre PRÉCÉDENTE — p1 + PATAH +
+    # DAGESH + p2 posait le dagesh sur P1 (תְּדַּבֵּרִי). La BHSA
+    # n'atteste aucun dagesh sur P1 : תְּדַבֵּרִי (Ps 45:6, Jer 1:5),
+    # יְגַדֵּל, הִתְקַדָּשׁוּ. Le dagesh fort du piel reste sur P2 (בֵּ).
+    r_dbr = analyze_binyanim(F, "\u05D3\u05BC\u05B8\u05D1\u05B7\u05E8")
+    piel_dbr = [b for b in r_dbr["binyanim"] if b["code"] == "piel"][0]
+    form_2fs = piel_dbr["paradigm"]["impf"].get(("p2", "f", "sg"), "")
+    # le ד ne doit PAS porter de dagesh : דַּ interdit
+    import re as _re
+    if _re.search("\u05D3\u05B7\u05BC", form_2fs):
+        failures.append(f"piel impf 2fs : dagesh parasite sur P1 : "
+                        f"{form_2fs!r} (attendu \u05ea\u05b0\u05d3\u05b7\u05d1\u05b5\u05bc\u05e8\u05b4\u05d9)")
+    hit_dbr = [b for b in r_dbr["binyanim"] if b["code"] == "hit"][0]
+    form_hit = hit_dbr["paradigm"]["impf"].get(("p2", "f", "sg"), "")
+    if _re.search("\u05D3\u05B7\u05BC", form_hit):
+        failures.append(f"hit impf 2fs : dagesh parasite sur P1 : "
+                        f"{form_hit!r}")
+    # L'impératif piel garde le lene légitime sur P1 begadkefat : דַּבֵּר.
+    form_impv = piel_dbr["paradigm"]["impv"].get(("p2", "m", "sg"), "")
+    if "\u05D3\u05B7\u05BC\u05D1\u05B5\u05BC\u05E8" not in form_impv:
+        failures.append(f"piel impv 2ms : lene attendu sur le \u05d3 : "
+                        f"{form_impv!r}")
+
     # Parfait 3e pers. fém. pl. : la BHSA n'atteste AUCUNE forme de
     # parfait 3fp en hébreu — les 2756 parfaites qal 3pl de la base
     # sont toutes en -\u05d5\u05bc (shureq, genre « unknown », commun).

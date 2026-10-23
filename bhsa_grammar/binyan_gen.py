@@ -425,36 +425,40 @@ def _piel_impf(p1, p2, p3):
     out = {}
     for key, (pref, _) in IMPF_PREF.items():
         if key[0] == "p1" and key[2] == "sg":
-            out[key] = ALEF + HATAF_QAMATS + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3
+            out[key] = ALEF + HATAF_QAMATS + p1 + PATAH + p2 + TSERE + DAGESH + p3
         elif key[0] == "p1" and key[2] == "pl":
-            out[key] = NUN + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3
+            out[key] = NUN + SHEVA + p1 + PATAH + p2 + TSERE + DAGESH + p3
         elif key[0] == "p2" and key[1] == "f" and key[2] == "sg":
-            out[key] = TAV + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3 + HIREQ + YOD
+            out[key] = TAV + SHEVA + p1 + PATAH + p2 + TSERE + DAGESH + p3 + HIREQ + YOD
         elif key[0] == "p2" and key[1] == "f" and key[2] == "pl":
-            out[key] = TAV + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
+            out[key] = TAV + SHEVA + p1 + PATAH + p2 + TSERE + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
         elif key[0] == "p3" and key[1] == "f" and key[2] == "pl":
-            out[key] = TAV + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
+            out[key] = TAV + SHEVA + p1 + PATAH + p2 + TSERE + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
         elif key[0] == "p2" and key[1] == "m" and key[2] == "sg":
-            out[key] = TAV + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3
+            out[key] = TAV + SHEVA + p1 + PATAH + p2 + TSERE + DAGESH + p3
         elif key[0] == "p2" and key[1] == "m" and key[2] == "pl":
-            out[key] = TAV + SHEVA + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + SHUREQ
+            out[key] = TAV + SHEVA + p1 + PATAH + p2 + SHEVA + DAGESH + p3 + SHUREQ
         elif key[0] == "p3" and key[1] == "m" and key[2] == "sg":
-            out[key] = YOD + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3
+            out[key] = YOD + SHEVA + p1 + PATAH + p2 + TSERE + DAGESH + p3
         elif key[0] == "p3" and key[1] == "m" and key[2] == "pl":
-            out[key] = YOD + SHEVA + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + SHUREQ
+            out[key] = YOD + SHEVA + p1 + PATAH + p2 + SHEVA + DAGESH + p3 + SHUREQ
         elif key[0] == "p3" and key[1] == "f" and key[2] == "sg":
-            out[key] = TAV + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3
+            out[key] = TAV + SHEVA + p1 + PATAH + p2 + TSERE + DAGESH + p3
         else:
             out[key] = ""
     return out
 
 
 def _piel_impv(p1, p2, p3):
+    # Daguesh lene sur P1 (début de mot, après son patah) : légitime
+    # pour une begadkefat (דַּבֵּר, גַּרֵשׁ) ; la BHSA atteste aussi la
+    # graphie sans lene (דַבֵּר). Jamais sur une non-begadkefat.
+    dash = DAGESH if p1 in BEGADKEFAT else ""
     return {
-        ("p2", "m", "sg"): p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3,
-        ("p2", "f", "sg"): p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + HIREQ + YOD,
-        ("p2", "m", "pl"): p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + SHUREQ,
-        ("p2", "f", "pl"): p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3 + SHEVA + NUN + QAMATS + HE,
+        ("p2", "m", "sg"): p1 + PATAH + dash + p2 + TSERE + DAGESH + p3,
+        ("p2", "f", "sg"): p1 + PATAH + dash + p2 + SHEVA + DAGESH + p3 + HIREQ + YOD,
+        ("p2", "m", "pl"): p1 + PATAH + dash + p2 + SHEVA + DAGESH + p3 + SHUREQ,
+        ("p2", "f", "pl"): p1 + PATAH + dash + p2 + TSERE + DAGESH + p3 + SHEVA + NUN + QAMATS + HE,
     }
 
 
@@ -567,7 +571,7 @@ def _hit_perf(p1, p2, p3):
         stem3 = HE + HIREQ + pre + tav + p2 + TSERE + DAGESH + p3
         stem = HE + HIREQ + pre + tav + p2 + DAGESH + SHEVA + p3
     else:
-        stem3 = pre + p1 + PATAH + DAGESH + p2 + HIREQ + DAGESH + p3
+        stem3 = pre + p1 + PATAH + p2 + HIREQ + DAGESH + p3
         stem = stem3 + SHEVA
     out = {}
     for key, end in S_PERF.items():
@@ -586,9 +590,9 @@ def _hit_impf(p1, p2, p3):
     # (\u05d0\u05b6\u05e9\u05b0\u05c1\u05ea\u05b7\u05bc\u05de\u05b5\u05bc\u05e8) ; sans m\u00e9tath\u00e8se le pr\u00e9fixe
     # personnel s'attache directement \u00e0 \u05d4\u05b4\u05ea\u05b0 (\u05d9\u05b4\u05ea\u05b0\u05e7\u05b7\u05bc\u05d8\u05b5\u05bc\u05dc).
     stem_sg = (tav + p2 + TSERE + DAGESH + p3
-               if meta else TAV + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3)
+               if meta else TAV + SHEVA + p1 + PATAH + p2 + TSERE + DAGESH + p3)
     stem_pl = (tav + p2 + PATAH + DAGESH + p3 + SHEVA
-               if meta else TAV + SHEVA + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3)
+               if meta else TAV + SHEVA + p1 + PATAH + p2 + SHEVA + DAGESH + p3)
     out = {}
     for key, (pref, _) in IMPF_PREF.items():
         if key[0] == "p1" and key[2] == "sg":
@@ -598,13 +602,13 @@ def _hit_impf(p1, p2, p3):
         elif key[0] == "p2" and key[1] == "f" and key[2] == "sg":
             stem_fsg = (tav + p2 + PATAH + DAGESH + p3 + SHEVA + DAGESH
                         if meta
-                        else TAV + SHEVA + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3)
+                        else TAV + SHEVA + p1 + PATAH + p2 + SHEVA + DAGESH + p3)
             out[key] = (TAV + HIREQ + pre + stem_fsg + HIREQ + YOD if meta
                         else TAV + HIREQ + stem_fsg + HIREQ + YOD)
         elif key[0] in ("p2", "p3") and key[2] == "pl" and key[1] == "f":
             stem_fpl = (tav + p2 + PATAH + DAGESH + p3 + PATAH
                         if meta
-                        else TAV + SHEVA + p1 + PATAH + DAGESH + p2 + PATAH + p3)
+                        else TAV + SHEVA + p1 + PATAH + p2 + PATAH + p3)
             out[key] = (TAV + HIREQ + DAGESH + pre + stem_fpl + SHEVA + NUN + QAMATS + HE
                         if meta
                         else TAV + HIREQ + DAGESH + stem_fpl + SHEVA + NUN + QAMATS + HE)
@@ -624,11 +628,12 @@ def _hit_impv(p1, p2, p3):
             ("p2", "m", "pl"): HE + HIREQ + pre + tav + p2 + PATAH + DAGESH + p3 + SHEVA + SHUREQ,
             ("p2", "f", "pl"): HE + HIREQ + pre + tav + p2 + PATAH + DAGESH + p3 + PATAH + SHEVA + NUN + QAMATS + HE,
         }
+    dash = DAGESH if p1 in BEGADKEFAT else ""
     return {
-        ("p2", "m", "sg"): pre + p1 + PATAH + DAGESH + p2 + HIREQ + DAGESH + p3,
-        ("p2", "f", "sg"): pre + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + HIREQ + YOD,
-        ("p2", "m", "pl"): pre + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + SHUREQ,
-        ("p2", "f", "pl"): pre + p1 + PATAH + DAGESH + p2 + PATAH + p3 + SHEVA + NUN + QAMATS + HE,
+        ("p2", "m", "sg"): pre + p1 + PATAH + dash + p2 + HIREQ + DAGESH + p3,
+        ("p2", "f", "sg"): pre + p1 + PATAH + dash + p2 + SHEVA + DAGESH + p3 + HIREQ + YOD,
+        ("p2", "m", "pl"): pre + p1 + PATAH + dash + p2 + SHEVA + DAGESH + p3 + SHUREQ,
+        ("p2", "f", "pl"): pre + p1 + PATAH + dash + p2 + PATAH + p3 + SHEVA + NUN + QAMATS + HE,
     }
 
 
@@ -1330,7 +1335,13 @@ def _initial_dagesh(form):
     """Daguesh lene sur une begadkefat en début de mot (ex. כְּתֹב,
     כָּתַב) : les gabarits dominants, extraits de racines non
     begadkefat, ne le portent pas ; il est systématique en position
-    initiale. Idempotent."""
+    initiale. Idempotent.
+
+    Le daguesh est inséré APRÈS les signes vocaliques qui suivent la
+    consonne initiale (ordre canonique : lettre, voyelle, daguesh —
+    דַּבֵּר), pas entre la consonne et sa voyelle (דַּבֵּר), les deux
+    s'affichant identiquement mais seule la première étant canonique.
+    """
     if not form or form[0] not in BEGADKEFAT:
         return form
     i = 1
@@ -1338,7 +1349,7 @@ def _initial_dagesh(form):
         if form[i] == DAGESH:
             return form
         i += 1
-    return form[0] + DAGESH + form[1:]
+    return form[:i] + DAGESH + form[i:]
 
 
 def _elide_p3(template):
