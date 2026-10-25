@@ -2433,7 +2433,48 @@ class AnalyseurGUI:
                 return f"{m.group('book')} {m.group('ch')}:{m.group('v')}"
         return None
 
+    def _all_reference_pairs(self, text_widget):
+        """Tous les couples (forme, référence) du texte affiché.
+
+        Chaque ligne de paradigme portant une référence contient la
+        ou les formes puis « [Livre ch:v] » : « כָּתַב / כָּתָב  [Nombres
+        5:23] ». La première forme (la dominante) représente le couple.
+        """
+        import re
+        pairs = []
+        seen = set()
+        try:
+            content = text_widget.get("1.0", "end")
+        except tk.TclError:
+            return pairs
+        ref_re = re.compile(
+            r"\[(?P<book>[^\]]+?)\s(?P<ch>\d+)[:.](?P<v>\d+)\]")
+        for line in content.split("\n"):
+            m = ref_re.search(line.strip())
+            if not m:
+                continue
+            ref = f"{m.group('book')} {m.group('ch')}:{m.group('v')}"
+            # Forme : le premier mot hébreu de la partie avant la
+            # référence (après le libellé de personne).
+            before = line.split("[")[0].strip()
+            # Les clusters hébreu commencent après le libellé français
+            # (parenthèse fermante) ; à défaut, premier token non
+            # parenthésé.
+            he = ""
+            for tok in before.split():
+                if any("\u05D0" <= c <= "\u05EA" for c in tok):
+                    he = tok.split("/")[0].strip()
+                    break
+            key = (he, ref)
+            if key in seen:
+                continue
+            seen.add(key)
+            pairs.append((he, ref))
+        return pairs
+
     def _binyan_context_menu(self, event, text_widget):
+        import re
+        # Référence dans/autour de la sélection : une seule entrée.
         ref = self._find_reference_near(text_widget)
         # AnalyseurGUI n'est pas un widget Tk : le menu doit avoir un
         # parent réel, le widget de sortie lui-même.
@@ -2443,8 +2484,20 @@ class AnalyseurGUI:
                 label=f"Ouvrir le verset {ref}",
                 command=lambda r=ref: self._open_verse_reference(r))
         else:
-            menu.add_command(label="Aucune référence dans la sélection",
-                              state="disabled")
+            # Sans sélection (ou sélection sans référence) : lister
+            # tous les couples (forme, référence) du texte affiché.
+            pairs = self._all_reference_pairs(text_widget)
+            if pairs:
+                menu.add_command(label="Ouvrir le verset…", state="disabled")
+                for form, r in pairs:
+                    label = f"{form}  {r}" if form else r
+                    menu.add_command(
+                        label=label,
+                        command=lambda rr=r: self._open_verse_reference(rr))
+            else:
+                menu.add_command(
+                    label="Aucune référence dans la sélection",
+                    state="disabled")
         try:
             menu.tk_popup(event.x_root, event.y_root)
         finally:
