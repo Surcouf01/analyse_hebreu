@@ -2407,97 +2407,90 @@ class AnalyseurGUI:
         text.bind("<Shift-Button-3>", lambda e, t=text: self._binyan_context_menu(e, t))
         return text
 
-    def _find_reference_near(self, text_widget):
-        """Référence « [Livre ch:v] » dans la sélection ou la ligne du curseur."""
-        import re
-        try:
-            sel = text_widget.get("sel.first", "sel.last")
-        except tk.TclError:
-            sel = ""
-        candidates = [sel]
-        # Sans sélection : chercher sur la ligne du curseur (le clic
-        # droit place la marque insert au pointeur sous Linux ; sous
-        # Windows la sélection est préservée).
-        if not re.search(r"\[[^\]]+\s\d+[:.]\d+\]", sel):
-            for mark in ("insert", "current"):
-                try:
-                    line = text_widget.get(f"{mark} linestart",
-                                           f"{mark} lineend")
-                except tk.TclError:
-                    continue
-                candidates.append(line)
-        for chunk in candidates:
-            m = re.search(r"\[(?P<book>[^\]]+?)\s(?P<ch>\d+)[:.](?P<v>\d+)\]",
-                          chunk)
-            if m:
-                return f"{m.group('book')} {m.group('ch')}:{m.group('v')}"
-        return None
+    def _reference_pairs_in(self, chunk):
+        """Couples (forme, référence) d'un extrait de texte.
 
-    def _all_reference_pairs(self, text_widget):
-        """Tous les couples (forme, référence) du texte affiché.
-
-        Chaque ligne de paradigme portant une référence contient la
-        ou les formes puis « [Livre ch:v] » : « כָּתַב / כָּתָב  [Nombres
-        5:23] ». La première forme (la dominante) représente le couple.
+        Chaque segment « forme  [Livre ch:v] » donne un couple ; les
+        formes sont séparées par « / ». Retourne [] si l'extrait ne
+        porte aucune référence.
         """
         import re
         pairs = []
-        seen = set()
-        try:
-            content = text_widget.get("1.0", "end")
-        except tk.TclError:
-            return pairs
-        ref_re = re.compile(
-            r"\[(?P<book>[^\]]+?)\s(?P<ch>\d+)[:.](?P<v>\d+)\]")
-        for line in content.split("\n"):
-            m = ref_re.search(line.strip())
-            if not m:
-                continue
-            ref = f"{m.group('book')} {m.group('ch')}:{m.group('v')}"
-            # Forme : le premier mot hébreu de la partie avant la
-            # référence (après le libellé de personne).
-            before = line.split("[")[0].strip()
-            # Les clusters hébreu commencent après le libellé français
-            # (parenthèse fermante) ; à défaut, premier token non
-            # parenthésé.
+        # Segments : texte jusqu'à la référence fermante.
+        seg_re = re.compile(
+            r"(?P<form>[^/\[]+)\s*\[(?P<book>[^\]]+?)\s"
+            r"(?P<ch>\d+)[:.](?P<v>\d+)\]")
+        for m in seg_re.finditer(chunk):
+            form = m.group("form").strip()
+            # Ne garder que le dernier mot hébreu du segment (la
+            # forme attachée à sa référence, après le libellé de
+            # personne).
+            toks = [t for t in form.split() if t]
             he = ""
-            for tok in before.split():
+            for tok in reversed(toks):
                 if any("\u05D0" <= c <= "\u05EA" for c in tok):
-                    he = tok.split("/")[0].strip()
+                    he = tok
                     break
-            key = (he, ref)
-            if key in seen:
-                continue
-            seen.add(key)
+            ref = f"{m.group('book')} {m.group('ch')}:{m.group('v')}"
             pairs.append((he, ref))
         return pairs
 
-    def _binyan_context_menu(self, event, text_widget):
+    def _line_reference_pairs(self, text_widget):
+        """Couples (forme, référence) de la sélection, sinon de la
+        ligne du clic (marques insert/current)."""
         import re
-        # Référence dans/autour de la sélection : une seule entrée.
-        ref = self._find_reference_near(text_widget)
+        chunks = []
+        try:
+            sel = text_widget.get("sel.first", "sel.last")
+            if sel.strip():
+                chunks.append(sel)
+        except tk.TclError:
+            pass
+        for mark in ("insert", "current"):
+            try:
+                line = text_widget.get(f"{mark} linestart",
+                                       f"{mark} lineend")
+            except tk.TclError:
+                continue
+            if line.strip():
+                chunks.append(line)
+        for chunk in chunks:
+            pairs = self._reference_pairs_in(chunk)
+            if pairs:
+                return pairs
+        return []
+
+    def _all_reference_pairs(self, text_widget):
+        """Tous les couples (forme, référence) du texte affiché."""
+        try:
+            content = text_widget.get("1.0", "end")
+        except tk.TclError:
+            return []
+        return self._reference_pairs_in(content)
+
+    def _binyan_context_menu(self, event, text_widget):
         # AnalyseurGUI n'est pas un widget Tk : le menu doit avoir un
         # parent réel, le widget de sortie lui-même.
         menu = tk.Menu(text_widget, tearoff=0)
-        if ref:
-            menu.add_command(
-                label=f"Ouvrir le verset {ref}",
-                command=lambda r=ref: self._open_verse_reference(r))
-        else:
-            # Sans sélection (ou sélection sans référence) : lister
-            # tous les couples (forme, référence) du texte affiché.
+        # Priorité aux couples de la sélection ou de la ligne du clic
+        # (TOUTES les références de la ligne, pas seulement la
+        # première) ; repli : tous les couples du texte affiché.
+        pairs = self._line_reference_pairs(text_widget)
+        scope = "cette ligne"
+        if not pairs:
             pairs = self._all_reference_pairs(text_widget)
-            if pairs:
-                menu.add_command(label="Ouvrir le verset…", state="disabled")
-                for form, r in pairs:
-                    label = f"{form}  {r}" if form else r
-                    menu.add_command(
-                        label=label,
-                        command=lambda rr=r: self._open_verse_reference(rr))
-            else:
+            scope = "le texte"
+        if pairs:
+            menu.add_command(label=f"Ouvrir le verset ({scope})…",
+                              state="disabled")
+            for form, r in pairs:
+                label = f"{form}  {r}" if form else r
                 menu.add_command(
-                    label="Aucune référence dans la sélection",
-                    state="disabled")
+                    label=label,
+                    command=lambda rr=r: self._open_verse_reference(rr))
+        else:
+            menu.add_command(label="Aucune référence dans la sélection",
+                              state="disabled")
         try:
             menu.tk_popup(event.x_root, event.y_root)
         finally:
