@@ -2743,6 +2743,12 @@ class AnalyseurGUI:
                               and self.binyanim_use_references.get())
         F = self.api.F
         self._disable_buttons()
+        # Sablier : la collecte des références attestées (surtout avec
+        # les variantes) scanne la base BHSA et peut prendre du temps.
+        # root.update_idletasks() force l'affichage du curseur avant
+        # le lancement du thread.
+        self.root.configure(cursor="watch")
+        self.root.update_idletasks()
         self.status.configure(text=f"Conjugaison de « {form} »…")
 
         def worker():
@@ -2795,6 +2801,7 @@ class AnalyseurGUI:
                        "La fenêtre résultat n'a pas été modifiée.")
         messagebox.showwarning("Binyanim", msg)
         self.status.configure(text="Prêt.")
+        self.root.configure(cursor="")
         self._enable_buttons()
 
     def _show_binyanim_raw(self, text):
@@ -2802,6 +2809,7 @@ class AnalyseurGUI:
         self._set_output(self.binyanim_raw_text, text)
         self.binyanim_notebook.select(self.binyanim_raw_tab)
         self.status.configure(text="Prêt.")
+        self.root.configure(cursor="")
         self._enable_buttons()
 
     def _show_binyanim_parsed(self, parsed):
@@ -2948,6 +2956,7 @@ class AnalyseurGUI:
             self.binyanim_notebook.select(first)
         self.binyanim_parsed = parsed
         self.status.configure(text="Prêt.")
+        self.root.configure(cursor="")
         self._enable_buttons()
 
     def _print_binyan(self, binyan_code):
