@@ -2326,28 +2326,27 @@ class AnalyseurGUI:
         text.pack(side="left", fill="both", expand=True)
         text.configure(yscrollcommand=yscroll.set)
 
-        # Tags du rendu.
-        base_font = text.cget("font")
-        text.tag_configure("h1", font=(base_font[0], base_font[1] + 8,
-                                       "bold"),
+        # Tags du rendu. cget("font") renvoie une CHAÎNE : résoudre
+        # la police via tkinter.font pour obtenir famille et taille
+        # numériques.
+        from tkinter import font as tkfont
+        base = tkfont.Font(font=text.cget("font"))
+        fam = base.actual("family")
+        size = base.actual("size")
+        mono = tkfont.Font(family="Consolas", size=10) \
+            if sys.platform == "win32" else tkfont.nametofont("TkFixedFont")
+        mono_small = mono.copy()
+        mono_small.configure(size=mono.actual("size") - 1)
+        text.tag_configure("h1", font=(fam, size + 8, "bold"),
                            spacing3=10, spacing1=10)
-        text.tag_configure("h2", font=(base_font[0], base_font[1] + 5,
-                                       "bold"),
+        text.tag_configure("h2", font=(fam, size + 5, "bold"),
                            spacing3=6, spacing1=12)
-        text.tag_configure("h3", font=(base_font[0], base_font[1] + 2,
-                                       "bold"), spacing1=8)
-        text.tag_configure("bold", font=(base_font[0], base_font[1],
-                                         "bold"))
-        text.tag_configure("italic", font=(base_font[0], base_font[1],
-                                           "italic"))
-        text.tag_configure("code", font=("Consolas", 10)
-                           if sys.platform == "win32"
-                           else ("TkFixedFont", 10),
-                           background="#f0f0f0")
-        text.tag_configure("pre", font=("Consolas", 9)
-                           if sys.platform == "win32"
-                           else ("TkFixedFont", 9),
-                           background="#f5f5f5", lmargin1=12, lmargin2=12,
+        text.tag_configure("h3", font=(fam, size + 2, "bold"), spacing1=8)
+        text.tag_configure("bold", font=(fam, size, "bold"))
+        text.tag_configure("italic", font=(fam, size, "italic"))
+        text.tag_configure("code", font=mono, background="#f0f0f0")
+        text.tag_configure("pre", font=mono_small, background="#f5f5f5",
+                           lmargin1=12, lmargin2=12,
                            spacing1=4, spacing3=4)
         text.tag_configure("li", lmargin1=16, lmargin2=24)
         text.tag_configure("hr", justify="center", foreground="gray60")
