@@ -4,4 +4,3 @@ phonikud-tts
 pillow
 pywin32; sys_platform == "win32"
 markdown
-tkinterweb

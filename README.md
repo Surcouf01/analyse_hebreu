@@ -269,12 +269,12 @@ ci-dessous, plus un onglet **README**) :
   final, etc.).
   Le GUI parse la sortie marquée du CLI (`###BINYAN|...###`). Formats :
   texte ou JSON.
-- **README** : la documentation (ce fichier) rendue en **HTML** dans
-  l'application — le markdown est converti par le module `markdown` et
-  affiché par le module `tkinterweb` (widget `HtmlFrame` : titres, gras,
-  italique, listes, blocs de code). Dépendances optionnelles : `pip
-  install markdown tkinterweb` ; en leur absence, repli sur le texte
-  brut du README.
+- **README** : la documentation (ce fichier) affichée dans
+  l'application — le markdown est converti en HTML par le module
+  `markdown`, puis restitué dans une zone de texte enrichie (titres,
+  gras, italique, listes, blocs de code). Dépendance optionnelle :
+  `pip install markdown` ; en son absence, repli sur le texte brut du
+  README.
 
 
 La base BHSA est chargée en arrière-plan au démarrage ; les boutons restent

@@ -2284,15 +2284,15 @@ class AnalyseurGUI:
             self.verse_combo.current(0)
 
     def _build_readme_tab(self, parent=None):
-        """Onglet README : rendu HTML du fichier README.md.
+        """Onglet README : rendu enrichi du fichier README.md.
 
         Le markdown est converti en HTML par le module ``markdown``
-        (Python-Markdown, extensions tables/fenced_code), affiché par
-        ``tkinterweb`` (TkinterWeb, widget HtmlFrame) qui restitue
-        titres, gras, italique, listes, tableaux et blocs de code dans
-        l'application. Sans tkinterweb (module absent), repli sur le
-        markdown brut dans une zone de texte ; sans module markdown,
-        repli sur le texte brut.
+        (structure de référence), puis le HTML est restitué dans un
+        tk.Text avec tags : titres, gras, italique, blocs de code,
+        listes à puces. Ce rendu maison (pas de moteur HTML externe,
+        notamment pas tkinterweb qui provoque un segmentation fault
+        sous Windows) ne peut pas planter la fenêtre. Sans module
+        markdown, repli sur le markdown brut.
         """
         tab = self.tab_readme
         # Lecture du README : à côté du script, puis ressources
@@ -2314,39 +2314,162 @@ class AnalyseurGUI:
         with open(readme, encoding="utf-8") as fh:
             md_text = fh.read()
 
-        # Conversion markdown -> HTML.
-        html = None
+        # Zone de texte défilable avec rendu enrichi.
+        wrap = tk.Frame(tab)
+        wrap.pack(fill="both", expand=True, padx=4, pady=4)
+        text = tk.Text(wrap, wrap="word", padx=12, pady=8,
+                       font=("Segoe UI", 10) if sys.platform == "win32"
+                       else ("TkDefaultFont", 10),
+                       bg="white", relief="flat")
+        yscroll = ttk.Scrollbar(wrap, orient="vertical", command=text.yview)
+        yscroll.pack(side="right", fill="y")
+        text.pack(side="left", fill="both", expand=True)
+        text.configure(yscrollcommand=yscroll.set)
+
+        # Tags du rendu.
+        base_font = text.cget("font")
+        text.tag_configure("h1", font=(base_font[0], base_font[1] + 8,
+                                       "bold"),
+                           spacing3=10, spacing1=10)
+        text.tag_configure("h2", font=(base_font[0], base_font[1] + 5,
+                                       "bold"),
+                           spacing3=6, spacing1=12)
+        text.tag_configure("h3", font=(base_font[0], base_font[1] + 2,
+                                       "bold"), spacing1=8)
+        text.tag_configure("bold", font=(base_font[0], base_font[1],
+                                         "bold"))
+        text.tag_configure("italic", font=(base_font[0], base_font[1],
+                                           "italic"))
+        text.tag_configure("code", font=("Consolas", 10)
+                           if sys.platform == "win32"
+                           else ("TkFixedFont", 10),
+                           background="#f0f0f0")
+        text.tag_configure("pre", font=("Consolas", 9)
+                           if sys.platform == "win32"
+                           else ("TkFixedFont", 9),
+                           background="#f5f5f5", lmargin1=12, lmargin2=12,
+                           spacing1=4, spacing3=4)
+        text.tag_configure("li", lmargin1=16, lmargin2=24)
+        text.tag_configure("hr", justify="center", foreground="gray60")
+
         try:
             import markdown
             html = markdown.markdown(
                 md_text, extensions=["tables", "fenced_code",
                                      "sane_lists"])
+            self._render_html_to_text(text, html)
         except ImportError:
-            html = None
+            text.insert("1.0", md_text)
 
-        # Affichage HTML si possible.
-        try:
-            from tkinterweb import HtmlFrame
-            frame = HtmlFrame(tab, messages_enabled=False)
-            frame.pack(fill="both", expand=True, padx=4, pady=4)
-            # Fond clair et police lisible : les tailles des polices
-            # de gui.properties s'appliquent au reste du GUI, pas au
-            # moteur HTML (styles par défaut de TkinterWeb).
-            if html is not None:
-                frame.load_html(html)
-            else:
-                frame.load_html(
-                    "<pre>" + md_text.replace("&", "&amp;")
-                    .replace("<", "&lt;") + "</pre>")
-            return
-        except ImportError:
-            pass
-
-        # Repli : markdown brut dans une zone de texte.
-        text = ResultText(tab, font=HEBREW_FONT_MONO, wrap="word")
-        text.pack(fill="both", expand=True, padx=4, pady=4)
-        text.set_text(md_text)
         text.configure(state="disabled")
+
+    def _render_html_to_text(self, text_widget, html):
+        """Restitue un sous-ensemble HTML dans un tk.Text avec tags.
+
+        Pris en charge : h1-h6, p, br, hr, ul/ol/li (imbrication
+        approximée par l'indentation), strong/b, em/i, code, pre,
+        blockquote. Le texte brut du HTML est inséré, les tags
+        s'appliquent par plages.
+        """
+        import html as _html
+        import re
+
+        # Découpage du HTML en événements (ouvrant/fermant/texte).
+        tag_re = re.compile(r"<(/?)(\w+)([^>]*)>")
+        pos = 0
+        events = []  # (type, nom, attrs) / ("text", contenu)
+        for m in tag_re.finditer(html):
+            if m.start() > pos:
+                events.append(("text", html[pos:m.start()], ""))
+            events.append(("close" if m.group(1) else "open",
+                           m.group(2).lower(), m.group(3) or ""))
+            pos = m.end()
+        if pos < len(html):
+            events.append(("text", html[pos:], ""))
+
+        headings = {"h1", "h2", "h3", "h4", "h5", "h6"}
+        # --- Traitement séquentiel des événements ---
+        text_widget.delete("1.0", "end")
+        markup = []  # pile de tags actifs ("bold", "italic", "code")
+        list_stack = []
+        counters = []
+        def current_tags():
+            return list(markup)
+
+        for kind, a, b in events:
+            if kind == "text":
+                content = _html.unescape(a)
+                if not content:
+                    continue
+                # Sauter les contenus vides (inter-tags).
+                if not content.strip() and not content.startswith("\n"):
+                    continue
+                tags = current_tags() + (["li"] if list_stack else [])
+                text_widget.insert("end", content, tags or ())
+            elif kind == "open":
+                if a in headings:
+                    text_widget.insert("end", "\n")
+                    markup.append("h" + a[1])
+                    # Les titres ferment implicitement les paragraphes.
+                elif a in ("strong", "b"):
+                    markup.append("bold")
+                elif a in ("em", "i"):
+                    markup.append("italic")
+                elif a == "code":
+                    markup.append("code")
+                elif a == "pre":
+                    text_widget.insert("end", "\n")
+                    markup.append("pre")
+                elif a in ("ul", "ol"):
+                    list_stack.append(a)
+                    counters.append(0)
+                    text_widget.insert("end", "\n")
+                elif a == "li":
+                    # Nouvelle ligne seulement si le dernier caractère
+                    # inséré n'est pas déjà un retour à la ligne.
+                    end = text_widget.index("end - 1c")
+                    last = text_widget.get(f"{end}", "end")
+                    sep = "" if last == "\n" else "\n"
+                    if list_stack and list_stack[-1] == "ol":
+                        counters[-1] += 1
+                        text_widget.insert("end", sep + "  " * (len(list_stack) - 1)
+                                          + f"{counters[-1]}. ", ("li",))
+                    else:
+                        text_widget.insert("end", sep + "  " * max(0, len(list_stack) - 1)
+                                          + "\u2022 ", ("li",))
+                elif a == "br":
+                    text_widget.insert("end", "\n")
+                elif a == "hr":
+                    text_widget.insert("end", "\n\u2500" * 30 + "\n", ("hr",))
+                elif a == "blockquote":
+                    markup.append("li")
+                    text_widget.insert("end", "\n")
+            elif kind == "close":
+                if a in headings:
+                    if markup and markup[-1].startswith("h"):
+                        markup.pop()
+                    text_widget.insert("end", "\n\n", ())
+                elif a in ("strong", "b", "em", "i", "code", "li",
+                           "blockquote"):
+                    if markup and markup[-1] in ("bold", "italic",
+                                                 "code", "li"):
+                        markup.pop()
+                elif a == "pre":
+                    if markup and markup[-1] == "pre":
+                        markup.pop()
+                    text_widget.insert("end", "\n\n", ())
+                elif a in ("ul", "ol"):
+                    if list_stack:
+                        list_stack.pop()
+                    if counters:
+                        counters.pop()
+                    text_widget.insert("end", "\n")
+        # Nettoyage : lignes vides multiples -> une seule.
+        content = text_widget.get("1.0", "end")
+        while "\n\n\n" in content:
+            content = content.replace("\n\n\n", "\n\n")
+        text_widget.delete("1.0", "end")
+        text_widget.insert("1.0", content)
 
     def _build_binyanim_tab(self):
         """Onglet « Binyanim » : conjugaison d'un verbe dans les 7 binyanim.
