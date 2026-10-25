@@ -2400,8 +2400,11 @@ class AnalyseurGUI:
         text.configure(state="disabled")
         StableSelection(text)
         # Menu contextuel : ouvrir le mode verset sur la référence
-        # contenue dans (ou autour de) la sélection.
+        # contenue dans (ou autour de) la sélection. Les modifieurs font
+        # partie du pattern Tk : Shift+clic droit génère <Shift-Button-3>,
+        # un bind distinct est nécessaire.
         text.bind("<Button-3>", lambda e, t=text: self._binyan_context_menu(e, t))
+        text.bind("<Shift-Button-3>", lambda e, t=text: self._binyan_context_menu(e, t))
         return text
 
     def _find_reference_near(self, text_widget):
@@ -2440,7 +2443,12 @@ class AnalyseurGUI:
         else:
             menu.add_command(label="Aucune référence dans la sélection",
                               state="disabled")
-        menu.tk_popup(event.x_root, event.y_root)
+        try:
+            menu.tk_popup(event.x_root, event.y_root)
+        finally:
+            # Sous Windows, sans grab_release le menu peut rester
+            # « capturé » et ignorer le clic suivant.
+            menu.grab_release()
 
     def _open_verse_reference(self, reference):
         """Bascule sur l'onglet Livre et affiche la référence donnée."""
