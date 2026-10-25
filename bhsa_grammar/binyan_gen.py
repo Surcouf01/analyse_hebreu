@@ -1860,13 +1860,17 @@ def _word_reference(F, L, w):
     return f"{book} {chapter}:{verse}"
 
 
-def binyan_references(F, L, lex, vs, vt, cell, limit=1):
-    """Références attestées d'une cellule d'un lemme dans un binyan.
+def binyan_attested_forms(F, L, lex, vs, vt, cell):
+    """Formes attestées d'une cellule, avec leur première référence.
 
-    Renvoie une liste (au plus ``limit``) de références « Livre ch:v »
-    où la cellule (ps, gn, nu) du lemme ``lex`` est attestée dans le
-    binyan/temps (vs, vt). Vide si non attesté. Sans suffixe
-    pronominal ; hébreu uniquement.
+    Renvoie une liste de (forme, référence) : toutes les graphies
+    distinctes (canonisées) de la cellule (ps, gn, nu) du lemme dans
+    le binyan/temps (vs, vt), chacune avec la première référence où
+    elle apparaît. Sans suffixe pronominal ; hébreu uniquement.
+
+    La comparaison des graphies passe par _variant_canon (daguesh,
+    meteg, hatef, maters, segol/patah neutralisés) : une forme générée
+    appelle « sa » référence via la même canonisation.
     """
     if not lex or L is None:
         return []
@@ -1883,20 +1887,48 @@ def binyan_references(F, L, lex, vs, vt, cell, limit=1):
         if F.language.v(w) != "Hebrew":
             continue
         w_ps, w_gn, w_nu = F.ps.v(w), F.gn.v(w), F.nu.v(w)
-        # Genre : la BHSA marque « unknown » les 1res personnes et
-        # souvent les 3es pluriel — accepter la cellule commune.
         gn_ok = (w_gn == gn) or (
             w_gn in ("unknown", "NA", None)
             and (gn == "c" or nu == "pl"))
         if (w_ps, w_nu) != (ps, nu) or not gn_ok:
             continue
+        form = _normalize(F.g_word_utf8.v(w))
+        key = _variant_canon(form)
+        if key in seen:
+            continue
         ref = _word_reference(F, L, w)
-        if ref and ref not in seen:
-            seen.add(ref)
-            out.append(ref)
-            if len(out) >= limit:
-                break
+        if not ref:
+            continue
+        seen.add(key)
+        out.append((form, ref))
     return out
+
+
+def binyan_references(F, L, lex, vs, vt, cell, limit=1):
+    """Références attestées d'une cellule d'un lemme dans un binyan.
+
+    Renvoie une liste (au plus ``limit``) de références « Livre ch:v »
+    où la cellule (ps, gn, nu) du lemme ``lex`` est attestée dans le
+    binyan/temps (vs, vt). Vide si non attesté. Sans suffixe
+    pronominal ; hébreu uniquement.
+    """
+    return [ref for _form, ref in
+            binyan_attested_forms(F, L, lex, vs, vt, cell)[:limit]]
+
+
+def reference_for_form(F, L, lex, vs, vt, cell, form):
+    """Référence attestée d'une forme précise d'une cellule.
+
+    Apparie ``form`` (générée : dominante ou variante) aux occurrences
+    BHSA de la cellule via la canonisation (_variant_canon) : renvoie
+    la première référence de la graphie correspondante, ou None.
+    """
+    forms = binyan_attested_forms(F, L, lex, vs, vt, cell)
+    key = _variant_canon(form)
+    for att_form, ref in forms:
+        if _variant_canon(att_form) == key:
+            return ref
+    return None
 
 
 def analyze_binyanim(F, form, use_mishnah=False, use_modern=False,
@@ -2032,6 +2064,9 @@ def analyze_binyanim(F, form, use_mishnah=False, use_modern=False,
                                                     with_variants=with_variants),
         }
         if with_references and verb.get("lex"):
+            # Référence PAR FORME : chaque forme affichée (dominante
+            # et variantes) est appariée à la première occurrence
+            # BHSA de sa graphie (canonisée).
             refs = {}
             for tense, persons in TENSE_PERSONS.items():
                 cells = {}
@@ -2042,10 +2077,20 @@ def analyze_binyanim(F, form, use_mishnah=False, use_modern=False,
                               "impv": "impv", "juss": "wayq",
                               "coh": "impf"}
                     vt = vt_map.get(tense, tense)
-                    r = binyan_references(F, L, verb["lex"], code,
-                                          vt, (ps, gn, nu), limit=1)
-                    if r:
-                        cells[(ps, gn, nu)] = r[0]
+                    cell = (ps, gn, nu)
+                    forms = ([entry["paradigm"][tense].get(cell, "")]
+                             + (entry["paradigm"].get("variants", {})
+                                .get(tense, {}).get(cell) or []))
+                    by_form = {}
+                    for f in forms:
+                        if not f:
+                            continue
+                        r = reference_for_form(F, L, verb["lex"], code,
+                                              vt, cell, f)
+                        if r:
+                            by_form[f] = r
+                    if by_form:
+                        cells[cell] = by_form
                 if cells:
                     refs[tense] = cells
             entry["references"] = refs
@@ -2209,10 +2254,13 @@ def binyanim_to_text(analysis):
                 form = b["paradigm"][tense].get((ps, gn, nu), "")
                 if form:
                     vars_ = cell_variants.get((ps, gn, nu)) or []
-                    shown = " / ".join([form] + vars_)
-                    ref = tense_refs.get((ps, gn, nu))
-                    if ref:
-                        shown = f"{shown}  [{ref}]"
+                    # Référence par forme : « forme [réf] / forme [réf] ».
+                    by_form = tense_refs.get((ps, gn, nu)) or {}
+                    parts = []
+                    for f in [form] + vars_:
+                        ref = by_form.get(f)
+                        parts.append(f"{f}  [{ref}]" if ref else f)
+                    shown = " / ".join(parts)
                     lines.append(f"    {label:34} {shown}")
         nf = b["non_finite"]
         if nf:
@@ -2335,9 +2383,10 @@ def binyanim_to_json(analysis, indent=2, ensure_ascii=False):
                     for cell, forms in b["non_finite"]
                     .get("variants", {}).items() if forms},
                 "references": {
-                    f"{tense}|{_key(cell)}": ref
+                    f"{tense}|{_key(cell)}|{form}": ref
                     for tense, cells in (b.get("references") or {}).items()
-                    for cell, ref in cells.items()
+                    for cell, by_form in cells.items()
+                    for form, ref in by_form.items()
                 },
             }
             for b in analysis["binyanim"]
