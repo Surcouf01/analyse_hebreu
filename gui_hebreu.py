@@ -1634,15 +1634,18 @@ class AnalyseurGUI:
         self.tab_word = ttk.Frame(self.notebook)
         self.tab_phrase = ttk.Frame(self.notebook)
         self.tab_binyanim = ttk.Frame(self.notebook)
+        self.tab_readme = ttk.Frame(self.notebook)
         self.notebook.add(self.tab_verse, text="Livre")
         self.notebook.add(self.tab_word, text="Mot")
         self.notebook.add(self.tab_phrase, text="Phrase")
         self.notebook.add(self.tab_binyanim, text="Binyanim")
+        self.notebook.add(self.tab_readme, text="README")
 
         self._build_verse_tab()
         self._build_word_tab()
         self._build_phrase_tab()
         self._build_binyanim_tab()
+        self._build_readme_tab()
 
         # Raccourcis globaux de navigation : Ctrl+↑/↓ verset, Shift+↑/↓
         # chapitre, Alt+↑/↓ livre — équivalents aux boutons ▲/▼ de
@@ -2279,6 +2282,71 @@ class AnalyseurGUI:
         self.verse_combo["values"] = [str(v) for v in verses]
         if verses:
             self.verse_combo.current(0)
+
+    def _build_readme_tab(self, parent=None):
+        """Onglet README : rendu HTML du fichier README.md.
+
+        Le markdown est converti en HTML par le module ``markdown``
+        (Python-Markdown, extensions tables/fenced_code), affiché par
+        ``tkinterweb`` (TkinterWeb, widget HtmlFrame) qui restitue
+        titres, gras, italique, listes, tableaux et blocs de code dans
+        l'application. Sans tkinterweb (module absent), repli sur le
+        markdown brut dans une zone de texte ; sans module markdown,
+        repli sur le texte brut.
+        """
+        tab = self.tab_readme
+        # Lecture du README : à côté du script, puis ressources
+        # embarquées (PyInstaller), puis dossier de l'exécutable.
+        readme = None
+        for base in (os.path.dirname(os.path.abspath(__file__)),
+                     _resource_dir(), _app_dir()):
+            for name in ("README.md", "readme.md"):
+                p = os.path.join(base, name)
+                if os.path.isfile(p):
+                    readme = p
+                    break
+            if readme:
+                break
+        if readme is None:
+            ttk.Label(tab, text="README.md introuvable.").pack(padx=8,
+                                                              pady=8)
+            return
+        with open(readme, encoding="utf-8") as fh:
+            md_text = fh.read()
+
+        # Conversion markdown -> HTML.
+        html = None
+        try:
+            import markdown
+            html = markdown.markdown(
+                md_text, extensions=["tables", "fenced_code",
+                                     "sane_lists"])
+        except ImportError:
+            html = None
+
+        # Affichage HTML si possible.
+        try:
+            from tkinterweb import HtmlFrame
+            frame = HtmlFrame(tab, messages_enabled=False)
+            frame.pack(fill="both", expand=True, padx=4, pady=4)
+            # Fond clair et police lisible : les tailles des polices
+            # de gui.properties s'appliquent au reste du GUI, pas au
+            # moteur HTML (styles par défaut de TkinterWeb).
+            if html is not None:
+                frame.load_html(html)
+            else:
+                frame.load_html(
+                    "<pre>" + md_text.replace("&", "&amp;")
+                    .replace("<", "&lt;") + "</pre>")
+            return
+        except ImportError:
+            pass
+
+        # Repli : markdown brut dans une zone de texte.
+        text = ResultText(tab, font=HEBREW_FONT_MONO, wrap="word")
+        text.pack(fill="both", expand=True, padx=4, pady=4)
+        text.set_text(md_text)
+        text.configure(state="disabled")
 
     def _build_binyanim_tab(self):
         """Onglet « Binyanim » : conjugaison d'un verbe dans les 7 binyanim.

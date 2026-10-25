@@ -136,6 +136,7 @@ datas = [
     ("data", "data"),
     ("icone.ico", "."),
     ("gui.properties", "."),
+    ("README.md", "."),
 ] + tf_datas + tts_datas
 # icone.png (source de l'icône) : embarqué seulement s'il est présent —
 # le spec n'échoue pas s'il a été retiré du dépôt (icone.ico reste la

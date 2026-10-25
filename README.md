@@ -203,7 +203,8 @@ python gui_hebreu.py
 Pré-requis : `tkinter` (inclus dans la plupart des distributions Python ; sur
 Debian/Ubuntu : `sudo apt install python3-tk`).
 
-L'interface comporte quatre onglets :
+L'interface comporte cinq onglets (les quatre premiers documentés
+ci-dessous, plus un onglet **README**) :
 
 - **Livre** : sélection d'abord du **corpus** — **Bible (BHSA)** ou
   **Mishna (Sefaria)** — puis du livre, du chapitre et du verset au moyen de
@@ -268,6 +269,13 @@ L'interface comporte quatre onglets :
   final, etc.).
   Le GUI parse la sortie marquée du CLI (`###BINYAN|...###`). Formats :
   texte ou JSON.
+- **README** : la documentation (ce fichier) rendue en **HTML** dans
+  l'application — le markdown est converti par le module `markdown` et
+  affiché par le module `tkinterweb` (widget `HtmlFrame` : titres, gras,
+  italique, listes, blocs de code). Dépendances optionnelles : `pip
+  install markdown tkinterweb` ; en leur absence, repli sur le texte
+  brut du README.
+
 
 La base BHSA est chargée en arrière-plan au démarrage ; les boutons restent
 inactifs jusqu'à la fin du chargement. Les analyses s'exécutent dans des
