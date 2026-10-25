@@ -2435,7 +2435,9 @@ class AnalyseurGUI:
 
     def _binyan_context_menu(self, event, text_widget):
         ref = self._find_reference_near(text_widget)
-        menu = tk.Menu(self, tearoff=0)
+        # AnalyseurGUI n'est pas un widget Tk : le menu doit avoir un
+        # parent réel, le widget de sortie lui-même.
+        menu = tk.Menu(text_widget, tearoff=0)
         if ref:
             menu.add_command(
                 label=f"Ouvrir le verset {ref}",
