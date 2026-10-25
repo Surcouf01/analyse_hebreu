@@ -2337,11 +2337,22 @@ class AnalyseurGUI:
             if sys.platform == "win32" else tkfont.nametofont("TkFixedFont")
         mono_small = mono.copy()
         mono_small.configure(size=mono.actual("size") - 1)
-        text.tag_configure("h1", font=(fam, size + 8, "bold"),
-                           spacing3=10, spacing1=10)
+        # Hiérarchie h1..h6 : chaque niveau se distingue par la taille,
+        # la couleur et l'espacement — h1 titre principal, h2 section
+        # (souligné par un filet), h3 sous-section, h4-h6 niveaux fins.
+        text.tag_configure("h1", font=(fam, size + 9, "bold"),
+                           foreground="#1a1a2e", spacing3=12, spacing1=14)
         text.tag_configure("h2", font=(fam, size + 5, "bold"),
-                           spacing3=6, spacing1=12)
-        text.tag_configure("h3", font=(fam, size + 2, "bold"), spacing1=8)
+                           foreground="#16213e", spacing3=8, spacing1=16,
+                           underline=True)
+        text.tag_configure("h3", font=(fam, size + 2, "bold"),
+                           foreground="#0f3460", spacing1=10, spacing3=4)
+        text.tag_configure("h4", font=(fam, size, "bold italic"),
+                           foreground="#0f3460", spacing1=8)
+        text.tag_configure("h5", font=(fam, size - 1, "bold"),
+                           foreground="#51557e", spacing1=6)
+        text.tag_configure("h6", font=(fam, size - 1, "italic"),
+                           foreground="#51557e", spacing1=6)
         text.tag_configure("bold", font=(fam, size, "bold"))
         text.tag_configure("italic", font=(fam, size, "italic"))
         text.tag_configure("code", font=mono, background="#f0f0f0")
