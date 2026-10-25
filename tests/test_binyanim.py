@@ -100,6 +100,7 @@ def _same_form(generated, attested_set):
 def main():
     api = load_corpus()
     F = api.F
+    L = api.L
     failures = []
 
     for form, expected_cat, _root in TEST_VERBS:
@@ -417,6 +418,35 @@ def main():
     if "\u05D3\u05B7\u05BC\u05D1\u05B5\u05BC\u05E8" not in form_impv:
         failures.append(f"piel impv 2ms : lene attendu sur le \u05d3 : "
                         f"{form_impv!r}")
+
+    # Références attestées (option --references / checkbox GUI) : chaque
+    # cellule attestée porte « [Livre ch:v] » ; les cellules non
+    # attestées n'en portent pas.
+    r_ref = analyze_binyanim(F, "\u05DB\u05BC\u05B8\u05EA\u05B7\u05D1",
+                             with_references=True, L=L)
+    qal_ref = r_ref["binyanim"][0]
+    refs = qal_ref.get("references") or {}
+    import re as _re2
+    got_3ms = refs.get("perf", {}).get(("p3", "m", "sg"), "")
+    if not _re2.match(r"^[^\]]+\s\d+:\d+$", got_3ms or ""):
+        failures.append(f"r\u00e9f\u00e9rences : parfait 3ms devrait porter "
+                        f"une r\u00e9f\u00e9rence, obtenu {got_3ms!r}")
+    # Une cellule non attestée (imparfait 2fs de KTB) n'en porte pas.
+    got_2fs = refs.get("impf", {}).get(("p2", "f", "sg"))
+    if got_2fs:
+        failures.append(f"r\u00e9f\u00e9rences : impf 2fs de \u05db\u05ea\u05d1 "
+                        f"non attest\u00e9, r\u00e9f\u00e9rence indue {got_2fs!r}")
+    # Sans L (appel programmatique sans Locality), pas de référence.
+    r_noref = analyze_binyanim(F, "\u05DB\u05BC\u05B8\u05EA\u05B7\u05D1",
+                               with_references=True)
+    if r_noref["binyanim"][0].get("references"):
+        failures.append("r\u00e9f\u00e9rences : sans L, aucune r\u00e9f\u00e9rence "
+                        "ne devrait \u00eatre produite")
+    # Le texte marqu\u00e9 affiche la r\u00e9f\u00e9rence entre crochets.
+    text_ref = binyanim_to_text(r_ref)
+    if "[Nombres 5:23]" not in text_ref and "[Exode 32:32]" not in text_ref:
+        failures.append("r\u00e9f\u00e9rences : texte sans r\u00e9f\u00e9rence "
+                        "entre crochets")
 
     # Parfait 3e pers. fém. pl. : la BHSA n'atteste AUCUNE forme de
     # parfait 3fp en hébreu — les 2756 parfaites qal 3pl de la base

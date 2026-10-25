@@ -2348,6 +2348,14 @@ class AnalyseurGUI:
         ttk.Checkbutton(opts, text="Toutes les formes attestées",
                         variable=self.binyanim_use_variants).pack(
                             side="left", padx=(8, 0))
+        # Référence biblique attestée par cellule (quand elle existe) :
+        # « forme [Livre ch:v] ».
+        self.binyanim_use_references = tk.BooleanVar(
+            value=_PROPS.get("binyanim.references", "false").strip().lower()
+            == "true")
+        ttk.Checkbutton(opts, text="Référence attestée",
+                        variable=self.binyanim_use_references).pack(
+                            side="left", padx=(8, 0))
 
         self.btn_binyanim = ttk.Button(tab, text="Conjuguer le verbe",
                                        command=self._run_binyanim)
@@ -2391,7 +2399,87 @@ class AnalyseurGUI:
         parent.columnconfigure(0, weight=1)
         text.configure(state="disabled")
         StableSelection(text)
+        # Menu contextuel : ouvrir le mode verset sur la référence
+        # contenue dans (ou autour de) la sélection.
+        text.bind("<Button-3>", lambda e, t=text: self._binyan_context_menu(e, t))
         return text
+
+    def _find_reference_near(self, text_widget):
+        """Référence « [Livre ch:v] » dans la sélection ou la ligne du curseur."""
+        import re
+        try:
+            sel = text_widget.get("sel.first", "sel.last")
+        except tk.TclError:
+            sel = ""
+        candidates = [sel]
+        # Sans sélection : chercher sur la ligne du curseur (le clic
+        # droit place la marque insert au pointeur sous Linux ; sous
+        # Windows la sélection est préservée).
+        if not re.search(r"\[[^\]]+\s\d+[:.]\d+\]", sel):
+            for mark in ("insert", "current"):
+                try:
+                    line = text_widget.get(f"{mark} linestart",
+                                           f"{mark} lineend")
+                except tk.TclError:
+                    continue
+                candidates.append(line)
+        for chunk in candidates:
+            m = re.search(r"\[(?P<book>[^\]]+?)\s(?P<ch>\d+)[:.](?P<v>\d+)\]",
+                          chunk)
+            if m:
+                return f"{m.group('book')} {m.group('ch')}:{m.group('v')}"
+        return None
+
+    def _binyan_context_menu(self, event, text_widget):
+        ref = self._find_reference_near(text_widget)
+        menu = tk.Menu(self, tearoff=0)
+        if ref:
+            menu.add_command(
+                label=f"Ouvrir le verset {ref}",
+                command=lambda r=ref: self._open_verse_reference(r))
+        else:
+            menu.add_command(label="Aucune référence dans la sélection",
+                              state="disabled")
+        menu.tk_popup(event.x_root, event.y_root)
+
+    def _open_verse_reference(self, reference):
+        """Bascule sur l'onglet Livre et affiche la référence donnée."""
+        # Bascule de corpus vers la Bible si nécessaire.
+        if self.corpus_var.get() == CORPUS_MISHNA:
+            self.corpus_var.set(CORPUS_BIBLE)
+            self._on_corpus_change()
+        self.notebook.select(self.tab_verse)
+        # Sélectionner livre / chapitre / verset dans les combobox.
+        import re as _re
+        m = _re.match(r"(.+?)\s+(\d+)[:.](\d+)$", reference.strip())
+        if not m:
+            messagebox.showwarning("Référence", f"Référence illisible : {reference}")
+            return
+        book_fr, chapter, verse = m.group(1), m.group(2), m.group(3)
+        values = list(self.book_combo["values"])
+        target = None
+        for v in values:
+            if v.strip() == book_fr or v == book_fr:
+                target = v
+                break
+        if target is None:
+            messagebox.showwarning("Référence",
+                                   f"Livre introuvable : {book_fr}")
+            return
+        self.book_combo.set(target)
+        self._on_book_change()
+        if str(chapter) not in list(self.chapter_combo["values"]):
+            messagebox.showwarning("Référence",
+                                   f"Chapitre introuvable : {chapter}")
+            return
+        self.chapter_combo.set(chapter)
+        self._on_chapter_change()
+        if str(verse) not in list(self.verse_combo["values"]):
+            messagebox.showwarning("Référence",
+                                   f"Verset introuvable : {verse}")
+            return
+        self.verse_combo.set(verse)
+        self._run_verse()
 
     def _run_binyanim(self):
         if self.api is None:
@@ -2405,14 +2493,19 @@ class AnalyseurGUI:
         use_modern = bool(self.binyanim_use_modern.get())
         use_variants = bool(getattr(self, "binyanim_use_variants", None)
                             and self.binyanim_use_variants.get())
+        use_references = bool(getattr(self, "binyanim_use_references", None)
+                              and self.binyanim_use_references.get())
         F = self.api.F
         self._disable_buttons()
         self.status.configure(text=f"Conjugaison de « {form} »…")
 
         def worker():
+            L = self.api.L
             analysis = analyze_binyanim(F, form, use_mishnah=use_mishnah,
                                         use_modern=use_modern,
-                                        with_variants=use_variants)
+                                        with_variants=use_variants,
+                                        with_references=use_references,
+                                        L=L)
             if not analysis.get("found"):
                 verb = analysis.get("verb", {})
                 reason = verb.get("reason") or analysis.get("reason")
@@ -3253,6 +3346,10 @@ def _save_all_preferences(root):
         if variants is not None:
             updates["binyanim.variants"] = ("true" if variants.get()
                                             else "false")
+        references = getattr(gui, "binyanim_use_references", None)
+        if references is not None:
+            updates["binyanim.references"] = ("true" if references.get()
+                                              else "false")
     if updates:
         _save_properties(root, updates)
 

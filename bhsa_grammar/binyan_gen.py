@@ -1841,8 +1841,66 @@ def generate_binyan_non_finite(vs, root, category, with_variants=True):
 # API principale
 # =============================================================================
 
+def _word_reference(F, L, w):
+    """Référence lisible (livre FR chapitre:verset) d'un mot BHSA.
+
+    Les features chapter/verse portent sur les nœuds chapter/verse,
+    pas sur les mots : remonter via L.u().
+    """
+    from .reference import book_french
+    book_nodes = L.u(w, "book")
+    verse_nodes = L.u(w, "verse")
+    if not book_nodes or not verse_nodes:
+        return None
+    book = book_french(F.book.v(book_nodes[0]))
+    chapter = F.chapter.v(verse_nodes[0])
+    verse = F.verse.v(verse_nodes[0])
+    if chapter in (None, "unknown", "NA") or verse in (None, "unknown", "NA"):
+        return None
+    return f"{book} {chapter}:{verse}"
+
+
+def binyan_references(F, L, lex, vs, vt, cell, limit=1):
+    """Références attestées d'une cellule d'un lemme dans un binyan.
+
+    Renvoie une liste (au plus ``limit``) de références « Livre ch:v »
+    où la cellule (ps, gn, nu) du lemme ``lex`` est attestée dans le
+    binyan/temps (vs, vt). Vide si non attesté. Sans suffixe
+    pronominal ; hébreu uniquement.
+    """
+    if not lex or L is None:
+        return []
+    ps, gn, nu = cell
+    out = []
+    seen = set()
+    for w in F.otype.s("word"):
+        if F.lex.v(w) != lex or F.sp.v(w) != "verb":
+            continue
+        if F.vs.v(w) != vs or F.vt.v(w) != vt:
+            continue
+        if F.prs.v(w) not in (None, "n/a", "NA", "unknown", "absent"):
+            continue
+        if F.language.v(w) != "Hebrew":
+            continue
+        w_ps, w_gn, w_nu = F.ps.v(w), F.gn.v(w), F.nu.v(w)
+        # Genre : la BHSA marque « unknown » les 1res personnes et
+        # souvent les 3es pluriel — accepter la cellule commune.
+        gn_ok = (w_gn == gn) or (
+            w_gn in ("unknown", "NA", None)
+            and (gn == "c" or nu == "pl"))
+        if (w_ps, w_nu) != (ps, nu) or not gn_ok:
+            continue
+        ref = _word_reference(F, L, w)
+        if ref and ref not in seen:
+            seen.add(ref)
+            out.append(ref)
+            if len(out) >= limit:
+                break
+    return out
+
+
 def analyze_binyanim(F, form, use_mishnah=False, use_modern=False,
-                     with_variants=True):
+                     with_variants=True, with_references=False, L=None):
     """Analyse « binyanim » complète d'un mot hébreu conjugué ou d'une
     racine trilitaire.
 
@@ -1859,6 +1917,11 @@ def analyze_binyanim(F, form, use_mishnah=False, use_modern=False,
     Si ``with_variants`` est faux, seules les formes dominantes sont
     générées (les conjuguaisons concurrentes attestées par cellule ne
     sont pas produites).
+
+    Si ``with_references`` est vrai, chaque entrée de binyan porte un
+    champ ``references`` : {tense: {cellule: "Livre ch:v"}} — la
+    première référence biblique où la cellule du lemme est attestée
+    (forme dominante uniquement ; vide si non attesté).
 
 
     Renvoie :
@@ -1968,6 +2031,24 @@ def analyze_binyanim(F, form, use_mishnah=False, use_modern=False,
             "non_finite": generate_binyan_non_finite(code, root, category,
                                                     with_variants=with_variants),
         }
+        if with_references and verb.get("lex"):
+            refs = {}
+            for tense, persons in TENSE_PERSONS.items():
+                cells = {}
+                for ps, gn, nu, _label in persons:
+                    # La BHSA code le jussif comme wayq ; le
+                    # cohortatif est un imparfait allongé.
+                    vt_map = {"perf": "perf", "impf": "impf",
+                              "impv": "impv", "juss": "wayq",
+                              "coh": "impf"}
+                    vt = vt_map.get(tense, tense)
+                    r = binyan_references(F, L, verb["lex"], code,
+                                          vt, (ps, gn, nu), limit=1)
+                    if r:
+                        cells[(ps, gn, nu)] = r[0]
+                if cells:
+                    refs[tense] = cells
+            entry["references"] = refs
         out["binyanim"].append(entry)
     return out
 
@@ -2119,14 +2200,19 @@ def binyanim_to_text(analysis):
             if modern.get("gloss"):
                 modern_txt += f" ({modern['gloss']})"
             lines.append(modern_txt)
+        cell_refs = b.get("references") or {}
         for tense in ("perf", "impf", "impv", "juss", "coh"):
             lines.append(f"  {TENSE_LABELS[tense]} :")
             cell_variants = b["paradigm"].get("variants", {}).get(tense, {})
+            tense_refs = cell_refs.get(tense, {}) if cell_refs else {}
             for ps, gn, nu, label in TENSE_PERSONS[tense]:
                 form = b["paradigm"][tense].get((ps, gn, nu), "")
                 if form:
                     vars_ = cell_variants.get((ps, gn, nu)) or []
                     shown = " / ".join([form] + vars_)
+                    ref = tense_refs.get((ps, gn, nu))
+                    if ref:
+                        shown = f"{shown}  [{ref}]"
                     lines.append(f"    {label:34} {shown}")
         nf = b["non_finite"]
         if nf:
@@ -2248,6 +2334,11 @@ def binyanim_to_json(analysis, indent=2, ensure_ascii=False):
                     _key(cell): forms
                     for cell, forms in b["non_finite"]
                     .get("variants", {}).items() if forms},
+                "references": {
+                    f"{tense}|{_key(cell)}": ref
+                    for tense, cells in (b.get("references") or {}).items()
+                    for cell, ref in cells.items()
+                },
             }
             for b in analysis["binyanim"]
         ],
