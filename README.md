@@ -308,7 +308,9 @@ ci-dessous, plus un onglet **README**) :
   `pip install markdown` ; en son absence, repli sur le texte brut du
   README. Le sommaire en tête de document est cliquable : chaque ligne
   défile vers sa section ; les boutons **Précédent**/**Suivant** (ou
-  **Alt+←**/**Alt+→**) parcourent l'historique de navigation.
+  **Alt+←**/**Alt+→**) parcourent l'historique de navigation. Les touches
+  **↑**/**↓** et **PgPréc**/**PgSuiv** font défiler le texte, comme dans
+  les zones de résultat.
 
 
 La base BHSA est chargée en arrière-plan au démarrage ; les boutons restent

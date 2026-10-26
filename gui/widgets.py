@@ -692,6 +692,41 @@ class FindMixin:
         self._scroll_lines(1)
         return "break"
 
+    def _on_page_up(self, event=None):
+        """Page précédente (PgUp) : défilement d'une page vers le haut."""
+        self._scroll_pages(-1)
+        return "break"
+
+    def _on_page_down(self, event=None):
+        """Page suivante (PgDn) : défilement d'une page vers le bas."""
+        self._scroll_pages(1)
+        return "break"
+
+    def _scroll_pages(self, delta):
+        """Fait défiler la vue de delta pages (hauteur visible moins
+        une ligne, comme les visualiseurs usuels)."""
+        try:
+            first, last = self.yview()
+            if (last - first) > 0:
+                page = max(1, round((last - first) * self._visible_lines()) - 1)
+            else:
+                page = 1
+            self.yview_scroll(delta * page, "units")
+            self._clamp_insert_to_view()
+        except tk.TclError:
+            pass
+
+    def _visible_lines(self):
+        """Nombre de lignes visibles dans la fenêtre du widget."""
+        try:
+            first = self.index("@0,0")
+            last = self.index("@0,%d" % max(0, self.winfo_height() - 1))
+            fa = int(first.split(".")[0])
+            la = int(last.split(".")[0])
+            return max(1, la - fa + 1)
+        except tk.TclError:
+            return 1
+
     def _scroll_lines(self, delta):
         """Fait défiler la vue de delta lignes, sans déplacer le curseur.
 
@@ -782,6 +817,8 @@ class ResultText(FindMixin, tk.Text):
         self.bind("<Shift-F3>", self._on_f3_prev)
         self.bind("<Up>", self._on_arrow_up)
         self.bind("<Down>", self._on_arrow_down)
+        self.bind("<Prior>", self._on_page_up)
+        self.bind("<Next>", self._on_page_down)
         self._init_find()
 
     def _compute_find_matches(self, query):
@@ -931,6 +968,13 @@ class ReadmeText(FindMixin, tk.Text):
         self.bind("<Control-F>", self._on_find)
         self.bind("<F3>", self._on_f3)
         self.bind("<Shift-F3>", self._on_f3_prev)
+        # Défilement clavier comme dans les zones de résultat (mode
+        # binyan) : flèches = une ligne, PgUp/PgDn = une page, sans
+        # déplacer la marque d'insertion.
+        self.bind("<Up>", self._on_arrow_up)
+        self.bind("<Down>", self._on_arrow_down)
+        self.bind("<Prior>", self._on_page_up)
+        self.bind("<Next>", self._on_page_down)
 
     def _compute_find_matches(self, query):
         """Occurrences ``[(ligne, début, fin), …]`` en indices du texte
