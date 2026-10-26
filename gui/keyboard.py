@@ -6,7 +6,7 @@ le widget HebrewKeyboard, et le notebook à onglets BinyanimNotebook.
 """
 
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, font as tkfont
 
 from gui.widgets import BidiHebrewText
 from gui.config import (
