@@ -52,17 +52,19 @@ class ReadmeTabMixin:
             md_text = fh.read()
 
         # Barre d'outils : navigation dans l'historique des liens
-        # du sommaire (arrière/avant, cf. _readme_nav_*).
+        # du sommaire (arrière/avant, cf. _readme_nav_*). Les widgets
+        # boutons portent un nom distinct des méthodes de navigation
+        # (_readme_nav_back/_readme_nav_forward).
         toolbar = ttk.Frame(tab)
         toolbar.pack(fill="x", padx=4, pady=(4, 0))
-        self._readme_nav_back = ttk.Button(
+        self._readme_nav_back_btn = ttk.Button(
             toolbar, text="\u2190 Précédent", width=12,
             state="disabled", command=self._readme_nav_back)
-        self._readme_nav_back.pack(side="left", padx=(0, 4))
-        self._readme_nav_fwd = ttk.Button(
+        self._readme_nav_back_btn.pack(side="left", padx=(0, 4))
+        self._readme_nav_fwd_btn = ttk.Button(
             toolbar, text="Suivant \u2192", width=12,
             state="disabled", command=self._readme_nav_forward)
-        self._readme_nav_fwd.pack(side="left")
+        self._readme_nav_fwd_btn.pack(side="left")
         # Historique de navigation : pile des positions visitées par
         # clic sur un lien interne (index de début du titre ciblé) et
         # position courante dans cette pile.
@@ -354,11 +356,21 @@ class ReadmeTabMixin:
 
     # --- Historique de navigation des liens du README -------------------
     def _readme_nav_jump(self, target):
-        """Défile vers la cible et inscrit le saut dans l'historique."""
+        """Défile vers la cible et inscrit le saut dans l'historique.
+
+        La position de départ (haut du document, là où se trouve le
+        sommaire) est enregistrée comme premier élément : le retour
+        arrière y ramène après un premier saut, comme dans un
+        navigateur.
+        """
         w = self._readme_text
         if w is None:
             return
         w.see(target)
+        # Position de départ mémorisée au premier saut.
+        if not self._readme_nav_history:
+            self._readme_nav_history.append("1.0")
+            self._readme_nav_pos = 0
         # Coupe l'éventuel futur (retour en arrière puis nouveau saut,
         # comme dans un navigateur) et empile la nouvelle position.
         self._readme_nav_history = self._readme_nav_history[
@@ -390,8 +402,8 @@ class ReadmeTabMixin:
         can_back = self._readme_nav_pos > 0
         can_fwd = (self._readme_nav_pos
                    < len(self._readme_nav_history) - 1)
-        for btn, on in ((self._readme_nav_back, can_back),
-                        (self._readme_nav_fwd, can_fwd)):
+        for btn, on in ((self._readme_nav_back_btn, can_back),
+                        (self._readme_nav_fwd_btn, can_fwd)):
             if btn is not None:
                 try:
                     btn.configure(state="normal" if on else "disabled")

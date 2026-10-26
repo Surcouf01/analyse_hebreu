@@ -149,8 +149,8 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
         # Historique de navigation des liens du README (cf. onglet).
         self._readme_nav_history = []
         self._readme_nav_pos = -1
-        self._readme_nav_back = None
-        self._readme_nav_fwd = None
+        self._readme_nav_back_btn = None
+        self._readme_nav_fwd_btn = None
 
         # Style « lien hypertexte » (bleu, souligné, fond plat) pour le
         # bouton d'impression des binyanim.
