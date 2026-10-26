@@ -45,6 +45,8 @@ from bidi_display import (
     normalize_query,
     find_line_matches,
     has_hebrew_letters,
+    consonant_skeleton,
+    fold_sofit,
 )
 
 from bhsa_grammar import (
@@ -1045,7 +1047,7 @@ class BidiHebrewText(tk.Text):
         return "break"
 
 
-class ResultText(tk.Text):
+class ResultText(FindMixin, tk.Text):
     """Zone de résultat en texte hébreu stable.
 
     Le texte affiché est stocké en ordre visuel (cf. bidi_display.to_visual),
@@ -1072,32 +1074,52 @@ class ResultText(tk.Text):
                         if font is not None else None)
         self._autowrap = kwargs.get("wrap") != "none"
         self.bind("<Configure>", self.on_resize)
-        # Recherche Ctrl-F dans la zone (cf. _open_find_bar) : occurrences
+        # Recherche Ctrl-F dans la zone (cf. FindMixin) : occurrences
         # surlignées, la courante dans une teinte plus soutenue.
         self.tag_configure("find", background="#ffe08a")
         self.tag_configure("find_cur", background="#ffb74d")
         # La sélection native doit rester visible sur le surlignage.
         self.tag_raise("sel")
-        self._find_bar = None
-        self._find_entry = None
-        self._find_count = None
-        self._find_var = tk.StringVar(self)
-        self._find_matches = []
-        self._find_pos = -1
-        self._find_job = None
-        self._find_last_query = None
-        self._find_anchor = None
-        self._find_focus_notifier = None
-        # Insensible aux lettres finales (sofit) : cochée par défaut — ך/כ,
-        # ם/מ, ן/נ, ף/פ, ץ/צ sont équivalentes ; décochée, seules les
-        # formes exactes correspondent.
-        self._find_sofit_var = tk.BooleanVar(self, value=True)
         self.bind("<Control-f>", self._on_find)
         self.bind("<Control-F>", self._on_find)
         self.bind("<F3>", self._on_f3)
         self.bind("<Shift-F3>", self._on_f3_prev)
         self.bind("<Up>", self._on_arrow_up)
         self.bind("<Down>", self._on_arrow_down)
+        self._init_find()
+
+    def _compute_find_matches(self, query):
+        """Occurrences ``[(ligne, debut, fin), …]`` en indices du texte
+        stocké (ordre visuel + marques bidi), en ordre de lecture."""
+        n_lines = int(self.index("end - 1c").split(".")[0])
+        matches = []
+        if has_hebrew_letters(query):
+            skeleton = normalize_query(query)
+            if not skeleton:
+                return []
+            sofit_insensitive = bool(self._find_sofit_var.get())
+            for line_no in range(1, n_lines + 1):
+                line = self.get(f"{line_no}.0", f"{line_no}.0 lineend")
+                if not line:
+                    continue
+                for a, b in find_line_matches(line, skeleton,
+                                              sofit_insensitive=sofit_insensitive):
+                    matches.append((line_no, a, b))
+        else:
+            needle = query.casefold()
+            for line_no in range(1, n_lines + 1):
+                line = self.get(f"{line_no}.0", f"{line_no}.0 lineend")
+                if not line:
+                    continue
+                hay = line.casefold()
+                start = 0
+                while True:
+                    j = hay.find(needle, start)
+                    if j < 0:
+                        break
+                    matches.append((line_no, j, j + len(needle)))
+                    start = j + 1
+        return matches
 
     def set_text(self, text):
         """Mémorise le texte logique et affiche (découpe + ordre visuel)."""
@@ -1186,7 +1208,32 @@ class ResultText(tk.Text):
         self.clipboard_append(to_logical(text))
         return "break"
 
+
+class FindMixin:
+    """Barre de recherche flottante commune aux zones de texte
+    (Ctrl-F, F3, Maj+F3). Une zone définit ``_compute_find_matches``
+    (les indices diffèrent selon que le texte est stocké en ordre
+    visuel ou logique) ; tout le reste — ouverture, surlignage,
+    navigation, compteur — est géré ici."""
+
     # --- Recherche Ctrl-F -------------------------------------------------
+    def _init_find(self):
+        """État de la recherche : à appeler en fin de __init__, après
+        la configuration des tags find/find_cur ; « sofit insensible »
+        est créée ici (cochée par défaut)."""
+        self._find_bar = None
+        self._find_entry = None
+        self._find_count = None
+        self._find_var = tk.StringVar(self)
+        self._find_matches = []
+        self._find_pos = -1
+        self._find_job = None
+        self._find_last_query = None
+        self._find_anchor = None
+        self._find_focus_notifier = getattr(self, "_find_focus_notifier",
+                                           None)
+        self._find_sofit_var = tk.BooleanVar(self, value=True)
+
     def _on_find(self, event=None):
         """Ouvre la barre de recherche, pré-remplie depuis la sélection."""
         self._open_find_bar()
@@ -1220,8 +1267,13 @@ class ResultText(tk.Text):
                 pass
         if self._find_bar is None:
             bar = ttk.Frame(self)
+            # Le champ est justifié à droite pour l'hébreu (saisie RTL) ;
+            # une zone à dominante latine (README) peut le remettre à
+            # gauche via l'attribut de classe _find_entry_justify.
             entry = ttk.Entry(bar, textvariable=self._find_var, width=18,
-                              font=HEBREW_FONT, justify="right")
+                              font=HEBREW_FONT,
+                              justify=getattr(self, "_find_entry_justify",
+                                              "right"))
             entry.pack(side="left", padx=(0, 4))
             sofit_box = ttk.Checkbutton(
                 bar, text="Sofit insensible",
@@ -1349,39 +1401,6 @@ class ResultText(tk.Text):
             self.see(f"{line}.{a}")
         self._update_find_count()
 
-    def _compute_find_matches(self, query):
-        """Occurrences ``[(ligne, début, fin), …]`` en indices du texte
-        stocké (ordre visuel + marques bidi), en ordre de lecture."""
-        n_lines = int(self.index("end - 1c").split(".")[0])
-        matches = []
-        if has_hebrew_letters(query):
-            skeleton = normalize_query(query)
-            if not skeleton:
-                return []
-            sofit_insensitive = bool(self._find_sofit_var.get())
-            for line_no in range(1, n_lines + 1):
-                line = self.get(f"{line_no}.0", f"{line_no}.0 lineend")
-                if not line:
-                    continue
-                for a, b in find_line_matches(line, skeleton,
-                                              sofit_insensitive=sofit_insensitive):
-                    matches.append((line_no, a, b))
-        else:
-            needle = query.casefold()
-            for line_no in range(1, n_lines + 1):
-                line = self.get(f"{line_no}.0", f"{line_no}.0 lineend")
-                if not line:
-                    continue
-                hay = line.casefold()
-                start = 0
-                while True:
-                    j = hay.find(needle, start)
-                    if j < 0:
-                        break
-                    matches.append((line_no, j, j + len(needle)))
-                    start = j + 1
-        return matches
-
     def _find_next(self, event=None):
         if not self._find_matches:
             self._refresh_find()
@@ -1457,6 +1476,90 @@ class ResultText(tk.Text):
         else:
             self._find_count.configure(
                 text=f"{self._find_pos + 1} / {n}")
+
+
+class ReadmeText(FindMixin, tk.Text):
+    """Zone de texte de l'onglet README, en ordre logique (pas de
+    conversion bidi : le rendu maison du markdown reste tel quel).
+
+    Bénéficie de la barre de recherche FindMixin (Ctrl-F, F3, etc.) ;
+    les occurrences sont calculées sur le texte stocké : recherche
+    littérale insensible à la casse pour le texte latin, squelette
+    consonantique (sans nikkud ni teamim, « sofit insensible ») pour
+    les requêtes hébraïques — les indices de cluster s'appliquent
+    directement puisque l'ordre du widget est l'ordre de lecture.
+    """
+
+    # Champ de recherche aligné à gauche : dominante latine (doc).
+    _find_entry_justify = "left"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.tag_configure("find", background="#ffe08a")
+        self.tag_configure("find_cur", background="#ffb74d")
+        # La sélection native doit rester visible sur le surlignage.
+        self.tag_raise("sel")
+        self._init_find()
+        self.bind("<Control-f>", self._on_find)
+        self.bind("<Control-F>", self._on_find)
+        self.bind("<F3>", self._on_f3)
+        self.bind("<Shift-F3>", self._on_f3_prev)
+
+    def _compute_find_matches(self, query):
+        """Occurrences ``[(ligne, début, fin), …]`` en indices du texte
+        stocké (ordre logique), directement surlignables."""
+        n_lines = int(self.index("end - 1c").split(".")[0])
+        matches = []
+        if has_hebrew_letters(query):
+            skeleton = normalize_query(query)
+            if not skeleton:
+                return []
+            sofit_insensitive = bool(self._find_sofit_var.get())
+            if sofit_insensitive:
+                skeleton = fold_sofit(skeleton)
+            for line_no in range(1, n_lines + 1):
+                line = self.get(f"{line_no}.0", f"{line_no}.0 lineend")
+                if not line:
+                    continue
+                # Une entrée par cluster portant des lettres hébraïques,
+                # avec ses indices de colonne dans la ligne stockée.
+                skel = []
+                col = 0
+                for cl in clusters(line):
+                    letters = consonant_skeleton(cl)
+                    if sofit_insensitive:
+                        letters = fold_sofit(letters)
+                    if letters:
+                        skel.append((letters, col, col + len(cl)))
+                    col += len(cl)
+                if not skel:
+                    continue
+                hay = "".join(s[0] for s in skel)
+                begin = 0
+                while True:
+                    j = hay.find(skeleton, begin)
+                    if j < 0:
+                        break
+                    covered = skel[j:j + len(skeleton)]
+                    matches.append((line_no,
+                                     min(s for _l, s, _e in covered),
+                                     max(e for _l, _s, e in covered)))
+                    begin = j + 1
+        else:
+            needle = query.casefold()
+            for line_no in range(1, n_lines + 1):
+                line = self.get(f"{line_no}.0", f"{line_no}.0 lineend")
+                if not line:
+                    continue
+                hay = line.casefold()
+                start = 0
+                while True:
+                    j = hay.find(needle, start)
+                    if j < 0:
+                        break
+                    matches.append((line_no, j, j + len(needle)))
+                    start = j + 1
+        return matches
 
 
 class ScaleTimeTooltip:
@@ -1550,6 +1653,7 @@ class AnalyseurGUI:
         self.translations = {}  # {lang: index} traductions chargées
         self._work_queue = queue.Queue()
         self._target_widget = None  # widget actuellement ciblé par le clavier
+        self._readme_text = None  # zone README (recherche Ctrl-F)
 
         # Style « lien hypertexte » (bleu, souligné, fond plat) pour le
         # bouton d'impression des binyanim.
@@ -1587,13 +1691,24 @@ class AnalyseurGUI:
         """Zone de résultat visible de l'onglet actif, ou None.
 
         Livre/Mot/Phrase : la zone unique de l'onglet. Binyanim : la zone
-        du sous-onglet affiché (Verbe, binyan ou Sortie complète)."""
+        du sous-onglet affiché (Verbe, binyan ou Sortie complète).
+        README : la zone de rendu du README (recherche Ctrl-F).
+        """
         idx = self.notebook.select()
         if not idx:
             return None
         tab = self.notebook.tab(idx, "text")
         if tab in ("Livre", "Mot", "Phrase"):
             return getattr(self.notebook.nametowidget(idx), "_output", None)
+        if tab == "README":
+            w = getattr(self, "_readme_text", None)
+            if w is not None:
+                return w
+            for child in self.notebook.nametowidget(idx).winfo_children():
+                for sub in child.winfo_children():
+                    if isinstance(sub, ReadmeText):
+                        return sub
+            return None
         if tab == "Binyanim":
             sel = self.binyanim_notebook._selected
             if sel is None:
@@ -2314,10 +2429,11 @@ class AnalyseurGUI:
         with open(readme, encoding="utf-8") as fh:
             md_text = fh.read()
 
-        # Zone de texte défilable avec rendu enrichi.
+        # Zone de texte défilable avec rendu enrichi, avec recherche
+        # Ctrl-F (cf. FindMixin).
         wrap = tk.Frame(tab)
         wrap.pack(fill="both", expand=True, padx=4, pady=4)
-        text = tk.Text(wrap, wrap="word", padx=12, pady=8,
+        text = ReadmeText(wrap, wrap="word", padx=12, pady=8,
                        font=("Segoe UI", 10) if sys.platform == "win32"
                        else ("TkDefaultFont", 10),
                        bg="white", relief="flat")
@@ -2372,6 +2488,7 @@ class AnalyseurGUI:
             text.insert("1.0", md_text)
 
         text.configure(state="disabled")
+        self._readme_text = text
 
     def _render_html_to_text(self, text_widget, html):
         """Restitue un sous-ensemble HTML dans un tk.Text avec tags.

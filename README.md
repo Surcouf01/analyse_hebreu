@@ -386,9 +386,12 @@ La recherche opère sur le texte affiché en ordre visuel : le module
 en ordre logique) vers les indices du widget (`find_line_matches`),
 surlignables directement.
 
-La recherche est disponible dans les onglets Livre, Mot, Phrase, ainsi que
-dans chaque sous-onglet de l'onglet Binyanim (Verbe, chaque binyan,
-Sortie complète).
+La recherche est disponible dans les onglets Livre, Mot, Phrase et README,
+ainsi que dans chaque sous-onglet de l'onglet Binyanim (Verbe, chaque binyan,
+Sortie complète). Dans l'onglet README, le texte affiché est en ordre logique
+(pas de conversion bidi) : les requêtes latines sont littérales et
+insensibles à la casse, les requêtes hébraïques portent sur le squelette
+consonantique comme partout ailleurs.
 
 #### Traductions française, anglaise et espagnole
 
