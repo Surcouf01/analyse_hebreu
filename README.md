@@ -692,8 +692,8 @@ print(format_text(analyse))
 
 ```
 analyse_hebreu.py        # CLI (mode verset/livre, mot, phrase, binyanim, mishna)
-gui_hebreu.py           # interface graphique Tkinter (mêmes fonctions que le CLI)
-bidi_display.py        # ordre visuel de l'hébreu pour le GUI (sélection stable)
+gui_hebreu.py           # interface graphique Tkinter (mêmes fonctions que le CLI) ; point d'entrée
+gui/                    # paquet du GUI : config (propriétés/polices), keyboard (clavier virtuel), widgets (zones de texte, recherche Ctrl-F), readme (onglet README), audio (lecteur verset/mishna)bidi_display.py        # ordre visuel de l'hébreu pour le GUI (sélection stable)
 test_bidi_display.py   # tests du module bidi_display
 gui.properties         # polices/tailles d'affichage du GUI (points)
 icone.ico              # icône Windows multi-résolutions de la fenêtre GUI (barre de titre/tâches)
