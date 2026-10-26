@@ -306,7 +306,9 @@ ci-dessous, plus un onglet **README**) :
   `markdown`, puis restitué dans une zone de texte enrichie (titres,
   gras, italique, listes, blocs de code). Dépendance optionnelle :
   `pip install markdown` ; en son absence, repli sur le texte brut du
-  README.
+  README. Le sommaire en tête de document est cliquable : chaque ligne
+  défile vers sa section ; les boutons **Précédent**/**Suivant** (ou
+  **Alt+←**/**Alt+→**) parcourent l'historique de navigation.
 
 
 La base BHSA est chargée en arrière-plan au démarrage ; les boutons restent

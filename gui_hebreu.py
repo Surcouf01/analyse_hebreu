@@ -1665,6 +1665,11 @@ class AnalyseurGUI:
         self._work_queue = queue.Queue()
         self._target_widget = None  # widget actuellement ciblé par le clavier
         self._readme_text = None  # zone README (recherche Ctrl-F)
+        # Historique de navigation des liens du README (cf. onglet).
+        self._readme_nav_history = []
+        self._readme_nav_pos = -1
+        self._readme_nav_back = None
+        self._readme_nav_fwd = None
 
         # Style « lien hypertexte » (bleu, souligné, fond plat) pour le
         # bouton d'impression des binyanim.
@@ -2440,6 +2445,29 @@ class AnalyseurGUI:
         with open(readme, encoding="utf-8") as fh:
             md_text = fh.read()
 
+        # Barre d'outils : navigation dans l'historique des liens
+        # du sommaire (arrière/avant, cf. _readme_nav_*).
+        toolbar = ttk.Frame(tab)
+        toolbar.pack(fill="x", padx=4, pady=(4, 0))
+        self._readme_nav_back = ttk.Button(
+            toolbar, text="\u2190 Précédent", width=12,
+            state="disabled", command=self._readme_nav_back)
+        self._readme_nav_back.pack(side="left", padx=(0, 4))
+        self._readme_nav_fwd = ttk.Button(
+            toolbar, text="Suivant \u2192", width=12,
+            state="disabled", command=self._readme_nav_forward)
+        self._readme_nav_fwd.pack(side="left")
+        # Historique de navigation : pile des positions visitées par
+        # clic sur un lien interne (index de début du titre ciblé) et
+        # position courante dans cette pile.
+        self._readme_nav_history = []
+        self._readme_nav_pos = -1
+        # Raccourcis clavier Alt+Gauche / Alt+Droite : actifs quel que
+        # soit le focus (bind_all), le handler vérifie que l'onglet
+        # README est affiché et ignore sinon.
+        self.root.bind_all("<Alt-Left>", self._on_readme_nav_key)
+        self.root.bind_all("<Alt-Right>", self._on_readme_nav_key)
+
         # Zone de texte défilable avec rendu enrichi, avec recherche
         # Ctrl-F (cf. FindMixin).
         wrap = tk.Frame(tab)
@@ -2695,7 +2723,9 @@ class AnalyseurGUI:
 
         Les liens internes (#ancre) utilisent le slug GitHub calculé
         à l'insertion des titres (cf. _render_html_to_text) ; les
-        liens externes (http…) s'ouvrent dans le navigateur.
+        liens externes (http…) s'ouvrent dans le navigateur. Chaque
+        saut interne est inscrit dans l'historique de navigation
+        (cf. _readme_nav_*).
         """
         w = self._readme_text
         if w is None:
@@ -2710,11 +2740,72 @@ class AnalyseurGUI:
             if tag.startswith("link:") and tag != "link":
                 target = tag[len("link:"):]
                 if target in anchors:
-                    w.see(anchors[target])
+                    self._readme_nav_jump(anchors[target])
                     return
             elif tag in links:
                 webbrowser.open(links[tag])
                 return
+
+    # --- Historique de navigation des liens du README -------------------
+    def _readme_nav_jump(self, target):
+        """Défile vers la cible et inscrit le saut dans l'historique."""
+        w = self._readme_text
+        if w is None:
+            return
+        w.see(target)
+        # Coupe l'éventuel futur (retour en arrière puis nouveau saut,
+        # comme dans un navigateur) et empile la nouvelle position.
+        self._readme_nav_history = self._readme_nav_history[
+            :self._readme_nav_pos + 1]
+        self._readme_nav_history.append(target)
+        self._readme_nav_pos = len(self._readme_nav_history) - 1
+        self._readme_nav_update_buttons()
+
+    def _readme_nav_back(self):
+        """Retourne à la position précédente de l'historique."""
+        if self._readme_nav_pos > 0:
+            self._readme_nav_pos -= 1
+            target = self._readme_nav_history[self._readme_nav_pos]
+            if self._readme_text is not None:
+                self._readme_text.see(target)
+            self._readme_nav_update_buttons()
+
+    def _readme_nav_forward(self):
+        """Avance à la position suivante de l'historique."""
+        if self._readme_nav_pos < len(self._readme_nav_history) - 1:
+            self._readme_nav_pos += 1
+            target = self._readme_nav_history[self._readme_nav_pos]
+            if self._readme_text is not None:
+                self._readme_text.see(target)
+            self._readme_nav_update_buttons()
+
+    def _readme_nav_update_buttons(self):
+        """Active/désactive les boutons selon la position courante."""
+        can_back = self._readme_nav_pos > 0
+        can_fwd = (self._readme_nav_pos
+                   < len(self._readme_nav_history) - 1)
+        for btn, on in ((self._readme_nav_back, can_back),
+                        (self._readme_nav_fwd, can_fwd)):
+            if btn is not None:
+                try:
+                    btn.configure(state="normal" if on else "disabled")
+                except tk.TclError:
+                    pass
+
+    def _on_readme_nav_key(self, event=None):
+        """Alt+Gauche / Alt+Droite : navigation arrière/avant —
+        uniquement quand l'onglet README est actif."""
+        try:
+            idx = self.notebook.select()
+            if not idx or self.notebook.tab(idx, "text") != "README":
+                return None
+        except tk.TclError:
+            return None
+        if event.keysym == "Left":
+            self._readme_nav_back()
+        elif event.keysym == "Right":
+            self._readme_nav_forward()
+        return "break"
 
     def _build_binyanim_tab(self):
         """Onglet « Binyanim » : conjugaison d'un verbe dans les 7 binyanim.
