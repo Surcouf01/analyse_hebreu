@@ -1634,15 +1634,18 @@ class AnalyseurGUI:
         self.tab_word = ttk.Frame(self.notebook)
         self.tab_phrase = ttk.Frame(self.notebook)
         self.tab_binyanim = ttk.Frame(self.notebook)
+        self.tab_readme = ttk.Frame(self.notebook)
         self.notebook.add(self.tab_verse, text="Livre")
         self.notebook.add(self.tab_word, text="Mot")
         self.notebook.add(self.tab_phrase, text="Phrase")
         self.notebook.add(self.tab_binyanim, text="Binyanim")
+        self.notebook.add(self.tab_readme, text="README")
 
         self._build_verse_tab()
         self._build_word_tab()
         self._build_phrase_tab()
         self._build_binyanim_tab()
+        self._build_readme_tab()
 
         # Raccourcis globaux de navigation : Ctrl+↑/↓ verset, Shift+↑/↓
         # chapitre, Alt+↑/↓ livre — équivalents aux boutons ▲/▼ de
@@ -2280,6 +2283,209 @@ class AnalyseurGUI:
         if verses:
             self.verse_combo.current(0)
 
+    def _build_readme_tab(self, parent=None):
+        """Onglet README : rendu enrichi du fichier README.md.
+
+        Le markdown est converti en HTML par le module ``markdown``
+        (structure de référence), puis le HTML est restitué dans un
+        tk.Text avec tags : titres, gras, italique, blocs de code,
+        listes à puces. Ce rendu maison (pas de moteur HTML externe,
+        notamment pas tkinterweb qui provoque un segmentation fault
+        sous Windows) ne peut pas planter la fenêtre. Sans module
+        markdown, repli sur le markdown brut.
+        """
+        tab = self.tab_readme
+        # Lecture du README : à côté du script, puis ressources
+        # embarquées (PyInstaller), puis dossier de l'exécutable.
+        readme = None
+        for base in (os.path.dirname(os.path.abspath(__file__)),
+                     _resource_dir(), _app_dir()):
+            for name in ("README.md", "readme.md"):
+                p = os.path.join(base, name)
+                if os.path.isfile(p):
+                    readme = p
+                    break
+            if readme:
+                break
+        if readme is None:
+            ttk.Label(tab, text="README.md introuvable.").pack(padx=8,
+                                                              pady=8)
+            return
+        with open(readme, encoding="utf-8") as fh:
+            md_text = fh.read()
+
+        # Zone de texte défilable avec rendu enrichi.
+        wrap = tk.Frame(tab)
+        wrap.pack(fill="both", expand=True, padx=4, pady=4)
+        text = tk.Text(wrap, wrap="word", padx=12, pady=8,
+                       font=("Segoe UI", 10) if sys.platform == "win32"
+                       else ("TkDefaultFont", 10),
+                       bg="white", relief="flat")
+        yscroll = ttk.Scrollbar(wrap, orient="vertical", command=text.yview)
+        yscroll.pack(side="right", fill="y")
+        text.pack(side="left", fill="both", expand=True)
+        text.configure(yscrollcommand=yscroll.set)
+
+        # Tags du rendu. cget("font") renvoie une CHAÎNE : résoudre
+        # la police via tkinter.font pour obtenir famille et taille
+        # numériques.
+        from tkinter import font as tkfont
+        base = tkfont.Font(font=text.cget("font"))
+        fam = base.actual("family")
+        size = base.actual("size")
+        mono = tkfont.Font(family="Consolas", size=10) \
+            if sys.platform == "win32" else tkfont.nametofont("TkFixedFont")
+        mono_small = mono.copy()
+        mono_small.configure(size=mono.actual("size") - 1)
+        # Hiérarchie h1..h6 : chaque niveau se distingue par la taille,
+        # la couleur et l'espacement — h1 titre principal, h2 section
+        # (souligné par un filet), h3 sous-section, h4-h6 niveaux fins.
+        text.tag_configure("h1", font=(fam, size + 9, "bold"),
+                           foreground="#1a1a2e", spacing3=12, spacing1=14)
+        text.tag_configure("h2", font=(fam, size + 5, "bold"),
+                           foreground="#16213e", spacing3=8, spacing1=16,
+                           underline=True)
+        text.tag_configure("h3", font=(fam, size + 2, "bold"),
+                           foreground="#0f3460", spacing1=10, spacing3=4)
+        text.tag_configure("h4", font=(fam, size, "bold italic"),
+                           foreground="#0f3460", spacing1=8)
+        text.tag_configure("h5", font=(fam, size - 1, "bold"),
+                           foreground="#51557e", spacing1=6)
+        text.tag_configure("h6", font=(fam, size - 1, "italic"),
+                           foreground="#51557e", spacing1=6)
+        text.tag_configure("bold", font=(fam, size, "bold"))
+        text.tag_configure("italic", font=(fam, size, "italic"))
+        text.tag_configure("code", font=mono, background="#f0f0f0")
+        text.tag_configure("pre", font=mono_small, background="#f5f5f5",
+                           lmargin1=12, lmargin2=12,
+                           spacing1=4, spacing3=4)
+        text.tag_configure("li", lmargin1=16, lmargin2=24)
+        text.tag_configure("hr", justify="center", foreground="gray60")
+
+        try:
+            import markdown
+            html = markdown.markdown(
+                md_text, extensions=["tables", "fenced_code",
+                                     "sane_lists"])
+            self._render_html_to_text(text, html)
+        except ImportError:
+            text.insert("1.0", md_text)
+
+        text.configure(state="disabled")
+
+    def _render_html_to_text(self, text_widget, html):
+        """Restitue un sous-ensemble HTML dans un tk.Text avec tags.
+
+        Pris en charge : h1-h6, p, br, hr, ul/ol/li (imbrication
+        approximée par l'indentation), strong/b, em/i, code, pre,
+        blockquote. Le texte brut du HTML est inséré, les tags
+        s'appliquent par plages.
+        """
+        import html as _html
+        import re
+
+        # Découpage du HTML en événements (ouvrant/fermant/texte).
+        tag_re = re.compile(r"<(/?)(\w+)([^>]*)>")
+        pos = 0
+        events = []  # (type, nom, attrs) / ("text", contenu)
+        for m in tag_re.finditer(html):
+            if m.start() > pos:
+                events.append(("text", html[pos:m.start()], ""))
+            events.append(("close" if m.group(1) else "open",
+                           m.group(2).lower(), m.group(3) or ""))
+            pos = m.end()
+        if pos < len(html):
+            events.append(("text", html[pos:], ""))
+
+        headings = {"h1", "h2", "h3", "h4", "h5", "h6"}
+        # --- Traitement séquentiel des événements ---
+        text_widget.delete("1.0", "end")
+        markup = []  # pile de tags actifs ("bold", "italic", "code")
+        list_stack = []
+        counters = []
+        def current_tags():
+            return list(markup)
+
+        for kind, a, b in events:
+            if kind == "text":
+                content = _html.unescape(a)
+                if not content:
+                    continue
+                # Sauter les contenus vides (inter-tags).
+                if not content.strip() and not content.startswith("\n"):
+                    continue
+                tags = current_tags() + (["li"] if list_stack else [])
+                text_widget.insert("end", content, tags or ())
+            elif kind == "open":
+                if a in headings:
+                    text_widget.insert("end", "\n")
+                    markup.append("h" + a[1])
+                    # Les titres ferment implicitement les paragraphes.
+                elif a in ("strong", "b"):
+                    markup.append("bold")
+                elif a in ("em", "i"):
+                    markup.append("italic")
+                elif a == "code":
+                    markup.append("code")
+                elif a == "pre":
+                    text_widget.insert("end", "\n")
+                    markup.append("pre")
+                elif a in ("ul", "ol"):
+                    list_stack.append(a)
+                    counters.append(0)
+                    text_widget.insert("end", "\n")
+                elif a == "li":
+                    # Nouvelle ligne seulement si le dernier caractère
+                    # inséré n'est pas déjà un retour à la ligne.
+                    end = text_widget.index("end - 1c")
+                    last = text_widget.get(f"{end}", "end")
+                    sep = "" if last == "\n" else "\n"
+                    if list_stack and list_stack[-1] == "ol":
+                        counters[-1] += 1
+                        text_widget.insert("end", sep + "  " * (len(list_stack) - 1)
+                                          + f"{counters[-1]}. ", ("li",))
+                    else:
+                        text_widget.insert("end", sep + "  " * max(0, len(list_stack) - 1)
+                                          + "\u2022 ", ("li",))
+                elif a == "br":
+                    text_widget.insert("end", "\n")
+                elif a == "hr":
+                    text_widget.insert("end", "\n\u2500" * 30 + "\n", ("hr",))
+                elif a == "blockquote":
+                    markup.append("li")
+                    text_widget.insert("end", "\n")
+            elif kind == "close":
+                if a in headings:
+                    if markup and markup[-1].startswith("h"):
+                        markup.pop()
+                    text_widget.insert("end", "\n\n", ())
+                elif a in ("strong", "b", "em", "i", "code", "li",
+                           "blockquote"):
+                    if markup and markup[-1] in ("bold", "italic",
+                                                 "code", "li"):
+                        markup.pop()
+                elif a == "pre":
+                    if markup and markup[-1] == "pre":
+                        markup.pop()
+                    text_widget.insert("end", "\n\n", ())
+                elif a in ("ul", "ol"):
+                    if list_stack:
+                        list_stack.pop()
+                    if counters:
+                        counters.pop()
+                    text_widget.insert("end", "\n")
+        # Nettoyage : lignes vides multiples -> une seule. La
+        # suppression doit être CIBLÉE (search/delete sur la plage
+        # excédentaire) : relire tout le texte avec get() puis le
+        # réinsérer perdrait tous les tags de formatage.
+        while True:
+            idx = text_widget.search("\n\n\n", "1.0", "end")
+            if not idx:
+                break
+            # Supprimer UN newline de la séquence (boucle jusqu'à
+            # normalisation complète).
+            text_widget.delete(f"{idx} lineend", f"{idx} lineend +1c")
+
     def _build_binyanim_tab(self):
         """Onglet « Binyanim » : conjugaison d'un verbe dans les 7 binyanim.
 
@@ -2348,6 +2554,14 @@ class AnalyseurGUI:
         ttk.Checkbutton(opts, text="Toutes les formes attestées",
                         variable=self.binyanim_use_variants).pack(
                             side="left", padx=(8, 0))
+        # Référence biblique attestée par cellule (quand elle existe) :
+        # « forme [Livre ch:v] ».
+        self.binyanim_use_references = tk.BooleanVar(
+            value=_PROPS.get("binyanim.references", "false").strip().lower()
+            == "true")
+        ttk.Checkbutton(opts, text="Référence attestée",
+                        variable=self.binyanim_use_references).pack(
+                            side="left", padx=(8, 0))
 
         self.btn_binyanim = ttk.Button(tab, text="Conjuguer le verbe",
                                        command=self._run_binyanim)
@@ -2391,7 +2605,143 @@ class AnalyseurGUI:
         parent.columnconfigure(0, weight=1)
         text.configure(state="disabled")
         StableSelection(text)
+        # Menu contextuel : ouvrir le mode verset sur la référence
+        # contenue dans (ou autour de) la sélection. Les modifieurs font
+        # partie du pattern Tk : Shift+clic droit génère <Shift-Button-3>,
+        # un bind distinct est nécessaire.
+        text.bind("<Button-3>", lambda e, t=text: self._binyan_context_menu(e, t))
+        text.bind("<Shift-Button-3>", lambda e, t=text: self._binyan_context_menu(e, t))
         return text
+
+    def _reference_pairs_in(self, chunk):
+        """Couples (forme, référence) d'un extrait de texte.
+
+        Chaque segment « forme  [Livre ch:v] » donne un couple ; les
+        formes sont séparées par « / ». Retourne [] si l'extrait ne
+        porte aucune référence.
+        """
+        import re
+        pairs = []
+        # Segments : texte jusqu'à la référence fermante.
+        seg_re = re.compile(
+            r"(?P<form>[^/\[]+)\s*\[(?P<book>[^\]]+?)\s"
+            r"(?P<ch>\d+)[:.](?P<v>\d+)\]")
+        for m in seg_re.finditer(chunk):
+            form = m.group("form").strip()
+            # Ne garder que le dernier mot hébreu du segment (la
+            # forme attachée à sa référence, après le libellé de
+            # personne).
+            toks = [t for t in form.split() if t]
+            he = ""
+            for tok in reversed(toks):
+                if any("\u05D0" <= c <= "\u05EA" for c in tok):
+                    he = tok
+                    break
+            ref = f"{m.group('book')} {m.group('ch')}:{m.group('v')}"
+            pairs.append((he, ref))
+        return pairs
+
+    def _line_reference_pairs(self, text_widget):
+        """Couples (forme, référence) de la sélection, sinon de la
+        ligne du clic (marques insert/current)."""
+        import re
+        chunks = []
+        try:
+            sel = text_widget.get("sel.first", "sel.last")
+            if sel.strip():
+                chunks.append(sel)
+        except tk.TclError:
+            pass
+        for mark in ("insert", "current"):
+            try:
+                line = text_widget.get(f"{mark} linestart",
+                                       f"{mark} lineend")
+            except tk.TclError:
+                continue
+            if line.strip():
+                chunks.append(line)
+        for chunk in chunks:
+            pairs = self._reference_pairs_in(chunk)
+            if pairs:
+                return pairs
+        return []
+
+    def _all_reference_pairs(self, text_widget):
+        """Tous les couples (forme, référence) du texte affiché."""
+        try:
+            content = text_widget.get("1.0", "end")
+        except tk.TclError:
+            return []
+        return self._reference_pairs_in(content)
+
+    def _binyan_context_menu(self, event, text_widget):
+        # AnalyseurGUI n'est pas un widget Tk : le menu doit avoir un
+        # parent réel, le widget de sortie lui-même.
+        menu = tk.Menu(text_widget, tearoff=0)
+        # Priorité aux couples de la sélection ou de la ligne du clic
+        # (TOUTES les références de la ligne, pas seulement la
+        # première) ; repli : tous les couples du texte affiché.
+        pairs = self._line_reference_pairs(text_widget)
+        scope = "cette ligne"
+        if not pairs:
+            pairs = self._all_reference_pairs(text_widget)
+            scope = "le texte"
+        if pairs:
+            menu.add_command(label=f"Ouvrir le verset ({scope})…",
+                              state="disabled")
+            for form, r in pairs:
+                label = f"{form}  {r}" if form else r
+                menu.add_command(
+                    label=label,
+                    command=lambda rr=r: self._open_verse_reference(rr))
+        else:
+            menu.add_command(label="Aucune référence dans la sélection",
+                              state="disabled")
+        try:
+            menu.tk_popup(event.x_root, event.y_root)
+        finally:
+            # Sous Windows, sans grab_release le menu peut rester
+            # « capturé » et ignorer le clic suivant.
+            menu.grab_release()
+
+    def _open_verse_reference(self, reference):
+        """Bascule sur l'onglet Livre et affiche la référence donnée."""
+        # Bascule de corpus vers la Bible si nécessaire.
+        if self.corpus_var.get() == CORPUS_MISHNA:
+            self.corpus_var.set(CORPUS_BIBLE)
+            self._on_corpus_change()
+        self.notebook.select(self.tab_verse)
+        # Sélectionner livre / chapitre / verset dans les combobox.
+        import re as _re
+        m = _re.match(r"(.+?)\s+(\d+)[:.](\d+)$", reference.strip())
+        if not m:
+            messagebox.showwarning("Référence", f"Référence illisible : {reference}")
+            return
+        book_fr, chapter, verse = m.group(1), m.group(2), m.group(3)
+        values = list(self.book_combo["values"])
+        target = None
+        for v in values:
+            if v.strip() == book_fr or v == book_fr:
+                target = v
+                break
+        if target is None:
+            messagebox.showwarning("Référence",
+                                   f"Livre introuvable : {book_fr}")
+            return
+        self.book_combo.set(target)
+        self._on_book_change()
+        if str(chapter) not in list(self.chapter_combo["values"]):
+            messagebox.showwarning("Référence",
+                                   f"Chapitre introuvable : {chapter}")
+            return
+        self.chapter_combo.set(chapter)
+        self._on_chapter_change()
+        if str(verse) not in list(self.verse_combo["values"]):
+            messagebox.showwarning("Référence",
+                                   f"Verset introuvable : {verse}")
+            return
+        self.verse_combo.set(verse)
+        self._run_verse()
 
     def _run_binyanim(self):
         if self.api is None:
@@ -2405,14 +2755,25 @@ class AnalyseurGUI:
         use_modern = bool(self.binyanim_use_modern.get())
         use_variants = bool(getattr(self, "binyanim_use_variants", None)
                             and self.binyanim_use_variants.get())
+        use_references = bool(getattr(self, "binyanim_use_references", None)
+                              and self.binyanim_use_references.get())
         F = self.api.F
         self._disable_buttons()
+        # Sablier : la collecte des références attestées (surtout avec
+        # les variantes) scanne la base BHSA et peut prendre du temps.
+        # root.update_idletasks() force l'affichage du curseur avant
+        # le lancement du thread.
+        self.root.configure(cursor="watch")
+        self.root.update_idletasks()
         self.status.configure(text=f"Conjugaison de « {form} »…")
 
         def worker():
+            L = self.api.L
             analysis = analyze_binyanim(F, form, use_mishnah=use_mishnah,
                                         use_modern=use_modern,
-                                        with_variants=use_variants)
+                                        with_variants=use_variants,
+                                        with_references=use_references,
+                                        L=L)
             if not analysis.get("found"):
                 verb = analysis.get("verb", {})
                 reason = verb.get("reason") or analysis.get("reason")
@@ -2456,6 +2817,7 @@ class AnalyseurGUI:
                        "La fenêtre résultat n'a pas été modifiée.")
         messagebox.showwarning("Binyanim", msg)
         self.status.configure(text="Prêt.")
+        self.root.configure(cursor="")
         self._enable_buttons()
 
     def _show_binyanim_raw(self, text):
@@ -2463,6 +2825,7 @@ class AnalyseurGUI:
         self._set_output(self.binyanim_raw_text, text)
         self.binyanim_notebook.select(self.binyanim_raw_tab)
         self.status.configure(text="Prêt.")
+        self.root.configure(cursor="")
         self._enable_buttons()
 
     def _show_binyanim_parsed(self, parsed):
@@ -2609,6 +2972,7 @@ class AnalyseurGUI:
             self.binyanim_notebook.select(first)
         self.binyanim_parsed = parsed
         self.status.configure(text="Prêt.")
+        self.root.configure(cursor="")
         self._enable_buttons()
 
     def _print_binyan(self, binyan_code):
@@ -3253,6 +3617,10 @@ def _save_all_preferences(root):
         if variants is not None:
             updates["binyanim.variants"] = ("true" if variants.get()
                                             else "false")
+        references = getattr(gui, "binyanim_use_references", None)
+        if references is not None:
+            updates["binyanim.references"] = ("true" if references.get()
+                                              else "false")
     if updates:
         _save_properties(root, updates)
 

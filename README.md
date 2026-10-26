@@ -203,7 +203,8 @@ python gui_hebreu.py
 Pré-requis : `tkinter` (inclus dans la plupart des distributions Python ; sur
 Debian/Ubuntu : `sudo apt install python3-tk`).
 
-L'interface comporte quatre onglets :
+L'interface comporte cinq onglets (les quatre premiers documentés
+ci-dessous, plus un onglet **README**) :
 
 - **Livre** : sélection d'abord du **corpus** — **Bible (BHSA)** ou
   **Mishna (Sefaria)** — puis du livre, du chapitre et du verset au moyen de
@@ -268,6 +269,13 @@ L'interface comporte quatre onglets :
   final, etc.).
   Le GUI parse la sortie marquée du CLI (`###BINYAN|...###`). Formats :
   texte ou JSON.
+- **README** : la documentation (ce fichier) affichée dans
+  l'application — le markdown est converti en HTML par le module
+  `markdown`, puis restitué dans une zone de texte enrichie (titres,
+  gras, italique, listes, blocs de code). Dépendance optionnelle :
+  `pip install markdown` ; en son absence, repli sur le texte brut du
+  README.
+
 
 La base BHSA est chargée en arrière-plan au démarrage ; les boutons restent
 inactifs jusqu'à la fin du chargement. Les analyses s'exécutent dans des
@@ -290,6 +298,47 @@ font.output.size    = 20
 La zone de résultat dispose d'un **ascenseur vertical et horizontal** : les
 longues lignes ne sont pas coupées (`wrap=none`) et peuvent être défiler
 latéralement si elles dépassent du cadre.
+
+##### Police recommandée : Taamey Frank CLM (nikkud complet)
+
+Selon la police, le moteur de rendu peut ne pas attacher une marque combinante
+(nikkud, daguesh) à sa lettre de base : la marque est alors dessinée sur son
+propre **cercle pointillé de repli** (◌) — marque orpheline. Les polices
+Windows courantes (Segoe UI, FrankRuehl, David) ont un support nikkud partiel
+ou vieillissant ; pour l'hébreu biblique pointé, la police libre **Taamey
+Frank CLM** (Yoram Gnat, licence GPL avec exception d'intégration) positionne
+correctement nikkud **et** teamim (cantillation).
+
+Procédure d'installation (Windows) :
+
+1. **Télécharger** les fichiers `.ttf` depuis le dépôt Sefaria :
+   `https://github.com/Sefaria/Sefaria-Project/tree/master/static/fonts/Taamey-Frank`
+   — bouton **Code** → **Download ZIP** (les quatre `TaameyFrankCLM-*.ttf`
+   sont à la racine du dossier décompressé), ou liens directs fichier par
+   fichier (`.../raw/master/static/fonts/Taamey-Frank/TaameyFrankCLM-Medium.ttf`,
+   etc.). Alternative : l'archive générale Culmus
+   `https://sourceforge.net/projects/culmus/files/culmus/0.140/`
+   (Frank Ruehl CLM, Hadasim CLM ; nikkud + teamim : Keter YG, Shofar).
+2. **Installer** : sélectionner les `.ttf` dans l'Explorateur → clic droit
+   → **Installer** (ou « Installer pour tous les utilisateurs », droits
+   admin). Windows les copie dans `C:\Windows\Fonts`.
+3. **Configurer** `gui.properties` — le nom de famille est celui affiché par
+   un double-clic sur le `.ttf` dans `C:\Windows\Fonts` :
+
+```properties
+font.input.family = Taamey Frank CLM
+font.output.family = Taamey Frank CLM
+font.tabs.family   = Taamey Frank CLM
+```
+
+4. **Relancer** `gui_hebreu.py`.
+
+Note : l'interligne de Taamey Frank est volontairement plus large (place
+réservée aux teamim) — l'affichage est un peu plus aéré qu'avec DejaVu Sans.
+Les variantes Medium/Oblique positionnent nikkud et teamim ; en Bold les
+teamim sont transparents (sans conséquence ici, l'application n'affiche pas
+de teamim).
+
 
 #### Sélection stable du texte hébreu
 

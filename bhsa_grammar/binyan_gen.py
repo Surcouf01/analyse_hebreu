@@ -240,8 +240,16 @@ S_PERF = {
     ("p2", "m", "sg"): SHEVA + TAV + QAMATS + DAGESH,
     ("p2", "f", "sg"): SHEVA + TAV + SHEVA + DAGESH,
     ("p1", "c", "sg"): SHEVA + TAV + HIREQ + YOD,
+    # Parfait 3e pers. pl. : la BHSA ne connaît qu'une seule forme,
+    # commune aux masculin et féminin, en -ּוּ (shureq ; les 2756
+    # parfaites qal 3pl de la base sont toutes en -וּ, genre
+    # « unknown »). La terminaison féminine -ָה (qatlāh) ne survit
+    # qu'aux personnes du singulier ; au pluriel du parfait, l'hébreu
+    # biblique emploie la forme commune (Gesenius §44g, §47k).
+    # La 3fp distincte n'existe qu'à l'imparfait/jussif
+    # (תִּכְתֹּבְנָה).
     ("p3", "m", "pl"): SHUREQ,
-    ("p3", "f", "pl"): QAMATS + HE,
+    ("p3", "f", "pl"): SHUREQ,
     ("p2", "m", "pl"): SHEVA + TAV + SEGOL + DAGESH + END_MEM,
     ("p2", "f", "pl"): TAV + SEGOL + DAGESH + END_NUN,
     ("p1", "c", "pl"): SHEVA + NUN + SHUREQ,
@@ -281,7 +289,8 @@ def _qal_perf(p1, p2, p3):
         ("p2", "f", "sg"): p1 + QAMATS + p2 + PATAH + p3 + S_PERF[("p2", "f", "sg")],
         ("p1", "c", "sg"): p1 + QAMATS + p2 + PATAH + p3 + S_PERF[("p1", "c", "sg")],
         ("p3", "m", "pl"): p1 + QAMATS + p2 + SHEVA + p3 + SHUREQ,
-        ("p3", "f", "pl"): p1 + QAMATS + p2 + SHEVA + p3 + QAMATS + HE,
+        # 3fp = forme commune en -ו׼ (cf. S_PERF).
+        ("p3", "f", "pl"): p1 + QAMATS + p2 + SHEVA + p3 + SHUREQ,
         ("p2", "m", "pl"): p1 + SHEVA + p2 + PATAH + p3 + S_PERF[("p2", "m", "pl")],
         ("p2", "f", "pl"): p1 + SHEVA + p2 + PATAH + p3 + S_PERF[("p2", "f", "pl")],
         ("p1", "c", "pl"): p1 + QAMATS + p2 + PATAH + p3 + S_PERF[("p1", "c", "pl")],
@@ -333,7 +342,8 @@ def _nif_perf(p1, p2, p3):
         ("p2", "f", "sg"): NUN + HIREQ + p1 + SHEVA + p2 + PATAH + DAGESH + p3 + S_PERF[("p2", "f", "sg")],
         ("p1", "c", "sg"): NUN + HIREQ + p1 + SHEVA + p2 + PATAH + DAGESH + p3 + S_PERF[("p1", "c", "sg")],
         ("p3", "m", "pl"): NUN + HIREQ + p1 + SHEVA + p2 + SHEVA + p3 + SHUREQ,
-        ("p3", "f", "pl"): NUN + HIREQ + p1 + SHEVA + p2 + SHEVA + p3 + QAMATS + HE,
+        # 3fp = forme commune en -ו׼ (cf. S_PERF).
+        ("p3", "f", "pl"): NUN + HIREQ + p1 + SHEVA + p2 + SHEVA + p3 + SHUREQ,
         ("p2", "m", "pl"): NUN + HIREQ + p1 + SHEVA + p2 + PATAH + DAGESH + p3 + S_PERF[("p2", "m", "pl")],
         ("p2", "f", "pl"): NUN + HIREQ + p1 + SHEVA + p2 + PATAH + DAGESH + p3 + S_PERF[("p2", "f", "pl")],
         ("p1", "c", "pl"): NUN + HIREQ + p1 + SHEVA + p2 + PATAH + DAGESH + p3 + S_PERF[("p1", "c", "pl")],
@@ -393,7 +403,9 @@ def _piel_perf(p1, p2, p3):
         ("p2", "f", "sg"): p1 + HIREQ + DAGESH + p2 + SEGOL + DAGESH + p3 + S_PERF[("p2", "f", "sg")],
         ("p1", "c", "sg"): p1 + HIREQ + DAGESH + p2 + SEGOL + DAGESH + p3 + S_PERF[("p1", "c", "sg")],
         ("p3", "m", "pl"): p1 + HIREQ + DAGESH + p2 + SHEVA + DAGESH + p3 + SHUREQ,
-        ("p3", "f", "pl"): p1 + HIREQ + DAGESH + p2 + SHEVA + DAGESH + p3 + QAMATS + HE,
+        # 3fp = forme commune en -וּ (cf. S_PERF) : le parfait 3fp
+        # biblique n'a pas de terminaison propre.
+        ("p3", "f", "pl"): p1 + HIREQ + DAGESH + p2 + SHEVA + DAGESH + p3 + SHUREQ,
         ("p2", "m", "pl"): p1 + HIREQ + DAGESH + p2 + SEGOL + DAGESH + p3 + S_PERF[("p2", "m", "pl")],
         ("p2", "f", "pl"): p1 + HIREQ + DAGESH + p2 + SEGOL + DAGESH + p3 + S_PERF[("p2", "f", "pl")],
         ("p1", "c", "pl"): p1 + HIREQ + DAGESH + p2 + SEGOL + DAGESH + p3 + S_PERF[("p1", "c", "pl")],
@@ -401,39 +413,52 @@ def _piel_perf(p1, p2, p3):
 
 
 def _piel_impf(p1, p2, p3):
+    """Imparfait piel.
+
+    Le sheva du préfixe personnel (תְּ, יְ, נְ) est simple : la 1re
+    radicale ne porte PAS de dagesh — même begadkefat (תְּדַבֵּרִי,
+    יְבָרֵךְ, אֲדַבֵּר ; la BHSA n'atteste aucun dagesh sur P1 dans
+    les 492 formes de piel impf à P1 begadkefat, y compris après le
+    hatef de la 1re personne). Le dagesh fort du piel est sur P2
+    (redoublement), pas sur P1.
+    """
     out = {}
     for key, (pref, _) in IMPF_PREF.items():
         if key[0] == "p1" and key[2] == "sg":
-            out[key] = ALEF + HATAF_QAMATS + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3
+            out[key] = ALEF + HATAF_QAMATS + p1 + PATAH + p2 + TSERE + DAGESH + p3
         elif key[0] == "p1" and key[2] == "pl":
-            out[key] = NUN + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3
+            out[key] = NUN + SHEVA + p1 + PATAH + p2 + TSERE + DAGESH + p3
         elif key[0] == "p2" and key[1] == "f" and key[2] == "sg":
-            out[key] = TAV + SHEVA + DAGESH + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3 + HIREQ + YOD
+            out[key] = TAV + SHEVA + p1 + PATAH + p2 + TSERE + DAGESH + p3 + HIREQ + YOD
         elif key[0] == "p2" and key[1] == "f" and key[2] == "pl":
-            out[key] = TAV + SHEVA + DAGESH + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
+            out[key] = TAV + SHEVA + p1 + PATAH + p2 + TSERE + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
         elif key[0] == "p3" and key[1] == "f" and key[2] == "pl":
-            out[key] = TAV + SHEVA + DAGESH + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
+            out[key] = TAV + SHEVA + p1 + PATAH + p2 + TSERE + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
         elif key[0] == "p2" and key[1] == "m" and key[2] == "sg":
-            out[key] = TAV + SHEVA + DAGESH + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3
+            out[key] = TAV + SHEVA + p1 + PATAH + p2 + TSERE + DAGESH + p3
         elif key[0] == "p2" and key[1] == "m" and key[2] == "pl":
-            out[key] = TAV + SHEVA + DAGESH + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + SHUREQ
+            out[key] = TAV + SHEVA + p1 + PATAH + p2 + SHEVA + DAGESH + p3 + SHUREQ
         elif key[0] == "p3" and key[1] == "m" and key[2] == "sg":
-            out[key] = YOD + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3
+            out[key] = YOD + SHEVA + p1 + PATAH + p2 + TSERE + DAGESH + p3
         elif key[0] == "p3" and key[1] == "m" and key[2] == "pl":
-            out[key] = YOD + SHEVA + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + SHUREQ
+            out[key] = YOD + SHEVA + p1 + PATAH + p2 + SHEVA + DAGESH + p3 + SHUREQ
         elif key[0] == "p3" and key[1] == "f" and key[2] == "sg":
-            out[key] = TAV + SHEVA + DAGESH + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3
+            out[key] = TAV + SHEVA + p1 + PATAH + p2 + TSERE + DAGESH + p3
         else:
             out[key] = ""
     return out
 
 
 def _piel_impv(p1, p2, p3):
+    # Daguesh lene sur P1 (début de mot, après son patah) : légitime
+    # pour une begadkefat (דַּבֵּר, גַּרֵשׁ) ; la BHSA atteste aussi la
+    # graphie sans lene (דַבֵּר). Jamais sur une non-begadkefat.
+    dash = DAGESH if p1 in BEGADKEFAT else ""
     return {
-        ("p2", "m", "sg"): p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3,
-        ("p2", "f", "sg"): p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + HIREQ + YOD,
-        ("p2", "m", "pl"): p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + SHUREQ,
-        ("p2", "f", "pl"): p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3 + SHEVA + NUN + QAMATS + HE,
+        ("p2", "m", "sg"): p1 + PATAH + dash + p2 + TSERE + DAGESH + p3,
+        ("p2", "f", "sg"): p1 + PATAH + dash + p2 + SHEVA + DAGESH + p3 + HIREQ + YOD,
+        ("p2", "m", "pl"): p1 + PATAH + dash + p2 + SHEVA + DAGESH + p3 + SHUREQ,
+        ("p2", "f", "pl"): p1 + PATAH + dash + p2 + TSERE + DAGESH + p3 + SHEVA + NUN + QAMATS + HE,
     }
 
 
@@ -459,13 +484,17 @@ def _pual_perf(p1, p2, p3):
         ("p2", "f", "sg"): p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + S_PERF[("p2", "f", "sg")],
         ("p1", "c", "sg"): p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + S_PERF[("p1", "c", "sg")],
         ("p3", "m", "pl"): p1 + QUBUTS + p2 + SHEVA + DAGESH + p3 + SHUREQ,
-        ("p3", "f", "pl"): p1 + QUBUTS + p2 + SHEVA + DAGESH + p3 + QAMATS + HE,
+        # 3fp = forme commune en -וּ (cf. S_PERF).
+        ("p3", "f", "pl"): p1 + QUBUTS + p2 + SHEVA + DAGESH + p3 + SHUREQ,
         ("p2", "m", "pl"): p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + S_PERF[("p2", "m", "pl")],
         ("p2", "f", "pl"): p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + S_PERF[("p2", "f", "pl")],
         ("p1", "c", "pl"): p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + S_PERF[("p1", "c", "pl")],
     }
 
 def _pual_impf(p1, p2, p3):
+    """Imparfait pual : pas de dagesh sur P1 (cf. _piel_impf ; la BHSA
+    n'en atteste aucune sur les 37 formes à P1 begadkefat : תְּבֻשַּׁל,
+    יְכֻפַּר...)."""
     out = {}
     for key, (pref, _) in IMPF_PREF.items():
         if key[0] == "p1" and key[2] == "sg":
@@ -473,21 +502,21 @@ def _pual_impf(p1, p2, p3):
         elif key[0] == "p1" and key[2] == "pl":
             out[key] = NUN + SHEVA + p1 + QUBUTS + p2 + PATAH + DAGESH + p3
         elif key[0] == "p2" and key[1] == "f" and key[2] == "sg":
-            out[key] = TAV + SHEVA + DAGESH + p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + HIREQ + YOD
+            out[key] = TAV + SHEVA + p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + HIREQ + YOD
         elif key[0] == "p2" and key[1] == "f" and key[2] == "pl":
-            out[key] = TAV + SHEVA + DAGESH + p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
+            out[key] = TAV + SHEVA + p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
         elif key[0] == "p3" and key[1] == "f" and key[2] == "pl":
-            out[key] = TAV + SHEVA + DAGESH + p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
+            out[key] = TAV + SHEVA + p1 + QUBUTS + p2 + PATAH + DAGESH + p3 + SHEVA + NUN + QAMATS + HE
         elif key[0] == "p2" and key[1] == "m" and key[2] == "sg":
-            out[key] = TAV + SHEVA + DAGESH + p1 + QUBUTS + p2 + PATAH + DAGESH + p3
+            out[key] = TAV + SHEVA + p1 + QUBUTS + p2 + PATAH + DAGESH + p3
         elif key[0] == "p2" and key[1] == "m" and key[2] == "pl":
-            out[key] = TAV + SHEVA + DAGESH + p1 + QUBUTS + p2 + SHEVA + DAGESH + p3 + SHUREQ
+            out[key] = TAV + SHEVA + p1 + QUBUTS + p2 + SHEVA + DAGESH + p3 + SHUREQ
         elif key[0] == "p3" and key[1] == "m" and key[2] == "sg":
             out[key] = YOD + SHEVA + p1 + QUBUTS + p2 + PATAH + DAGESH + p3
         elif key[0] == "p3" and key[1] == "m" and key[2] == "pl":
             out[key] = YOD + SHEVA + p1 + QUBUTS + p2 + SHEVA + DAGESH + p3 + SHUREQ
         elif key[0] == "p3" and key[1] == "f" and key[2] == "sg":
-            out[key] = TAV + SHEVA + DAGESH + p1 + QUBUTS + p2 + PATAH + DAGESH + p3
+            out[key] = TAV + SHEVA + p1 + QUBUTS + p2 + PATAH + DAGESH + p3
         else:
             out[key] = ""
     return out
@@ -542,7 +571,7 @@ def _hit_perf(p1, p2, p3):
         stem3 = HE + HIREQ + pre + tav + p2 + TSERE + DAGESH + p3
         stem = HE + HIREQ + pre + tav + p2 + DAGESH + SHEVA + p3
     else:
-        stem3 = pre + p1 + PATAH + DAGESH + p2 + HIREQ + DAGESH + p3
+        stem3 = pre + p1 + PATAH + p2 + HIREQ + DAGESH + p3
         stem = stem3 + SHEVA
     out = {}
     for key, end in S_PERF.items():
@@ -561,9 +590,9 @@ def _hit_impf(p1, p2, p3):
     # (\u05d0\u05b6\u05e9\u05b0\u05c1\u05ea\u05b7\u05bc\u05de\u05b5\u05bc\u05e8) ; sans m\u00e9tath\u00e8se le pr\u00e9fixe
     # personnel s'attache directement \u00e0 \u05d4\u05b4\u05ea\u05b0 (\u05d9\u05b4\u05ea\u05b0\u05e7\u05b7\u05bc\u05d8\u05b5\u05bc\u05dc).
     stem_sg = (tav + p2 + TSERE + DAGESH + p3
-               if meta else TAV + SHEVA + p1 + PATAH + DAGESH + p2 + TSERE + DAGESH + p3)
+               if meta else TAV + SHEVA + p1 + PATAH + p2 + TSERE + DAGESH + p3)
     stem_pl = (tav + p2 + PATAH + DAGESH + p3 + SHEVA
-               if meta else TAV + SHEVA + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3)
+               if meta else TAV + SHEVA + p1 + PATAH + p2 + SHEVA + DAGESH + p3)
     out = {}
     for key, (pref, _) in IMPF_PREF.items():
         if key[0] == "p1" and key[2] == "sg":
@@ -573,13 +602,13 @@ def _hit_impf(p1, p2, p3):
         elif key[0] == "p2" and key[1] == "f" and key[2] == "sg":
             stem_fsg = (tav + p2 + PATAH + DAGESH + p3 + SHEVA + DAGESH
                         if meta
-                        else TAV + SHEVA + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3)
+                        else TAV + SHEVA + p1 + PATAH + p2 + SHEVA + DAGESH + p3)
             out[key] = (TAV + HIREQ + pre + stem_fsg + HIREQ + YOD if meta
                         else TAV + HIREQ + stem_fsg + HIREQ + YOD)
         elif key[0] in ("p2", "p3") and key[2] == "pl" and key[1] == "f":
             stem_fpl = (tav + p2 + PATAH + DAGESH + p3 + PATAH
                         if meta
-                        else TAV + SHEVA + p1 + PATAH + DAGESH + p2 + PATAH + p3)
+                        else TAV + SHEVA + p1 + PATAH + p2 + PATAH + p3)
             out[key] = (TAV + HIREQ + DAGESH + pre + stem_fpl + SHEVA + NUN + QAMATS + HE
                         if meta
                         else TAV + HIREQ + DAGESH + stem_fpl + SHEVA + NUN + QAMATS + HE)
@@ -599,11 +628,12 @@ def _hit_impv(p1, p2, p3):
             ("p2", "m", "pl"): HE + HIREQ + pre + tav + p2 + PATAH + DAGESH + p3 + SHEVA + SHUREQ,
             ("p2", "f", "pl"): HE + HIREQ + pre + tav + p2 + PATAH + DAGESH + p3 + PATAH + SHEVA + NUN + QAMATS + HE,
         }
+    dash = DAGESH if p1 in BEGADKEFAT else ""
     return {
-        ("p2", "m", "sg"): pre + p1 + PATAH + DAGESH + p2 + HIREQ + DAGESH + p3,
-        ("p2", "f", "sg"): pre + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + HIREQ + YOD,
-        ("p2", "m", "pl"): pre + p1 + PATAH + DAGESH + p2 + SHEVA + DAGESH + p3 + SHUREQ,
-        ("p2", "f", "pl"): pre + p1 + PATAH + DAGESH + p2 + PATAH + p3 + SHEVA + NUN + QAMATS + HE,
+        ("p2", "m", "sg"): pre + p1 + PATAH + dash + p2 + HIREQ + DAGESH + p3,
+        ("p2", "f", "sg"): pre + p1 + PATAH + dash + p2 + SHEVA + DAGESH + p3 + HIREQ + YOD,
+        ("p2", "m", "pl"): pre + p1 + PATAH + dash + p2 + SHEVA + DAGESH + p3 + SHUREQ,
+        ("p2", "f", "pl"): pre + p1 + PATAH + dash + p2 + PATAH + p3 + SHEVA + NUN + QAMATS + HE,
     }
 
 
@@ -623,23 +653,31 @@ def _hif_perf(p1, p2, p3):
             out[key] = base + HIREQ + YOD + p3
         elif key == ("p3", "f", "sg"):
             out[key] = base + HIREQ + YOD + p3 + QAMATS + HE
-        elif key[2] == "pl" and key[0] == "p3" and key[1] == "m":
+        elif key[2] == "pl" and key[0] == "p3":
+            # 3mp et 3fp : forme commune en -וּ (cf. S_PERF).
             out[key] = base + HIREQ + YOD + p3 + SHUREQ
-        elif key[2] == "pl" and key[0] == "p3" and key[1] == "f":
-            out[key] = base + HIREQ + YOD + p3 + QAMATS + HE
         else:
             out[key] = HE + HIREQ + p1 + SHEVA + p2 + PATAH + p3 + end
     return out
 
 
 def _hif_impf(p1, p2, p3):
+    """Imparfait hifil.
+
+    Le dagesh lene du préfixe porte sur le ת/נ/... du préfixe
+    (תַּדַבֵּרִי-type), jamais sur P1 : la BHSA n'atteste
+    aucun dagesh sur P1 dans les 369 formes de hifil impf à P1
+    begadkefat (יַפְקֵד, תַּדֵשׁא, תַּבִיא…).
+    """
     out = {}
     for key, (pref, dash) in IMPF_PREF.items():
         if key[0] == "p1" and key[2] == "sg":
-            out[key] = ALEF + PATAH + DAGESH + p1 + SHEVA + p2 + HIREQ + YOD + p3
+            out[key] = ALEF + PATAH + p1 + SHEVA + p2 + HIREQ + YOD + p3
         elif key[0] == "p1" and key[2] == "pl":
-            out[key] = NUN + PATAH + DAGESH + p1 + SHEVA + p2 + HIREQ + YOD + p3
+            out[key] = NUN + PATAH + p1 + SHEVA + p2 + HIREQ + YOD + p3
         elif key[0] == "p2" and key[1] == "f" and key[2] == "sg":
+            # Dagesh lene sur le ת du préfixe (תַּ), pas sur P1 :
+            # la BHSA n'atteste pas de dagesh sur P1 (יַפְקֵד, תַּדֵשׁא).
             out[key] = TAV + PATAH + DAGESH + p1 + SHEVA + p2 + HIREQ + YOD + p3 + HIREQ + YOD
         elif key[0] in ("p2", "p3") and key[2] == "pl" and key[1] == "f":
             out[key] = TAV + PATAH + DAGESH + p1 + SHEVA + p2 + HIREQ + YOD + p3 + SHEVA + NUN + QAMATS + HE
@@ -1260,6 +1298,15 @@ def _render(template, root, category, vs=None):
             if letter not in BEGADKEFAT:
                 template = template.replace(ph + SHEVA + DAGESH,
                                             ph + SHEVA)
+                # Daguesh lene après toute voyelle de la radicale
+                # (patah du piel : תְּP1ַּP2ֵּP3 issu de תְּבַקֵּשׁ) :
+                # illégitime pour une radicale non begadkefat
+                # (תְּדַבֵּר, pas תְּדַּבֵּר).
+                for vow in (PATAH, SEGOL, QAMATS, TSERE, HIREQ,
+                            HOLAM, QUBUTS, HATAF_QAMATS, HATEF_PATAH,
+                            HATEF_SEGOL):
+                    template = template.replace(ph + vow + DAGESH,
+                                                ph + vow)
     out = template
     for ph, letter in mapping.items():
         out = out.replace(ph, letter)
@@ -1288,7 +1335,13 @@ def _initial_dagesh(form):
     """Daguesh lene sur une begadkefat en début de mot (ex. כְּתֹב,
     כָּתַב) : les gabarits dominants, extraits de racines non
     begadkefat, ne le portent pas ; il est systématique en position
-    initiale. Idempotent."""
+    initiale. Idempotent.
+
+    Le daguesh est inséré APRÈS les signes vocaliques qui suivent la
+    consonne initiale (ordre canonique : lettre, voyelle, daguesh —
+    דַּבֵּר), pas entre la consonne et sa voyelle (דַּבֵּר), les deux
+    s'affichant identiquement mais seule la première étant canonique.
+    """
     if not form or form[0] not in BEGADKEFAT:
         return form
     i = 1
@@ -1296,7 +1349,7 @@ def _initial_dagesh(form):
         if form[i] == DAGESH:
             return form
         i += 1
-    return form[0] + DAGESH + form[1:]
+    return form[:i] + DAGESH + form[i:]
 
 
 def _elide_p3(template):
@@ -1357,7 +1410,8 @@ def _hitpolel_perf(p1, p3):
             ("p2", "f", "sg"): pre + p3 + PATAH + p3 + SHEVA + TAV + SHEVA + DAGESH,
             ("p1", "c", "sg"): pre + p3 + PATAH + p3 + SHEVA + TAV + HIREQ + YOD,
             ("p3", "m", "pl"): pre + p3 + QAMATS + p3 + SHUREQ,
-            ("p3", "f", "pl"): pre + p3 + SHEVA + p3 + QAMATS + HE,
+            # 3fp = forme commune en -ו׼ (cf. S_PERF).
+            ("p3", "f", "pl"): pre + p3 + SHEVA + p3 + SHUREQ,
             ("p2", "m", "pl"): pre + p3 + PATAH + p3 + SHEVA + TAV + SEGOL + DAGESH + END_MEM,
             ("p2", "f", "pl"): pre + p3 + PATAH + p3 + SHEVA + TAV + SEGOL + DAGESH + END_NUN,
             ("p1", "c", "pl"): pre + p3 + PATAH + p3 + SHEVA + NUN + SHUREQ,
@@ -1441,7 +1495,8 @@ def _hif_hollow_perf(p1, p3):
         ("p2", "f", "sg"): pre_h + p3 + HOLAM + TAV + SHEVA + DAGESH,
         ("p1", "c", "sg"): pre_h + p3 + HOLAM + TAV + HIREQ + YOD,
         ("p3", "m", "pl"): pre + p3 + SHUREQ,
-        ("p3", "f", "pl"): pre + p3 + QAMATS + HE,
+        # 3fp = forme commune en -ו׼ (cf. S_PERF).
+        ("p3", "f", "pl"): pre + p3 + SHUREQ,
         ("p2", "m", "pl"): pre_h + p3 + HOLAM + TAV + SEGOL + DAGESH + END_MEM,
         ("p2", "f", "pl"): pre_h + p3 + HOLAM + TAV + SEGOL + DAGESH + END_NUN,
         ("p1", "c", "pl"): pre_h + p3 + HOLAM + NUN + SHUREQ,
@@ -1786,8 +1841,98 @@ def generate_binyan_non_finite(vs, root, category, with_variants=True):
 # API principale
 # =============================================================================
 
+def _word_reference(F, L, w):
+    """Référence lisible (livre FR chapitre:verset) d'un mot BHSA.
+
+    Les features chapter/verse portent sur les nœuds chapter/verse,
+    pas sur les mots : remonter via L.u().
+    """
+    from .reference import book_french
+    book_nodes = L.u(w, "book")
+    verse_nodes = L.u(w, "verse")
+    if not book_nodes or not verse_nodes:
+        return None
+    book = book_french(F.book.v(book_nodes[0]))
+    chapter = F.chapter.v(verse_nodes[0])
+    verse = F.verse.v(verse_nodes[0])
+    if chapter in (None, "unknown", "NA") or verse in (None, "unknown", "NA"):
+        return None
+    return f"{book} {chapter}:{verse}"
+
+
+def binyan_attested_forms(F, L, lex, vs, vt, cell):
+    """Formes attestées d'une cellule, avec leur première référence.
+
+    Renvoie une liste de (forme, référence) : toutes les graphies
+    distinctes (canonisées) de la cellule (ps, gn, nu) du lemme dans
+    le binyan/temps (vs, vt), chacune avec la première référence où
+    elle apparaît. Sans suffixe pronominal ; hébreu uniquement.
+
+    La comparaison des graphies passe par _variant_canon (daguesh,
+    meteg, hatef, maters, segol/patah neutralisés) : une forme générée
+    appelle « sa » référence via la même canonisation.
+    """
+    if not lex or L is None:
+        return []
+    ps, gn, nu = cell
+    out = []
+    seen = set()
+    for w in F.otype.s("word"):
+        if F.lex.v(w) != lex or F.sp.v(w) != "verb":
+            continue
+        if F.vs.v(w) != vs or F.vt.v(w) != vt:
+            continue
+        if F.prs.v(w) not in (None, "n/a", "NA", "unknown", "absent"):
+            continue
+        if F.language.v(w) != "Hebrew":
+            continue
+        w_ps, w_gn, w_nu = F.ps.v(w), F.gn.v(w), F.nu.v(w)
+        gn_ok = (w_gn == gn) or (
+            w_gn in ("unknown", "NA", None)
+            and (gn == "c" or nu == "pl"))
+        if (w_ps, w_nu) != (ps, nu) or not gn_ok:
+            continue
+        form = _normalize(F.g_word_utf8.v(w))
+        key = _variant_canon(form)
+        if key in seen:
+            continue
+        ref = _word_reference(F, L, w)
+        if not ref:
+            continue
+        seen.add(key)
+        out.append((form, ref))
+    return out
+
+
+def binyan_references(F, L, lex, vs, vt, cell, limit=1):
+    """Références attestées d'une cellule d'un lemme dans un binyan.
+
+    Renvoie une liste (au plus ``limit``) de références « Livre ch:v »
+    où la cellule (ps, gn, nu) du lemme ``lex`` est attestée dans le
+    binyan/temps (vs, vt). Vide si non attesté. Sans suffixe
+    pronominal ; hébreu uniquement.
+    """
+    return [ref for _form, ref in
+            binyan_attested_forms(F, L, lex, vs, vt, cell)[:limit]]
+
+
+def reference_for_form(F, L, lex, vs, vt, cell, form):
+    """Référence attestée d'une forme précise d'une cellule.
+
+    Apparie ``form`` (générée : dominante ou variante) aux occurrences
+    BHSA de la cellule via la canonisation (_variant_canon) : renvoie
+    la première référence de la graphie correspondante, ou None.
+    """
+    forms = binyan_attested_forms(F, L, lex, vs, vt, cell)
+    key = _variant_canon(form)
+    for att_form, ref in forms:
+        if _variant_canon(att_form) == key:
+            return ref
+    return None
+
+
 def analyze_binyanim(F, form, use_mishnah=False, use_modern=False,
-                     with_variants=True):
+                     with_variants=True, with_references=False, L=None):
     """Analyse « binyanim » complète d'un mot hébreu conjugué ou d'une
     racine trilitaire.
 
@@ -1804,6 +1949,11 @@ def analyze_binyanim(F, form, use_mishnah=False, use_modern=False,
     Si ``with_variants`` est faux, seules les formes dominantes sont
     générées (les conjuguaisons concurrentes attestées par cellule ne
     sont pas produites).
+
+    Si ``with_references`` est vrai, chaque entrée de binyan porte un
+    champ ``references`` : {tense: {cellule: "Livre ch:v"}} — la
+    première référence biblique où la cellule du lemme est attestée
+    (forme dominante uniquement ; vide si non attesté).
 
 
     Renvoie :
@@ -1913,6 +2063,37 @@ def analyze_binyanim(F, form, use_mishnah=False, use_modern=False,
             "non_finite": generate_binyan_non_finite(code, root, category,
                                                     with_variants=with_variants),
         }
+        if with_references and verb.get("lex"):
+            # Référence PAR FORME : chaque forme affichée (dominante
+            # et variantes) est appariée à la première occurrence
+            # BHSA de sa graphie (canonisée).
+            refs = {}
+            for tense, persons in TENSE_PERSONS.items():
+                cells = {}
+                for ps, gn, nu, _label in persons:
+                    # La BHSA code le jussif comme wayq ; le
+                    # cohortatif est un imparfait allongé.
+                    vt_map = {"perf": "perf", "impf": "impf",
+                              "impv": "impv", "juss": "wayq",
+                              "coh": "impf"}
+                    vt = vt_map.get(tense, tense)
+                    cell = (ps, gn, nu)
+                    forms = ([entry["paradigm"][tense].get(cell, "")]
+                             + (entry["paradigm"].get("variants", {})
+                                .get(tense, {}).get(cell) or []))
+                    by_form = {}
+                    for f in forms:
+                        if not f:
+                            continue
+                        r = reference_for_form(F, L, verb["lex"], code,
+                                              vt, cell, f)
+                        if r:
+                            by_form[f] = r
+                    if by_form:
+                        cells[cell] = by_form
+                if cells:
+                    refs[tense] = cells
+            entry["references"] = refs
         out["binyanim"].append(entry)
     return out
 
@@ -2064,14 +2245,22 @@ def binyanim_to_text(analysis):
             if modern.get("gloss"):
                 modern_txt += f" ({modern['gloss']})"
             lines.append(modern_txt)
+        cell_refs = b.get("references") or {}
         for tense in ("perf", "impf", "impv", "juss", "coh"):
             lines.append(f"  {TENSE_LABELS[tense]} :")
             cell_variants = b["paradigm"].get("variants", {}).get(tense, {})
+            tense_refs = cell_refs.get(tense, {}) if cell_refs else {}
             for ps, gn, nu, label in TENSE_PERSONS[tense]:
                 form = b["paradigm"][tense].get((ps, gn, nu), "")
                 if form:
                     vars_ = cell_variants.get((ps, gn, nu)) or []
-                    shown = " / ".join([form] + vars_)
+                    # Référence par forme : « forme [réf] / forme [réf] ».
+                    by_form = tense_refs.get((ps, gn, nu)) or {}
+                    parts = []
+                    for f in [form] + vars_:
+                        ref = by_form.get(f)
+                        parts.append(f"{f}  [{ref}]" if ref else f)
+                    shown = " / ".join(parts)
                     lines.append(f"    {label:34} {shown}")
         nf = b["non_finite"]
         if nf:
@@ -2193,6 +2382,12 @@ def binyanim_to_json(analysis, indent=2, ensure_ascii=False):
                     _key(cell): forms
                     for cell, forms in b["non_finite"]
                     .get("variants", {}).items() if forms},
+                "references": {
+                    f"{tense}|{_key(cell)}|{form}": ref
+                    for tense, cells in (b.get("references") or {}).items()
+                    for cell, by_form in cells.items()
+                    for form, ref in by_form.items()
+                },
             }
             for b in analysis["binyanim"]
         ],
