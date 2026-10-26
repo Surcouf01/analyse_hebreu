@@ -1,5 +1,37 @@
 # analyse_hebreu — Analyseur grammatical de l'hébreu biblique
 
+<!-- TOC -->
+
+## Sommaire
+
+- [Shareware](#shareware)
+- [Installation](#installation)
+  - [Données BHSA](#données-bhsa)
+- [Exécutable auto-suffisant (packaging)](#exécutable-auto-suffisant-packaging)
+  - [Base BHSA embarquée par défaut](#base-bhsa-embarquée-par-défaut)
+  - [Build local (PyInstaller)](#build-local-pyinstaller)
+  - [Build automatique (GitHub Actions)](#build-automatique-github-actions)
+  - [Publication d'une version téléchargeable (Release)](#publication-dune-version-téléchargeable-release)
+  - [Base BHSA et exécutable (build sans base embarquée)](#base-bhsa-et-exécutable-build-sans-base-embarquée)
+- [Utilisation](#utilisation)
+  - [En interface graphique](#en-interface-graphique)
+    - [Personnalisation de l'affichage](#personnalisation-de-laffichage)
+    - [Sélection stable du texte hébreu](#sélection-stable-du-texte-hébreu)
+    - [Recherche dans la zone de résultat (Ctrl-F)](#recherche-dans-la-zone-de-résultat-ctrl-f)
+    - [Traductions française, anglaise et espagnole](#traductions-française-anglaise-et-espagnole)
+  - [En ligne de commande](#en-ligne-de-commande)
+    - [Binyanim modernes (Pealim)](#binyanim-modernes-pealim)
+    - [Binyanim mishnaïques (Sefaria)](#binyanim-mishnaïques-sefaria)
+  - [Références acceptées](#références-acceptées)
+  - [En bibliothèque](#en-bibliothèque)
+- [Structure du projet](#structure-du-projet)
+- [Règles grammaticales détectées](#règles-grammaticales-détectées)
+- [Règles grammaticales détectées (extension)](#règles-grammaticales-détectées-extension)
+- [Noms de livres](#noms-de-livres)
+- [Limites](#limites)
+
+<!-- /TOC -->
+
 Programme Python qui analyse n'importe quel verset de la Bible hébraïque et
 sort, pour chaque construction, **les règles de grammaire appliquées** :
 partie du discours, genre/nombre/personne/état, binyan et temps verbal, fonction
@@ -663,7 +695,9 @@ bidi_display.py        # ordre visuel de l'hébreu pour le GUI (sélection stabl
 test_bidi_display.py   # tests du module bidi_display
 gui.properties         # polices/tailles d'affichage du GUI (points)
 icone.ico              # icône Windows multi-résolutions de la fenêtre GUI (barre de titre/tâches)
+TOC.md                 # table des matières de ce README (liens hypertextes)
 scripts/generate_ico.py # (re)génère icone.ico depuis une fonte hébraïque (Pillow)
+scripts/generate_toc.py # (re)génère TOC.md et le sommaire ci-dessus (anti-récursif)
 data/
   louis_segond_1910.txt  # traduction française Louis Segond 1910 (domaine public)
   kjv_1611.txt          # traduction anglaise King James Version 1611 (domaine public)
