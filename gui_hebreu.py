@@ -1047,168 +1047,6 @@ class BidiHebrewText(tk.Text):
         return "break"
 
 
-class ResultText(FindMixin, tk.Text):
-    """Zone de résultat en texte hébreu stable.
-
-    Le texte affiché est stocké en ordre visuel (cf. bidi_display.to_visual),
-    l'ordre logique du widget coïncide donc avec l'affichage : la sélection
-    à la souris (gérée par StableSelection, qui arrime les bornes aux
-    clusters de glyphes) est stable et prévisible. La copie (Ctrl+C)
-    restitue l'ordre logique du texte d'origine.
-
-    Le retour à la ligne automatique de Tk s'applique au texte stocké : sur
-    une ligne en ordre visuel, la première ligne affichée contiendrait la
-    FIN de la phrase. Les lignes hébraïques sont donc découpées en ordre
-    logique (logical_wrap) à la largeur du widget avant conversion ; la
-    découpe est refaite quand la fenêtre est redimensionnée.
-    """
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.bind("<<Copy>>", self._on_copy)
-        self._logical_text = ""
-        self._wrap_width = 0
-        self._wrap_job = None
-        font = kwargs.get("font")
-        self._tkfont = (tkfont.Font(root=self, font=font)
-                        if font is not None else None)
-        self._autowrap = kwargs.get("wrap") != "none"
-        self.bind("<Configure>", self.on_resize)
-        # Recherche Ctrl-F dans la zone (cf. FindMixin) : occurrences
-        # surlignées, la courante dans une teinte plus soutenue.
-        self.tag_configure("find", background="#ffe08a")
-        self.tag_configure("find_cur", background="#ffb74d")
-        # La sélection native doit rester visible sur le surlignage.
-        self.tag_raise("sel")
-        self.bind("<Control-f>", self._on_find)
-        self.bind("<Control-F>", self._on_find)
-        self.bind("<F3>", self._on_f3)
-        self.bind("<Shift-F3>", self._on_f3_prev)
-        self.bind("<Up>", self._on_arrow_up)
-        self.bind("<Down>", self._on_arrow_down)
-        self._init_find()
-
-    def _compute_find_matches(self, query):
-        """Occurrences ``[(ligne, debut, fin), …]`` en indices du texte
-        stocké (ordre visuel + marques bidi), en ordre de lecture."""
-        n_lines = int(self.index("end - 1c").split(".")[0])
-        matches = []
-        if has_hebrew_letters(query):
-            skeleton = normalize_query(query)
-            if not skeleton:
-                return []
-            sofit_insensitive = bool(self._find_sofit_var.get())
-            for line_no in range(1, n_lines + 1):
-                line = self.get(f"{line_no}.0", f"{line_no}.0 lineend")
-                if not line:
-                    continue
-                for a, b in find_line_matches(line, skeleton,
-                                              sofit_insensitive=sofit_insensitive):
-                    matches.append((line_no, a, b))
-        else:
-            needle = query.casefold()
-            for line_no in range(1, n_lines + 1):
-                line = self.get(f"{line_no}.0", f"{line_no}.0 lineend")
-                if not line:
-                    continue
-                hay = line.casefold()
-                start = 0
-                while True:
-                    j = hay.find(needle, start)
-                    if j < 0:
-                        break
-                    matches.append((line_no, j, j + len(needle)))
-                    start = j + 1
-        return matches
-
-    def set_text(self, text):
-        """Mémorise le texte logique et affiche (découpe + ordre visuel)."""
-        self._logical_text = text
-        self._wrap_width = 0
-        self._clear_find()
-        self._redisplay()
-
-    def _display_width(self):
-        """Largeur intérieure disponible pour une ligne (pixels)."""
-        try:
-            return max(1, self.winfo_width() - 12)
-        except tk.TclError:
-            return 0
-
-    def _redisplay(self):
-        """Découpe les lignes hébraïques à la largeur courante, convertit
-        en ordre visuel et remplace le contenu du widget."""
-        self.configure(state="normal")
-        self.delete("1.0", "end")
-        width = self._display_width() if self._autowrap else 0
-        if width <= 1:
-            self.insert("1.0", to_visual(self._logical_text))
-        else:
-            self._wrap_width = width
-            self.insert("1.0", to_visual(
-                logical_wrap(self._logical_text, self._measure, width)))
-        self.configure(state="disabled")
-        # Le contenu affiché a changé : les occurrences surlignées et la
-        # position mémorisée ne sont plus valides (les indices de ligne
-        # ne correspondent plus) ; les barres de recherche restent ouvertes.
-        self._find_anchor = None
-        self._clear_find()
-        if self._find_bar is not None:
-            self._find_job = self.after_idle(self._refresh_find)
-
-    def _measure(self, s):
-        if self._tkfont is None:
-            return len(s)
-        return self._tkfont.measure(s)
-
-    def on_resize(self, event=None):
-        """Re-découpe (différé) si la largeur affichable a changé."""
-        if not self._autowrap:
-            return
-        width = self._display_width()
-        if width == self._wrap_width:
-            return
-        if self._wrap_job is not None:
-            try:
-                self.after_cancel(self._wrap_job)
-            except tk.TclError:
-                pass
-        self._wrap_job = self.after(60, self._redisplay)
-        self._wrap_width = width
-
-    def set_font(self, font):
-        """Change la police du rendu ; re-découpe car les largeurs changent."""
-        self._tkfont = tkfont.Font(root=self, font=font)
-        self.configure(font=font)
-        if self._logical_text:
-            self._redisplay()
-
-    # --- Copie en ordre logique ------------------------------------------
-    def _on_select_all(self, event=None):
-        """Ctrl-A : sélectionne tout le texte logique — anchor au
-        début logique (frontière 0 de la première ligne), caret actif
-        à la fin logique (dernière frontière de la dernière ligne),
-        comme dans un éditeur standard."""
-        self._anchor_boundary = 0
-        self._caret_line = max(0, len(self._logical_lines) - 1)
-        self._caret_boundary = len(clusters(
-            self._logical_lines[self._caret_line]))
-        self._sel_anchor = (0, 0)
-        self._refresh()
-        return "break"
-
-    def _on_copy(self, event=None):
-        try:
-            text = self.get("sel.first", "sel.last")
-        except tk.TclError:
-            return None
-        if not text:
-            return None
-        self.clipboard_clear()
-        self.clipboard_append(to_logical(text))
-        return "break"
-
-
 class FindMixin:
     """Barre de recherche flottante commune aux zones de texte
     (Ctrl-F, F3, Maj+F3). Une zone définit ``_compute_find_matches``
@@ -1476,6 +1314,168 @@ class FindMixin:
         else:
             self._find_count.configure(
                 text=f"{self._find_pos + 1} / {n}")
+
+
+class ResultText(FindMixin, tk.Text):
+    """Zone de résultat en texte hébreu stable.
+
+    Le texte affiché est stocké en ordre visuel (cf. bidi_display.to_visual),
+    l'ordre logique du widget coïncide donc avec l'affichage : la sélection
+    à la souris (gérée par StableSelection, qui arrime les bornes aux
+    clusters de glyphes) est stable et prévisible. La copie (Ctrl+C)
+    restitue l'ordre logique du texte d'origine.
+
+    Le retour à la ligne automatique de Tk s'applique au texte stocké : sur
+    une ligne en ordre visuel, la première ligne affichée contiendrait la
+    FIN de la phrase. Les lignes hébraïques sont donc découpées en ordre
+    logique (logical_wrap) à la largeur du widget avant conversion ; la
+    découpe est refaite quand la fenêtre est redimensionnée.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.bind("<<Copy>>", self._on_copy)
+        self._logical_text = ""
+        self._wrap_width = 0
+        self._wrap_job = None
+        font = kwargs.get("font")
+        self._tkfont = (tkfont.Font(root=self, font=font)
+                        if font is not None else None)
+        self._autowrap = kwargs.get("wrap") != "none"
+        self.bind("<Configure>", self.on_resize)
+        # Recherche Ctrl-F dans la zone (cf. FindMixin) : occurrences
+        # surlignées, la courante dans une teinte plus soutenue.
+        self.tag_configure("find", background="#ffe08a")
+        self.tag_configure("find_cur", background="#ffb74d")
+        # La sélection native doit rester visible sur le surlignage.
+        self.tag_raise("sel")
+        self.bind("<Control-f>", self._on_find)
+        self.bind("<Control-F>", self._on_find)
+        self.bind("<F3>", self._on_f3)
+        self.bind("<Shift-F3>", self._on_f3_prev)
+        self.bind("<Up>", self._on_arrow_up)
+        self.bind("<Down>", self._on_arrow_down)
+        self._init_find()
+
+    def _compute_find_matches(self, query):
+        """Occurrences ``[(ligne, debut, fin), …]`` en indices du texte
+        stocké (ordre visuel + marques bidi), en ordre de lecture."""
+        n_lines = int(self.index("end - 1c").split(".")[0])
+        matches = []
+        if has_hebrew_letters(query):
+            skeleton = normalize_query(query)
+            if not skeleton:
+                return []
+            sofit_insensitive = bool(self._find_sofit_var.get())
+            for line_no in range(1, n_lines + 1):
+                line = self.get(f"{line_no}.0", f"{line_no}.0 lineend")
+                if not line:
+                    continue
+                for a, b in find_line_matches(line, skeleton,
+                                              sofit_insensitive=sofit_insensitive):
+                    matches.append((line_no, a, b))
+        else:
+            needle = query.casefold()
+            for line_no in range(1, n_lines + 1):
+                line = self.get(f"{line_no}.0", f"{line_no}.0 lineend")
+                if not line:
+                    continue
+                hay = line.casefold()
+                start = 0
+                while True:
+                    j = hay.find(needle, start)
+                    if j < 0:
+                        break
+                    matches.append((line_no, j, j + len(needle)))
+                    start = j + 1
+        return matches
+
+    def set_text(self, text):
+        """Mémorise le texte logique et affiche (découpe + ordre visuel)."""
+        self._logical_text = text
+        self._wrap_width = 0
+        self._clear_find()
+        self._redisplay()
+
+    def _display_width(self):
+        """Largeur intérieure disponible pour une ligne (pixels)."""
+        try:
+            return max(1, self.winfo_width() - 12)
+        except tk.TclError:
+            return 0
+
+    def _redisplay(self):
+        """Découpe les lignes hébraïques à la largeur courante, convertit
+        en ordre visuel et remplace le contenu du widget."""
+        self.configure(state="normal")
+        self.delete("1.0", "end")
+        width = self._display_width() if self._autowrap else 0
+        if width <= 1:
+            self.insert("1.0", to_visual(self._logical_text))
+        else:
+            self._wrap_width = width
+            self.insert("1.0", to_visual(
+                logical_wrap(self._logical_text, self._measure, width)))
+        self.configure(state="disabled")
+        # Le contenu affiché a changé : les occurrences surlignées et la
+        # position mémorisée ne sont plus valides (les indices de ligne
+        # ne correspondent plus) ; les barres de recherche restent ouvertes.
+        self._find_anchor = None
+        self._clear_find()
+        if self._find_bar is not None:
+            self._find_job = self.after_idle(self._refresh_find)
+
+    def _measure(self, s):
+        if self._tkfont is None:
+            return len(s)
+        return self._tkfont.measure(s)
+
+    def on_resize(self, event=None):
+        """Re-découpe (différé) si la largeur affichable a changé."""
+        if not self._autowrap:
+            return
+        width = self._display_width()
+        if width == self._wrap_width:
+            return
+        if self._wrap_job is not None:
+            try:
+                self.after_cancel(self._wrap_job)
+            except tk.TclError:
+                pass
+        self._wrap_job = self.after(60, self._redisplay)
+        self._wrap_width = width
+
+    def set_font(self, font):
+        """Change la police du rendu ; re-découpe car les largeurs changent."""
+        self._tkfont = tkfont.Font(root=self, font=font)
+        self.configure(font=font)
+        if self._logical_text:
+            self._redisplay()
+
+    # --- Copie en ordre logique ------------------------------------------
+    def _on_select_all(self, event=None):
+        """Ctrl-A : sélectionne tout le texte logique — anchor au
+        début logique (frontière 0 de la première ligne), caret actif
+        à la fin logique (dernière frontière de la dernière ligne),
+        comme dans un éditeur standard."""
+        self._anchor_boundary = 0
+        self._caret_line = max(0, len(self._logical_lines) - 1)
+        self._caret_boundary = len(clusters(
+            self._logical_lines[self._caret_line]))
+        self._sel_anchor = (0, 0)
+        self._refresh()
+        return "break"
+
+    def _on_copy(self, event=None):
+        try:
+            text = self.get("sel.first", "sel.last")
+        except tk.TclError:
+            return None
+        if not text:
+            return None
+        self.clipboard_clear()
+        self.clipboard_append(to_logical(text))
+        return "break"
 
 
 class ReadmeText(FindMixin, tk.Text):
