@@ -2474,12 +2474,17 @@ class AnalyseurGUI:
                     if counters:
                         counters.pop()
                     text_widget.insert("end", "\n")
-        # Nettoyage : lignes vides multiples -> une seule.
-        content = text_widget.get("1.0", "end")
-        while "\n\n\n" in content:
-            content = content.replace("\n\n\n", "\n\n")
-        text_widget.delete("1.0", "end")
-        text_widget.insert("1.0", content)
+        # Nettoyage : lignes vides multiples -> une seule. La
+        # suppression doit être CIBLÉE (search/delete sur la plage
+        # excédentaire) : relire tout le texte avec get() puis le
+        # réinsérer perdrait tous les tags de formatage.
+        while True:
+            idx = text_widget.search("\n\n\n", "1.0", "end")
+            if not idx:
+                break
+            # Supprimer UN newline de la séquence (boucle jusqu'à
+            # normalisation complète).
+            text_widget.delete(f"{idx} lineend", f"{idx} lineend +1c")
 
     def _build_binyanim_tab(self):
         """Onglet « Binyanim » : conjugaison d'un verbe dans les 7 binyanim.
