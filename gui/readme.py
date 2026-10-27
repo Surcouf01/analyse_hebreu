@@ -185,7 +185,8 @@ class ReadmeTabMixin:
         # et enregistrer la position cible des liens du sommaire.
         heading_text = []
         heading_start = None
-        anchors = {}  # slug -> index de début du titre
+        heading_seq = 0
+        anchors = {}  # slug -> nom de marque Tk du début du titre
         # Liens <a href> : plage de texte -> cible (ancre locale ou URL).
         link_spans = []  # (début, fin, href) ; fin fixée à la fermeture
         def current_tags():
@@ -214,9 +215,14 @@ class ReadmeTabMixin:
             elif kind == "open":
                 if a in headings:
                     text_widget.insert("end", "\n")
-                    # Position de départ du titre : le prochain insert
-                    # (à « end ») écrit exactement là.
-                    heading_start = text_widget.index("end - 1c")
+                    # Position de départ du titre : une marque Tk (elle
+                    # suit les insertions/suppressions ultérieures, en
+                    # particulier le nettoyage des lignes vides en fin
+                    # de rendu qui décale les indices figés).
+                    heading_start = f"readme_h_{heading_seq}"
+                    text_widget.mark_set(heading_start, "end")
+                    text_widget.mark_gravity(heading_start, "left")
+                    heading_seq += 1
                     heading_text = []
                     markup.append("h" + a[1])
                     # Les titres ferment implicitement les paragraphes.
