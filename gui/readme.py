@@ -180,13 +180,13 @@ class ReadmeTabMixin:
         markup = []  # pile de tags actifs ("bold", "italic", "code")
         list_stack = []
         counters = []
-        # Titre en cours de construction : texte accumulé + index de
-        # départ, pour calculer l'ancre (slug GitHub) à la fermeture
-        # et enregistrer la position cible des liens du sommaire.
+        # Titre en cours de construction : texte accumulé, pour
+        # calculer l'ancre (slug GitHub) à la fermeture. La position
+        # cible n'est PAS figée au rendu : au clic, le titre est
+        # retrouvé par recherche dans le texte final (cf.
+        # _readme_find_heading), insensible au nettoyage final.
         heading_text = []
-        heading_start = None
-        heading_seq = 0
-        anchors = {}  # slug -> nom de marque Tk du début du titre
+        heading_anchors = []  # [(slug, texte du titre), …]
         # Liens <a href> : plage de texte -> cible (ancre locale ou URL).
         link_spans = []  # (début, fin, href) ; fin fixée à la fermeture
         def current_tags():
@@ -215,14 +215,6 @@ class ReadmeTabMixin:
             elif kind == "open":
                 if a in headings:
                     text_widget.insert("end", "\n")
-                    # Position de départ du titre : une marque Tk (elle
-                    # suit les insertions/suppressions ultérieures, en
-                    # particulier le nettoyage des lignes vides en fin
-                    # de rendu qui décale les indices figés).
-                    heading_start = f"readme_h_{heading_seq}"
-                    text_widget.mark_set(heading_start, "end")
-                    text_widget.mark_gravity(heading_start, "left")
-                    heading_seq += 1
                     heading_text = []
                     markup.append("h" + a[1])
                     # Les titres ferment implicitement les paragraphes.
@@ -273,8 +265,9 @@ class ReadmeTabMixin:
                     # Ancre GitHub du titre (cf. scripts/generate_toc.py)
                     # : le sommaire inséré dans le README pointe vers elle.
                     slug = _github_slug("".join(heading_text))
-                    if slug and heading_start is not None:
-                        anchors.setdefault(slug, heading_start)
+                    title = "".join(heading_text).strip()
+                    if slug and title:
+                        heading_anchors.append((slug, title))
                     text_widget.insert("end", "\n\n", ())
                 elif a == "a":
                     for i in range(len(markup) - 1, -1, -1):
@@ -300,11 +293,10 @@ class ReadmeTabMixin:
                     if counters:
                         counters.pop()
                     text_widget.insert("end", "\n")
-        # Enregistrer les cibles des liens internes : le handler de
-        # clic (cf. _on_readme_link) défile vers le titre dont le slug
-        # GitHub correspond à l'ancre ; les liens externes ouvrent le
-        # navigateur.
-        text_widget._readme_anchors = anchors
+        # Cibles des liens internes : la position n'est PAS figée au
+        # rendu — au clic, le titre est retrouvé par recherche dans le
+        # texte final (cf. _readme_find_heading).
+        text_widget._readme_headings = heading_anchors
         text_widget._readme_links = {}
         for start, end, href in link_spans:
             if not href:
@@ -348,17 +340,54 @@ class ReadmeTabMixin:
             idx = w.index(f"@{event.x},{event.y}")
         except tk.TclError:
             return
-        anchors = getattr(w, "_readme_anchors", {})
+        headings = getattr(w, "_readme_headings", [])
         links = getattr(w, "_readme_links", {})
         for tag in w.tag_names(idx):
             if tag.startswith("link:") and tag != "link":
                 target = tag[len("link:"):]
-                if target in anchors:
-                    self._readme_nav_jump(anchors[target])
+                pos = self._readme_find_heading(w, target)
+                if pos is not None:
+                    self._readme_nav_jump(pos)
                     return
             elif tag in links:
                 webbrowser.open(links[tag])
                 return
+
+    def _readme_find_heading(self, w, slug):
+        """Position du titre ciblé, retrouvée PAR RECHERCHE dans le
+        texte final du widget.
+
+        Le rendu enregistre les couples (slug, texte du titre) ; au
+        clic, le texte du titre est recherché depuis le début, et seules
+        comptent les occurrences situées sur une ligne de TITRE (tag
+        h2..h6) : le texte du titre apparaît aussi dans le sommaire en
+        haut de document, il ne faut pas s'y arrêter. Contrairement à
+        un index ou une marque figés au rendu, la recherche opère sur
+        l'état FINAL du widget (après le nettoyage des lignes vides).
+        """
+        for s, title in getattr(w, "_readme_headings", []):
+            if s != slug:
+                continue
+            needle = title.strip()
+            if not needle:
+                return None
+            try:
+                pos = "1.0"
+                while True:
+                    hit = w.search(needle, pos, "end", nocase=True)
+                    if not hit:
+                        return None
+                    line_start = w.index(f"{hit} linestart")
+                    line_end = w.index(f"{hit} lineend")
+                    # Occurrence valide seulement si la ligne porte un
+                    # tag de titre (le sommaire, lui, n'en porte pas).
+                    tags = set(w.tag_names(hit))
+                    if tags & {"h2", "h3", "h4", "h5", "h6"}:
+                        return line_start
+                    pos = w.index(f"{hit}+1c")
+            except tk.TclError:
+                return None
+        return None
 
     # --- Historique de navigation des liens du README -------------------
     def _readme_nav_jump(self, target):
