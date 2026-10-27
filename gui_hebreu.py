@@ -1868,19 +1868,28 @@ def _apply_window_icon(root):
     d'absence ou d'erreur (fichier illisible, Tk indisponible), on
     poursuit silencieusement avec l'icône par défaut.
     """
-    if sys.platform == "win32":
-        exe = sys.executable
-        icon_temppath = getIconFileFromExe(exe)
-        root.iconbitmap(icon_temppath)
+    # Priorité à l'icône du projet (icone.ico à côté du script, ou
+    # ressource embarquée PyInstaller) : c'est elle qui doit rester si
+    # tout se passe bien. L'icône extraite de l'exécutable hôte (repli
+    # pour un build figé sans icone.ico externe) n'est appliquée que
+    # si le projet n'en fournit pas.
     try:
         here = _resource_dir()
         if sys.platform == "win32":
-             ico_path = os.path.join(here, "icone.ico")
-             if os.path.isfile(ico_path):
-                 root.iconbitmap(ico_path)
-                 return
+            ico_path = os.path.join(here, "icone.ico")
+            if os.path.isfile(ico_path):
+                root.iconbitmap(ico_path)
+                return
     except (tk.TclError, OSError):
-         pass
+        pass
+    if sys.platform == "win32":
+        exe = sys.executable
+        try:
+            icon_temppath = getIconFileFromExe(exe)
+            if icon_temppath:
+                root.iconbitmap(icon_temppath)
+        except (tk.TclError, OSError):
+            pass
 
 def _enable_console(argv):
     """Option --console : attache une console au processus pour rendre
