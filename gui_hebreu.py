@@ -1870,15 +1870,26 @@ def _apply_window_icon(root):
     """
     # Priorité à l'icône du projet (icone.ico à côté du script, ou
     # ressource embarquée PyInstaller) : c'est elle qui doit rester si
-    # tout se passe bien. L'icône extraite de l'exécutable hôte (repli
-    # pour un build figé sans icone.ico externe) n'est appliquée que
-    # si le projet n'en fournit pas.
+    # tout se passe bien. Sous Windows, iconbitmap seul alimente la
+    # barre de titre mais est peu fiable pour la BARRE DES TÂCHES
+    # (ICON_BIG) selon les versions de Tk : on applique donc AUSSI
+    # iconphoto avec les résolutions de icone.ico chargées par PIL —
+    # c'est iconphoto qui fiabilise la barre des tâches. L'icône
+    # extraite de l'exécutable hôte (repli pour un build figé sans
+    # icone.ico externe) n'est appliquée que si le projet n'en fournit
+    # pas.
     try:
         here = _resource_dir()
         if sys.platform == "win32":
             ico_path = os.path.join(here, "icone.ico")
             if os.path.isfile(ico_path):
                 root.iconbitmap(ico_path)
+                _apply_iconphoto_from_ico(root, ico_path)
+                return
+        else:
+            png_path = os.path.join(here, "icone.png")
+            if os.path.isfile(png_path):
+                root.iconphoto(True, tk.PhotoImage(file=png_path))
                 return
     except (tk.TclError, OSError):
         pass
@@ -1888,8 +1899,34 @@ def _apply_window_icon(root):
             icon_temppath = getIconFileFromExe(exe)
             if icon_temppath:
                 root.iconbitmap(icon_temppath)
+                _apply_iconphoto_from_ico(root, icon_temppath)
         except (tk.TclError, OSError):
             pass
+
+
+def _apply_iconphoto_from_ico(root, ico_path):
+    """Applique les résolutions de icone.ico via iconphoto (PIL).
+
+    iconbitmap alimente la barre de titre mais pas toujours la barre
+    des tâches (ICON_BIG selon les versions de Tk) ; iconphoto, lui,
+    est propagé aux deux. On charge le .ico par PIL et on produit les
+    tailles usuelles de Windows (256, 64, 48, 32, 24, 16), la plus
+    grande en premier — la barre des tâches et la barre de titre
+    piochent chacune la leur. Toute erreur est ignorée (iconbitmap
+    seul reste alors).
+    """
+    try:
+        from PIL import ImageTk
+        img = Image.open(ico_path)
+        base = img.convert("RGBA")
+        photos = []
+        for size in (256, 64, 48, 32, 24, 16):
+            frame = base.resize((size, size), Image.LANCZOS) \
+                if base.size != (size, size) else base
+            photos.append(ImageTk.PhotoImage(frame))
+        root.iconphoto(True, *photos)
+    except Exception:
+        pass
 
 def _enable_console(argv):
     """Option --console : attache une console au processus pour rendre
