@@ -414,8 +414,16 @@ lettres finales (ך ם ן ף ץ) sont équivalentes à leurs formes médiales
 (כ מ נ פ צ) des deux côtés — la requête `מלך` (kaf sofit) trouve le mot
 `מֶּלֶךְ` **et** la racine `מלכ` (écrite sans sofit) ; décochée, seules
 les formes exactes correspondent (ך ne matche que ך).
-- **Texte non hébreu** (traductions, labels) : recherche littérale
-insensible à la casse.
+- **Texte non hébreu** (traductions, labels) : recherche littérale,
+insensible à la casse par défaut.
+- **« Casse sensible »** (case à cocher, décochée par défaut) : la
+recherche latine distingue majuscules et minuscules (`Ctrl-F` ne
+trouve pas `CTRL-F`). Sans effet sur les requêtes hébraïques (les
+lettres hébraïques n'ont pas de casse).
+- Dans l'onglet **README**, les défauts sont inversés : **casse
+sensible cochée** (documentation technique) et **« Sofit
+insensible » décochée** (le texte affiché distingue ך/כ etc.).
+Les deux cases restent modifiables à la volée.
 
 La recherche opère sur le texte affiché en ordre visuel : le module
 `bidi_display.py` fournit la projection des correspondances (calculées

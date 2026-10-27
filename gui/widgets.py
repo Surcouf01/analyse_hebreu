@@ -497,7 +497,14 @@ class FindMixin:
         self._find_anchor = None
         self._find_focus_notifier = getattr(self, "_find_focus_notifier",
                                            None)
-        self._find_sofit_var = tk.BooleanVar(self, value=True)
+        # Options de recherche : « Sofit insensible » (les lettres
+        # finales ך ם ן ף ץ équivalent à leurs formes médiiales) et
+        # « Casse sensible ». Défauts réglables par zone via les
+        # attributs de classe _find_sofit_default / _find_case_default.
+        self._find_sofit_var = tk.BooleanVar(
+            self, value=getattr(self, "_find_sofit_default", True))
+        self._find_case_var = tk.BooleanVar(
+            self, value=getattr(self, "_find_case_default", False))
 
     def _on_find(self, event=None):
         """Ouvre la barre de recherche, pré-remplie depuis la sélection."""
@@ -545,6 +552,11 @@ class FindMixin:
                 variable=self._find_sofit_var,
                 command=self._refresh_find)
             sofit_box.pack(side="left", padx=(0, 6))
+            case_box = ttk.Checkbutton(
+                bar, text="Casse sensible",
+                variable=self._find_case_var,
+                command=self._refresh_find)
+            case_box.pack(side="left", padx=(0, 6))
             self._find_count = ttk.Label(bar, text="", width=12, anchor="w")
             self._find_count.pack(side="left")
             btn_next = ttk.Button(bar, text="\u25b6", width=2,
@@ -835,12 +847,13 @@ class ResultText(FindMixin, tk.Text):
                                               sofit_insensitive=sofit_insensitive):
                     matches.append((line_no, a, b))
         else:
-            needle = query.casefold()
+            case_sensitive = bool(self._find_case_var.get())
+            needle = query if case_sensitive else query.casefold()
             for line_no in range(1, n_lines + 1):
                 line = self.get(f"{line_no}.0", f"{line_no}.0 lineend")
                 if not line:
                     continue
-                hay = line.casefold()
+                hay = line if case_sensitive else line.casefold()
                 start = 0
                 while True:
                     j = hay.find(needle, start)
@@ -952,6 +965,12 @@ class ReadmeText(FindMixin, tk.Text):
 
     # Champ de recherche aligné à gauche : dominante latine (doc).
     _find_entry_justify = "left"
+    # Défauts de recherche : casse SENSIBLE (documentation technique,
+    # « Ctrl-F » ≠ « Ctrl-f ») et équivalence sofit DÉSACTIVÉE (le texte
+    # affiché distingue ך/כ etc. ; le repli sofit est pensé pour les
+    # zones d'analyse biblique en ordre visuel).
+    _find_case_default = True
+    _find_sofit_default = False
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1013,12 +1032,13 @@ class ReadmeText(FindMixin, tk.Text):
                                      max(e for _l, _s, e in covered)))
                     begin = j + 1
         else:
-            needle = query.casefold()
+            case_sensitive = bool(self._find_case_var.get())
+            needle = query if case_sensitive else query.casefold()
             for line_no in range(1, n_lines + 1):
                 line = self.get(f"{line_no}.0", f"{line_no}.0 lineend")
                 if not line:
                     continue
-                hay = line.casefold()
+                hay = line if case_sensitive else line.casefold()
                 start = 0
                 while True:
                     j = hay.find(needle, start)
