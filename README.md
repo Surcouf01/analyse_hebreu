@@ -1,5 +1,37 @@
 # analyse_hebreu — Analyseur grammatical de l'hébreu biblique
 
+<!-- TOC -->
+
+## Sommaire
+
+- [Shareware](#shareware)
+- [Installation](#installation)
+  - [Données BHSA](#données-bhsa)
+- [Exécutable auto-suffisant (packaging)](#exécutable-auto-suffisant-packaging)
+  - [Base BHSA embarquée par défaut](#base-bhsa-embarquée-par-défaut)
+  - [Build local (PyInstaller)](#build-local-pyinstaller)
+  - [Build automatique (GitHub Actions)](#build-automatique-github-actions)
+  - [Publication d'une version téléchargeable (Release)](#publication-dune-version-téléchargeable-release)
+  - [Base BHSA et exécutable (build sans base embarquée)](#base-bhsa-et-exécutable-build-sans-base-embarquée)
+- [Utilisation](#utilisation)
+  - [En interface graphique](#en-interface-graphique)
+    - [Personnalisation de l'affichage](#personnalisation-de-laffichage)
+    - [Sélection stable du texte hébreu](#sélection-stable-du-texte-hébreu)
+    - [Recherche dans la zone de résultat (Ctrl-F)](#recherche-dans-la-zone-de-résultat-ctrl-f)
+    - [Traductions française, anglaise et espagnole](#traductions-française-anglaise-et-espagnole)
+  - [En ligne de commande](#en-ligne-de-commande)
+    - [Binyanim modernes (Pealim)](#binyanim-modernes-pealim)
+    - [Binyanim mishnaïques (Sefaria)](#binyanim-mishnaïques-sefaria)
+  - [Références acceptées](#références-acceptées)
+  - [En bibliothèque](#en-bibliothèque)
+- [Structure du projet](#structure-du-projet)
+- [Règles grammaticales détectées](#règles-grammaticales-détectées)
+- [Règles grammaticales détectées (extension)](#règles-grammaticales-détectées-extension)
+- [Noms de livres](#noms-de-livres)
+- [Limites](#limites)
+
+<!-- /TOC -->
+
 Programme Python qui analyse n'importe quel verset de la Bible hébraïque et
 sort, pour chaque construction, **les règles de grammaire appliquées** :
 partie du discours, genre/nombre/personne/état, binyan et temps verbal, fonction
@@ -274,7 +306,11 @@ ci-dessous, plus un onglet **README**) :
   `markdown`, puis restitué dans une zone de texte enrichie (titres,
   gras, italique, listes, blocs de code). Dépendance optionnelle :
   `pip install markdown` ; en son absence, repli sur le texte brut du
-  README.
+  README. Le sommaire en tête de document est cliquable : chaque ligne
+  défile vers sa section ; les boutons **Précédent**/**Suivant** (ou
+  **Alt+←**/**Alt+→**) parcourent l'historique de navigation. Les touches
+  **↑**/**↓** et **PgPréc**/**PgSuiv** font défiler le texte, comme dans
+  les zones de résultat.
 
 
 La base BHSA est chargée en arrière-plan au démarrage ; les boutons restent
@@ -378,17 +414,28 @@ lettres finales (ך ם ן ף ץ) sont équivalentes à leurs formes médiales
 (כ מ נ פ צ) des deux côtés — la requête `מלך` (kaf sofit) trouve le mot
 `מֶּלֶךְ` **et** la racine `מלכ` (écrite sans sofit) ; décochée, seules
 les formes exactes correspondent (ך ne matche que ך).
-- **Texte non hébreu** (traductions, labels) : recherche littérale
-insensible à la casse.
+- **Texte non hébreu** (traductions, labels) : recherche littérale,
+insensible à la casse par défaut.
+- **« Casse sensible »** (case à cocher, décochée par défaut) : la
+recherche latine distingue majuscules et minuscules (`Ctrl-F` ne
+trouve pas `CTRL-F`). Sans effet sur les requêtes hébraïques (les
+lettres hébraïques n'ont pas de casse).
+- Dans l'onglet **README**, les défauts sont inversés : **casse
+sensible cochée** (documentation technique) et **« Sofit
+insensible » décochée** (le texte affiché distingue ך/כ etc.).
+Les deux cases restent modifiables à la volée.
 
 La recherche opère sur le texte affiché en ordre visuel : le module
 `bidi_display.py` fournit la projection des correspondances (calculées
 en ordre logique) vers les indices du widget (`find_line_matches`),
 surlignables directement.
 
-La recherche est disponible dans les onglets Livre, Mot, Phrase, ainsi que
-dans chaque sous-onglet de l'onglet Binyanim (Verbe, chaque binyan,
-Sortie complète).
+La recherche est disponible dans les onglets Livre, Mot, Phrase et README,
+ainsi que dans chaque sous-onglet de l'onglet Binyanim (Verbe, chaque binyan,
+Sortie complète). Dans l'onglet README, le texte affiché est en ordre logique
+(pas de conversion bidi) : les requêtes latines sont littérales et
+insensibles à la casse, les requêtes hébraïques portent sur le squelette
+consonantique comme partout ailleurs.
 
 #### Traductions française, anglaise et espagnole
 
@@ -655,12 +702,14 @@ print(format_text(analyse))
 
 ```
 analyse_hebreu.py        # CLI (mode verset/livre, mot, phrase, binyanim, mishna)
-gui_hebreu.py           # interface graphique Tkinter (mêmes fonctions que le CLI)
-bidi_display.py        # ordre visuel de l'hébreu pour le GUI (sélection stable)
+gui_hebreu.py           # interface graphique Tkinter (mêmes fonctions que le CLI) ; point d'entrée
+gui/                    # paquet du GUI : config (propriétés/polices), keyboard (clavier virtuel), widgets (zones de texte, recherche Ctrl-F), readme (onglet README), audio (lecteur verset/mishna)bidi_display.py        # ordre visuel de l'hébreu pour le GUI (sélection stable)
 test_bidi_display.py   # tests du module bidi_display
 gui.properties         # polices/tailles d'affichage du GUI (points)
 icone.ico              # icône Windows multi-résolutions de la fenêtre GUI (barre de titre/tâches)
+TOC.md                 # table des matières de ce README (liens hypertextes)
 scripts/generate_ico.py # (re)génère icone.ico depuis une fonte hébraïque (Pillow)
+scripts/generate_toc.py # (re)génère TOC.md et le sommaire ci-dessus (anti-récursif)
 data/
   louis_segond_1910.txt  # traduction française Louis Segond 1910 (domaine public)
   kjv_1611.txt          # traduction anglaise King James Version 1611 (domaine public)

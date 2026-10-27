@@ -49,6 +49,12 @@ jobs:
       - name: Run tests
         run: python -m pytest tests/ test_bidi_display.py -q
 
+      # TOC.md et le sommaire du README.md doivent être à jour (une
+      # seule plateforme suffit : vérification déterministe).
+      - name: Check TOC is up to date
+        if: runner.os == 'Linux'
+        run: python scripts/generate_toc.py --check
+
       - name: Build GUI
         run: pyinstaller analyse_hebreu.spec --noconfirm
         env:
