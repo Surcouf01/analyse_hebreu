@@ -706,11 +706,7 @@ class FindMixin:
         """Fait défiler la vue de delta pages (hauteur visible moins
         une ligne, comme les visualiseurs usuels)."""
         try:
-            first, last = self.yview()
-            if (last - first) > 0:
-                page = max(1, round((last - first) * self._visible_lines()) - 1)
-            else:
-                page = 1
+            page = max(1, self._visible_lines() - 1)
             self.yview_scroll(delta * page, "units")
             self._clamp_insert_to_view()
         except tk.TclError:
