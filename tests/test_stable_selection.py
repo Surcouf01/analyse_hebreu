@@ -243,10 +243,11 @@ class TestVisualStoredClusters(unittest.TestCase):
         first_c = int(first.split(".")[1])
         # Commence à la base ת (pas au LRM ni à l'espace précédents).
         self.assertEqual(first_c, tsade)
-        # Finit à la fin de ligne (dernier cluster = le ּ final), sans
+        # Finit après le dernier cluster du mot (le ּ final) sans
         # englober l'espace ni le mot suivant.
-        self.assertEqual(last, "2.0")
-        selected = self.visual[first_c:]
+        self.assertEqual(last, "1.%d" % len(self.visual))
+        last_c = int(last.split(".")[1])
+        selected = self.visual[first_c:last_c]
         self.assertNotIn(" ", selected)
         self.assertEqual(selected[0], "\u05ea")
         self.assertEqual(selected[-1], "\u05bc")
@@ -286,8 +287,9 @@ class TestHandlers(unittest.TestCase):
     def test_double_click_selects_word(self):
         self.t.cur = "1.7"
         self.assertEqual(self.sel._double_click(self.e), "break")
-        # Premier mot entier, bornes sur bords de clusters.
-        self.assertEqual(self.t.sel, ["1.0", "1.12"])
+        # Premier mot entier, bornes sur bords de clusters, SANS l'espace
+        # qui le suit (comportement standard du double-clic : mot seul).
+        self.assertEqual(self.t.sel, ["1.0", "1.11"])
 
     def test_triple_click_selects_line(self):
         self.t.cur = "1.7"

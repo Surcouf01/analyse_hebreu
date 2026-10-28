@@ -260,7 +260,11 @@ class StableSelection:
     def _double_click(self, event):
         # Mot : bornes définies par les espaces (les wordbreaks de Tk
         # traitent chaque nikkud comme un mot isolé), arrimées aux
-        # clusters.
+        # clusters. L'espace adjacent au mot n'est PAS sélectionné : la
+        # boucle droite s'arrête avant l'espace (et non sur lui), sinon
+        # le surlignage déborde d'un espace du côté du mot — sur une
+        # ligne hébraïque en ordre visuel, la sélection paraissait
+        # décalée d'un espace par rapport au mot cliqué.
         w = self.widget
         pos = self._nearest_cluster_index(event.x, event.y)
         first = pos
@@ -272,7 +276,9 @@ class StableSelection:
         last = pos
         while True:
             nxt = w.index(f"{last} + 1 c")
-            if nxt == last or w.get(last) == " " or w.get(last) == "\n":
+            if nxt == last or w.get(nxt) == " " or w.get(nxt) == "\n":
+                break
+            if nxt.split(".")[0] != last.split(".")[0]:
                 break
             last = nxt
         first = self._cluster_start(first)
