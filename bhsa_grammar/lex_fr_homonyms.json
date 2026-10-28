@@ -10330,12 +10330,6 @@
   "sp": "subs",
   "en": "weed"
  },
- "C<R=/": {
-  "voc": "שַׁעַר",
-  "gloss_fr": "measure (en)",
-  "sp": "subs",
-  "en": "measure"
- },
  "C>WN=/": {
   "voc": "שָׁאֹון",
   "gloss_fr": "waste (en)",
@@ -10479,12 +10473,6 @@
   "gloss_fr": "rumour (en)",
   "sp": "subs",
   "en": "rumour"
- },
- "C<R==/": {
-  "voc": "שֹׁעָר",
-  "gloss_fr": "burst (en)",
-  "sp": "adjv",
-  "en": "burst"
  },
  "CM/": {
   "voc": "שֻׁם",
@@ -10835,15 +10823,6 @@
    "qal"
   ]
  },
- "C<R[": {
-  "voc": "שׁער",
-  "gloss_fr": "estimate (en)",
-  "sp": "verb",
-  "en": "estimate",
-  "binyanim": [
-   "qal"
-  ]
- },
  "CPV[": {
   "voc": "שׁפט",
   "gloss_fr": "judge (en)",
@@ -10906,18 +10885,6 @@
   "sp": "subs",
   "en": "swelling"
  },
- "F<R/": {
-  "voc": "שְׂעַר",
-  "gloss_fr": "hair (en)",
-  "sp": "subs",
-  "en": "hair"
- },
- "F<RH==/": {
-  "voc": "שְׂעָרָה",
-  "gloss_fr": "storm (en)",
-  "sp": "subs",
-  "en": "storm"
- },
  "FJX=/": {
   "voc": "שִׂיחַ",
   "gloss_fr": "concern (en)",
@@ -10965,24 +10932,6 @@
   "gloss_fr": "tattoo (en)",
   "sp": "subs",
   "en": "tattoo"
- },
- "F<RH=/": {
-  "voc": "שַׂעֲרָה",
-  "gloss_fr": "single hair (en)",
-  "sp": "subs",
-  "en": "single hair"
- },
- "F<R==/": {
-  "voc": "שַׂעַר",
-  "gloss_fr": "bristling (en)",
-  "sp": "subs",
-  "en": "bristling"
- },
- "F<R=/": {
-  "voc": "שַׂעַר",
-  "gloss_fr": "storm (en)",
-  "sp": "subs",
-  "en": "storm"
  },
  "FB<=/": {
   "voc": "שָׂבֵעַ",
@@ -11074,24 +11023,6 @@
   "en": "turn left",
   "binyanim": [
    "hif"
-  ]
- },
- "F<R=[": {
-  "voc": "שׂער",
-  "gloss_fr": "bristle (en)",
-  "sp": "verb",
-  "en": "bristle",
-  "binyanim": [
-   "qal"
-  ]
- },
- "F<R==[": {
-  "voc": "שׂער",
-  "gloss_fr": "know (en)",
-  "sp": "verb",
-  "en": "know",
-  "binyanim": [
-   "qal"
   ]
  },
  "FPQ=[": {
