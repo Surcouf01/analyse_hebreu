@@ -181,6 +181,77 @@ class TestClusters(unittest.TestCase):
         self.assertEqual(self.sel._nearest_cluster_index(0, 0), "1.12")
 
 
+class TestVisualStoredClusters(unittest.TestCase):
+    """Sélection sur le texte TEL QUE STOCKÉ par bidi_display.to_visual :
+    chaque cluster RTL y est précédé d'un LRM (marque de tête), les nikkud
+    suivent leur base (marques traçantes). Le widget du GUI contient ce
+    stockage, pas l'ordre logique — une marque de tête ouverte le cluster
+    SUIVANT, elle ne se rattache pas à la base précédente (sinon la
+    sélection déborde d'un espace à gauche et chevauche le mot voisin,
+    cf. double-clic sur וַיֵּ֥רֶד en mode verset)."""
+
+    def setUp(self):
+        import bidi_display
+        self.visual = bidi_display.to_visual(GEN11)
+        self.t = FakeText(self.visual)
+        self.sel = StableSelection(self.t)
+        self.e = Event()
+
+    def _col(self, ch, occurrence=0):
+        i = -1
+        for _ in range(occurrence + 1):
+            i = self.visual.index(ch, i + 1)
+        return i
+
+    def test_cluster_start_skips_head_marks(self):
+        # Sur le LRM qui précède la base ת : la borne va à la base ת,
+        # pas en arrière jusqu'à l'espace précédent.
+        tsade = self._col("\u05ea")
+        lrm_before = tsade - 1
+        self.assertEqual(self.visual[lrm_before], "\u200e")
+        self.assertEqual(
+            self.sel._cluster_start("1.%d" % lrm_before),
+            "1.%d" % tsade,
+        )
+
+    def test_cluster_start_keeps_trailing_marks(self):
+        # Les nikkud restent traçants : la base du cluster בָּ (dernier du
+        # mot stocké) est le ב, sa marque ּ suit.
+        beth = self._col("\u05d1", occurrence=1)
+        dagesh = len(self.visual) - 1  # ּ final du stockage
+        self.assertEqual(
+            self.sel._cluster_start("1.%d" % dagesh),
+            "1.%d" % beth,
+        )
+
+    def test_cluster_end_stops_before_head_mark(self):
+        # Fin du premier cluster stocké (א) : le LRM du cluster suivant
+        # n'est pas avalé — sinon la sélection chevauche le mot voisin.
+        aleph = self._col("\u05d0")
+        self.assertEqual(
+            self.sel._cluster_end("1.%d" % aleph),
+            "1.%d" % (aleph + 1),
+        )
+
+    def test_double_click_selects_word_without_overlap(self):
+        # Double-clic sur le ת du premier mot stocké : le mot complet,
+        # SANS l'espace de gauche ni le mot voisin.
+        tsade = self._col("\u05ea")
+        self.t.cur = "1.%d" % tsade
+        self.assertEqual(self.sel._double_click(self.e), "break")
+        first, last = self.t.sel
+        first_c = int(first.split(".")[1])
+        # Commence à la base ת (pas au LRM ni à l'espace précédents).
+        self.assertEqual(first_c, tsade)
+        # Finit à la fin de ligne (dernier cluster = le ּ final), sans
+        # englober l'espace ni le mot suivant.
+        self.assertEqual(last, "2.0")
+        selected = self.visual[first_c:]
+        self.assertNotIn(" ", selected)
+        self.assertEqual(selected[0], "\u05ea")
+        self.assertEqual(selected[-1], "\u05bc")
+
+
 class TestHandlers(unittest.TestCase):
     def setUp(self):
         self.t = FakeText(GEN11)
