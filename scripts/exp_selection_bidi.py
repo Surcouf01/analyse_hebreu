@@ -115,9 +115,14 @@ def main():
 
     first, last = found
 
-    def apply_sel():
+    def apply_sel(event=None):
+        # Le clic dans la fenêtre a donné le focus RÉEL (fenêtre active) :
+        # sans focus effectif, Tk ne peint pas le fond du tag sel — c'est
+        # pourquoi les essais automatiques (focus_set sans fenêtre active)
+        # ne montraient aucun surlignage alors que le GUI (clic utilisateur)
+        # l'affiche. Le clic ne sert qu'à activer la fenêtre ; les bornes
+        # restent posées programmatiquement.
         t.tag_add("sel", first, last)
-        t.focus_set()
         t.selection_own()
         print(f"=== {title} : sel {first}..{last} ===")
         f = int(first.split(".")[1])
@@ -156,9 +161,9 @@ def main():
         root.attributes("-topmost", False)
         root.after(1500, root.destroy)
 
-    print("Dans 3 secondes : sélection + capture automatiques — "
-          "laisser la fenêtre au premier plan.")
-    root.after(3000, apply_sel)
+    print("CLIQUEZ UNE FOIS dans la fenêtre Tk (n'importe où) : la "
+          "sélection se posera et la capture sera prise automatiquement.")
+    t.bind("<Button-1>", apply_sel)
     root.mainloop()
 
 
