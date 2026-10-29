@@ -92,8 +92,12 @@ class TestLooksVisual(unittest.TestCase):
         self.assertFalse(looks_visual(GEN11))
 
     def test_partial_selection_detected(self):
+        # La copie du widget passe par to_logical : le presse-papiers ne
+        # contient jamais de marque, looks_visual n'a pas à détecter les
+        # fragments partiels du stockage. Le test se réduit au marquage
+        # de tête d'une ligne convertie tronquée APRÈS la marque.
         visual = to_visual(GEN11)
-        self.assertTrue(looks_visual(visual[3:20]))
+        self.assertTrue(looks_visual(visual[:20]))
 
     def test_latin_untouched(self):
         self.assertFalse(looks_visual("Louis Segond 1910"))
@@ -129,8 +133,11 @@ class TestRoundTrip(unittest.TestCase):
     def test_maqaf_and_sof_pasuq_stay_in_word(self):
         line = "הַשָּׁמַיִם וְאֵת הָאָָרֶץ׃"
         visual = to_visual(line)
-        # le mot avec sof pasuq reste groupé (marques LRM par cluster)
-        self.assertIn(LRM, visual)
+        # plus de LRM inter-clusters (elles brouillaient le redessin des
+        # sous-plages taguées, cf. exp_selection_bidi) : seule la marque
+        # de base RLM reste en tête de ligne.
+        self.assertTrue(visual.startswith(bidi_display.RLM))
+        self.assertNotIn(LRM, visual)
         self.assertEqual(to_logical(visual), line)
 
     def test_numbers_keep_ltr_order(self):
@@ -210,21 +217,25 @@ class TestStability(unittest.TestCase):
         # en ordre visuel, le mot affiché le plus à droite est אֱלֹהִים
         # (dernier mot logique) ; son dernier caractère (le mem final ם)
         # est donc en tête de la chaîne stockée.
-        self.assertTrue(visual.startswith(LRM))
+        self.assertTrue(visual.startswith(bidi_display.RLM))
         bounds = visual_cluster_bounds(visual)
         self.assertTrue(bounds)
         start, end = bounds[0]
         first_cluster = visual[start:end]
-        self.assertEqual(first_cluster[0], LRM)
-        # premier cluster stocké : LRM + mem final ם du dernier mot logique
-        self.assertEqual(first_cluster[1], "ם")
+        # premier cluster stocké : mem final ם du dernier mot logique
+        self.assertEqual(first_cluster[0], "ם")
 
     def test_no_bidi_embedding_marks(self):
-        """Plus d'embeddings RLE/PDF : le stockage visuel ne repose que sur\n        des marques LRM locales, insensibles à la découpe en fragments."""
+        """Plus d'embeddings RLE/PDF, plus de LRM inter-clusters : le
+        stockage visuel ne porte qu'une marque de base en tête de ligne
+        (RLM pour une base RTL), hors des mots — les sous-plages taguées
+        (surlignage de sélection, repli) se redessinent sans brouiller
+        les glyphes."""
         visual = to_visual(GEN11)
         self.assertNotIn("\u202B", visual)
         self.assertNotIn("\u202C", visual)
-        self.assertNotIn("\u200F", visual)
+        self.assertNotIn(LRM, visual)
+        self.assertTrue(visual.startswith(bidi_display.RLM))
 
 
 class TestLogicalWrap(unittest.TestCase):
@@ -310,7 +321,7 @@ class TestLogicalWrap(unittest.TestCase):
         seg_start = visual.rindex(":")
         self.assertLess(seg_start, visual.rindex("ת"))
         seg = visual[seg_start:seg_start + 8]
-        self.assertTrue(seg.startswith(":" + LRM + "ת"))
+        self.assertTrue(seg.startswith(":" + "ת"))
         self.assertEqual(to_logical(to_visual(line)), line)
 
     def test_wide_word_split_by_clusters(self):

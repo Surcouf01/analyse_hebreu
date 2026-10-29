@@ -14,10 +14,13 @@ la sélection à la souris devient stable et prévisible.
 
 Deux précautions supplémentaires :
 
-- Chaque cluster RTL (lettre + voyelles/accents) est précédé d'une marque
-  LRM (U+200E) : le rendu de chaque fragment reste identique, même quand la
-  ligne est découpée par le surlignage de sélection ou par le retour à la
-  ligne (Tk dessine chaque fragment indépendamment).
+- AUCUNE marque n'est insérée entre les clusters : des LRM inter-clusters
+  forçaient le moteur de rendu à traiter chaque lettre comme un run
+  isolé, et le redessin d'une sous-plage taguée (surlignage de sélection,
+  retour à la ligne) brouillait alors les glyphes — surlignage réduit au
+  dernier cluster, nikkud orphelines restées en couleur normale (cf.
+  exp_selection_bidi A vs B). L'ordre visuel suffit : le rendu est
+  purement séquentiel (Tk n'applique pas le bidi sur le stockage).
 
 - La copie (Ctrl+C) restitue l'ordre logique d'origine : les marques sont
   retirées puis les clusters réordonnés (la transformation est
@@ -57,17 +60,18 @@ def _has_ltr_strong(line):
     """Vrai si la ligne contient au moins une lettre forte LTR (latine)."""
     return any(unicodedata.bidirectional(c) == "L" for c in line)
 
-# Cluster hébreu en ordre visuel : LRM + une lettre de base (consonne ou
+# Cluster hébreu en ordre visuel : une lettre de base (consonne ou
 # voyelle lettre) suivie de ses marques combinantes — nikkud U+05B0..U+05BD,
 # daguesh U+05BC, points shin/sin U+05C1..U+05C2, teamim U+0591..U+05AF.
-# Le sof pasuq U+05C3, porteur, forme son propre cluster.
+# Le sof pasuq U+05C3, porteur, forme son propre cluster. Plus de LRM
+# de tête : les marques inter-clusters ont été retirées du stockage.
 _VISUAL_CLUSTER_RE = re.compile(
-    "\u200E[\u05D0-\u05EA\u05EF][\u0591-\u05BD\u05BF\u05C1\u05C2]*"
-    "|\u200E\u05C3"
+    "[\u05D0-\u05EA\u05EF][\u0591-\u05BD\u05BF\u05C1\u05C2]*"
+    "|\u05C3"
 )
 
 # Mot hébreu dans une ligne en ordre visuel : suite contiguë de clusters.
-_HEBREW_WORD_RE = re.compile("(?:\u200E[\u0590-\u05FF]+)+")
+_HEBREW_WORD_RE = re.compile("[\u0590-\u05FF]+")
 
 # Toutes les marques de directionnalité, retirées à la copie.
 _BIDI_MARKS_RE = re.compile(
@@ -477,10 +481,12 @@ def _split_wide_word(word, measure, avail):
 def to_visual(text):
     """Prépare un texte pour un affichage hébreu stable dans le GUI.
 
-    Chaque ligne contenant de l'hébreu est mise en ordre visuel, chaque
-    cluster RTL étant précédé d'une marque LRM ; les lignes sans hébreu
-    sont laissées inchangées. L'entrée doit être en ordre logique
-    (toute marque de directionnalité déjà présente est d'abord retirée).
+    Chaque ligne contenant de l'hébreu est mise en ordre visuel SANS
+    marque entre les clusters ; les lignes sans hébreu sont laissées
+    inchangées. L'entrée doit être en ordre logique (toute marque de
+    directionnalité déjà présente est d'abord retirée). Seule une marque
+    de BASE reste en tête de ligne (RLM ou double LRM, cf. docstring
+    du module) pour l'inversibilité à la copie.
     """
     if not text:
         return text
@@ -495,17 +501,17 @@ def to_visual(text):
         base_rtl = _base_rtl(line) if forced is None else forced
         parts = []
         for c in _visual_clusters(clusters, base_rtl):
-            if _cluster_is_rtl(c):
-                parts.append(LRM)
             parts.append(c)
-        # Marque de base en tête pour rester inversible à la copie :
-        # nécessaire si la base ne peut pas être redéduite du contenu —
-        # ligne à base RTL CONTENANT du latin (sinon redéduite LTR), ou
-        # ligne à base LTR (redéduite RTL par défaut). L'hébreu pur non
-        # marqué reste RTL par défaut.
+        # Marque de base en tête de CHAQUE ligne convertie : RLM = base
+        # RTL, double LRM = base LTR. Elle rend to_logical inversible à
+        # la copie ET looks_visual discriminant (sans les LRM
+        # inter-clusters, plus rien ne distinguait un stockage visuel
+        # d'un texte logique). Hors des mots, elle n'entre jamais dans
+        # une sous-plage taguée : le redessin de sélection n'est pas
+        # affecté (cf. exp_selection_bidi : seules les marques ENTRE les
+        # clusters brouillaient le rendu).
         out = "".join(parts)
-        if (base_rtl and _has_ltr_strong(line)) or not base_rtl:
-            out = (RLM if base_rtl else LRM + LRM) + out
+        out = (RLM if base_rtl else LRM + LRM) + out
         out_lines.append(out)
     return "\n".join(out_lines)
 
@@ -617,10 +623,10 @@ def clusters(line):
 def looks_visual(text):
     """Vrai si ``text`` semble être en ordre visuel (cf. to_visual).
 
-    Heuristique : un texte stocké en ordre visuel contient les marques
-    de directionnalité insérées par to_visual — LRM devant chaque
-    cluster RTL, marque de base en tête de ligne. Un texte logique
-    (saisi au clavier ou copié via Ctrl+C) n'en contient pas.
+    Heuristique : un texte stocké en ordre visuel porte la marque de
+    base insérée par to_visual en tête de ligne (RLM ou double LRM).
+    Un texte logique (saisi au clavier ou copié via Ctrl+C, qui passe
+    par to_logical) n'en contient pas.
     """
     return bool(_BIDI_MARKS_RE.search(text))
 

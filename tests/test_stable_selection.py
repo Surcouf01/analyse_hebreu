@@ -204,14 +204,14 @@ class TestVisualStoredClusters(unittest.TestCase):
         return i
 
     def test_cluster_start_skips_head_marks(self):
-        # Sur le LRM qui précède la base ת : la borne va à la base ת,
-        # pas en arrière jusqu'à l'espace précédent.
-        tsade = self._col("\u05ea")
-        lrm_before = tsade - 1
-        self.assertEqual(self.visual[lrm_before], "\u200e")
+        # Plus de LRM inter-clusters : la seule marque de tête est le RLM
+        # en début de ligne. Un clic dessus doit être rabattu sur la base
+        # du premier cluster stocké, pas laissé en début de ligne.
+        import bidi_display
+        self.assertTrue(self.visual.startswith(bidi_display.RLM))
         self.assertEqual(
-            self.sel._cluster_start("1.%d" % lrm_before),
-            "1.%d" % tsade,
+            self.sel._cluster_start("1.0"),
+            "1.1",
         )
 
     def test_cluster_start_keeps_trailing_marks(self):
