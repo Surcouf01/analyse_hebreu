@@ -556,6 +556,20 @@ et participes. Les gabarits vocaliques sont extraits des formes dominantes
 attestées dans la base BHSA (`bhsa_grammar/binyan_templates.json`, généré
 par `scripts/extract_binyan_templates.py`).
 
+> **Note — vocalisme du piel parfait 3ms (qittel vs qittal).** Le corpus
+> massorétique atteste deux schémas concurrents pour cette cellule : tséré
+> (קִטֵּל, type דִּבֵּר) et patach (קִטַּל, type כִּבַּד), tous deux tibériens et
+> sensiblement équilibrés (verbes forts : 45 lemmes au tséré, 57 au patach
+> dans la BHSA). Le patach domine en effet surtout les formes suffixées
+> (כִּבַּדְתִּי, כִּבַּדְתָּ…), tandis que la tradition grammaticale enseigne le
+> paradigme sous le schéma qittel (tséré). L'extracteur applique donc une
+> préférence : pour cette cellule, le tséré devient la forme dominante
+> quand il est attesté par au moins la moitié des lemmes du gabarit le plus
+> fréquent (`_PREFERRED_TEMPLATES` dans `scripts/extract_binyan_templates.py`) ;
+> le patach reste affiché en variante attestée. Les deux graphies sont
+> correctes ; l'option « Référence attestée » du GUI montre où chacune
+> apparaît réellement dans la Bible.
+
 Chaque en-tête de binyan de la sortie texte est marqué pour être
 identifiable/parsable par le GUI :
 `###BINYAN|<code>|<nom fr>|<nom hébreu>|<attesté>###`, de même que l'en-tête

@@ -224,6 +224,18 @@ def _canon_tpl(s):
     return s
 
 
+# Vocalisme tibérien canonique : le paradigme de référence du piel
+# parfait 3ms est qittel (P1\u05b4P2\u05b5\u05bcP3, tsere \u2014 GKC \u00a752b ; Jo\u00fcon-Muraoka
+# \u00a752), le patach (qittal) \u00e9tant surtout celui des formes suffix\u00e9es
+# (qittalti, qittalta...). Quand les deux sch\u00e9mas sont attest\u00e9s dans la
+# base, on pr\u00e9f\u00e8re donc le tsere comme forme dominante ; le patach
+# reste en variante. La cl\u00e9 est (binyan, temps, cellule).
+_TSERE_CANON = "P1\u05b4P2\u05b5P3"
+_PREFERRED_TEMPLATES = {
+    ("piel", "perf", ("p3", "m", "sg")): _TSERE_CANON,
+}
+
+
 def main():
     api = load_corpus()
     F = api.F
@@ -347,6 +359,13 @@ def main():
         ranked = sorted(counter.items(),
                         key=lambda kv: (-len(kv[1]["lexes"]), -kv[1]["n"]))
         tpl, entry = ranked[0]
+        pref = _PREFERRED_TEMPLATES.get((vs, vt, key))
+        if pref and len(entry["lexes"]) > 0:
+            for t, e in ranked:
+                if _canon_tpl(t) == pref:
+                    if len(e["lexes"]) * 2 >= len(entry["lexes"]):
+                        tpl, entry = t, e
+                    break
         if len(entry["lexes"]) < 2:
             # Gabarit idiosyncratique (un seul lemme) : ne pas l'écrire —
             # le générateur repliera sur le gabarit « strong » ou le
