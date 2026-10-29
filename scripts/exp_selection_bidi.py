@@ -83,6 +83,7 @@ def main():
 
     t = tk.Text(root, font=font, height=1, width=120, wrap="none")
     t.pack(fill="both", expand=True)
+    t.tag_configure("hl", background="#3399ff", foreground="#ffffff")
     t.insert("1.0", text)
 
     content = t.get("1.0", "end - 1 c")
@@ -122,9 +123,16 @@ def main():
         # ne montraient aucun surlignage alors que le GUI (clic utilisateur)
         # l'affiche. Le clic ne sert qu'à activer la fenêtre ; les bornes
         # restent posées programmatiquement.
-        t.tag_add("sel", first, last)
-        t.selection_own()
-        print(f"=== {title} : sel {first}..{last} ===")
+        # Tag CUSTOM avec fond explicite — pas le tag sel : son rendu
+        # dépend de conditions internes de Tk (focus effectif au moment
+        # du paint, ownership de la sélection) impossibles à garantir
+        # de l'extérieur, comme les essais précédents l'ont montré
+        # (bornes posées, aucun fond peint). Un tag custom exerce le
+        # même chemin de redessin par sous-plage — la question testée
+        # (le redessin d'un run tagué brouille-t-il les glyphes selon
+        # le stockage ?) — sans aucune sémantique cachée.
+        t.tag_add("hl", first, last)
+        print(f"=== {title} : hl {first}..{last} ===")
         f = int(first.split(".")[1])
         l = int(last.split(".")[1])
         for i in range(f, l):
