@@ -149,8 +149,7 @@ def main():
 
     cases = [
         ("A. visuel + LRM (GUI actuel)", to_visual(VERSE), "visual_lrm"),
-        ("B. visuel sans LRM", reverse_clusters(no_marks(to_visual(VERSE))),
-         "visual_plain"),
+        ("B. visuel sans LRM", no_marks(to_visual(VERSE)), "visual_plain"),
         ("C. logique pur", VERSE, "logical"),
         ("D. logique + RLM tête", RLM + VERSE, "logical"),
     ]
@@ -176,6 +175,17 @@ def main():
         root.after(300, capture)
 
     def capture():
+        # Forcer la fenêtre au premier plan AVANT la capture : les essais
+        # précédents ont capturé la fenêtre de console derrière.
+        try:
+            root.lift()
+            root.attributes("-topmost", True)
+            root.update()
+            root.after(150, _grab)
+        except Exception:
+            _grab()
+
+    def _grab():
         try:
             from PIL import ImageGrab
             root.update()
@@ -187,10 +197,25 @@ def main():
             path = os.path.join(tempfile.gettempdir(),
                                 "exp_selection_bidi.png")
             img.save(path)
-            print(f"\ncapture d'écran : {path}")
+            print(f"\ncapture d'écran (fenêtre complète) : {path}")
+            # Une capture PAR widget : découpe selon la géométrie réelle de
+            # chaque Text, pour une lecture sans ambiguïté.
+            for i, (t, kind, title) in enumerate(widgets):
+                wx = t.winfo_rootx() - x
+                wy = t.winfo_rooty() - y
+                ww = t.winfo_width()
+                wh = t.winfo_height()
+                crop = img.crop((max(0, wx - 2), max(0, wy - 2),
+                                 min(img.width, wx + ww + 2),
+                                 min(img.height, wy + wh + 2)))
+                p = os.path.join(tempfile.gettempdir(),
+                                 f"exp_selection_bidi_{chr(65 + i)}.png")
+                crop.save(p)
+                print(f"capture {title} : {p}")
+            root.attributes("-topmost", False)
         except Exception as exc:
             print(f"capture impossible : {exc}")
-        print("\nProtocole : regarder la capture — pour chaque ligne A-D, "
+        print("\nProtocole : regarder les captures A-D — pour chaque ligne, "
               "le mot sélectionné est-il lisible, complet, avec ses "
               "nikkud ? La sélection couvre-t-elle exactement le mot ?")
 
