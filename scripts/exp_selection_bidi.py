@@ -118,6 +118,15 @@ def select_word(widget, storage_kind):
             first = f"1.{start + 1}"
             last = f"1.{end}"
             widget.tag_add("sel", first, last)
+            # Rendre la sélection VISIBLE : Tk ne peint le fond du tag sel
+            # que lorsque le widget possède la sélection primaire (acquise
+            # normalement par la souris). Sans focus ni ownership, tag_add
+            # pose les bornes mais le surlignage n'est pas dessiné — les
+            # premiers essais ont capturé des widgets sans aucune bande
+            # bleue. focus + selection_own déclenchent le rendu SANS souris,
+            # en gardant le test isolé de StableSelection.
+            widget.focus_set()
+            widget.selection_own()
             return first, last
     return None
 
