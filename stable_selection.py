@@ -222,10 +222,36 @@ class StableSelection:
     # --- Application de la sélection --------------------------------------
 
     def _sel_apply(self, first, last):
+        """Pose le tag sel cluster par cluster, jamais en plage continue.
+
+        Une plage continue tag_add(first, last) coupe le stockage au
+        milieu des runs RTL : les LRM inter-clusters (forts LTR)
+        forcent alors le moteur de rendu à traiter chaque fragment
+        comme un run isolé et le redessin brouille les glyphes —
+        surlignage réduit au dernier cluster, nikkud orphelines (cf.
+        exp_selection_bidi, cas A). En posant le tag cluster PAR
+        cluster — chaque entrée couvrant un cluster COMPLET (LRM de
+        tête + base + marques traçantes) — le moteur dessine des runs
+        entiers : le rendu de chaque fragment est identique au rendu de
+        la ligne complète (cas B). Les entrées multiples du même tag
+        sont fusionnées par Tk (tag_ranges contiguës), la copie et le
+        find restent inchangés.
+        """
         w = self.widget
         w.tag_remove("sel", "1.0", "end")
-        if w.compare(first, "<", last):
-            w.tag_add("sel", first, last)
+        if not w.compare(first, "<", last):
+            return
+        idx = first
+        while w.compare(idx, "<", last):
+            cend = self._cluster_end(idx)
+            if w.compare(cend, ">", last):
+                cend = last
+            cstart = self._cluster_start(idx)
+            w.tag_add("sel", cstart, cend)
+            nxt = cend
+            if nxt == idx:
+                break
+            idx = nxt
 
     # --- Handlers de souris ------------------------------------------------
 

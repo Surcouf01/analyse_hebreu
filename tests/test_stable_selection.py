@@ -93,7 +93,19 @@ class FakeText:
         self.sel = []
 
     def tag_add(self, tag, first, last):
-        self.sel = [first, last]
+        # Plages multiples (tag posé cluster par cluster, cf.
+        # StableSelection._sel_apply) : contiguës ou non, dans l'ordre.
+        self.sel.append([first, last])
+
+    def sel_span(self):
+        """Vue fusionnée des plages sel : [première borne, dernière borne].
+
+        Les entrées cluster par cluster sont contiguës (fin de l'une ==
+        début de la suivante) : la sélection couvre sel[0][0]..sel[-1][1].
+        """
+        if not self.sel:
+            return []
+        return [self.sel[0][0], self.sel[-1][1]]
 
     def mark_set(self, mark, value):
         self.insert = value
@@ -239,7 +251,7 @@ class TestVisualStoredClusters(unittest.TestCase):
         tsade = self._col("\u05ea")
         self.t.cur = "1.%d" % tsade
         self.assertEqual(self.sel._double_click(self.e), "break")
-        first, last = self.t.sel
+        first, last = self.t.sel_span()
         first_c = int(first.split(".")[1])
         # Commence à la base ת (pas au LRM ni à l'espace précédents).
         self.assertEqual(first_c, tsade)
@@ -262,7 +274,7 @@ class TestVisualStoredClusters(unittest.TestCase):
         for sp in spaces:
             self.t.cur = "1.%d" % sp
             self.assertEqual(self.sel._double_click(self.e), "break")
-            first, last = self.t.sel
+            first, last = self.t.sel_span()
             fc = int(first.split(".")[1])
             lc = int(last.split(".")[1])
             selected = self.visual[fc:lc]
@@ -278,7 +290,7 @@ class TestVisualStoredClusters(unittest.TestCase):
         for col in range(len(self.visual)):
             self.t.cur = "1.%d" % col
             self.assertEqual(self.sel._double_click(self.e), "break")
-            first, last = self.t.sel
+            first, last = self.t.sel_span()
             fc = int(first.split(".")[1])
             lc = int(last.split(".")[1])
             selected = self.visual[fc:lc]
@@ -306,12 +318,12 @@ class TestHandlers(unittest.TestCase):
         self.sel._press(self.e)
         self.t.cur = "1.9"
         self.assertEqual(self.sel._drag(self.e), "break")
-        self.assertEqual(self.t.sel, ["1.3", "1.9"])
+        self.assertEqual(self.t.sel_span(), ["1.3", "1.9"])
         # Drag inverse (ancre > position) : bornes réordonnées.
         self.t.cur = "1.0"
         self.assertEqual(self.sel._drag(self.e), "break")
         # La sélection va du point courant à l'ancre, pas à l'ancien max.
-        self.assertEqual(self.t.sel, ["1.0", "1.3"])
+        self.assertEqual(self.t.sel_span(), ["1.0", "1.3"])
 
     def test_release_clears_anchor(self):
         self.t.cur = "1.0"
@@ -324,19 +336,19 @@ class TestHandlers(unittest.TestCase):
         self.assertEqual(self.sel._double_click(self.e), "break")
         # Premier mot entier, bornes sur bords de clusters, SANS l'espace
         # qui le suit (comportement standard du double-clic : mot seul).
-        self.assertEqual(self.t.sel, ["1.0", "1.11"])
+        self.assertEqual(self.t.sel_span(), ["1.0", "1.11"])
 
     def test_triple_click_selects_line(self):
         self.t.cur = "1.7"
         self.assertEqual(self.sel._triple_click(self.e), "break")
-        self.assertEqual(self.t.sel, ["1.0", "2.0"])
+        self.assertEqual(self.t.sel_span(), ["1.0", "2.0"])
 
     def test_shift_press_extends_from_insert(self):
         self.t.cur = "1.9"
         self.sel.anchor = None
         self.t.insert = "1.0"
         self.assertEqual(self.sel._shift_press(self.e), "break")
-        self.assertEqual(self.t.sel, ["1.0", "1.9"])
+        self.assertEqual(self.t.sel_span(), ["1.0", "1.9"])
 
 
 class TestBindings(unittest.TestCase):
