@@ -252,6 +252,41 @@ class TestVisualStoredClusters(unittest.TestCase):
         self.assertEqual(selected[0], "\u05ea")
         self.assertEqual(selected[-1], "\u05bc")
 
+    def test_double_click_on_space_selects_single_word(self):
+        # Clic sur l'ESPACE inter-mots : Tk renvoie l'index de l'espace. La
+        # sélection doit se rabattre sur le mot le plus proche (le suivant
+        # dans l'ordre de stockage), pas avaler le mot de gauche ET celui de
+        # droite — le chevauchement « sélection dansante » des captures.
+        spaces = [i for i, c in enumerate(self.visual) if c == " "]
+        self.assertTrue(spaces)
+        for sp in spaces:
+            self.t.cur = "1.%d" % sp
+            self.assertEqual(self.sel._double_click(self.e), "break")
+            first, last = self.t.sel
+            fc = int(first.split(".")[1])
+            lc = int(last.split(".")[1])
+            selected = self.visual[fc:lc]
+            self.assertNotIn(" ", selected,
+                             f"clic sur espace col {sp} : {selected!r}")
+            self.assertGreater(len(selected.strip()), 0)
+
+    def test_double_click_every_column_single_word(self):
+        # Non-régression exhaustive : chaque colonne cliquée (lettres,
+        # nikkud, teamim, LRM, espaces) sélectionne exactement un mot,
+        # sans espace ni chevauchement du mot voisin.
+        seen = set()
+        for col in range(len(self.visual)):
+            self.t.cur = "1.%d" % col
+            self.assertEqual(self.sel._double_click(self.e), "break")
+            first, last = self.t.sel
+            fc = int(first.split(".")[1])
+            lc = int(last.split(".")[1])
+            selected = self.visual[fc:lc]
+            self.assertNotIn(" ", selected,
+                             f"clic col {col} : {selected!r}")
+            seen.add((fc, lc))
+        self.assertGreater(len(seen), 1)
+
 
 class TestHandlers(unittest.TestCase):
     def setUp(self):

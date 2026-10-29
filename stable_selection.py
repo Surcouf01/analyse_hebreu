@@ -267,6 +267,19 @@ class StableSelection:
         # décalée d'un espace par rapport au mot cliqué.
         w = self.widget
         pos = self._nearest_cluster_index(event.x, event.y)
+        # Clic sur l'espace inter-mots : Tk renvoie l'index de l'espace. Les
+        # boucles de mot ne s'arrêtent pas sur lui (gauche : le caractère
+        # AVANT first ; droite : le caractère APRÈS last), donc la sélection
+        # avalait le mot de gauche ET le mot de droite — sur une ligne
+        # hébraïque en ordre visuel, le surlignage paraissait « décalé » d'un
+        # mot. Comme les éditeurs standards, on rabat le clic sur le mot le
+        # plus proche de l'espace (celui de droite dans l'ordre de stockage
+        # visuel RTL, sauf s'il n'y en a pas).
+        while w.get(pos) in (" ", "\n"):
+            nxt = w.index(f"{pos} + 1 c")
+            if nxt == pos:
+                break
+            pos = nxt
         first = pos
         while True:
             prev = w.index(f"{first} - 1 c")
