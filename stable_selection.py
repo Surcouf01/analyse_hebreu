@@ -405,5 +405,43 @@ class StableSelection:
                      if s == "SEL" and x >= 0]
             if sel_x:
                 print(f"bande écran couverte par sel : x {min(sel_x)}..{max(sel_x)}")
+        # Contexte : police réelle, configuration du tag sel, géométrie.
+        try:
+            font = w.cget("font")
+            print(f"font configurée : {font!r}")
+            actual = w.tk.call("font", "actual", str(font))
+            print(f"font réelle (résolution) : {actual}")
+        except Exception as exc:
+            print(f"font : indisponible ({exc})")
+        for opt in ("-background", "-foreground", "-borderwidth"):
+            try:
+                print(f"sel {opt} : {w.tag_cget('sel', opt)!r}")
+            except Exception:
+                pass
+        print(f"widget : x={w.winfo_x()} y={w.winfo_y()} "
+              f"w={w.winfo_width()} h={w.winfo_height()} "
+              f"rootx={w.winfo_rootx()} rooty={w.winfo_rooty()}")
+        # Capture d'écran du widget : les PIXELS réellement peints,
+        # à comparer aux bbox ci-dessus (layout interne de Tk). Si le
+        # surlignage peint ne correspond pas aux bbox, le décalage est
+        # dans le dessin du texte sélectionné (segments redessinés sans
+        # shaping : voyelles orphelines), pas dans les bornes.
+        try:
+            import os
+            import tempfile
+            from PIL import ImageGrab
+            rx, ry = w.winfo_rootx(), w.winfo_rooty()
+            rw, rh = w.winfo_width(), w.winfo_height()
+            img = ImageGrab.grab((rx, ry, rx + rw, ry + rh))
+            self._dump_n = getattr(self, "_dump_n", 0) + 1
+            has_sel = sel_first is not None
+            path = os.path.join(
+                tempfile.gettempdir(),
+                f"stable_sel_dump_{self._dump_n}"
+                f"{'_sel' if has_sel else '_nosel'}.png")
+            img.save(path)
+            print(f"capture d'écran du widget : {path}")
+        except Exception as exc:
+            print(f"capture d'écran impossible : {exc}")
         print("=== fin diagnostic ===\n")
         return "break"
