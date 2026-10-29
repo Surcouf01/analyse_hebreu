@@ -298,7 +298,10 @@ class StableSelection:
         last = self._cluster_end(last)
         self.anchor = first
         self._sel_apply(first, last)
-        w.mark_set("insert", first)
+        # Caret à la FIN de la sélection, comme les éditeurs standards : à
+        # ``first`` (bord gauche du mot dans l'ordre de stockage visuel), le
+        # caret clignotait au milieu du verset, à gauche du mot ciblé.
+        w.mark_set("insert", last)
         return "break"
 
     def _triple_click(self, event):
@@ -308,7 +311,7 @@ class StableSelection:
         last = w.index(f"{pos} lineend")
         self.anchor = first
         self._sel_apply(first, self._cluster_end(last))
-        w.mark_set("insert", first)
+        w.mark_set("insert", self._cluster_end(last))
         return "break"
 
     def _shift_press(self, event):
