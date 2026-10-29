@@ -347,6 +347,7 @@ class TestBindings(unittest.TestCase):
             sorted(seq for seq, _ in t.events),
             sorted([
                 "<Button-1>", "<B1-Motion>", "<ButtonRelease-1>",
+                "<Control-d>", "<Control-D>",
                 "<Double-Button-1>", "<Triple-Button-1>",
                 "<Shift-Button-1>", "<Shift-B1-Motion>",
             ]),

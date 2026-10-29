@@ -89,6 +89,8 @@ class StableSelection:
         w.bind("<Triple-Button-1>", self._triple_click)
         w.bind("<Shift-Button-1>", self._shift_press)
         w.bind("<Shift-B1-Motion>", self._drag)
+        w.bind("<Control-d>", self._dump_selection_geometry)
+        w.bind("<Control-D>", self._dump_selection_geometry)
 
     # --- Construction de chaînes mixtes RTL/LTR --------------------------
 
@@ -327,4 +329,81 @@ class StableSelection:
             self._sel_apply(cur, anchor)
         else:
             self._sel_apply(anchor, cur)
+        return "break"
+
+    # --- Diagnostic rendu/sélection (Ctrl+D) -------------------------------
+
+    def _dump_selection_geometry(self, event):
+        """Dump de diagnostic : pour chaque colonne de la ligne cliquée,
+        compare la position ÉCRAN (bbox de Tk) à l'index de STOCKAGE.
+
+        Contexte : le widget stocke l'ordre visuel (to_visual) ; la
+        sélection est calculée sur ces indices de stockage. Si le moteur
+        de rendu (bidi Windows) réordonne les glyphes différemment du
+        stockage, le surlignage du tag sel ne recouvre pas les glyphes
+        visés — le décalage « sélection dansante ». Ce dump imprime,
+        pour CHAQUE colonne : l'index, le caractère (nom Unicode court),
+        la bbox écran (x, y, largeur, hauteur), et si la colonne est dans
+        la sélection courante. En comparant l'ordre des x écran à l'ordre
+        des indices, on voit immédiatement si le rendu ré-inverse les
+        runs RTL (x écran décroissants alors que les indices croissent)
+        et de combien les bornes sel décalent le surlignage.
+
+        Sortie sur stdout — lancer le GUI depuis une console pour lire.
+        """
+        w = self.widget
+        try:
+            pos = w.index(f"@{event.x},{event.y}")
+        except Exception:
+            pos = w.index("insert")
+        line = pos.split(".")[0]
+        try:
+            sel_first = w.index("sel.first")
+            sel_last = w.index("sel.last")
+        except Exception:
+            sel_first = sel_last = None
+        end = w.index(f"{line}.0 lineend + 1 c")
+        print(f"\n=== stable_selection diagnostic — ligne {line} ===")
+        print(f"sel: {sel_first}..{sel_last}")
+        print(f"{'idx':>8}  {'x':>5} {'y':>4} {'w':>3} {'h':>3}  in_sel  char")
+        idx = f"{line}.0"
+        rows = []
+        while w.compare(idx, "<", end):
+            ch = w.get(idx)
+            col = int(idx.split(".")[1])
+            in_sel = ""
+            if sel_first is not None:
+                in_sel = "SEL" if (w.compare(idx, ">=", sel_first)
+                                    and w.compare(idx, "<", sel_last)) else "."
+            try:
+                bb = w.bbox(idx)
+                bx, by, bw, bh = bb
+            except Exception:
+                bx = by = bw = bh = -1
+            name = unicodedata.name(ch, "?")
+            if len(name) > 28:
+                name = name[:25] + "..."
+            rows.append((col, bx, by, bw, bh, in_sel, ch, name))
+            nxt = w.index(f"{idx} + 1 c")
+            if nxt == idx:
+                break
+            idx = nxt
+        for col, bx, by, bw, bh, in_sel, ch, name in rows:
+            print(f"{col:>8}  {bx:>5} {by:>4} {bw:>3} {bh:>3}  {in_sel:<6} "
+                  f"{ch!r} {name}")
+        # Résumé : monotonie des x écran par rapport aux indices.
+        vis = [(c, x) for c, x, _by, _bw, _bh, _s, _ch, _n in rows if x >= 0]
+        if len(vis) >= 2:
+            inc = sum(1 for (c1, x1), (c2, x2) in zip(vis, vis[1:]) if x2 > x1)
+            dec = sum(1 for (c1, x1), (c2, x2) in zip(vis, vis[1:]) if x2 < x1)
+            print(f"x écran croissants avec l'index : {inc} ; décroissants : {dec}")
+            if dec > inc:
+                print("=> le RENDU ré-inverse les indices (bidi natif) : "
+                      "les bornes sel (indices de stockage) ne pointent pas "
+                      "sur les glyphes affichés.")
+            sel_x = [x for c, x, _by, _bw, _bh, s, _ch, _n in rows
+                     if s == "SEL" and x >= 0]
+            if sel_x:
+                print(f"bande écran couverte par sel : x {min(sel_x)}..{max(sel_x)}")
+        print("=== fin diagnostic ===\n")
         return "break"
