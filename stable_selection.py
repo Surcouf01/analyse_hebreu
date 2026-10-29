@@ -91,18 +91,6 @@ class StableSelection:
         w.bind("<Shift-B1-Motion>", self._drag)
         w.bind("<Control-d>", self._dump_selection_geometry)
         w.bind("<Control-D>", self._dump_selection_geometry)
-        # P1 : le tag sel ne change QUE le fond — pas la couleur du texte.
-        # Tk redessine toute sous-plage taguée comme un fragment isolé ; tant
-        # qu'il devait repeindre le texte en SystemHighlightText, le moteur
-        # de rendu re-shapait le fragment et écrasait les nikkud (largeur 0,
-        # glyphe amputé — cf. dump Ctrl+D P3 : nikkud w=8→0 dans la plage
-        # sel). Sans attribut foreground sur le tag, le texte n'est pas
-        # re-peint dans une autre couleur : il reste noir sur le fond bleu
-        # (comme certains éditeurs), et seul le fond est dessiné par le tag.
-        try:
-            w.tag_configure("sel", foreground="")
-        except Exception:
-            pass
 
     # --- Construction de chaînes mixtes RTL/LTR --------------------------
 
