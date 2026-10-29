@@ -93,7 +93,19 @@ class FakeText:
         self.sel = []
 
     def tag_add(self, tag, first, last):
-        self.sel = [first, last]
+        # Plages multiples (tag posé cluster par cluster, cf.
+        # StableSelection._sel_apply) : contiguës ou non, dans l'ordre.
+        self.sel.append([first, last])
+
+    def sel_span(self):
+        """Vue fusionnée des plages sel : [première borne, dernière borne].
+
+        Les entrées cluster par cluster sont contiguës (fin de l'une ==
+        début de la suivante) : la sélection couvre sel[0][0]..sel[-1][1].
+        """
+        if not self.sel:
+            return []
+        return [self.sel[0][0], self.sel[-1][1]]
 
     def mark_set(self, mark, value):
         self.insert = value
@@ -181,6 +193,113 @@ class TestClusters(unittest.TestCase):
         self.assertEqual(self.sel._nearest_cluster_index(0, 0), "1.12")
 
 
+class TestVisualStoredClusters(unittest.TestCase):
+    """Sélection sur le texte TEL QUE STOCKÉ par bidi_display.to_visual :
+    chaque cluster RTL y est précédé d'un LRM (marque de tête), les nikkud
+    suivent leur base (marques traçantes). Le widget du GUI contient ce
+    stockage, pas l'ordre logique — une marque de tête ouverte le cluster
+    SUIVANT, elle ne se rattache pas à la base précédente (sinon la
+    sélection déborde d'un espace à gauche et chevauche le mot voisin,
+    cf. double-clic sur וַיֵּ֥רֶד en mode verset)."""
+
+    def setUp(self):
+        import bidi_display
+        self.visual = bidi_display.to_visual(GEN11)
+        self.t = FakeText(self.visual)
+        self.sel = StableSelection(self.t)
+        self.e = Event()
+
+    def _col(self, ch, occurrence=0):
+        i = -1
+        for _ in range(occurrence + 1):
+            i = self.visual.index(ch, i + 1)
+        return i
+
+    def test_cluster_start_skips_head_marks(self):
+        # Sur le LRM qui précède la base ת : la borne va à la base ת,
+        # pas en arrière jusqu'à l'espace précédent.
+        tsade = self._col("\u05ea")
+        lrm_before = tsade - 1
+        self.assertEqual(self.visual[lrm_before], "\u200e")
+        self.assertEqual(
+            self.sel._cluster_start("1.%d" % lrm_before),
+            "1.%d" % tsade,
+        )
+
+    def test_cluster_start_keeps_trailing_marks(self):
+        # Les nikkud restent traçants : la base du cluster בָּ (dernier du
+        # mot stocké) est le ב, sa marque ּ suit.
+        beth = self._col("\u05d1", occurrence=1)
+        dagesh = len(self.visual) - 1  # ּ final du stockage
+        self.assertEqual(
+            self.sel._cluster_start("1.%d" % dagesh),
+            "1.%d" % beth,
+        )
+
+    def test_cluster_end_stops_before_head_mark(self):
+        # Fin du premier cluster stocké (א) : le LRM du cluster suivant
+        # n'est pas avalé — sinon la sélection chevauche le mot voisin.
+        aleph = self._col("\u05d0")
+        self.assertEqual(
+            self.sel._cluster_end("1.%d" % aleph),
+            "1.%d" % (aleph + 1),
+        )
+
+    def test_double_click_selects_word_without_overlap(self):
+        # Double-clic sur le ת du premier mot stocké : le mot complet,
+        # SANS l'espace de gauche ni le mot voisin.
+        tsade = self._col("\u05ea")
+        self.t.cur = "1.%d" % tsade
+        self.assertEqual(self.sel._double_click(self.e), "break")
+        first, last = self.t.sel_span()
+        first_c = int(first.split(".")[1])
+        # Commence à la base ת (pas au LRM ni à l'espace précédents).
+        self.assertEqual(first_c, tsade)
+        # Finit après le dernier cluster du mot (le ּ final) sans
+        # englober l'espace ni le mot suivant.
+        self.assertEqual(last, "1.%d" % len(self.visual))
+        last_c = int(last.split(".")[1])
+        selected = self.visual[first_c:last_c]
+        self.assertNotIn(" ", selected)
+        self.assertEqual(selected[0], "\u05ea")
+        self.assertEqual(selected[-1], "\u05bc")
+
+    def test_double_click_on_space_selects_single_word(self):
+        # Clic sur l'ESPACE inter-mots : Tk renvoie l'index de l'espace. La
+        # sélection doit se rabattre sur le mot le plus proche (le suivant
+        # dans l'ordre de stockage), pas avaler le mot de gauche ET celui de
+        # droite — le chevauchement « sélection dansante » des captures.
+        spaces = [i for i, c in enumerate(self.visual) if c == " "]
+        self.assertTrue(spaces)
+        for sp in spaces:
+            self.t.cur = "1.%d" % sp
+            self.assertEqual(self.sel._double_click(self.e), "break")
+            first, last = self.t.sel_span()
+            fc = int(first.split(".")[1])
+            lc = int(last.split(".")[1])
+            selected = self.visual[fc:lc]
+            self.assertNotIn(" ", selected,
+                             f"clic sur espace col {sp} : {selected!r}")
+            self.assertGreater(len(selected.strip()), 0)
+
+    def test_double_click_every_column_single_word(self):
+        # Non-régression exhaustive : chaque colonne cliquée (lettres,
+        # nikkud, teamim, LRM, espaces) sélectionne exactement un mot,
+        # sans espace ni chevauchement du mot voisin.
+        seen = set()
+        for col in range(len(self.visual)):
+            self.t.cur = "1.%d" % col
+            self.assertEqual(self.sel._double_click(self.e), "break")
+            first, last = self.t.sel_span()
+            fc = int(first.split(".")[1])
+            lc = int(last.split(".")[1])
+            selected = self.visual[fc:lc]
+            self.assertNotIn(" ", selected,
+                             f"clic col {col} : {selected!r}")
+            seen.add((fc, lc))
+        self.assertGreater(len(seen), 1)
+
+
 class TestHandlers(unittest.TestCase):
     def setUp(self):
         self.t = FakeText(GEN11)
@@ -199,12 +318,12 @@ class TestHandlers(unittest.TestCase):
         self.sel._press(self.e)
         self.t.cur = "1.9"
         self.assertEqual(self.sel._drag(self.e), "break")
-        self.assertEqual(self.t.sel, ["1.3", "1.9"])
+        self.assertEqual(self.t.sel_span(), ["1.3", "1.9"])
         # Drag inverse (ancre > position) : bornes réordonnées.
         self.t.cur = "1.0"
         self.assertEqual(self.sel._drag(self.e), "break")
         # La sélection va du point courant à l'ancre, pas à l'ancien max.
-        self.assertEqual(self.t.sel, ["1.0", "1.3"])
+        self.assertEqual(self.t.sel_span(), ["1.0", "1.3"])
 
     def test_release_clears_anchor(self):
         self.t.cur = "1.0"
@@ -215,20 +334,21 @@ class TestHandlers(unittest.TestCase):
     def test_double_click_selects_word(self):
         self.t.cur = "1.7"
         self.assertEqual(self.sel._double_click(self.e), "break")
-        # Premier mot entier, bornes sur bords de clusters.
-        self.assertEqual(self.t.sel, ["1.0", "1.12"])
+        # Premier mot entier, bornes sur bords de clusters, SANS l'espace
+        # qui le suit (comportement standard du double-clic : mot seul).
+        self.assertEqual(self.t.sel_span(), ["1.0", "1.11"])
 
     def test_triple_click_selects_line(self):
         self.t.cur = "1.7"
         self.assertEqual(self.sel._triple_click(self.e), "break")
-        self.assertEqual(self.t.sel, ["1.0", "2.0"])
+        self.assertEqual(self.t.sel_span(), ["1.0", "2.0"])
 
     def test_shift_press_extends_from_insert(self):
         self.t.cur = "1.9"
         self.sel.anchor = None
         self.t.insert = "1.0"
         self.assertEqual(self.sel._shift_press(self.e), "break")
-        self.assertEqual(self.t.sel, ["1.0", "1.9"])
+        self.assertEqual(self.t.sel_span(), ["1.0", "1.9"])
 
 
 class TestBindings(unittest.TestCase):
@@ -239,6 +359,7 @@ class TestBindings(unittest.TestCase):
             sorted(seq for seq, _ in t.events),
             sorted([
                 "<Button-1>", "<B1-Motion>", "<ButtonRelease-1>",
+                "<Control-d>", "<Control-D>",
                 "<Double-Button-1>", "<Triple-Button-1>",
                 "<Shift-Button-1>", "<Shift-B1-Motion>",
             ]),
