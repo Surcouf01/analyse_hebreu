@@ -176,16 +176,28 @@ def main():
 
     def capture():
         # Forcer la fenêtre au premier plan AVANT la capture : les essais
-        # précédents ont capturé la fenêtre de console derrière.
+        # précédents ont capturé la fenêtre de console derrière. Le topmost
+        # doit être posé puis laissée au gestionnaire de fenêtres le temps
+        # d'un cycle complet (update + délai), sinon le grab repart avant
+        # que la pile Z ait changé.
         try:
+            root.deiconify()
             root.lift()
             root.attributes("-topmost", True)
+            root.update_idletasks()
             root.update()
-            root.after(150, _grab)
+            root.after(600, _grab)
         except Exception:
             _grab()
 
     def _grab():
+        # Second cycle : re-vérifier le premier plan juste avant le grab.
+        try:
+            root.deiconify()
+            root.lift()
+            root.update()
+        except Exception:
+            pass
         try:
             from PIL import ImageGrab
             root.update()
@@ -194,6 +206,16 @@ def main():
             w = root.winfo_width()
             h = root.winfo_height()
             img = ImageGrab.grab((x, y, x + w, y + h))
+            # Garde-fou : si la zone capturée est (presque) toute noire ou
+            # vide, c'est que la fenêtre n'était pas au premier plan — le
+            # dire au lieu de sauver une capture inutilisable.
+            from PIL import ImageStat
+            stat = ImageStat.Stat(img.convert("L"))
+            if stat.mean[0] < 8:
+                print("\nATTENTION : la capture semble noire — la fenêtre "
+                      "n'était probablement pas au premier plan. "
+                      "Réessayer en cliquant sur la fenêtre Tk pendant les "
+                      "2 premières secondes.")
             path = os.path.join(tempfile.gettempdir(),
                                 "exp_selection_bidi.png")
             img.save(path)
@@ -219,7 +241,10 @@ def main():
               "le mot sélectionné est-il lisible, complet, avec ses "
               "nikkud ? La sélection couvre-t-elle exactement le mot ?")
 
-    root.after(300, apply_sel)
+    print("Dans 3 secondes, la sélection se pose et la capture est prise "
+          "automatiquement — NE PAS cliquer ailleurs, laisser la fenêtre "
+          "au premier plan.")
+    root.after(3000, apply_sel)
     root.mainloop()
 
 
