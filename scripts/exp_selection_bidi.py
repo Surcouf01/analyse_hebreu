@@ -135,6 +135,11 @@ def main():
             except Exception:
                 print(f"  idx {i}: {ch!r} bbox=?")
         root.after(500, capture)
+        # Empêcher le handler Button-1 PAR DÉFAUT de Tk de s'exécuter
+        # ensuite : il efface la sélection (clic simple = curseur + sel
+        # vidé), d'où les captures sans surlignage malgré le tag_add.
+        # StableSelection fait de même dans le GUI (return "break").
+        return "break"
 
     def capture():
         try:
