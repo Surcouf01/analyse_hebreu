@@ -375,6 +375,30 @@ Les variantes Medium/Oblique positionnent nikkud et teamim ; en Bold les
 teamim sont transparents (sans conséquence ici, l'application n'affiche pas
 de teamim).
 
+##### Police recommandée pour l'étude : SBL BibLit (SBL Fonts)
+
+La **Society of Biblical Literature** met gratuitement à disposition la
+police **SBL BibLit**, conçue pour l'étude de l'hébreu biblique (et des
+langues sémitiques proches : consonnes, nikkud et teamim complets).
+
+Procédure :
+
+1. **Télécharger** la police depuis la page des fontes SBL :
+   `https://www.sbl-site.org/resources/fonts/` — lien de téléchargement
+   direct du fichier `SBLBibLit.zip` sur cette page (gratuit).
+2. **Installer** : décompresser l'archive, puis sélectionner le fichier
+   `.ttf` dans l'Explorateur → clic droit → **Installer** (ou « Installer
+   pour tous les utilisateurs », droits admin). Windows le copie dans
+   `C:\Windows\Fonts`.
+3. **Configurer** `gui.properties` avec le nom de famille `SBL BibLit` :
+
+```properties
+font.input.family = SBL BibLit
+font.output.family = SBL BibLit
+font.tabs.family   = SBL BibLit
+```
+
+4. **Relancer** `gui_hebreu.py`.
 
 #### Sélection stable du texte hébreu
 
