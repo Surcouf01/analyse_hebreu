@@ -335,6 +335,22 @@ La zone de résultat dispose d'un **ascenseur vertical et horizontal** : les
 longues lignes ne sont pas coupées (`wrap=none`) et peuvent être défiler
 latéralement si elles dépassent du cadre.
 
+##### Clic droit sur un mot du verset → mode Mot / Binyanim
+
+Dans l'onglet **Livre**, un **clic droit** (ou Maj+clic droit) sur la zone de
+résultat ouvre un menu contextuel :
+
+- **Analyser ce mot…** : bascule sur l'onglet **Mot**, y préremplit le mot
+  hébreu sélectionné (ou celui sous le clic) et lance l'analyse ;
+- **Conjuguer (binyanim)…** : bascule sur l'onglet **Binyanim**, y préremplit
+  le mot et lance la conjugaison dans les 7 binyanim.
+
+Le mot est repris **sans les teamim** (seul le nikkud est conservé, comme en
+saisie manuelle). Sans sélection, le mot sous le pointeur est utilisé ; une
+sélection multi-mots (ou contenant un maqaf, ex. אֶת־) est transmise telle
+quelle — utile pour analyser un mot avec ses préfixes. Les parties non
+hébraïques (titres, traductions) ne proposent pas le menu.
+
 ##### Police recommandée : Taamey Frank CLM (nikkud complet)
 
 Selon la police, le moteur de rendu peut ne pas attacher une marque combinante

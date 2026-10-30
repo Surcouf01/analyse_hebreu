@@ -130,6 +130,7 @@ from verse_audio import (
     VersePlayerError,
     synthesize_wav,
     VOICES,
+    strip_teamim,
 )
 
 
@@ -588,6 +589,15 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
         frame.columnconfigure(0, weight=1)
         frame.rowconfigure(0, weight=1)
         self.output_text.configure(state="disabled")
+        if parent is self.tab_verse:
+            # Menu contextuel : clic droit sur un mot du verset →
+            # analyse « mot » ou conjugaison « binyanim » préremplie.
+            self.output_text.bind(
+                "<Button-3>",
+                lambda e, t=self.output_text: self._verse_context_menu(e, t))
+            self.output_text.bind(
+                "<Shift-Button-3>",
+                lambda e, t=self.output_text: self._verse_context_menu(e, t))
         StableSelection(self.output_text)
         # Associer la zone de résultat partagée (une par onglet).
         parent._output = self.output_text
@@ -1151,6 +1161,69 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
             return
         self.verse_combo.set(verse)
         self._run_verse()
+
+    # --- Menu contextuel « mot » sur le résultat du verset ---------------
+    _BIDI_MARKS_RE = re.compile("[\u200e\u200f\u202a-\u202e\u2066-\u2069]")
+
+    def _selected_hebrew_word(self, text_widget, x=None, y=None):
+        """Mot hébreu (ou sur-ensemble hébreu) de la sélection courante,
+        sinon du mot sous le clic — ou None. Le texte affiché est en ordre
+        VISUEL : la sélection est inversée en ordre logique pour couvrir
+        des mots entiers."""
+        try:
+            sel = text_widget.get("sel.first", "sel.last")
+        except tk.TclError:
+            sel = ""
+        if sel.strip():
+            chunk = to_logical(sel)
+        elif x is not None and y is not None:
+            try:
+                word = text_widget.get("@%d,%d wordstart" % (x, y))
+            except tk.TclError:
+                return None
+            chunk = to_logical(word)
+        else:
+            return None
+        chunk = self._BIDI_MARKS_RE.sub("", chunk)
+        chunk = strip_teamim(chunk)
+        chunk = " ".join(chunk.split())
+        chunk = chunk.strip()
+        if not chunk or not has_hebrew_letters(chunk):
+            return None
+        return chunk
+
+    def _verse_context_menu(self, event, text_widget):
+        menu = tk.Menu(text_widget, tearoff=0)
+        word = self._selected_hebrew_word(text_widget, event.x, event.y)
+        if word:
+            label = word if len(word) <= 30 else word[:27] + "…"
+            menu.add_command(label="Analyser ce mot…",
+                             command=lambda w=word: self._analyze_word_from(w))
+            menu.add_command(label="Conjuguer (binyanim)…",
+                             command=lambda w=word: self._analyze_binyanim_from(w))
+        else:
+            menu.add_command(
+                label="Sélectionnez un mot hébreu (clic ou double-clic)",
+                state="disabled")
+        try:
+            menu.tk_popup(event.x_root, event.y_root)
+        finally:
+            menu.grab_release()
+
+    def _analyze_word_from(self, word):
+        """Préremplit l'onglet Mot avec le mot donné et lance l'analyse."""
+        self.notebook.select(self.tab_word)
+        self.word_entry.set_logical(word)
+        if self.api is not None and str(self.btn_word["state"]) != "disabled":
+            self._run_word()
+
+    def _analyze_binyanim_from(self, word):
+        """Préremplit l'onglet Binyanim avec le mot donné et lance la
+        conjugaison."""
+        self.notebook.select(self.tab_binyanim)
+        self.binyanim_entry.set_logical(word)
+        if self.api is not None and str(self.btn_binyanim["state"]) != "disabled":
+            self._run_binyanim()
 
     def _run_binyanim(self):
         if self.api is None:
