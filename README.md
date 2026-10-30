@@ -16,6 +16,9 @@
 - [Utilisation](#utilisation)
   - [En interface graphique](#en-interface-graphique)
     - [Personnalisation de l'affichage](#personnalisation-de-laffichage)
+    - [Clic droit sur un mot du verset → mode Mot / Binyanim](#clic-droit-sur-un-mot-du-verset-mode-mot-binyanim)
+    - [Police recommandée : Taamey Frank CLM (nikkud complet)](#police-recommandée-taamey-frank-clm-nikkud-complet)
+    - [Police recommandée pour l'étude : SBL BibLit (SBL Fonts)](#police-recommandée-pour-létude-sbl-biblit-sbl-fonts)
     - [Sélection stable du texte hébreu](#sélection-stable-du-texte-hébreu)
     - [Recherche dans la zone de résultat (Ctrl-F)](#recherche-dans-la-zone-de-résultat-ctrl-f)
     - [Traductions française, anglaise et espagnole](#traductions-française-anglaise-et-espagnole)
@@ -335,7 +338,7 @@ La zone de résultat dispose d'un **ascenseur vertical et horizontal** : les
 longues lignes ne sont pas coupées (`wrap=none`) et peuvent être défiler
 latéralement si elles dépassent du cadre.
 
-##### Clic droit sur un mot du verset → mode Mot / Binyanim
+#### Clic droit sur un mot du verset → mode Mot / Binyanim
 
 Dans l'onglet **Livre**, un **clic droit** (ou Maj+clic droit) sur la zone de
 résultat ouvre un menu contextuel :
@@ -351,7 +354,7 @@ sélection multi-mots (ou contenant un maqaf, ex. אֶת־) est transmise telle
 quelle — utile pour analyser un mot avec ses préfixes. Les parties non
 hébraïques (titres, traductions) ne proposent pas le menu.
 
-##### Police recommandée : Taamey Frank CLM (nikkud complet)
+#### Police recommandée : Taamey Frank CLM (nikkud complet)
 
 Selon la police, le moteur de rendu peut ne pas attacher une marque combinante
 (nikkud, daguesh) à sa lettre de base : la marque est alors dessinée sur son
@@ -391,7 +394,7 @@ Les variantes Medium/Oblique positionnent nikkud et teamim ; en Bold les
 teamim sont transparents (sans conséquence ici, l'application n'affiche pas
 de teamim).
 
-##### Police recommandée pour l'étude : SBL BibLit (SBL Fonts)
+#### Police recommandée pour l'étude : SBL BibLit (SBL Fonts)
 
 La **Society of Biblical Literature** met gratuitement à disposition la
 police **SBL BibLit**, conçue pour l'étude de l'hébreu biblique (et des
