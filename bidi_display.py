@@ -172,10 +172,19 @@ _BRACKET_OPENERS = {
 }
 
 
-def _resolve_quote_pairs(clusters, raw):
+def _resolve_quote_pairs(clusters, raw, base_rtl):
     """Passe préalable à la résolution N1/N2 : les paires « … » dont le
     contenu est de direction forte homogène prennent la direction du
-    contenu. Modifie ``raw`` en place et le renvoie."""
+    contenu — UNIQUEMENT en base RTL : les guillemets « » ne sont pas
+    Bidi_Mirrored, ils ne sont jamais échangés au rendu ; en leur
+    donnant la direction du contenu hébreu sur une ligne à base
+    LATINE, ils rejoignaient le segment RTL inversé et s'affichaient
+    échangés (la ligne
+    « Méthode : préfixe « בְּ » détaché » du rapport du mode Mot
+    s'affichait « Méthode : préfixe » בְּ « détaché ») ;
+    en base RTL c'est au contraire ce qui corrigeait
+    l'affichage d'une glosse latine encadrée. Modifie ``raw`` en place
+    et le renvoie."""
     n = len(clusters)
     i = 0
     while i < n:
@@ -199,7 +208,7 @@ def _resolve_quote_pairs(clusters, raw):
             i += 1
             continue
         inner = [raw[k] for k in range(i + 1, j) if raw[k] is not None]
-        if inner and all(d == inner[0] for d in inner):
+        if (base_rtl and inner and all(d == inner[0] for d in inner)):
             raw[i] = inner[0]
             raw[j] = inner[0]
         i = j + 1
@@ -288,7 +297,7 @@ def _resolve_dirs(clusters, base_rtl):
       bloc hébreu.
     """
     raw = [_cluster_dir(c) for c in clusters]
-    raw = _resolve_quote_pairs(clusters, raw)
+    raw = _resolve_quote_pairs(clusters, raw, base_rtl)
     raw = _resolve_bracket_pairs(clusters, raw, "R" if base_rtl else "L")
     dirs = list(raw)
     n = len(dirs)
