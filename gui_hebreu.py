@@ -130,6 +130,7 @@ from verse_audio import (
     VersePlayerError,
     synthesize_wav,
     VOICES,
+    strip_teamim,
 )
 
 
@@ -588,6 +589,25 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
         frame.columnconfigure(0, weight=1)
         frame.rowconfigure(0, weight=1)
         self.output_text.configure(state="disabled")
+        if parent is self.tab_verse:
+            # Menu contextuel : clic droit sur un mot du verset →
+            # analyse « mot » ou conjugaison « binyanim » préremplie.
+            self.output_text.bind(
+                "<Button-3>",
+                lambda e, t=self.output_text: self._verse_context_menu(e, t))
+            self.output_text.bind(
+                "<Shift-Button-3>",
+                lambda e, t=self.output_text: self._verse_context_menu(e, t))
+        if parent is self.tab_word:
+            # Menu contextuel : clic droit sur une référence d'exemple
+            # (« Exemple : Livre ch:v ») → ouvrir le verset dans l'onglet
+            # Livre (même mécanisme que le mode Binyanim).
+            self.output_text.bind(
+                "<Button-3>",
+                lambda e, t=self.output_text: self._word_context_menu(e, t))
+            self.output_text.bind(
+                "<Shift-Button-3>",
+                lambda e, t=self.output_text: self._word_context_menu(e, t))
         StableSelection(self.output_text)
         # Associer la zone de résultat partagée (une par onglet).
         parent._output = self.output_text
@@ -1113,6 +1133,80 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
             # « capturé » et ignorer le clic suivant.
             menu.grab_release()
 
+    def _word_example_references(self, text_widget, x=None, y=None):
+        """Références « Exemple : Livre ch:v » de la sélection, sinon de la
+        ligne du clic, sinon de tout le texte affiché. Les noms de livres
+        du rapport sont les noms BHSA (ex. « Genesis 1:1 ») : ils sont
+        traduits en français pour l'onglet Livre.
+
+        Retourne une liste de références au format « Livre ch:v ».
+        """
+        chunks = []
+        try:
+            sel = text_widget.get("sel.first", "sel.last")
+            if sel.strip():
+                chunks.append(sel)
+        except tk.TclError:
+            pass
+        marks = [("insert", "insert"), ("current", "current")]
+        if x is not None and y is not None:
+            try:
+                idx = text_widget.index(f"@{x},{y}")
+                marks.insert(0, (idx, idx))
+            except tk.TclError:
+                pass
+        for mark, end in marks:
+            try:
+                line = text_widget.get(f"{mark} linestart",
+                                       f"{end} lineend")
+            except tk.TclError:
+                continue
+            if line.strip():
+                chunks.append(line)
+        refs = []
+        for chunk in chunks:
+            refs.extend(self._example_reference_pairs_in(chunk))
+            if refs:
+                return refs
+        try:
+            content = text_widget.get("1.0", "end")
+        except tk.TclError:
+            return []
+        return self._example_reference_pairs_in(content)
+
+    def _example_reference_pairs_in(self, chunk):
+        """Références « Exemple : Livre ch:v » d'un extrait de texte."""
+        import re
+        refs = []
+        seg_re = re.compile(
+            r"(?P<book>[A-Za-z_]+)\s+(?P<ch>\d+)[:.](?P<v>\d+)\b")
+        for m in seg_re.finditer(chunk):
+            book, ch, v = m.group("book"), m.group("ch"), m.group("v")
+            refs.append(f"{book_french(book)} {ch}:{v}")
+        return refs
+
+    def _word_context_menu(self, event, text_widget):
+        menu = tk.Menu(text_widget, tearoff=0)
+        refs = self._word_example_references(text_widget,
+                                             event.x, event.y)
+        if refs:
+            scope = "cette ligne"
+            if len(refs) > 1:
+                scope = f"{len(refs)} références"
+            menu.add_command(label=f"Ouvrir le verset ({scope})…",
+                             state="disabled")
+            for r in refs:
+                menu.add_command(
+                    label=r,
+                    command=lambda rr=r: self._open_verse_reference(rr))
+        else:
+            menu.add_command(label="Aucune référence dans la sélection",
+                             state="disabled")
+        try:
+            menu.tk_popup(event.x_root, event.y_root)
+        finally:
+            menu.grab_release()
+
     def _open_verse_reference(self, reference):
         """Bascule sur l'onglet Livre et affiche la référence donnée."""
         # Bascule de corpus vers la Bible si nécessaire.
@@ -1151,6 +1245,69 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
             return
         self.verse_combo.set(verse)
         self._run_verse()
+
+    # --- Menu contextuel « mot » sur le résultat du verset ---------------
+    _BIDI_MARKS_RE = re.compile("[\u200e\u200f\u202a-\u202e\u2066-\u2069]")
+
+    def _selected_hebrew_word(self, text_widget, x=None, y=None):
+        """Mot hébreu (ou sur-ensemble hébreu) de la sélection courante,
+        sinon du mot sous le clic — ou None. Le texte affiché est en ordre
+        VISUEL : la sélection est inversée en ordre logique pour couvrir
+        des mots entiers."""
+        try:
+            sel = text_widget.get("sel.first", "sel.last")
+        except tk.TclError:
+            sel = ""
+        if sel.strip():
+            chunk = to_logical(sel)
+        elif x is not None and y is not None:
+            try:
+                word = text_widget.get("@%d,%d wordstart" % (x, y))
+            except tk.TclError:
+                return None
+            chunk = to_logical(word)
+        else:
+            return None
+        chunk = self._BIDI_MARKS_RE.sub("", chunk)
+        chunk = strip_teamim(chunk)
+        chunk = " ".join(chunk.split())
+        chunk = chunk.strip()
+        if not chunk or not has_hebrew_letters(chunk):
+            return None
+        return chunk
+
+    def _verse_context_menu(self, event, text_widget):
+        menu = tk.Menu(text_widget, tearoff=0)
+        word = self._selected_hebrew_word(text_widget, event.x, event.y)
+        if word:
+            label = word if len(word) <= 30 else word[:27] + "…"
+            menu.add_command(label="Analyser ce mot…",
+                             command=lambda w=word: self._analyze_word_from(w))
+            menu.add_command(label="Conjuguer (binyanim)…",
+                             command=lambda w=word: self._analyze_binyanim_from(w))
+        else:
+            menu.add_command(
+                label="Sélectionnez un mot hébreu (clic ou double-clic)",
+                state="disabled")
+        try:
+            menu.tk_popup(event.x_root, event.y_root)
+        finally:
+            menu.grab_release()
+
+    def _analyze_word_from(self, word):
+        """Préremplit l'onglet Mot avec le mot donné et lance l'analyse."""
+        self.notebook.select(self.tab_word)
+        self.word_entry.set_logical(word)
+        if self.api is not None and str(self.btn_word["state"]) != "disabled":
+            self._run_word()
+
+    def _analyze_binyanim_from(self, word):
+        """Préremplit l'onglet Binyanim avec le mot donné et lance la
+        conjugaison."""
+        self.notebook.select(self.tab_binyanim)
+        self.binyanim_entry.set_logical(word)
+        if self.api is not None and str(self.btn_binyanim["state"]) != "disabled":
+            self._run_binyanim()
 
     def _run_binyanim(self):
         if self.api is None:

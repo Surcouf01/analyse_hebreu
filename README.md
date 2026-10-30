@@ -16,6 +16,10 @@
 - [Utilisation](#utilisation)
   - [En interface graphique](#en-interface-graphique)
     - [Personnalisation de l'affichage](#personnalisation-de-laffichage)
+    - [Clic droit sur un mot du verset → mode Mot / Binyanim](#clic-droit-sur-un-mot-du-verset-mode-mot-binyanim)
+    - [Références d'exemple cliquables (mode Mot)](#références-dexemple-cliquables-mode-mot)
+    - [Police recommandée : Taamey Frank CLM (nikkud complet)](#police-recommandée-taamey-frank-clm-nikkud-complet)
+    - [Police recommandée pour l'étude : SBL BibLit (SBL Fonts)](#police-recommandée-pour-létude-sbl-biblit-sbl-fonts)
     - [Sélection stable du texte hébreu](#sélection-stable-du-texte-hébreu)
     - [Recherche dans la zone de résultat (Ctrl-F)](#recherche-dans-la-zone-de-résultat-ctrl-f)
     - [Traductions française, anglaise et espagnole](#traductions-française-anglaise-et-espagnole)
@@ -335,7 +339,34 @@ La zone de résultat dispose d'un **ascenseur vertical et horizontal** : les
 longues lignes ne sont pas coupées (`wrap=none`) et peuvent être défiler
 latéralement si elles dépassent du cadre.
 
-##### Police recommandée : Taamey Frank CLM (nikkud complet)
+#### Clic droit sur un mot du verset → mode Mot / Binyanim
+
+Dans l'onglet **Livre**, un **clic droit** (ou Maj+clic droit) sur la zone de
+résultat ouvre un menu contextuel :
+
+- **Analyser ce mot…** : bascule sur l'onglet **Mot**, y préremplit le mot
+  hébreu sélectionné (ou celui sous le clic) et lance l'analyse ;
+- **Conjuguer (binyanim)…** : bascule sur l'onglet **Binyanim**, y préremplit
+  le mot et lance la conjugaison dans les 7 binyanim.
+
+Le mot est repris **sans les teamim** (seul le nikkud est conservé, comme en
+saisie manuelle). Sans sélection, le mot sous le pointeur est utilisé ; une
+sélection multi-mots (ou contenant un maqaf, ex. אֶת־) est transmise telle
+quelle — utile pour analyser un mot avec ses préfixes. Les parties non
+hébraïques (titres, traductions) ne proposent pas le menu.
+
+#### Références d'exemple cliquables (mode Mot)
+
+Le résultat du mode Mot affiche, pour chaque analyse morphologique, une
+référence d'exemple (ex. « Exemple : Genesis 1:1 »). Un **clic droit** (ou
+Maj+clic droit) sur la zone de résultat ouvre un menu contextuel « Ouvrir le
+verset » : les références de la ligne du clic (ou de la sélection) y sont
+listées en français (ex. « Genèse 1:1 ») ; en choisir une bascule sur
+l'onglet **Livre**, sélectionne livre/chapitre/verset et lance l'analyse du
+verset — le même mécanisme que le mode Binyanim. Sans référence sur la
+ligne, le menu propose toutes les références du résultat.
+
+#### Police recommandée : Taamey Frank CLM (nikkud complet)
 
 Selon la police, le moteur de rendu peut ne pas attacher une marque combinante
 (nikkud, daguesh) à sa lettre de base : la marque est alors dessinée sur son
@@ -375,6 +406,30 @@ Les variantes Medium/Oblique positionnent nikkud et teamim ; en Bold les
 teamim sont transparents (sans conséquence ici, l'application n'affiche pas
 de teamim).
 
+#### Police recommandée pour l'étude : SBL BibLit (SBL Fonts)
+
+La **Society of Biblical Literature** met gratuitement à disposition la
+police **SBL BibLit**, conçue pour l'étude de l'hébreu biblique (et des
+langues sémitiques proches : consonnes, nikkud et teamim complets).
+
+Procédure :
+
+1. **Télécharger** la police depuis la page des fontes SBL :
+   `https://www.sbl-site.org/resources/fonts/` — lien de téléchargement
+   direct du fichier `SBLBibLit.zip` sur cette page (gratuit).
+2. **Installer** : décompresser l'archive, puis sélectionner le fichier
+   `.ttf` dans l'Explorateur → clic droit → **Installer** (ou « Installer
+   pour tous les utilisateurs », droits admin). Windows le copie dans
+   `C:\Windows\Fonts`.
+3. **Configurer** `gui.properties` avec le nom de famille `SBL BibLit` :
+
+```properties
+font.input.family = SBL BibLit
+font.output.family = SBL BibLit
+font.tabs.family   = SBL BibLit
+```
+
+4. **Relancer** `gui_hebreu.py`.
 
 #### Sélection stable du texte hébreu
 
