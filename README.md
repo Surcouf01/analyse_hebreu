@@ -17,6 +17,7 @@
   - [En interface graphique](#en-interface-graphique)
     - [Personnalisation de l'affichage](#personnalisation-de-laffichage)
     - [Clic droit sur un mot du verset → mode Mot / Binyanim](#clic-droit-sur-un-mot-du-verset-mode-mot-binyanim)
+    - [Références d'exemple cliquables (mode Mot)](#références-dexemple-cliquables-mode-mot)
     - [Police recommandée : Taamey Frank CLM (nikkud complet)](#police-recommandée-taamey-frank-clm-nikkud-complet)
     - [Police recommandée pour l'étude : SBL BibLit (SBL Fonts)](#police-recommandée-pour-létude-sbl-biblit-sbl-fonts)
     - [Sélection stable du texte hébreu](#sélection-stable-du-texte-hébreu)
@@ -353,6 +354,17 @@ saisie manuelle). Sans sélection, le mot sous le pointeur est utilisé ; une
 sélection multi-mots (ou contenant un maqaf, ex. אֶת־) est transmise telle
 quelle — utile pour analyser un mot avec ses préfixes. Les parties non
 hébraïques (titres, traductions) ne proposent pas le menu.
+
+#### Références d'exemple cliquables (mode Mot)
+
+Le résultat du mode Mot affiche, pour chaque analyse morphologique, une
+référence d'exemple (ex. « Exemple : Genesis 1:1 »). Un **clic droit** (ou
+Maj+clic droit) sur la zone de résultat ouvre un menu contextuel « Ouvrir le
+verset » : les références de la ligne du clic (ou de la sélection) y sont
+listées en français (ex. « Genèse 1:1 ») ; en choisir une bascule sur
+l'onglet **Livre**, sélectionne livre/chapitre/verset et lance l'analyse du
+verset — le même mécanisme que le mode Binyanim. Sans référence sur la
+ligne, le menu propose toutes les références du résultat.
 
 #### Police recommandée : Taamey Frank CLM (nikkud complet)
 

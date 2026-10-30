@@ -598,6 +598,16 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
             self.output_text.bind(
                 "<Shift-Button-3>",
                 lambda e, t=self.output_text: self._verse_context_menu(e, t))
+        if parent is self.tab_word:
+            # Menu contextuel : clic droit sur une référence d'exemple
+            # (« Exemple : Livre ch:v ») → ouvrir le verset dans l'onglet
+            # Livre (même mécanisme que le mode Binyanim).
+            self.output_text.bind(
+                "<Button-3>",
+                lambda e, t=self.output_text: self._word_context_menu(e, t))
+            self.output_text.bind(
+                "<Shift-Button-3>",
+                lambda e, t=self.output_text: self._word_context_menu(e, t))
         StableSelection(self.output_text)
         # Associer la zone de résultat partagée (une par onglet).
         parent._output = self.output_text
@@ -1121,6 +1131,80 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
         finally:
             # Sous Windows, sans grab_release le menu peut rester
             # « capturé » et ignorer le clic suivant.
+            menu.grab_release()
+
+    def _word_example_references(self, text_widget, x=None, y=None):
+        """Références « Exemple : Livre ch:v » de la sélection, sinon de la
+        ligne du clic, sinon de tout le texte affiché. Les noms de livres
+        du rapport sont les noms BHSA (ex. « Genesis 1:1 ») : ils sont
+        traduits en français pour l'onglet Livre.
+
+        Retourne une liste de références au format « Livre ch:v ».
+        """
+        chunks = []
+        try:
+            sel = text_widget.get("sel.first", "sel.last")
+            if sel.strip():
+                chunks.append(sel)
+        except tk.TclError:
+            pass
+        marks = [("insert", "insert"), ("current", "current")]
+        if x is not None and y is not None:
+            try:
+                idx = text_widget.index(f"@{x},{y}")
+                marks.insert(0, (idx, idx))
+            except tk.TclError:
+                pass
+        for mark, end in marks:
+            try:
+                line = text_widget.get(f"{mark} linestart",
+                                       f"{end} lineend")
+            except tk.TclError:
+                continue
+            if line.strip():
+                chunks.append(line)
+        refs = []
+        for chunk in chunks:
+            refs.extend(self._example_reference_pairs_in(chunk))
+            if refs:
+                return refs
+        try:
+            content = text_widget.get("1.0", "end")
+        except tk.TclError:
+            return []
+        return self._example_reference_pairs_in(content)
+
+    def _example_reference_pairs_in(self, chunk):
+        """Références « Exemple : Livre ch:v » d'un extrait de texte."""
+        import re
+        refs = []
+        seg_re = re.compile(
+            r"(?P<book>[A-Za-z_]+)\s+(?P<ch>\d+)[:.](?P<v>\d+)\b")
+        for m in seg_re.finditer(chunk):
+            book, ch, v = m.group("book"), m.group("ch"), m.group("v")
+            refs.append(f"{book_french(book)} {ch}:{v}")
+        return refs
+
+    def _word_context_menu(self, event, text_widget):
+        menu = tk.Menu(text_widget, tearoff=0)
+        refs = self._word_example_references(text_widget,
+                                             event.x, event.y)
+        if refs:
+            scope = "cette ligne"
+            if len(refs) > 1:
+                scope = f"{len(refs)} références"
+            menu.add_command(label=f"Ouvrir le verset ({scope})…",
+                             state="disabled")
+            for r in refs:
+                menu.add_command(
+                    label=r,
+                    command=lambda rr=r: self._open_verse_reference(rr))
+        else:
+            menu.add_command(label="Aucune référence dans la sélection",
+                             state="disabled")
+        try:
+            menu.tk_popup(event.x_root, event.y_root)
+        finally:
             menu.grab_release()
 
     def _open_verse_reference(self, reference):

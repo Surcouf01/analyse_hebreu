@@ -16,6 +16,7 @@ vers les ancres de [README.md](README.md)).
   - [En interface graphique](README.md#en-interface-graphique)
     - [Personnalisation de l'affichage](README.md#personnalisation-de-laffichage)
     - [Clic droit sur un mot du verset → mode Mot / Binyanim](README.md#clic-droit-sur-un-mot-du-verset-mode-mot-binyanim)
+    - [Références d'exemple cliquables (mode Mot)](README.md#références-dexemple-cliquables-mode-mot)
     - [Police recommandée : Taamey Frank CLM (nikkud complet)](README.md#police-recommandée-taamey-frank-clm-nikkud-complet)
     - [Police recommandée pour l'étude : SBL BibLit (SBL Fonts)](README.md#police-recommandée-pour-létude-sbl-biblit-sbl-fonts)
     - [Sélection stable du texte hébreu](README.md#sélection-stable-du-texte-hébreu)
