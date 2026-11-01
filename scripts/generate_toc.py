@@ -95,7 +95,12 @@ def build_toc(headings, link_prefix=""):
     top = min(lvl for lvl, _txt in headings)
     for level, text in headings:
         anchor = slugify(text, seen)
-        indent = "  " * (level - top)
+        # 4 espaces par niveau (et non 2) : conforme CommonMark (GitHub),
+        # et indispensable pour que python-markdown produise aussi un
+        # niveau de liste par profondeur de titre (sinon l'onglet README
+        # de l'application aplatit l'imbrication de la TOC ; avec 2
+        # espaces, python-markdown ne voit qu'un seul niveau).
+        indent = "    " * (level - top)
         lines.append(f"{indent}- [{text}]({link_prefix}#{anchor})")
     return "\n".join(lines)
 
