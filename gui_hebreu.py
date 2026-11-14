@@ -292,6 +292,16 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
                           self.chapter_combo, self.verse_combo):
                 combo.bind(seq, lambda e, h=handler, s=step: h(s))
 
+        # Changement d'onglet principal au niveau global : Ctrl+PgPréc /
+        # Ctrl+PgSuiv (PgUp/PgDn = keysyms Prior/Next en Tk), avec bouclage
+        # du dernier onglet vers le premier et inversement. Les zones de
+        # texte ne lient que <Prior>/<Next> SANS Ctrl (défilement d'une
+        # page) : aucun conflit.
+        self.root.bind_all("<Control-Prior>",
+                           lambda e, s=-1: self._on_nav_tab_key(s))
+        self.root.bind_all("<Control-Next>",
+                           lambda e, s=1: self._on_nav_tab_key(s))
+
         # Barre d'état (chargement de la base / analyse en cours).
         self.status = ttk.Label(self.root,
                                 text=f"Chargement de la base BHSA… (v{__version__})",
@@ -838,6 +848,15 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
         """Raccourci clavier Alt+↑ / Alt+↓ : même comportement que les
         boutons ▲/▼ du livre (navigation + affichage, son aux bornes)."""
         self._nav_book(step)
+        return "break"
+
+    def _on_nav_tab_key(self, step):
+        """Raccourci clavier Ctrl+PgPréc / Ctrl+PgSuiv : sélectionne l'onglet
+        principal précédent / suivant, avec bouclage d'un bout à l'autre."""
+        count = self.notebook.index("end")
+        if count:
+            current = self.notebook.index("current")
+            self.notebook.select((current + step) % count)
         return "break"
 
     def _on_corpus_change(self, event=None):
