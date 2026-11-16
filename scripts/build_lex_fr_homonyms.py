@@ -168,10 +168,15 @@ def main():
             report_ambiguous.append((sk, fr,
                                      [(m, lexemes[m]["sp"], lexemes[m]["en"],
                                        lexemes[m]["count"]) for m in ms]))
-            # Le gloss FR partagé « appartient » au membre le plus fréquent
-            # du groupe (c'est lui que l'alignement consonantique a capté) :
-            # il conserve le gloss ; les autres membres sont corrigés.
-            owner = max(ms, key=lambda x: lexemes[x]["count"])
+            # Le gloss FR partagé « appartient » au membre dont le gloss EN
+            # dominant en est une traduction plausible (c'est lui que
+            # l'alignement consonantique a capté) ; à défaut, au membre le
+            # plus fréquent. Il conserve le gloss ; les autres sont corrigés.
+            # (ex. NGD : NGD/ = נֶגֶד « vis-à-vis » ne doit pas hériter du
+            # « dire » de NGD[ = נָגַד.)
+            matching = [m for m in ms if fr_matches_en(fr, lexemes[m]["en"])]
+            pool = matching if matching else ms
+            owner = max(pool, key=lambda x: lexemes[x]["count"])
             for m in ms:
                 if m == owner:
                     continue
