@@ -26,6 +26,7 @@ _NIKKUD = {
     "hireq": "\u05B4",       # ִ
     "holem": "\u05B9",       # ֹ
     "qubuts": "\u05BB",     # ֻ
+    "shuruq": "\u05D5\u05BC",  # וּ : vav + daguesh (pas de combinant dédié)
     "sheva": "\u05B0",       # ְ
     "dagesh": "\u05BC",     # ּ
     "qamats_qatan": "\u05C7",  # ַ (qamats qatan / qamats hatuf)
@@ -57,6 +58,7 @@ NIKKUD_LABELS = {
     "hireq": _NIKKUD_CARRIER + "\u05B4",
     "holem": _NIKKUD_CARRIER + "\u05B9",
     "qubuts": _NIKKUD_CARRIER + "\u05BB",
+    "shuruq": "\u05D5\u05BC",  # glyphe complet (vav + daguesh), sans porteur
     "sheva": _NIKKUD_CARRIER + "\u05B0",
     "dagesh": _NIKKUD_CARRIER + "\u05BC",
     "qamats_qatan": _NIKKUD_CARRIER + "\u05C7",
@@ -73,7 +75,7 @@ NIKKUD_LABELS = {
 # sheva/dagesh/qamats qatan, points shin-sin et ratafim.
 NIKKUD_ROWS = (
     ("qamats", "patach", "segol", "tsere", "hireq", "holem", "qubuts",
-     "sheva"),
+     "shuruq", "sheva"),
     ("dagesh", "qamats_qatan", "shin_dot", "sin_dot",
      "hateph_segol", "hateph_patach", "hateph_qamats"),
 )
