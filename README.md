@@ -316,6 +316,10 @@ ci-dessous, plus un onglet **README**) :
   **↑**/**↓** et **PgPréc**/**PgSuiv** font défiler le texte, comme dans
   les zones de résultat.
 
+Depuis n'importe quel onglet, **Ctrl+PgPréc** / **Ctrl+PgSuiv** sélectionnent
+l'onglet principal précédent / suivant, avec bouclage du dernier vers le
+premier et inversement.
+
 
 La base BHSA est chargée en arrière-plan au démarrage ; les boutons restent
 inactifs jusqu'à la fin du chargement. Les analyses s'exécutent dans des
