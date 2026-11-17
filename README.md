@@ -318,7 +318,9 @@ ci-dessous, plus un onglet **README**) :
 
 Depuis n'importe quel onglet, **Ctrl+PgPréc** / **Ctrl+PgSuiv** sélectionnent
 l'onglet principal précédent / suivant, avec bouclage du dernier vers le
-premier et inversement.
+premier et inversement. Ces raccourcis restent actifs quand une zone de texte
+a le focus : Ctrl+PgPréc/PgSuiv y changent d'onglet au lieu de défiler d'une
+page (PgPréc/PgSuiv seuls continuent de défiler la zone).
 
 
 La base BHSA est chargée en arrière-plan au démarrage ; les boutons restent
