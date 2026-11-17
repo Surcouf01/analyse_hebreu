@@ -93,6 +93,7 @@ from gui.config import (
     _PROPS,
     _saved_print_settings,
     _saved_geometry,
+    _saved_keyboard_visible,
     _save_properties,
     HEBREW_FONT,
     HEBREW_FONT_MONO,
@@ -136,6 +137,31 @@ from verse_audio import (
 
 # Langues de traduction disponibles, avec leur libellé.
 
+_CHEVRON_CACHE = {}
+
+
+def _chevron_image(down, size=10, color="#444444"):
+    """Icône chevron (▼ si down, ▲ sinon) dessinée en PhotoImage.
+
+    Aucun fichier image requis (put remplit un rectangle par ligne).
+    L'image est mise en cache : un PhotoImage non référencé serait
+    détruit par le ramasse-miettes.
+    """
+    key = (down, size, color)
+    img = _CHEVRON_CACHE.get(key)
+    if img is not None:
+        return img
+    img = tk.PhotoImage(width=size, height=size)
+    cx = size // 2
+    for y in range(size):
+        # triangle plein : base en haut (down) ou en bas (up), pointe opposée
+        t = (size - 1 - y) / (size - 1) if down else y / (size - 1)
+        half = int((size // 2) * t)
+        if half:
+            img.put(color, to=(cx - half, y, cx + half + 1, y + 1))
+    _CHEVRON_CACHE[key] = img
+    return img
+
 
 class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
     """Fenêtre principale de l'analyseur grammatical."""
@@ -146,6 +172,7 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
         self.translations = {}  # {lang: index} traductions chargées
         self._work_queue = queue.Queue()
         self._target_widget = None  # widget actuellement ciblé par le clavier
+        self._keyboards = []  # (HebrewKeyboard, bouton repli) de chaque onglet
         self._readme_text = None  # zone README (recherche Ctrl-F)
         # Historique de navigation des liens du README (cf. onglet).
         self._readme_nav_history = []
@@ -164,6 +191,8 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
         self._link_style.map("Link.TButton",
                              foreground=[("active", "#0000EE"),
                                          ("pressed", "#551A8B")])
+        # Bouton de repli du clavier virtuel : icône seule, peu de marge.
+        self._link_style.configure("KbToggle.TButton", padding=(2, 1))
 
         root.title(
             "Analyseur grammatical de l'hébreu biblique — כָּבוֹד לַיהוָה"
@@ -577,8 +606,34 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
     def _build_keyboard(self, parent):
         kb_frame = ttk.LabelFrame(parent, text="Clavier hébreu (UTF-8)")
         kb_frame.pack(fill="x", padx=4, pady=(2, 6))
-        self.keyboard = HebrewKeyboard(kb_frame, self._get_target)
-        self.keyboard.pack(fill="x", padx=4, pady=4)
+        keyboard = HebrewKeyboard(kb_frame, self._get_target)
+        # Bouton de repli (icône chevron) en haut à droite du cadre : plie
+        # le clavier pour agrandir la zone de résultat (état persisté dans
+        # gui.properties, clé keyboard.visible).
+        bar = ttk.Frame(kb_frame)
+        bar.pack(fill="x")
+        toggle = ttk.Button(bar, width=2, takefocus=0, style="KbToggle.TButton")
+        toggle.pack(side="right", padx=2, pady=1)
+        toggle.configure(
+            command=lambda k=keyboard, b=toggle: self._toggle_keyboard(k, b))
+        self._set_keyboard_expanded(keyboard, toggle, _saved_keyboard_visible())
+        self.keyboard = keyboard
+        self._keyboards.append((keyboard, toggle))
+
+    def _set_keyboard_expanded(self, keyboard, toggle, expanded):
+        """Plie/déplie le clavier virtuel d'un onglet (icône chevron)."""
+        if expanded:
+            keyboard.pack(fill="x", padx=4, pady=4)
+        else:
+            keyboard.pack_forget()
+        toggle.configure(image=_chevron_image(down=expanded))
+        toggle._expanded = expanded
+
+    def _toggle_keyboard(self, keyboard, toggle):
+        expanded = not getattr(toggle, "_expanded", True)
+        self._set_keyboard_expanded(keyboard, toggle, expanded)
+        _save_properties(self.root,
+                         {"keyboard.visible": "true" if expanded else "false"})
 
     def _build_output(self, parent):
         frame = ttk.LabelFrame(parent, text="Résultat")
