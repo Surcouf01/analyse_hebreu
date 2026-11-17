@@ -117,6 +117,15 @@ def _saved_geometry():
     return ""
 
 
+KEYBOARD_VISIBLE_DEFAULT = "true"
+
+
+def _saved_keyboard_visible():
+    """Clavier virtuel déplié au démarrage (gui.properties) ; oui par défaut."""
+    return _PROPS.get("keyboard.visible",
+                      KEYBOARD_VISIBLE_DEFAULT).strip().lower() != "false"
+
+
 def _save_properties(root, updates):
     """Écrit des paires clé/valeur dans gui.properties (géométrie de la
     fenêtre, traductions affichées…). Préserve le reste du fichier
@@ -164,6 +173,9 @@ def _save_properties(root, updates):
         if any(k.startswith("binyanim.") for k in missing):
             lines.append("# Onglet Binyanim : signaler les binyanim "
                          "mishnaïques (Sefaria) et modernes (Pealim) "
+                         "(true/false).\n")
+        if any(k.startswith("keyboard.") for k in missing):
+            lines.append("# Clavier virtuel : affiché (déplié) au démarrage "
                          "(true/false).\n")
         for k, v in missing.items():
             lines.append(f"{k} = {v}\n")

@@ -320,6 +320,12 @@ Depuis n'importe quel onglet, **Ctrl+PgPréc** / **Ctrl+PgSuiv** sélectionnent
 l'onglet principal précédent / suivant, avec bouclage du dernier vers le
 premier et inversement.
 
+Dans les onglets **Mot**, **Phrase** et **Binyanim**, le bouton à icône
+(▼/▲) en haut à droite du cadre « Clavier hébreu » replie ou déplie le clavier
+virtuel pour agrandir la zone de résultat ; le choix est mémorisé dans
+`gui.properties` (clé `keyboard.visible`). Le clavier se replie aussi
+automatiquement quand on lance une analyse (bouton « Analyser »).
+
 
 La base BHSA est chargée en arrière-plan au démarrage ; les boutons restent
 inactifs jusqu'à la fin du chargement. Les analyses s'exécutent dans des
