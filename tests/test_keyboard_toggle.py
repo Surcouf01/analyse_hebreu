@@ -58,9 +58,25 @@ def test_chevron_helper_and_toggle_wiring():
     assert "keyboard.visible" in src
 
 
+def test_run_methods_collapse_keyboard():
+    """Les boutons « Analyser » (Mot/Phrase/Binyanim) replient le clavier."""
+    with open(GUI_HEBREU, encoding="utf-8") as fh:
+        src = fh.read()
+    tree = ast.parse(src)
+    cls = next(n for n in tree.body
+               if isinstance(n, ast.ClassDef) and n.name == "AnalyseurGUI")
+    methods = {n.name: n for n in cls.body if isinstance(n, ast.FunctionDef)}
+    assert "_collapse_keyboard" in methods
+    for name, attr in (("_run_word", "word_kb"), ("_run_phrase", "phrase_kb"),
+                       ("_run_binyanim", "binyanim_kb")):
+        seg = ast.get_source_segment(src, methods[name])
+        assert "_collapse_keyboard" in seg and attr in seg, name
+
+
 def main():
     test_saved_keyboard_visible()
     test_chevron_helper_and_toggle_wiring()
+    test_run_methods_collapse_keyboard()
     print("OK")
 
 

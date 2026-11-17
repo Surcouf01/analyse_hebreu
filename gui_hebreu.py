@@ -173,6 +173,9 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
         self._work_queue = queue.Queue()
         self._target_widget = None  # widget actuellement ciblé par le clavier
         self._keyboards = []  # (HebrewKeyboard, bouton repli) de chaque onglet
+        self.word_kb = self.word_kb_toggle = None
+        self.phrase_kb = self.phrase_kb_toggle = None
+        self.binyanim_kb = self.binyanim_kb_toggle = None
         self._readme_text = None  # zone README (recherche Ctrl-F)
         # Historique de navigation des liens du README (cf. onglet).
         self._readme_nav_history = []
@@ -551,7 +554,7 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
                          wraplength=760, justify="left")
         hint.pack(anchor="w", padx=4, pady=(2, 6))
 
-        self._build_keyboard(form)
+        self.word_kb, self.word_kb_toggle = self._build_keyboard(form)
 
         opts = ttk.Frame(tab)
         opts.pack(fill="x", padx=8)
@@ -585,7 +588,7 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
                          wraplength=760, justify="left")
         hint.pack(anchor="w", padx=4, pady=(2, 6))
 
-        self._build_keyboard(form)
+        self.phrase_kb, self.phrase_kb_toggle = self._build_keyboard(form)
 
         opts = ttk.Frame(tab)
         opts.pack(fill="x", padx=8)
@@ -619,6 +622,7 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
         self._set_keyboard_expanded(keyboard, toggle, _saved_keyboard_visible())
         self.keyboard = keyboard
         self._keyboards.append((keyboard, toggle))
+        return keyboard, toggle
 
     def _set_keyboard_expanded(self, keyboard, toggle, expanded):
         """Plie/déplie le clavier virtuel d'un onglet (icône chevron)."""
@@ -634,6 +638,12 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
         self._set_keyboard_expanded(keyboard, toggle, expanded)
         _save_properties(self.root,
                          {"keyboard.visible": "true" if expanded else "false"})
+
+    def _collapse_keyboard(self, keyboard, toggle):
+        """Replie le clavier virtuel (ex. au lancement d'une analyse)."""
+        if keyboard is not None and getattr(toggle, "_expanded", True):
+            self._set_keyboard_expanded(keyboard, toggle, False)
+            _save_properties(self.root, {"keyboard.visible": "false"})
 
     def _build_output(self, parent):
         frame = ttk.LabelFrame(parent, text="Résultat")
@@ -1013,7 +1023,7 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
                          wraplength=760, justify="left")
         hint.pack(anchor="w", padx=4, pady=(2, 6))
 
-        self._build_keyboard(form)
+        self.binyanim_kb, self.binyanim_kb_toggle = self._build_keyboard(form)
 
         opts = ttk.Frame(tab)
         opts.pack(fill="x", padx=8)
@@ -1390,6 +1400,8 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
         if not form:
             messagebox.showwarning("Binyanim", "Saisissez un verbe hébreu ou une racine.")
             return
+        # Lancement de l'analyse : on replie le clavier pour libérer la place.
+        self._collapse_keyboard(self.binyanim_kb, self.binyanim_kb_toggle)
         fmt = self.binyanim_format.get()
         use_mishnah = bool(self.binyanim_use_mishnah.get())
         use_modern = bool(self.binyanim_use_modern.get())
@@ -1812,6 +1824,8 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
         if not form:
             messagebox.showwarning("Mot", "Saisissez un mot hébreu.")
             return
+        # Lancement de l'analyse : on replie le clavier pour libérer la place.
+        self._collapse_keyboard(self.word_kb, self.word_kb_toggle)
         fmt = self.word_format.get()
         F, L = self.api.F, self.api.L
         out = self.tab_word._output
@@ -1835,6 +1849,8 @@ class AnalyseurGUI(ReadmeTabMixin, AudioMixin):
         if not phrase:
             messagebox.showwarning("Phrase", "Saisissez une phrase hébreu.")
             return
+        # Lancement de l'analyse : on replie le clavier pour libérer la place.
+        self._collapse_keyboard(self.phrase_kb, self.phrase_kb_toggle)
         fmt = self.phrase_format.get()
         F, L = self.api.F, self.api.L
         out = self.tab_phrase._output

@@ -323,7 +323,8 @@ premier et inversement.
 Dans les onglets **Mot**, **Phrase** et **Binyanim**, le bouton à icône
 (▼/▲) en haut à droite du cadre « Clavier hébreu » replie ou déplie le clavier
 virtuel pour agrandir la zone de résultat ; le choix est mémorisé dans
-`gui.properties` (clé `keyboard.visible`).
+`gui.properties` (clé `keyboard.visible`). Le clavier se replie aussi
+automatiquement quand on lance une analyse (bouton « Analyser »).
 
 
 La base BHSA est chargée en arrière-plan au démarrage ; les boutons restent
