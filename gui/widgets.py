@@ -705,12 +705,28 @@ class FindMixin:
         return "break"
 
     def _on_page_up(self, event=None):
-        """Page précédente (PgUp) : défilement d'une page vers le haut."""
+        """Page précédente (PgUp) : défilement d'une page vers le haut.
+
+        Avec Ctrl maintenu (Ctrl+PgUp), on ne défile PAS et on ne renvoie
+        pas « break » : en Tk, une binding <Prior> sans modificateur
+        correspond aussi à l'événement Control-Prior (le plus spécifique
+        gagne, et le niveau widget passe avant le bind_all) ; laisser
+        l'événement se propager permet au bind_all global
+        <Control-Prior> de gui_hebreu.py de changer d'onglet principal.
+        """
+        if event is not None and event.state & 0x0004:  # ControlMask
+            return None
         self._scroll_pages(-1)
         return "break"
 
     def _on_page_down(self, event=None):
-        """Page suivante (PgDn) : défilement d'une page vers le bas."""
+        """Page suivante (PgDn) : défilement d'une page vers le bas.
+
+        Voir _on_page_up : avec Ctrl maintenu, on laisse propager
+        l'événement vers le bind_all global <Control-Next>.
+        """
+        if event is not None and event.state & 0x0004:  # ControlMask
+            return None
         self._scroll_pages(1)
         return "break"
 
