@@ -78,8 +78,11 @@ Deux catégories de versets restent « **en creux** » (pas de ligne,
 l'application affiche « verset absent de la traduction »), comme pour
 la Torres Amat :
 
-- les **67 titres de psaumes** (BHSA v1 sans équivalent KJV : la ligne
-  n'existe pas, le titre est dans le texte du verset suivant côté KJV) ;
+- les **63 titres de psaumes** : la renumérotation laisse d'abord le titre
+  fusionné au premier verset du texte (côté KJV) ; `scripts/split_psalm_titles.py`
+  le détache ensuite et le place au verset 1 BHSA (et au verset 2 pour les
+  psaumes à double titre 51/52/54/60), comme dans Rabbinat 1899 et Torres Amat 1823.
+  Ainsi `Psaume 48:2` affiche « L'Éternel est grand… » sans le titre de 48:1 en préfixe ;
 - les **seconds versets des scissions** (4 cas : Nombres 26:1,
   1 Samuel 21:1, 1 Rois 22:44, 1 Chroniques 12:5) : le verset KJV
   fusionné est porté par la première référence BHSA de la paire.
@@ -99,11 +102,13 @@ Chiffres après conversion (Ancien Testament, 23 213 versets BHSA) :
 
 | Fichier | Versets écrits | Renumérotés | Supprimés | En creux |
 |---|---|---|---|---|
-| `louis_segond_1910.txt` | 23 142 (AT) + 7 957 (NT) | 1 966 | 3 | 71 |
-| `kjv_1611.txt` | 23 142 | 1 966 | 3 | 71 |
-| `riveduta_1927.txt` | 23 142 | 1 966 | 3 | 71 |
+| `louis_segond_1910.txt` | 23 209 (AT) + 7 957 (NT) | 1 966 | 3 | 4 |
+| `kjv_1611.txt` | 23 209 | 1 966 | 3 | 4 |
+| `riveduta_1927.txt` | 23 209 | 1 966 | 3 | 4 |
 
-(71 = 67 titres de psaumes + 4 seconds versets de scission.)
+(Après `split_psalm_titles.py` : +63 titres placés en v1, +4 en v2 pour les doubles
+titres 51/52/54/60, soit 23 209 versets écrits ; il ne reste « en creux » que les
+4 seconds versets de scission.)
 
 ## 5. Maintenance
 

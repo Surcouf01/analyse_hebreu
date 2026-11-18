@@ -5,7 +5,10 @@
 # Format : nom_BHSA	chapitre	verset	texte_italien
 # Renuméroté vers la versification BHSA (massorétique) par scripts/renumber_translations.py
 # (tables TVTMS STEPBible.org, CC BY 4.0 ; Joël/Malachie 4 ch., psaumes décalés des titres,
-# Exode 7-8, Deut 28:69, Osée, etc.). Les 67 titres de psaumes restent en creux.
+# Exode 7-8, Deut 28:69, Osée, etc.).
+# Titres des psaumes (verset 1 BHSA) détachés du premier verset du texte
+# et placés au verset 1 par scripts/split_psalm_titles.py (comme Rabbinat
+# 1899 et Torres Amat 1823) : Psalmi 48:1 = titre, 48:2 = texte du verset.
 Genesis	1	1	Nel principio Iddio creò i cieli e la terra.
 Genesis	1	2	E la terra era informe e vuota, e le tenebre coprivano la faccia dell'abisso, e lo spirito di Dio aleggiava sulla superficie delle acque. E Dio disse:
 Genesis	1	3	"Sia la luce!" E la luce fu.
@@ -13963,7 +13966,8 @@ Psalmi	2	9	Tu le fiaccherai con uno scettro di ferro; tu le spezzerai come un va
 Psalmi	2	10	Ora dunque, o re, siate savi; lasciatevi correggere, o giudici della terra.
 Psalmi	2	11	Servite l'Eterno con timore, e gioite con tremore.
 Psalmi	2	12	Rendete omaggio al figlio, che talora l'Eterno non si adiri e voi non periate nella vostra via, perché d'un tratto l'ira sua può divampare. Beati tutti quelli che confidano in lui!
-Psalmi	3	2	Salmo di Davide composto quand'egli fuggì dinanzi ad Absalom suo figliuolo. O Eterno, quanto numerosi sono i miei nemici! Molti son quelli che si levano contro di me,
+Psalmi	3	1	Salmo di Davide composto quand'egli fuggì dinanzi ad Absalom suo figliuolo.
+Psalmi	3	2	O Eterno, quanto numerosi sono i miei nemici! Molti son quelli che si levano contro di me,
 Psalmi	3	3	molti quelli che dicono dell'anima mia: Non c'è salvezza per lui presso Dio! Sela.
 Psalmi	3	4	Ma tu, o Eterno, sei uno scudo attorno a me, sei la mia gloria, colui che mi rialza il capo.
 Psalmi	3	5	Con la mia voce io grido all'Eterno, ed egli mi risponde dal monte della sua santità. Sela.
@@ -13971,7 +13975,8 @@ Psalmi	3	6	Io mi son coricato e ho dormito, poi mi sono risvegliato, perché l'E
 Psalmi	3	7	Io non temo le miriadi di popolo che si sono accampate contro a me d'ogn'intorno.
 Psalmi	3	8	Lèvati, o Eterno, salvami, Dio mio; giacché tu hai percosso tutti i miei nemici sulla guancia, hai rotto i denti degli empi.
 Psalmi	3	9	All'Eterno appartiene la salvezza; la tua benedizione riposi sul tuo popolo! Sela.
-Psalmi	4	2	Al Capo de' musici. Per strumenti a corda. Salmo di Davide. Quand'io grido, rispondimi, o Dio della mia giustizia; uand'ero in distretta, tu m'hai messo al largo; abbi pietà di me ed esaudisci la mia preghiera!
+Psalmi	4	1	Al Capo de' musici. Per strumenti a corda. Salmo di Davide.
+Psalmi	4	2	Quand'io grido, rispondimi, o Dio della mia giustizia; uand'ero in distretta, tu m'hai messo al largo; abbi pietà di me ed esaudisci la mia preghiera!
 Psalmi	4	3	Figliuoli degli uomini, fino a quando sarà la mia gloria coperta d'obbrobrio? Fino a quando amerete vanità e andrete dietro a menzogna? Sela.
 Psalmi	4	4	Sappiate che l'Eterno s'è appartato uno ch'egli ama; l'Eterno m'esaudirà quando griderò a lui.
 Psalmi	4	5	Tremate e non peccate; ragionate nel cuor vostro sui vostri letti e tacete. Sela.
@@ -13979,7 +13984,8 @@ Psalmi	4	6	Offrite sacrifizi di giustizia, e confidate nell'Eterno.
 Psalmi	4	7	Molti van dicendo: Chi ci farà veder la prosperità? O Eterno, fa' levare su noi la luce del tuo volto!
 Psalmi	4	8	Tu m'hai messo più gioia nel cuore che non provino essi quando il loro grano e il loro mosto abbondano.
 Psalmi	4	9	In pace io mi coricherò e in pace dormirò, perché tu solo, o Eterno, mi fai abitare in sicurtà.
-Psalmi	5	2	Al Capo de' musici. Per strumenti a fiato. Salmo di Davide. Porgi l'orecchio alle mie parole, o Eterno, sii attento ai miei sospiri.
+Psalmi	5	1	Al Capo de' musici. Per strumenti a fiato. Salmo di Davide.
+Psalmi	5	2	Porgi l'orecchio alle mie parole, o Eterno, sii attento ai miei sospiri.
 Psalmi	5	3	Odi la voce del mio grido, o mio Re e mio Dio, perché a te rivolgo la mia preghiera.
 Psalmi	5	4	O Eterno, al mattino tu ascolterai la mia voce; al mattino ti offrirò la mia preghiera e aspetterò;
 Psalmi	5	5	poiché tu non sei un Dio che prenda piacere nell'empietà; il malvagio non sarà tuo ospite.
@@ -13991,7 +13997,8 @@ Psalmi	5	10	poiché in bocca loro non v'è sincerità, il loro interno è pieno 
 Psalmi	5	11	Condannali, o Dio! non riescano nei loro disegni! Scacciali per la moltitudine de' loro misfatti, poiché si son ribellati contro a te.
 Psalmi	5	12	E si rallegreranno tutti quelli che in te confidano; manderanno in perpetuo grida di gioia. Tu stenderai su loro la tua protezione, e quelli che amano il tuo nome festeggeranno in te,
 Psalmi	5	13	perché tu, o Eterno, benedirai il giusto; tu lo circonderai di benevolenza, come d'uno scudo.
-Psalmi	6	2	Al Capo de' musici. Per strumenti a corda. Su Sheminith. Salmo di Davide. O Eterno, non correggermi nella tua ira, e non castigarmi nel tuo cruccio.
+Psalmi	6	1	Al Capo de' musici. Per strumenti a corda. Su Sheminith. Salmo di Davide.
+Psalmi	6	2	O Eterno, non correggermi nella tua ira, e non castigarmi nel tuo cruccio.
 Psalmi	6	3	Abbi pietà di me, o Eterno, perché son tutto fiacco; sanami, o Eterno, perché le mie ossa son tutte tremanti.
 Psalmi	6	4	Anche l'anima mia è tutta tremante; e tu, o Eterno, infino a quando?
 Psalmi	6	5	Ritorna, o Eterno, libera l'anima mia; salvami, per amor della tua benignità.
@@ -14001,7 +14008,8 @@ Psalmi	6	8	L'occhio mio si consuma dal dolore, invecchia a cagione di tutti i mi
 Psalmi	6	9	Ritraetevi da me, voi tutti operatori d'iniquità; poiché l'Eterno ha udita la voce del mio pianto.
 Psalmi	6	10	L'Eterno ha udita la mia supplicazione, l'Eterno accoglie la mia preghiera.
 Psalmi	6	11	Tutti i miei nemici saran confusi e grandemente smarriti; volteranno le spalle e saranno svergognati in un attimo.
-Psalmi	7	2	Shiggaion di Davide ch'egli cantò all'Eterno, a proposito delle parole di Cush, beniaminita. O Eterno, Dio mio, io mi confido in te; alvami da tutti quelli che mi perseguitano, e liberami;
+Psalmi	7	1	Shiggaion di Davide ch'egli cantò all'Eterno, a proposito delle parole di Cush, beniaminita.
+Psalmi	7	2	O Eterno, Dio mio, io mi confido in te; alvami da tutti quelli che mi perseguitano, e liberami;
 Psalmi	7	3	che talora il nemico, come un leone, non sbrani l'anima mia lacerandola, senza che alcuno mi liberi.
 Psalmi	7	4	O Eterno, Dio mio, se ho fatto questo, se v'è perversità nelle mie mani,
 Psalmi	7	5	se ho reso mal per bene a chi viveva meco in pace (io che ho liberato colui che m'era nemico senza agione),
@@ -14018,7 +14026,8 @@ Psalmi	7	15	Ecco, il malvagio è in doglie per produrre iniquità. Egli ha conce
 Psalmi	7	16	Ha scavato una fossa e l'ha resa profonda, ma è caduto nella fossa che ha fatta.
 Psalmi	7	17	La sua malizia gli ritornerà sul capo, e la sua violenza gli scenderà sulla testa.
 Psalmi	7	18	Io loderò l'Eterno per la sua giustizia, e salmeggerò al nome dell'Eterno, dell'Altissimo.
-Psalmi	8	2	Al Capo de' musici. Sulla Ghittea. Salmo di Davide. O Eterno, Signor nostro, quant'è magnifico il tuo nome in tutta la terra! O Tu che hai posta la tua maestà nei cieli.
+Psalmi	8	1	Al Capo de' musici. Sulla Ghittea. Salmo di Davide.
+Psalmi	8	2	O Eterno, Signor nostro, quant'è magnifico il tuo nome in tutta la terra! O Tu che hai posta la tua maestà nei cieli.
 Psalmi	8	3	Dalla bocca de' fanciulli e de' lattanti tu hai tratto una forza, per cagione de' tuoi nemici, per ridurre al silenzio l'avversario e il vendicatore.
 Psalmi	8	4	Quand'io considero i tuoi cieli, opra delle tue dita, la luna e le stelle che tu hai disposte,
 Psalmi	8	5	che cos'è l'uomo che tu n'abbia memoria? e il figliuol dell'uomo che tu ne prenda cura?
@@ -14027,7 +14036,8 @@ Psalmi	8	7	Tu l'hai fatto signoreggiare sulle opere delle tue mani, hai posto og
 Psalmi	8	8	pecore e buoi tutti quanti ed anche le fiere della campagna;
 Psalmi	8	9	gli uccelli del cielo e i pesci del mare, tutto quel che percorre i sentieri de' mari.
 Psalmi	8	10	O Eterno, Signor nostro, quant'è magnifico il tuo nome in tutta la terra!
-Psalmi	9	2	Al Capo dei musici. Su "Muori pel figlio". Salmo di Davide. Io celebrerò l'Eterno con tutto il mio cuore, io narrerò tutte le tue maraviglie.
+Psalmi	9	1	Al Capo dei musici. Su "Muori pel figlio". Salmo di Davide.
+Psalmi	9	2	Io celebrerò l'Eterno con tutto il mio cuore, io narrerò tutte le tue maraviglie.
 Psalmi	9	3	Io mi rallegrerò e festeggerò in te, salmeggerò al tuo nome, o Altissimo,
 Psalmi	9	4	poiché i miei nemici voltan le spalle, cadono e periscono dinanzi al tuo cospetto.
 Psalmi	9	5	Poiché tu hai sostenuto il mio diritto e la mia causa; ti sei assiso sul trono come giusto giudice.
@@ -14072,7 +14082,8 @@ Psalmi	11	4	L'Eterno è nel tempio della sua santità; l'Eterno ha il suo trono 
 Psalmi	11	5	L'Eterno scruta il giusto, ma l'anima sua odia l'empio e colui che ama la violenza.
 Psalmi	11	6	Egli farà piovere sull'empio carboni accesi; zolfo e vento infocato sarà la parte del loro calice.
 Psalmi	11	7	Poiché l'Eterno è giusto; egli ama la giustizia; gli uomini retti contempleranno la sua faccia.
-Psalmi	12	2	Al Capo de' musici. Sopra l'ottava. Salmo di Davide. Salva, o Eterno, poiché l'uomo pio vien meno, e i fedeli vengono a mancare tra i figliuoli degli uomini.
+Psalmi	12	1	Al Capo de' musici. Sopra l'ottava. Salmo di Davide.
+Psalmi	12	2	Salva, o Eterno, poiché l'uomo pio vien meno, e i fedeli vengono a mancare tra i figliuoli degli uomini.
 Psalmi	12	3	Ciascuno mentisce parlando col prossimo; parlano con labbro lusinghiero e con cuor doppio.
 Psalmi	12	4	L'Eterno recida tutte le labbra lusinghiere, la lingua che parla alteramente,
 Psalmi	12	5	quelli che dicono: Con le nostre lingue prevarremo; le nostre labbra sono per noi; chi sarà signore su noi?
@@ -14080,7 +14091,8 @@ Psalmi	12	6	Per l'oppressione dei miseri, per il grido d'angoscia de' bisognosi,
 Psalmi	12	7	Le parole dell'Eterno son parole pure, sono argento affinato in un crogiuolo di terra, purificato sette volte.
 Psalmi	12	8	Tu, o Eterno, li proteggerai, li preserverai da questa generazione in perpetuo.
 Psalmi	12	9	Gli empi vanno attorno da tutte le parti quando la bassezza siede in alto tra i figliuoli degli uomini.
-Psalmi	13	2	Al Capo de' musici. Salmo di Davide. Fino a quando, o Eterno, mi dimenticherai tu? Sarà egli per sempre? Fino a quando mi nasconderai la tua faccia?
+Psalmi	13	1	Al Capo de' musici. Salmo di Davide.
+Psalmi	13	2	Fino a quando, o Eterno, mi dimenticherai tu? Sarà egli per sempre? Fino a quando mi nasconderai la tua faccia?
 Psalmi	13	3	Fino a quando avrò l'ansia nell'anima e l'affanno nel cuore tutto il giorno? Fino a quando s'innalzerà il mio nemico sopra me?
 Psalmi	13	4	Riguarda, rispondimi, o Eterno, Iddio mio! Illumina gli occhi miei che talora io non m'addormenti del sonno della morte,
 Psalmi	13	5	che talora il mio nemico non dica: L'ho vinto! E i miei avversari non festeggino se io vacillo.
@@ -14123,7 +14135,8 @@ Psalmi	17	12	Il mio nemico somiglia ad un leone che brama lacerare, ad un leonce
 Psalmi	17	13	Lèvati, o Eterno, vagli incontro, abbattilo; libera l'anima mia dall'empio con la tua spada;
 Psalmi	17	14	liberami, con la tua mano, dagli uomini, o Eterno, dagli uomini del mondo la cui parte è in questa vita, e il cui ventre tu empi co' tuoi tesori; hanno figliuoli in abbondanza, e lasciano il resto de' loro averi ai loro fanciulli.
 Psalmi	17	15	Quanto a me, per la mia giustizia, contemplerò la tua faccia, mi sazierò, al mio risveglio, della tua sembianza.
-Psalmi	18	2	Al Capo de' musici. Di Davide, servo dell'Eterno, il quale rivolse all'Eterno le parole di questo cantico quando l'Eterno l'ebbe riscosso dalla mano di tutti i suoi nemici e dalla mano di Saul. Egli disse: Io t'amo, o Eterno, mia forza!
+Psalmi	18	1	Al Capo de' musici. Di Davide, servo dell'Eterno, il quale rivolse all'Eterno le parole di questo cantico quando l'Eterno l'ebbe riscosso dalla mano di tutti i suoi nemici e dalla mano di Saul.
+Psalmi	18	2	Egli disse: Io t'amo, o Eterno, mia forza!
 Psalmi	18	3	L'Eterno è la mia ròcca, la mia fortezza, il mio liberatore; il mio Dio, la mia rupe, in cui mi rifugio, il mio scudo, il mio potente salvatore, il mio alto ricetto.
 Psalmi	18	4	Io invocai l'Eterno ch'è degno d'ogni lode e fui salvato dai miei nemici.
 Psalmi	18	5	I legami della morte m'aveano circondato e i torrenti della distruzione m'aveano spaventato.
@@ -14173,7 +14186,8 @@ Psalmi	18	48	l'Iddio che fa la mia vendetta e mi sottomette i popoli,
 Psalmi	18	49	che mi scampa dai miei nemici. Sì, tu mi sollevi sopra i miei avversari, mi riscuoti dall'uomo violento.
 Psalmi	18	50	Perciò, o Eterno, ti loderò fra le nazioni, e salmeggerò al tuo nome.
 Psalmi	18	51	Grandi liberazioni egli accorda al suo re, ed usa benignità verso il suo Unto, verso Davide e la sua progenie in perpetuo.
-Psalmi	19	2	Al Capo dei musici. Salmo di Davide. I cieli raccontano la gloria di Dio e il firmamento annunzia l'opera delle sue mani.
+Psalmi	19	1	Al Capo dei musici. Salmo di Davide.
+Psalmi	19	2	I cieli raccontano la gloria di Dio e il firmamento annunzia l'opera delle sue mani.
 Psalmi	19	3	Un giorno sgorga parole all'altro, una notte comunica conoscenza all'altra.
 Psalmi	19	4	Non hanno favella, né parole; la loro voce non s'ode.
 Psalmi	19	5	Ma il loro suono esce fuori per tutta la terra, e i loro accenti vanno fino all'estremità del mondo. Quivi ddio ha posto una tenda per il sole,
@@ -14187,7 +14201,8 @@ Psalmi	19	12	Anche il tuo servitore è da essi ammaestrato; v'è gran ricompensa
 Psalmi	19	13	Chi conosce i suoi errori? Purificami da quelli che mi sono occulti.
 Psalmi	19	14	Trattieni pure il tuo servitore dai peccati volontari, e fa' che non signoreggino su me; allora sarò integro, e puro di grandi trasgressioni.
 Psalmi	19	15	Siano grate nel tuo cospetto le parole della mia bocca e la meditazione del cuor mio, o Eterno, mia ròcca e mio redentore!
-Psalmi	20	2	Al Capo de' musici. Salmo di Davide. L'Eterno ti risponda nel dì della distretta; il nome dell'Iddio di Giacobbe ti levi in alto in salvo;
+Psalmi	20	1	Al Capo de' musici. Salmo di Davide.
+Psalmi	20	2	L'Eterno ti risponda nel dì della distretta; il nome dell'Iddio di Giacobbe ti levi in alto in salvo;
 Psalmi	20	3	ti mandi soccorso dal santuario, e ti sostenga da Sion;
 Psalmi	20	4	si ricordi di tutte le tue offerte ed accetti il tuo olocausto. Sela.
 Psalmi	20	5	Ti dia egli quel che il tuo cuore desidera, e adempia ogni tuo disegno.
@@ -14196,7 +14211,8 @@ Psalmi	20	7	Già io so che l'Eterno ha salvato il suo Unto, e gli risponderà da
 Psalmi	20	8	Gli uni confidano in carri, e gli altri in cavalli; ma noi ricorderemo il nome dell'Eterno, dell'Iddio nostro.
 Psalmi	20	9	Quelli piegano e cadono; ma noi restiamo in piè e teniam fermo.
 Psalmi	20	10	O Eterno, salva il re! L'Eterno ci risponda nel giorno che noi l'invochiamo!
-Psalmi	21	2	Per il Capo de' musici. Salmo di Davide. O Eterno, il re si rallegra nella tua forza; ed oh quanto esulta per la tua salvezza!
+Psalmi	21	1	Per il Capo de' musici. Salmo di Davide.
+Psalmi	21	2	O Eterno, il re si rallegra nella tua forza; ed oh quanto esulta per la tua salvezza!
 Psalmi	21	3	Tu gli hai dato il desiderio del suo cuore e non gli hai rifiutata la richiesta delle sue labbra. Sela.
 Psalmi	21	4	Poiché tu gli sei venuto incontro con benedizioni eccellenti, gli hai posta in capo una corona d'oro finissimo.
 Psalmi	21	5	Egli t'avea chiesto vita, e tu gliel'hai data: lunghezza di giorni perpetua ed eterna.
@@ -14209,7 +14225,8 @@ Psalmi	21	11	Tu farai sparire il loro frutto dalla terra e la loro progenie di t
 Psalmi	21	12	perché hanno ordito del male contro a te; han formato malvagi disegni, che non potranno attuare;
 Psalmi	21	13	poiché tu farai loro voltar le spalle, col tuo arco mirerai diritto alla loro faccia.
 Psalmi	21	14	Innalzati, o Eterno, con la tua forza; noi canteremo e celebreremo la tua potenza.
-Psalmi	22	2	Per il Capo de' musici. Su "Cerva dell'aurora". Salmo di Davide. Dio mio, Dio mio, perché mi hai abbandonato? Perché te ne stai lontano, senza soccorrermi, senza dare ascolto alle parole del mio gemito?
+Psalmi	22	1	Per il Capo de' musici. Su "Cerva dell'aurora". Salmo di Davide.
+Psalmi	22	2	Dio mio, Dio mio, perché mi hai abbandonato? Perché te ne stai lontano, senza soccorrermi, senza dare ascolto alle parole del mio gemito?
 Psalmi	22	3	Dio mio, io grido di giorno, e tu non rispondi; di notte ancora, e non ho posa alcuna.
 Psalmi	22	4	Eppur tu sei il Santo, che siedi circondato dalle lodi d'Israele.
 Psalmi	22	5	I nostri padri confidarono in te; confidarono e tu li liberasti.
@@ -14324,7 +14341,8 @@ Psalmi	29	8	La voce dell'Eterno fa tremare il deserto; l'Eterno fa tremare il de
 Psalmi	29	9	La voce dell'Eterno fa partorire le cerve e sfronda le selve. E nel suo tempio tutto esclama: Gloria!
 Psalmi	29	10	L'Eterno sedeva sovrano sul diluvio, anzi l'Eterno siede re in perpetuo.
 Psalmi	29	11	L'Eterno darà forza al suo popolo; l'Eterno benedirà il suo popolo dandogli pace.
-Psalmi	30	2	Salmo. Cantico per la dedicazione della Casa. Di Davide. Io t'esalto, o Eterno, perché m'hai tratto in alto, e non hai permesso che i miei nemici si rallegrassero di me.
+Psalmi	30	1	Salmo. Cantico per la dedicazione della Casa. Di Davide.
+Psalmi	30	2	Io t'esalto, o Eterno, perché m'hai tratto in alto, e non hai permesso che i miei nemici si rallegrassero di me.
 Psalmi	30	3	O Eterno, Dio mio, io ho gridato a te, e tu m'hai sanato.
 Psalmi	30	4	O Eterno, tu hai fatto risalir l'anima mia dal soggiorno de' morti, tu m'hai ridato la vita perch'io non scendessi nella fossa.
 Psalmi	30	5	Salmeggiate all'Eterno, voi suoi fedeli, e celebrate la memoria della sua santità.
@@ -14336,7 +14354,8 @@ Psalmi	30	10	Che profitto avrai dal mio sangue s'io scendo nella fossa? Forse ch
 Psalmi	30	11	Ascolta, o Eterno, ed abbi pietà di me; o Eterno, sii tu il mio aiuto!
 Psalmi	30	12	Tu hai mutato il mio duolo in danza; hai sciolto il mio cilicio a m'hai cinto d'allegrezza,
 Psalmi	30	13	affinché l'anima mia salmeggi a te e non si taccia. O Eterno, Dio mio, io ti celebrerò in perpetuo.
-Psalmi	31	2	Per il Capo de' musici. Salmo di Davide. O Eterno, io mi son confidato in te, fa' ch'io non sia giammai confuso; iberami per la tua giustizia.
+Psalmi	31	1	Per il Capo de' musici. Salmo di Davide.
+Psalmi	31	2	O Eterno, io mi son confidato in te, fa' ch'io non sia giammai confuso; iberami per la tua giustizia.
 Psalmi	31	3	Inclina a me il tuo orecchio; affrettati a liberarmi; siimi una forte ròcca, una fortezza ove tu mi salvi.
 Psalmi	31	4	Poiché tu sei la mia ròcca e la mia fortezza; per amor del tuo nome guidami e conducimi.
 Psalmi	31	5	Trammi dalla rete che m'han tesa di nascosto; poiché tu sei il mio baluardo.
@@ -14393,7 +14412,8 @@ Psalmi	33	19	per liberare l'anima loro dalla morte e per conservarli in vita in 
 Psalmi	33	20	L'anima nostra aspetta l'Eterno; egli è il nostro aiuto e il nostro scudo.
 Psalmi	33	21	In lui, certo, si rallegrerà il cuor nostro, perché abbiam confidato nel nome della sua santità.
 Psalmi	33	22	La tua benignità, o Eterno, sia sopra noi, poiché noi abbiamo sperato in te.
-Psalmi	34	2	Di Davide, quando si finse insensato davanti ad Abimelec e, cacciato da lui, se ne andò. Io benedirò l'Eterno in ogni tempo; la sua lode sarà del continuo nella mia bocca.
+Psalmi	34	1	Di Davide, quando si finse insensato davanti ad Abimelec e, cacciato da lui, se ne andò.
+Psalmi	34	2	Io benedirò l'Eterno in ogni tempo; la sua lode sarà del continuo nella mia bocca.
 Psalmi	34	3	L'anima mia si glorierà nell'Eterno; gli umili l'udranno e si rallegreranno.
 Psalmi	34	4	Magnificate meco l'Eterno, ed esaltiamo il suo nome tutti insieme.
 Psalmi	34	5	Io ho cercato l'Eterno, ed egli m'ha risposto e m'ha liberato da tutti i miei spaventi.
@@ -14443,7 +14463,8 @@ Psalmi	35	25	che non dicano in cuor loro: Ah, ecco il nostro desiderio! che non 
 Psalmi	35	26	Siano tutti insieme svergognati e confusi quelli che si rallegrano del mio male; sian rivestiti d'onta e di vituperio quelli che si levano superbi contro di me.
 Psalmi	35	27	Cantino e si rallegrino quelli che si compiacciono della mia giustizia, e dican del continuo: Magnificato sia l'Eterno che vuole la pace del suo servitore!
 Psalmi	35	28	E la mia lingua parlerà della tua giustizia, e dirà del continuo la tua lode.
-Psalmi	36	2	Per il Capo de' musici. Di Davide, servo dell'Eterno.} L'iniquità parla all'empio nell'intimo del suo cuore; non c'è timor di io davanti ai suoi occhi.
+Psalmi	36	1	Per il Capo de' musici. Di Davide, servo dell'Eterno.
+Psalmi	36	2	L'iniquità parla all'empio nell'intimo del suo cuore; non c'è timor di io davanti ai suoi occhi.
 Psalmi	36	3	Essa lo lusinga che la sua empietà non sarà scoperta né presa in odio.
 Psalmi	36	4	Le parole della sua bocca sono iniquità e frode; egli ha cessato d'esser savio e di fare il bene.
 Psalmi	36	5	Egli medita iniquità sopra il suo letto; si tiene nella via che non è buona; non aborre il male.
@@ -14495,7 +14516,8 @@ Psalmi	37	37	Osserva l'uomo integro e considera l'uomo retto; perché v'è una p
 Psalmi	37	38	Mentre i trasgressori saranno tutti quanti distrutti; la posterità degli empi sarà sterminata.
 Psalmi	37	39	Ma la salvezza dei giusti procede dall'Eterno; egli è la loro fortezza nel tempo della distretta.
 Psalmi	37	40	L'Eterno li aiuta e li libera: li libera dagli empi e li salva, perché si sono rifugiati in lui.
-Psalmi	38	2	Salmo di Davide. Per far ricordare. O Eterno, non mi correggere nella tua ira, e non castigarmi nel tuo cruccio!
+Psalmi	38	1	Salmo di Davide. Per far ricordare.
+Psalmi	38	2	O Eterno, non mi correggere nella tua ira, e non castigarmi nel tuo cruccio!
 Psalmi	38	3	Poiché le tue saette si sono confitte in me, e la tua mano m'è calata addosso.
 Psalmi	38	4	Non v'è nulla d'intatto nella mia carne a cagion della tua ira; non v'è requie per le mie ossa a cagion del mio peccato.
 Psalmi	38	5	Poiché le mie iniquità sorpassano il mio capo; son come un grave carico, troppo pesante per me.
@@ -14517,7 +14539,8 @@ Psalmi	38	20	Ma quelli che senza motivo mi sono nemici sono forti, quelli che m'
 Psalmi	38	21	Anche quelli che mi rendon male per bene sono miei avversari, perché seguo il bene.
 Psalmi	38	22	O Eterno, non abbandonarmi; Dio mio, non allontanarti da me;
 Psalmi	38	23	affrettati in mio aiuto, o Signore, mia salvezza!
-Psalmi	39	2	Per il Capo de' musici. Per Jeduthun. Salmo di Davide. Io dicevo: Farò attenzione alle mie vie per non peccare con la mia lingua; metterò un freno alla mia bocca, finché l'empio mi starà davanti.
+Psalmi	39	1	Per il Capo de' musici. Per Jeduthun. Salmo di Davide.
+Psalmi	39	2	Io dicevo: Farò attenzione alle mie vie per non peccare con la mia lingua; metterò un freno alla mia bocca, finché l'empio mi starà davanti.
 Psalmi	39	3	Io sono stato muto, in silenzio, mi son taciuto senz'averne bene; anzi il mio dolore s'è inasprito.
 Psalmi	39	4	Il mio cuore si riscaldava dentro di me; mentre meditavo, un fuoco s'è acceso; allora la mia lingua ha parlato.
 Psalmi	39	5	O Eterno, fammi conoscere la mia fine e qual è la misura de' miei giorni. Fa' ch'io sappia quanto son frale.
@@ -14530,7 +14553,8 @@ Psalmi	39	11	Toglimi d'addosso il tuo flagello! Io mi consumo sotto i colpi dell
 Psalmi	39	12	Quando castigando l'iniquità tu correggi l'uomo, tu distruggi come la tignuola quel che ha di più caro; erto, ogni uomo non è che vanità. Sela.
 Psalmi	39	13	O Eterno, ascolta la mia preghiera, e porgi l'orecchio al mio grido; non esser sordo alle mie lacrime; oiché io sono uno straniero presso a te, un pellegrino, come tutti i miei padri.
 Psalmi	39	14	Distogli da me il tuo sguardo ond'io mi rianimi, prima che me ne vada, e non sia più.
-Psalmi	40	2	Per il Capo de' musici. Di Davide. Salmo. Io ho pazientemente aspettato l'Eterno, ed egli s'è inclinato a me ed ha ascoltato il mio grido.
+Psalmi	40	1	Per il Capo de' musici. Di Davide. Salmo.
+Psalmi	40	2	Io ho pazientemente aspettato l'Eterno, ed egli s'è inclinato a me ed ha ascoltato il mio grido.
 Psalmi	40	3	Egli m'ha tratto fuori da una fossa di perdizione, dal pantano fangoso; ha fatto posare i miei piedi sulla roccia, ed ha stabilito i miei passi.
 Psalmi	40	4	Egli ha messo nella mia bocca un nuovo cantico a lode del nostro Dio. Molti vedran questo e temeranno e confideranno nell'Eterno.
 Psalmi	40	5	Beato l'uomo che ripone nell'Eterno la sua fiducia, e non riguarda ai superbi né a quei che si svian dietro alla menzogna!
@@ -14547,7 +14571,8 @@ Psalmi	40	15	Siano confusi e svergognati tutti quanti quelli che cercano l'anima
 Psalmi	40	16	Restino muti di stupore per la loro ignominia quelli che mi dicono: Ah, ah!
 Psalmi	40	17	Gioiscano e si rallegrino in te, tutti quelli che ti cercano; quelli che amano la tua salvezza dicano del continuo: Sia magnificato l'Eterno!
 Psalmi	40	18	Quanto a me son misero e bisognoso, ma il Signore ha cura di me. Tu sei il mio aiuto e il mio liberatore; o Dio mio, non tardare!
-Psalmi	41	2	Per il Capo de' musici. Salmo di Davide. Beato colui che si dà pensiero del povero! nel giorno della sventura l'Eterno lo libererà.
+Psalmi	41	1	Per il Capo de' musici. Salmo di Davide.
+Psalmi	41	2	Beato colui che si dà pensiero del povero! nel giorno della sventura l'Eterno lo libererà.
 Psalmi	41	3	L'Eterno lo guarderà e lo manterrà in vita; egli sarà reso felice sulla terra, e tu non lo darai in balìa de' uoi nemici.
 Psalmi	41	4	L'Eterno lo sosterrà quando sarà nel letto della infermità; tu trasformerai interamente il suo letto di malattia.
 Psalmi	41	5	Io ho detto: O Eterno, abbi pietà di me; sana l'anima mia, perché ho peccato contro a te.
@@ -14560,7 +14585,8 @@ Psalmi	41	11	Ma tu, o Eterno, abbi pietà di me e rialzami, ed io renderò loro 
 Psalmi	41	12	Da questo io riconoscerò che tu mi gradisci, se il mio nemico non trionferà di me.
 Psalmi	41	13	Quanto a me, tu mi sostieni nella mia integrità e mi stabilisci nel tuo cospetto in perpetuo.
 Psalmi	41	14	Sia benedetto l'Eterno, l'Iddio d'Israele, di secolo in secolo. Amen! Amen!
-Psalmi	42	2	Per il Capo de' musici. Cantico de' figliuoli di Core. Come la cerva agogna i rivi dell'acque, così l'anima mia agogna te, o io.
+Psalmi	42	1	Per il Capo de' musici. Cantico de' figliuoli di Core.
+Psalmi	42	2	Come la cerva agogna i rivi dell'acque, così l'anima mia agogna te, o io.
 Psalmi	42	3	L'anima mia è assetata di Dio, dell'Iddio vivente: Quando verrò e comparirò al cospetto di Dio?
 Psalmi	42	4	Le mie lacrime son diventate il mio cibo giorno e notte, da che mi van dicendo del continuo: Dov'è il tuo Dio?
 Psalmi	42	5	Non posso non ricordare con profonda commozione il tempo in cui procedevo con la folla e la guidavo alla casa di Dio, tra i canti di giubilo e di lode d'una moltitudine in festa.
@@ -14576,7 +14602,8 @@ Psalmi	43	2	Poiché tu sei l'Iddio ch'è la mia fortezza; perché mi hai rigetta
 Psalmi	43	3	Manda la tua luce e la tua verità; mi guidino esse, mi conducano al monte della tua santità, nei tuoi tabernacoli.
 Psalmi	43	4	Allora andrò all'altare di Dio, all'Iddio, ch'è la mia allegrezza ed il mio giubilo; e ti celebrerò con la cetra, o Dio, Dio mio!
 Psalmi	43	5	Perché t'abbatti anima mia? perché ti commuovi in me? Spera in Dio, perché lo celebrerò ancora; egli è la mia salvezza ed il mio Dio.
-Psalmi	44	2	Al capo de' musici. Dei figliuoli di Core. Cantico. O Dio, noi abbiamo udito coi nostri orecchi, i nostri padri ci hanno raccontato l'opera che compisti ai loro giorni, ai giorni antichi.
+Psalmi	44	1	Al capo de' musici. Dei figliuoli di Core. Cantico.
+Psalmi	44	2	O Dio, noi abbiamo udito coi nostri orecchi, i nostri padri ci hanno raccontato l'opera che compisti ai loro giorni, ai giorni antichi.
 Psalmi	44	3	Tu con la tua mano scacciasti le nazioni e stabilisti i nostri padri; distruggesti dei popoli per estender loro.
 Psalmi	44	4	Poiché essi non conquistarono il paese con la loro spada, né fu il loro braccio che li salvò, ma la tua destra, il tuo braccio, la luce del tuo volto, perché li gradivi.
 Psalmi	44	5	Tu sei il mio re, o Dio, ordina la salvezza di Giacobbe!
@@ -14602,7 +14629,8 @@ Psalmi	44	24	Risvegliati! Perché dormi, o Signore? Destati, non rigettarci in p
 Psalmi	44	25	Perché nascondi la tua faccia e dimentichi la nostra afflizione e la nostra oppressione?
 Psalmi	44	26	Poiché l'anima nostra è abbattuta nella polvere; il nostro corpo aderisce alla terra.
 Psalmi	44	27	Lèvati in nostro aiuto, e liberaci, per amor della tua benignità.
-Psalmi	45	2	Per il Capo de' musici. Sopra "i gigli". De' figliuoli di Core. Cantico. Inno nuziale. Mi ferve in cuore una parola soave; io dico: 'opera mia è per un re; la mia lingua sarà come la penna d'un veloce scrittore.
+Psalmi	45	1	Per il Capo de' musici. Sopra "i gigli". De' figliuoli di Core. Cantico. Inno nuziale.
+Psalmi	45	2	Mi ferve in cuore una parola soave; io dico: 'opera mia è per un re; la mia lingua sarà come la penna d'un veloce scrittore.
 Psalmi	45	3	Tu sei bello, più bello di tutti i figliuoli degli uomini; la grazia è sparsa sulle tue labbra; perciò Iddio ti ha benedetto in eterno.
 Psalmi	45	4	Cingiti la spada al fianco, o prode; vèstiti della tua gloria e della tua magnificenza.
 Psalmi	45	5	E, nella tua magnificenza, avanza sul carro, per la causa della verità, della clemenza e della giustizia; e la tua destra ti farà vedere cose tremende.
@@ -14619,7 +14647,8 @@ Psalmi	45	15	Ella sarà condotta al re in vesti ricamate; seguìta dalle vergini
 Psalmi	45	16	saran condotte con letizia e con giubilo; ed esse entreranno nel palazzo del re.
 Psalmi	45	17	I tuoi figliuoli prenderanno il posto de' tuoi padri; tu li costituirai principi per tutta la terra.
 Psalmi	45	18	Io renderò il tuo nome celebre per ogni età; perciò i popoli ti loderanno in sempiterno.
-Psalmi	46	2	Per il Capo de' musici. Dei figliuoli di Core. Per voci di fanciulle. Canto. Dio è per noi un rifugio ed una forza, un aiuto sempre pronto nelle distrette.
+Psalmi	46	1	Per il Capo de' musici. Dei figliuoli di Core. Per voci di fanciulle. Canto.
+Psalmi	46	2	Dio è per noi un rifugio ed una forza, un aiuto sempre pronto nelle distrette.
 Psalmi	46	3	Perciò noi non temeremo, anche quando fosse sconvolta la terra, quando i monti fossero smossi in seno ai mari,
 Psalmi	46	4	quando le acque del mare muggissero e schiumassero, e per il loro gonfiarsi tremassero i monti.
 Psalmi	46	5	V'è un fiume, i cui rivi rallegrano la città di Dio, il luogo santo della dimora dell'Altissimo.
@@ -14630,7 +14659,8 @@ Psalmi	46	9	Venite, mirate le opere dell'Eterno, il quale compie sulla terra cos
 Psalmi	46	10	Egli fa cessar le guerre fino all'estremità della terra; rompe gli archi e spezza le lance, arde i carri nel fuoco.
 Psalmi	46	11	Fermatevi, ei dice, riconoscete che io sono Dio. Io sarò esaltato fra le nazioni, sarò esaltato sulla terra.
 Psalmi	46	12	L'Eterno degli eserciti è con noi; l'Iddio di Giacobbe è il nostro alto ricetto. Sela.
-Psalmi	47	2	Per il Capo de' musici. Dei figliuoli di Core. Salmo. Battete le mani, o popoli tutti; acclamate Iddio con grida d'allegrezza!
+Psalmi	47	1	Per il Capo de' musici. Dei figliuoli di Core. Salmo.
+Psalmi	47	2	Battete le mani, o popoli tutti; acclamate Iddio con grida d'allegrezza!
 Psalmi	47	3	Poiché l'Eterno, l'Altissimo, è tremendo, re supremo su tutta la terra.
 Psalmi	47	4	Egli riduce i popoli sotto di noi, e le nazioni sotto i nostri piedi.
 Psalmi	47	5	Egli scelse per noi la nostra eredità, gloria di Giacobbe ch'egli ama. Sela.
@@ -14639,7 +14669,8 @@ Psalmi	47	7	Salmeggiate a Dio, salmeggiate; salmeggiate al nostro re, salmeggiat
 Psalmi	47	8	Poiché Dio è re di tutta la terra; cantategli un bell'inno.
 Psalmi	47	9	Iddio regna sulle nazioni; Iddio siede sul trono della sua santità.
 Psalmi	47	10	I principi de' popoli s'adunano assieme per essere il popolo dell'Iddio d'Abramo: perché a Dio appartengono i potenti della terra; egli è sommamente elevato.
-Psalmi	48	2	Canto. Salmo de' figliuoli di Core. Grande è l'Eterno e lodato altamente nella città dell'Iddio nostro, sul monte della sua santità.
+Psalmi	48	1	Canto. Salmo de' figliuoli di Core.
+Psalmi	48	2	Grande è l'Eterno e lodato altamente nella città dell'Iddio nostro, sul monte della sua santità.
 Psalmi	48	3	Bello si erge, gioia di tutta la terra, il monte di Sion, dalle parti del settentrione, bella è la città del gran re.
 Psalmi	48	4	Nei palazzi d'essa Dio s'è fatto conoscere come un'alta fortezza.
 Psalmi	48	5	Poiché ecco, i re s'erano adunati, si avanzavano assieme.
@@ -14653,7 +14684,8 @@ Psalmi	48	12	Si rallegri il monte di Sion, festeggino le figliuole di Giuda per 
 Psalmi	48	13	Circuite Sion, giratele attorno, contatene le torri,
 Psalmi	48	14	osservatene i bastioni, considerate i suoi palazzi, onde possiate parlarne alla futura generazione.
 Psalmi	48	15	Poiché questo Dio è il nostro Dio in sempiterno; egli sarà la nostra guida fino alla morte.
-Psalmi	49	2	Per il Capo de' musici. De' figliuoli di Core. Salmo. Udite questo, popoli tutti; porgete orecchio, voi tutti gli abitanti del mondo!
+Psalmi	49	1	Per il Capo de' musici. De' figliuoli di Core. Salmo.
+Psalmi	49	2	Udite questo, popoli tutti; porgete orecchio, voi tutti gli abitanti del mondo!
 Psalmi	49	3	Plebei e nobili, ricchi e poveri tutti insieme.
 Psalmi	49	4	La mia bocca proferirà cose savie, e la meditazione del mio cuore sarà piena di senno.
 Psalmi	49	5	Io presterò l'orecchio alle sentenze, spiegherò a suon di cetra il mio enigma.
@@ -14696,7 +14728,9 @@ Psalmi	50	20	Tu siedi e parli contro il tuo fratello, tu diffami il figlio di tu
 Psalmi	50	21	Tu hai fatto queste cose, ed io mi son taciuto, e tu hai pensato ch'io fossi del tutto come te; ma io ti riprenderò, e ti metterò tutto davanti agli occhi.
 Psalmi	50	22	Deh, intendete questo, voi che dimenticate Iddio; che talora io non vi dilanii e non vi sia chi vi liberi.
 Psalmi	50	23	Chi mi offre il sacrifizio della lode mi glorifica, e a chi regola bene la sua condotta, io farò vedere la salvezza di Dio.
-Psalmi	51	3	Per il Capo de' musici. Salmo di Davide, quando il profeta Natan venne a lui, dopo che Davide era stato da Batseba. Abbi pietà di me, o Dio, secondo la tua benignità; secondo la moltitudine delle tue compassioni, cancella i miei misfatti.
+Psalmi	51	1	Per il Capo de' musici. Salmo di Davide,
+Psalmi	51	2	quando il profeta Natan venne a lui, dopo che Davide era stato da Batseba.
+Psalmi	51	3	Abbi pietà di me, o Dio, secondo la tua benignità; secondo la moltitudine delle tue compassioni, cancella i miei misfatti.
 Psalmi	51	4	Lavami del tutto della mia iniquità e nettami del mio peccato!
 Psalmi	51	5	Poiché io conosco i miei misfatti, e il mio peccato è del continuo davanti a me.
 Psalmi	51	6	Io ho peccato contro te, contro te solo, e ho fatto ciò ch'è male agli occhi tuoi; lo confesso, affinché tu sia riconosciuto giusto quando parli, e irreprensibile quando giudichi.
@@ -14715,7 +14749,9 @@ Psalmi	51	18	Poiché tu non prendi piacere nei sacrifizi, altrimenti io li offri
 Psalmi	51	19	I sacrifizi di Dio sono lo spirito rotto; o Dio, tu non sprezzi il cuor rotto e contrito.
 Psalmi	51	20	Fa' del bene a Sion, per la tua benevolenza; edifica le mura di Gerusalemme.
 Psalmi	51	21	Allora prenderai piacere in sacrifizi di giustizia, in olocausti e in vittime arse per intero; allora si offriranno giovenchi sul tuo altare.
-Psalmi	52	3	Per il Capo de' musici. Cantico di Davide, quando Doeg l'Edomita venne a riferire a Saul che Davide era entrato in casa di Ahimelec. Perché ti glorii del male, uomo potente? La benignità di Dio dura per sempre.
+Psalmi	52	1	Per il Capo de' musici. Cantico di Davide,
+Psalmi	52	2	quando Doeg l'Edomita venne a riferire a Saul che Davide era entrato in casa di Ahimelec.
+Psalmi	52	3	Perché ti glorii del male, uomo potente? La benignità di Dio dura per sempre.
 Psalmi	52	4	La tua lingua medita rovine; essa è simile a un rasoio affilato, o artefice d'inganni.
 Psalmi	52	5	Tu ami il male più che il bene, e la menzogna più che il parlar secondo giustizia. Sela.
 Psalmi	52	6	Tu ami ogni parola che cagiona distruzione, o lingua fraudolenta!
@@ -14724,20 +14760,24 @@ Psalmi	52	8	I giusti lo vedranno e temeranno e si rideranno di quel tale, dicend
 Psalmi	52	9	Ecco l'uomo che non avea fatto di Dio la sua fortezza, ma confidava nell'abbondanza delle sue ricchezze, e si faceva forte della sua perversità!
 Psalmi	52	10	Ma io sono come un ulivo verdeggiante nella casa di Dio; io confido nella benignità di Dio in sempiterno.
 Psalmi	52	11	Io ti celebrerò del continuo per quel che tu avrai operato, e, nel cospetto dei tuoi fedeli, spererò nel tuo nome, perch'esso è buono.
-Psalmi	53	2	Al Capo de' musici. Mestamente. Cantico di Davide. Lo stolto ha detto nel suo cuore: Non c'è Dio. Si sono corrotti, si son resi abominevoli con la loro malvagità, non v'è alcuno che faccia il bene.
+Psalmi	53	1	Al Capo de' musici. Mestamente. Cantico di Davide.
+Psalmi	53	2	Lo stolto ha detto nel suo cuore: Non c'è Dio. Si sono corrotti, si son resi abominevoli con la loro malvagità, non v'è alcuno che faccia il bene.
 Psalmi	53	3	Iddio ha riguardato dal cielo sui figliuoli degli uomini per vedere se vi fosse alcuno che avesse intelletto, che cercasse Iddio.
 Psalmi	53	4	Tutti si son tratti indietro, tutti quanti si son corrotti, non v'è alcuno che faccia il bene, neppur uno.
 Psalmi	53	5	Son essi senza conoscenza questi operatori d'iniquità, che mangiano il mio popolo come mangiano il pane, e non invocano Iddio?
 Psalmi	53	6	Ecco là, son presi da grande spavento, ove prima non c'era spavento; poiché Dio ha disperse le ossa di quelli che ti assediavano; tu li hai coperti di confusione, perché Iddio li disdegna.
 Psalmi	53	7	Oh chi recherà da Sion la salvezza d'Israele? Quando Iddio farà ritornare gli esuli del suo popolo, Giacobbe festeggerà, Israele si rallegrerà.
-Psalmi	54	3	Per il Capo de' musici. Per strumenti a corda. Cantico di Davide quando gli Zifei vennero a dire a Saul: Davide non si tiene egli nascosto fra noi? O Dio, salvami per il tuo nome, e fammi giustizia per la tua potenza.
+Psalmi	54	1	Per il Capo de' musici. Per strumenti a corda. Cantico di Davide
+Psalmi	54	2	quando gli Zifei vennero a dire a Saul: Davide non si tiene egli nascosto fra noi?
+Psalmi	54	3	O Dio, salvami per il tuo nome, e fammi giustizia per la tua potenza.
 Psalmi	54	4	O Dio, ascolta la mia preghiera, porgi orecchio alle parole della mia bocca!
 Psalmi	54	5	Poiché degli stranieri si son levati contro a me e de' violenti cercano l'anima mia. Essi non tengono ddio presente innanzi a loro. Sela.
 Psalmi	54	6	Ecco, Iddio e colui che m'aiuta; il Signore è fra quelli che sostengon l'anima mia.
 Psalmi	54	7	Egli farà ricadere il male sopra i miei nemici. Nella tua fedeltà, distruggili!
 Psalmi	54	8	Con animo volonteroso io t'offrirò sacrifizi; celebrerò il tuo nome, o Eterno, perch'esso è buono;
 Psalmi	54	9	perché m'ha liberato da ogni distretta, e l'occhio mio ha visto sui miei nemici quel che desideravo.
-Psalmi	55	2	Per il Capo de' musici. Per strumenti a corda. Cantico di Davide. Porgi orecchio alla mia preghiera o Dio, e non rifiutar di udir la mia supplicazione.
+Psalmi	55	1	Per il Capo de' musici. Per strumenti a corda. Cantico di Davide.
+Psalmi	55	2	Porgi orecchio alla mia preghiera o Dio, e non rifiutar di udir la mia supplicazione.
 Psalmi	55	3	Attendi a me, e rispondimi; io non ho requie nel mio lamento, e gemo,
 Psalmi	55	4	per la voce del nemico, per l'oppressione dell'empio; poiché mi gettano addosso delle iniquità e mi perseguitano con furore.
 Psalmi	55	5	Il mio cuore spasima dentro di me e spaventi mortali mi son caduti addosso.
@@ -14760,7 +14800,8 @@ Psalmi	55	21	Il nemico ha steso la mano contro quelli ch'erano in pace con lui, 
 Psalmi	55	22	La sua bocca è più dolce del burro, ma nel cuore ha la guerra; le sue parole son più morbide dell'olio, ma sono spade sguainate.
 Psalmi	55	23	Getta sull'Eterno il tuo peso, ed egli ti sosterrà; egli non permetterà mai che il giusto sia smosso.
 Psalmi	55	24	Ma tu, o Dio, farai cader costoro nel profondo della fossa; gli uomini di sangue e di frode non arriveranno alla metà de' lor giorni; ma io confiderò in te.
-Psalmi	56	2	Per il Capo de' musici. Su: "Colomba de' terebinti lontani". Inno di Davide quando i Filistei lo presero in Gat. Abbi pietà di me, o Dio, poiché gli uomini anelano a divorarmi; mi tormentano con una guerra di tutti i giorni;
+Psalmi	56	1	Per il Capo de' musici. Su: "Colomba de' terebinti lontani". Inno di Davide quando i Filistei lo presero in Gat.
+Psalmi	56	2	Abbi pietà di me, o Dio, poiché gli uomini anelano a divorarmi; mi tormentano con una guerra di tutti i giorni;
 Psalmi	56	3	i miei nemici anelano del continuo a divorarmi, poiché sono molti quelli che m'assalgono con superbia.
 Psalmi	56	4	Nel giorno in cui temerò, io confiderò in te.
 Psalmi	56	5	Coll'aiuto di Dio celebrerò la sua parola; in Dio confido, e non temerò; che mi può fare il mortale?
@@ -14773,7 +14814,8 @@ Psalmi	56	11	Coll'aiuto di Dio celebrerò la sua parola; coll'aiuto dell'Eterno 
 Psalmi	56	12	In Dio confido e non temerò; che mi può far l'uomo?
 Psalmi	56	13	Tengo presenti i voti che t'ho fatti, o Dio; io t'offrirò sacrifizi di lode;
 Psalmi	56	14	poiché tu hai riscosso l'anima mia dalla morte, hai guardato i miei piedi da caduta, ond'io cammini, al cospetto di Dio, nella luce de' viventi.
-Psalmi	57	2	Per il Capo de' musici. "Non distruggere". Inno di Davide, quando, perseguitato da Saul, fuggì nella spelonca. Abbi pietà di me, o Dio, abbi pietà di me, perché l'anima mia cerca rifugio in te; e all'ombra delle tue ali io mi rifugio, finché le calamità siano passate.
+Psalmi	57	1	Per il Capo de' musici. "Non distruggere". Inno di Davide, quando, perseguitato da Saul, fuggì nella spelonca.
+Psalmi	57	2	Abbi pietà di me, o Dio, abbi pietà di me, perché l'anima mia cerca rifugio in te; e all'ombra delle tue ali io mi rifugio, finché le calamità siano passate.
 Psalmi	57	3	Io griderò all'Iddio altissimo: a Dio, che compie i suoi disegni su me.
 Psalmi	57	4	Egli manderà dal cielo a salvarmi. Mentre colui che anela a divorarmi m'oltraggia, Sela. Iddio manderà la sua grazia e la sua fedeltà.
 Psalmi	57	5	L'anima mia è in mezzo a leoni; dimoro tra gente che vomita fiamme, in mezzo ad uomini, i cui denti son lance e saette, e la cui lingua è una spada acuta.
@@ -14784,7 +14826,8 @@ Psalmi	57	9	Dèstati, o gloria mia, destatevi, saltèro e cetra, io voglio risve
 Psalmi	57	10	Io ti celebrerò fra i popoli, o Signore, a te salmeggerò fra le nazioni,
 Psalmi	57	11	perché grande fino al cielo e la tua benignità, e la tua fedeltà fino alle nuvole.
 Psalmi	57	12	Innalzati, o Dio, al di sopra de' cieli, risplenda su tutta la terra la tua gloria!
-Psalmi	58	2	Per il Capo de' musici. "Non distruggere". Inno di Davide. E' egli proprio secondo giustizia che voi parlate, o potenti? Giudicate voi rettamente i figliuoli degli uomini?
+Psalmi	58	1	Per il Capo de' musici. "Non distruggere". Inno di Davide.
+Psalmi	58	2	E' egli proprio secondo giustizia che voi parlate, o potenti? Giudicate voi rettamente i figliuoli degli uomini?
 Psalmi	58	3	Anzi, nel cuore voi commettete delle iniquità; nel paese, voi gettate nella bilancia la violenza delle vostre mani.
 Psalmi	58	4	Gli empi sono sviati fin dalla matrice, i mentitori son traviati fino dal seno materno.
 Psalmi	58	5	Han del veleno simile al veleno del serpente, son come l'aspide sordo che si tura le orecchie,
@@ -14795,7 +14838,8 @@ Psalmi	58	9	Siano essi come lumaca che si strugge mentre va: come l'aborto d'una
 Psalmi	58	10	Prima che le vostre pignatte sentano il fuoco del pruno, verde od acceso che sia il legno, lo porti via la bufera.
 Psalmi	58	11	Il giusto si rallegrerà quando avrà visto la vendetta; si laverà i piedi nel sangue dell'empio;
 Psalmi	58	12	e la gente dirà: Certo, vi è una ricompensa per il giusto; certo c'è un Dio che giudica sulla terra!
-Psalmi	59	2	Per il Capo de' musici. "Non distruggere". Inno di Davide, quando Saul mandò a guardargli la casa per ucciderlo. Liberami dai miei nemici, o mio Dio; ponimi in luogo alto al sicuro dai miei aggressori.
+Psalmi	59	1	Per il Capo de' musici. "Non distruggere". Inno di Davide, quando Saul mandò a guardargli la casa per ucciderlo.
+Psalmi	59	2	Liberami dai miei nemici, o mio Dio; ponimi in luogo alto al sicuro dai miei aggressori.
 Psalmi	59	3	Liberami dagli operatori d'iniquità, e salvami dagli uomini di sangue.
 Psalmi	59	4	Perché, ecco essi pongono agguati all'anima mia; uomini potenti si radunano contro a me, senza che in me vi sia misfatto né peccato, o Eterno!
 Psalmi	59	5	Senza che in me vi sia iniquità, essi corrono e si preparano. Dèstati, vieni a me, e vedi!
@@ -14812,7 +14856,9 @@ Psalmi	59	15	Tornino pure la sera, urlino come cani e vadano attorno per la citt
 Psalmi	59	16	Vadano vagando per trovar da mangiare, e se non trovano da saziarsi, passino così la notte.
 Psalmi	59	17	Ma io canterò la tua potenza, e al mattino loderò ad alta voce la tua benignità, perché tu sei stato per me un alto ricetto, un rifugio nel giorno della mia distretta.
 Psalmi	59	18	O mia forza, a te salmeggerò, perché Dio è il mio alto ricetto, l'Iddio benigno per me.
-Psalmi	60	3	Per il Capo de' musici. Su "il giglio della testimonianza". Inno di Davide da insegnare; quand'egli mosse guerra ai Siri di Mesopotamia e ai Siri di Soba e Joab tornò, e sconfisse 12.000 Idumei nella valle del Sale. O Dio, tu ci hai rigettati, ci hai dispersi, tu ti sei adirato; deh, ci ristabilisci!
+Psalmi	60	1	Per il Capo de' musici. Su "il giglio della testimonianza". Inno di Davide da insegnare;
+Psalmi	60	2	quand'egli mosse guerra ai Siri di Mesopotamia e ai Siri di Soba e Joab tornò, e sconfisse 12.000 Idumei nella valle del Sale.
+Psalmi	60	3	O Dio, tu ci hai rigettati, ci hai dispersi, tu ti sei adirato; deh, ci ristabilisci!
 Psalmi	60	4	Tu hai fatto tremare la terra, tu l'hai schiantata; restaura le sue rotture, perché vacilla.
 Psalmi	60	5	Tu hai fatto vedere al tuo popolo cose dure; tu ci hai dato a bere un vino che stordisce.
 Psalmi	60	6	Ma tu hai dato a quelli che ti temono una bandiera, perché si levino in favor della verità. Sela.
@@ -14824,7 +14870,8 @@ Psalmi	60	11	Chi mi condurrà nella città forte? Chi mi menerà fino in Edom?
 Psalmi	60	12	Non sarai tu, o Dio, che ci hai rigettati e non esci più, o Dio, coi nostri eserciti?
 Psalmi	60	13	Dacci aiuto per uscir dalla distretta, poiché vano è il soccorso dell'uomo.
 Psalmi	60	14	Con Dio noi faremo prodezze, ed egli schiaccerà i nostri nemici.
-Psalmi	61	2	Per il Capo de' musici. Per strumenti a corda. Di Davide. O Dio, ascolta il mio grido, attendi alla mia preghiera.
+Psalmi	61	1	Per il Capo de' musici. Per strumenti a corda. Di Davide.
+Psalmi	61	2	O Dio, ascolta il mio grido, attendi alla mia preghiera.
 Psalmi	61	3	Dall'estremità della terra io grido a te, con cuore abbattuto; conducimi alla ròcca ch'è troppo alta per me;
 Psalmi	61	4	poiché tu mi sei stato un rifugio, una forte torre dinanzi al nemico.
 Psalmi	61	5	Io dimorerò nel tuo tabernacolo per sempre, mi riparerò all'ombra delle tue ali. Sela.
@@ -14832,7 +14879,8 @@ Psalmi	61	6	Poiché tu, o Dio, hai esaudito i miei voti, m'hai dato l'eredità d
 Psalmi	61	7	Aggiungi dei giorni ai giorni del re, siano i suoi anni come molte età!
 Psalmi	61	8	Segga sul trono nel cospetto di Dio in perpetuo! Ordina alla benignità e alla verità di guardarlo;
 Psalmi	61	9	così salmeggerò al tuo nome in perpetuo, e adempirò ogni giorno i miei voti.
-Psalmi	62	2	Per il Capo de' musici. Per Jeduthun. Salmo di Davide.} L'anima mia s'acqueta in Dio solo; da lui viene la mia salvezza.
+Psalmi	62	1	Per il Capo de' musici. Per Jeduthun. Salmo di Davide.
+Psalmi	62	2	L'anima mia s'acqueta in Dio solo; da lui viene la mia salvezza.
 Psalmi	62	3	Egli solo è la mia ròcca e la mia salvezza, il mio alto ricetto; io non sarò grandemente smosso.
 Psalmi	62	4	Fino a quando vi avventerete sopra un uomo e cercherete tutti insieme di abbatterlo come una parete che pende, come un muricciuolo che cede?
 Psalmi	62	5	Essi non pensano che a farlo cadere dalla sua altezza; prendon piacere nella menzogna; benedicono con la bocca, ma internamente maledicono. Sela.
@@ -14844,7 +14892,8 @@ Psalmi	62	10	Gli uomini del volgo non sono che vanità, e i nobili non sono che 
 Psalmi	62	11	Non confidate nell'oppressione, e non mettete vane speranze nella rapina; se le ricchezze abbondano, non vi mettete il cuore.
 Psalmi	62	12	Dio ha parlato una volta, due volte ho udito questo: che la potenza appartiene a Dio;
 Psalmi	62	13	e a te pure, o Signore, appartiene la misericordia; perché tu renderai a ciascuno secondo le sue opere.
-Psalmi	63	2	Salmo di Davide: quand'era nel deserto di Giuda.} O Dio, tu sei l'Iddio mio, io ti cerco dall'alba; l'anima mia è assetata di te, la mia carne ti brama in una terra arida, che langue, senz'acqua.
+Psalmi	63	1	Salmo di Davide: quand'era nel deserto di Giuda.
+Psalmi	63	2	O Dio, tu sei l'Iddio mio, io ti cerco dall'alba; l'anima mia è assetata di te, la mia carne ti brama in una terra arida, che langue, senz'acqua.
 Psalmi	63	3	Così t'ho io mirato nel santuario per veder la tua forza e la tua gloria.
 Psalmi	63	4	Poiché la tua benignità val meglio della vita; le mie labbra ti loderanno.
 Psalmi	63	5	Così ti benedirò finché io viva, e alzerò le mani invocando il tuo nome.
@@ -14855,7 +14904,8 @@ Psalmi	63	9	L'anima mia s'attacca a te per seguirti; la tua destra mi sostiene.
 Psalmi	63	10	Ma costoro che cercano la rovina dell'anima mia, entreranno nelle parti più basse della terra.
 Psalmi	63	11	Saran dati in balìa della spada, saranno la preda degli sciacalli.
 Psalmi	63	12	Ma il re si rallegrerà in Dio; chiunque giura per lui si glorierà, perché la bocca di quelli che dicon menzogne sarà turata.
-Psalmi	64	2	Per il Capo de' musici. Salmo di Davide.} O Dio, ascolta la mia voce nel mio lamento! Guarda la mia vita dallo spavento del nemico.
+Psalmi	64	1	Per il Capo de' musici. Salmo di Davide.
+Psalmi	64	2	O Dio, ascolta la mia voce nel mio lamento! Guarda la mia vita dallo spavento del nemico.
 Psalmi	64	3	Mettimi al coperto dalle trame de' maligni, dalla turba degli operatori d'iniquità,
 Psalmi	64	4	che hanno aguzzato la loro lingua come una spada e hanno scoccato come frecce le loro parole amare,
 Psalmi	64	5	per colpire da luoghi nascosti l'uomo integro; lo colpiscono all'improvviso, e non hanno paura.
@@ -14865,7 +14915,8 @@ Psalmi	64	8	Ma Dio scoccherà contro di essi le sue frecce, e subito saran coper
 Psalmi	64	9	saranno fatti cadere; e il male fatto dalle loro lingue ricadrà su loro. Tutti quelli che li vedranno scrolleranno il capo,
 Psalmi	64	10	e tutti gli uomini temeranno, e racconteranno l'opera di Dio, e considereranno quello ch'egli avrà fatto.
 Psalmi	64	11	Il giusto si rallegrerà nell'Eterno e in lui cercherà rifugio; e tutti i diritti di cuore si glorieranno.
-Psalmi	65	2	Per il Capo de' musici. Salmo di Davide. Canto.} A te, o Dio, nel raccoglimento, sale la lode in Sion, a te l'omaggio dei voti che si compiono.
+Psalmi	65	1	Per il Capo de' musici. Salmo di Davide. Canto.
+Psalmi	65	2	A te, o Dio, nel raccoglimento, sale la lode in Sion, a te l'omaggio dei voti che si compiono.
 Psalmi	65	3	O tu ch'esaudisci la preghiera, ogni carne verrà a te.
 Psalmi	65	4	Le iniquità mi hanno sopraffatto, ma tu farai l'espiazione delle nostre trasgressioni.
 Psalmi	65	5	Beato colui che tu eleggi e fai accostare a te perché abiti ne' tuoi cortili! Noi sarem saziati de' beni della tua casa, della santità del tuo tempio.
@@ -14898,14 +14949,16 @@ Psalmi	66	17	Io gridai a lui con la mia bocca, ed egli fu esaltato dalla mia lin
 Psalmi	66	18	Se nel mio cuore avessi avuto di mira l'iniquità, il Signore non m'avrebbe ascoltato.
 Psalmi	66	19	Ma certo Iddio m'ha ascoltato; egli ha atteso alla voce della mia preghiera.
 Psalmi	66	20	Benedetto sia Iddio, che non ha rigettato la mia preghiera, né m'ha ritirato la sua benignità.
-Psalmi	67	2	Per il Capo de' musici. Per strumenti a corda. Salmo. Canto.} Iddio abbia mercé di noi, e ci benedica, Iddio faccia risplendere il suo volto su noi; Sela.
+Psalmi	67	1	Per il Capo de' musici. Per strumenti a corda. Salmo. Canto.
+Psalmi	67	2	Iddio abbia mercé di noi, e ci benedica, Iddio faccia risplendere il suo volto su noi; Sela.
 Psalmi	67	3	affinché la tua via sia conosciuta sulla terra, e la tua salvezza fra tutte le genti.
 Psalmi	67	4	Ti celebrino i popoli, o Dio, tutti quanti i popoli ti celebrino!
 Psalmi	67	5	Le nazioni si rallegrino e giubilino, perché tu giudichi i popoli con equità, e sei la guida delle nazioni sulla terra. Sela.
 Psalmi	67	6	Ti celebrino i popoli, o Dio, tutti quanti i popoli ti celebrino!
 Psalmi	67	7	La terra ha prodotto il suo frutto; Dio, l'Iddio nostro, ci benedirà.
 Psalmi	67	8	Iddio ci benedirà, e tutte le estremità della terra lo temeranno.
-Psalmi	68	2	Al Capo de' musici. Di Davide. Salmo. Canto.} Lèvisi Iddio, e i suoi nemici saranno dispersi, e quelli che l'odiano uggiranno dinanzi a lui.
+Psalmi	68	1	Al Capo de' musici. Di Davide. Salmo. Canto.
+Psalmi	68	2	Lèvisi Iddio, e i suoi nemici saranno dispersi, e quelli che l'odiano uggiranno dinanzi a lui.
 Psalmi	68	3	Tu li dissiperai come si dissipa il fumo; come la cera si strugge dinanzi al fuoco, così periranno gli empi dinanzi a Dio.
 Psalmi	68	4	Ma i giusti si rallegreranno, esulteranno nel cospetto di Dio, e gioiranno con letizia.
 Psalmi	68	5	Cantate a Dio, salmeggiate al suo nome, preparate la via a colui che cavalca attraverso i deserti; il suo nome è: l'Eterno, ed esultate dinanzi a lui.
@@ -14940,7 +14993,8 @@ Psalmi	68	33	O regni della terra, cantate a Dio, salmeggiate al Signore, Sela.
 Psalmi	68	34	a colui che cavalca sui cieli dei cieli eterni! Ecco, egli fa risonar la sua voce, la sua voce potente.
 Psalmi	68	35	Riconoscete la potenza di Dio; la sua maestà è sopra Israele, e la sua potenza è ne' cieli.
 Psalmi	68	36	O Dio, tu sei tremendo dai tuoi santuari! L'Iddio d'Israele è quel che dà forza e potenza al suo popolo. Benedetto sia Iddio!
-Psalmi	69	2	Al Capo de' musici. Sopra "i gigli". Di Davide.} Salvami, o Dio, poiché le acque mi son giunte fino all'anima.
+Psalmi	69	1	Al Capo de' musici. Sopra "i gigli". Di Davide.
+Psalmi	69	2	Salvami, o Dio, poiché le acque mi son giunte fino all'anima.
 Psalmi	69	3	Io sono affondato in un profondo pantano, ove non v'è da fermare il piede; son giunto in acque profonde e la corrente mi sommerge.
 Psalmi	69	4	Sono stanco di gridare, la mia gola è riarsa; gli occhi mi vengon meno, mentre aspetto il mio Dio.
 Psalmi	69	5	Quelli che m'odiano senza cagione sono più numerosi de' capelli del mio capo; sono potenti quelli che mi vorrebbero distrutto e che a torto mi sono nemici; perfino quello che non avevo preso, l'ho dovuto restituire.
@@ -14976,7 +15030,8 @@ Psalmi	69	34	Poiché l'Eterno ascolta i bisognosi, non sprezza i suoi prigionier
 Psalmi	69	35	Lo lodino i cieli e la terra, i mari e tutto ciò che si muove in essi!
 Psalmi	69	36	Poiché Dio salverà Sion, e riedificherà le città di Giuda; il suo popolo abiterà in Sion e la possederà.
 Psalmi	69	37	Anche la progenie de' suoi servitori l'avrà per sua eredità, e quelli che amano il suo nome vi abiteranno.
-Psalmi	70	2	Per il Capo de' musici. Di Davide; per far ricordare.} Affrettati, o Dio, a liberarmi! O Eterno, affrettati in mio aiuto!
+Psalmi	70	1	Per il Capo de' musici. Di Davide; per far ricordare.
+Psalmi	70	2	Affrettati, o Dio, a liberarmi! O Eterno, affrettati in mio aiuto!
 Psalmi	70	3	Sian confusi e svergognati quelli che cercano l'anima mia! Voltin le spalle e sian coperti d'onta quelli he prendon piacere nel mio male!
 Psalmi	70	4	Indietreggino, in premio del loro vituperio, quelli che dicono: Ah! Ah!
 Psalmi	70	5	Gioiscano e si rallegrino in te, tutti quelli che ti cercano; e quelli che amano la tua salvezza dicano del continuo: Sia magnificato Iddio!
@@ -15076,7 +15131,8 @@ Psalmi	74	20	Abbi riguardo al patto, poiché i luoghi tenebrosi della terra son 
 Psalmi	74	21	L'oppresso non se ne torni svergognato; fa' che il misero e il bisognoso lodino il tuo nome.
 Psalmi	74	22	Lèvati, o Dio, difendi la tua causa! Ricordati dell'oltraggio che ti è fatto del continuo dallo stolto.
 Psalmi	74	23	Non dimenticare il grido de' tuoi nemici, lo strepito incessante di quelli che si levano contro di te.
-Psalmi	75	2	Per il Capo de' musici. "Non distruggere". Salmo di Asaf. Canto. Noi ti celebriamo, o Dio, ti celebriamo; quelli che invocano il tuo nome narrano le tue maraviglie.
+Psalmi	75	1	Per il Capo de' musici. "Non distruggere". Salmo di Asaf. Canto.
+Psalmi	75	2	Noi ti celebriamo, o Dio, ti celebriamo; quelli che invocano il tuo nome narrano le tue maraviglie.
 Psalmi	75	3	Quando verrà il tempo che avrò fissato, io giudicherò dirittamente.
 Psalmi	75	4	Si dissolva la terra con tutti i suoi abitanti, io ne rendo stabili le colonne. Sela.
 Psalmi	75	5	Io dico agli orgogliosi: Non vi gloriate! E agli empi: non alzate il corno!
@@ -15086,7 +15142,8 @@ Psalmi	75	8	ma Dio è quel che giudica; egli abbassa l'uno ed innalza l'altro.
 Psalmi	75	9	L'Eterno ha in mano una coppa, ove spumeggia un vino pien di mistura. Egli ne mesce; certo, tutti gli empi della terra ne succeranno e berranno le fecce.
 Psalmi	75	10	Ma io proclamerò del continuo queste cose, salmeggerò all'Iddio di Giacobbe;
 Psalmi	75	11	spezzerò tutta la potenza degli empi, ma la potenza de' giusti sarà accresciuta.
-Psalmi	76	2	Per il Capo de' Musici. Per strumenti a corda. Salmo di Asaf. Canto. Iddio è conosciuto in Giuda; il suo nome è grande in sraele.
+Psalmi	76	1	Per il Capo de' Musici. Per strumenti a corda. Salmo di Asaf. Canto.
+Psalmi	76	2	Iddio è conosciuto in Giuda; il suo nome è grande in sraele.
 Psalmi	76	3	Il suo tabernacolo e in Salem, e la sua dimora in Sion.
 Psalmi	76	4	Quivi ha spezzato le saette dell'arco, lo scudo, la spada e gli arnesi di guerra. Sela.
 Psalmi	76	5	Tremendo sei tu, o Potente, quando ritorni dalle montagne di preda.
@@ -15098,7 +15155,8 @@ Psalmi	76	10	quando Iddio si levò per far giudicio, per salvare tutti gl'infeli
 Psalmi	76	11	Certo, il furore degli uomini ridonderà alla tua lode; ti cingerai degli ultimi avanzi dei loro furori.
 Psalmi	76	12	Fate voti all'Eterno, all'Iddio vostro, e adempiteli; tutti quelli che gli stanno attorno portin doni al remendo.
 Psalmi	76	13	Egli recide lo spirito dei principi, egli è tremendo ai re della terra.
-Psalmi	77	2	Per il Capo de' Musici. Secondo Jeduthun. Salmo di Asaf.} La mia voce s'eleva a Dio, e io grido; la mia voce s'eleva a Dio, ed egli mi porge l'orecchio.
+Psalmi	77	1	Per il Capo de' Musici. Secondo Jeduthun. Salmo di Asaf.
+Psalmi	77	2	La mia voce s'eleva a Dio, e io grido; la mia voce s'eleva a Dio, ed egli mi porge l'orecchio.
 Psalmi	77	3	Nel giorno della mia distretta, io ho cercato il Signore; la mia mano è stata tesa durante la notte senza stancarsi, l'anima mia ha rifiutato d'esser consolata.
 Psalmi	77	4	Io mi ricordo di Dio, e gemo; medito, e il mio spirito è abbattuto. Sela.
 Psalmi	77	5	Tu tieni desti gli occhi miei, sono turbato e non posso parlare.
@@ -15203,7 +15261,8 @@ Psalmi	79	10	Perché direbbero le nazioni: Dov'è l'Iddio loro? Fa' che la vende
 Psalmi	79	11	Giunga dinanzi a te il gemito de' prigionieri; secondo la potenza del tuo braccio, scampa quelli che son condannati a morte.
 Psalmi	79	12	E rendi ai nostri vicini a sette doppi in seno il vituperio che t'hanno fatto, o Signore!
 Psalmi	79	13	E noi, tuo popolo e gregge del tuo pasco, ti celebreremo in perpetuo, pubblicheremo la tua lode per ogni età.
-Psalmi	80	2	Per il Capo de' musici. Sopra "i gigli della testimonianza". Salmo di Asaf. Porgi orecchio, o Pastore d'Israele, che guidi Giuseppe come un gregge; o tu che siedi sopra i cherubini, fa' risplender la tua gloria!
+Psalmi	80	1	Per il Capo de' musici. Sopra "i gigli della testimonianza". Salmo di Asaf.
+Psalmi	80	2	Porgi orecchio, o Pastore d'Israele, che guidi Giuseppe come un gregge; o tu che siedi sopra i cherubini, fa' risplender la tua gloria!
 Psalmi	80	3	Dinanzi ad Efraim, a Beniamino ed a Manasse, risveglia la tua potenza, e vieni a salvarci!
 Psalmi	80	4	O Dio, ristabiliscici, fa' risplendere il tuo volto, e saremo salvati.
 Psalmi	80	5	O Eterno, Dio degli eserciti, fino a quando sarai tu irritato contro la preghiera del tuo popolo?
@@ -15222,7 +15281,8 @@ Psalmi	80	17	Essa è arsa dal fuoco, è recisa; il popolo perisce alla minaccia 
 Psalmi	80	18	Sia la tua mano sull'uomo della tua destra, sul figliuol dell'uomo che hai reso forte per te,
 Psalmi	80	19	e noi non ci ritrarremo da te. Facci rivivere, e noi invocheremo il tuo nome.
 Psalmi	80	20	O Eterno, Iddio degli eserciti, ristabiliscici, fa' risplendere il tuo volto, e saremo salvati.
-Psalmi	81	2	Per il Capo de' musici. Sulla Ghittea. Salmo di Asaf.} Cantate con gioia a Dio nostra forza; mandate grida di allegrezza all'Iddio di Giacobbe!
+Psalmi	81	1	Per il Capo de' musici. Sulla Ghittea. Salmo di Asaf.
+Psalmi	81	2	Cantate con gioia a Dio nostra forza; mandate grida di allegrezza all'Iddio di Giacobbe!
 Psalmi	81	3	Intonate un salmo e fate risonare il cembalo, l'arpa deliziosa, col saltèro.
 Psalmi	81	4	Sonate la tromba alla nuova luna, alla luna piena, al giorno della nostra festa.
 Psalmi	81	5	Poiché questo è uno statuto per Israele, una legge dell'Iddio di Giacobbe.
@@ -15246,7 +15306,8 @@ Psalmi	82	5	Essi non conoscono né intendono nulla; camminano nelle tenebre; tut
 Psalmi	82	6	Io ho detto: Voi siete dii, siete tutti figliuoli dell'Altissimo.
 Psalmi	82	7	Nondimeno morrete come gli altri uomini, e cadrete come qualunque altro de' principi.
 Psalmi	82	8	Lèvati, o Dio, giudica la terra, poiché tutte le nazioni hanno da esser la tua eredità.
-Psalmi	83	2	Canto. Salmo di Asaf.} O Dio, non startene cheto; non rimaner muto ed inerte, o Dio!
+Psalmi	83	1	Canto. Salmo di Asaf.
+Psalmi	83	2	O Dio, non startene cheto; non rimaner muto ed inerte, o Dio!
 Psalmi	83	3	Poiché, ecco, i tuoi nemici si agitano rumorosamente, e quelli che t'odiano alzano il capo.
 Psalmi	83	4	Tramano astuti disegni contro il tuo popolo, e si concertano contro quelli che tu nascondi presso di te.
 Psalmi	83	5	Dicono: Venite, distruggiamoli come nazione, e il nome d'Israele non sia più ricordato.
@@ -15264,7 +15325,8 @@ Psalmi	83	16	così perseguitali con la tua tempesta, e spaventali col tuo uragan
 Psalmi	83	17	Cuopri la loro faccia di vituperio, onde cerchino il tuo nome, o Eterno!
 Psalmi	83	18	Siano svergognati e costernati in perpetuo, siano confusi e periscano!
 Psalmi	83	19	E conoscano che tu, il cui nome e l'Eterno, sei il solo Altissimo sopra tutta la terra.
-Psalmi	84	2	Per il Capo de' musici. Sulla Ghittea. Salmo de' figliuoli di Kore. Oh quanto sono amabili le tue dimore, o Eterno degli eserciti!
+Psalmi	84	1	Per il Capo de' musici. Sulla Ghittea. Salmo de' figliuoli di Kore.
+Psalmi	84	2	Oh quanto sono amabili le tue dimore, o Eterno degli eserciti!
 Psalmi	84	3	L'anima mia langue e vien meno, bramando i cortili dell'Eterno; il mio cuore e la mia carne mandan grida di gioia all'Iddio vivente.
 Psalmi	84	4	Anche il passero si trova una casa e la rondine un nido ove posare i suoi piccini I tuoi altari, o Eterno degli eserciti, Re mio, Dio mio!
 Psalmi	84	5	Beati quelli che abitano nella tua casa, e ti lodano del continuo! Sela.
@@ -15276,7 +15338,8 @@ Psalmi	84	10	O Dio, scudo nostro, vedi e riguarda la faccia del tuo unto!
 Psalmi	84	11	Poiché un giorno ne' tuoi cortili val meglio che mille altrove. Io vorrei piuttosto starmene sulla soglia della casa del mio Dio, che abitare nelle tende degli empi.
 Psalmi	84	12	Perché l'Eterno Iddio è sole e scudo; l'Eterno darà grazia e gloria. Egli non ricuserà alcun bene a quelli che camminano nella integrità.
 Psalmi	84	13	O Eterno degli eserciti, beato l'uomo che confida in te!
-Psalmi	85	2	Per il Capo de' musici. Salmo de' figliuoli di Kore.} O Eterno, tu sei stato propizio alla tua terra, tu hai ricondotto iacobbe dalla cattività.
+Psalmi	85	1	Per il Capo de' musici. Salmo de' figliuoli di Kore.
+Psalmi	85	2	O Eterno, tu sei stato propizio alla tua terra, tu hai ricondotto iacobbe dalla cattività.
 Psalmi	85	3	Tu hai perdonato l'iniquità del tuo popolo, hai coperto tutti i loro peccati. Sela.
 Psalmi	85	4	Tu hai acquetato tutto il tuo cruccio, ti sei distolto dall'ardore della tua ira.
 Psalmi	85	5	Ristabiliscici, o Dio della nostra salvezza, e fa' cessar la tua indignazione contro di noi.
@@ -15313,7 +15376,8 @@ Psalmi	87	4	Io mentoverò l'Egitto e Babilonia fra quelli che mi conoscono: Ecco
 Psalmi	87	5	E si dirà di Sion: Questo qui e quello là son nati in lei; e l'Altissimo stesso la renderà stabile.
 Psalmi	87	6	L'Eterno iscriverà, passando in rassegna i popoli: Questo è nato là. Sela.
 Psalmi	87	7	E cantando e danzando diranno: Tutte le fonti della mia gioia sono in te.
-Psalmi	88	2	Canto. Salmo dei figliuoli di Kore. Per il Capo de' musici. Da cantarsi mestamente. Cantico di Heman, l'Ezrahita. O Eterno, Dio della mia salvezza, io grido giorno e notte nel tuo cospetto.
+Psalmi	88	1	Canto. Salmo dei figliuoli di Kore. Per il Capo de' musici. Da cantarsi mestamente. Cantico di Heman, l'Ezrahita.
+Psalmi	88	2	O Eterno, Dio della mia salvezza, io grido giorno e notte nel tuo cospetto.
 Psalmi	88	3	Venga la mia preghiera dinanzi a te, inclina il tuo orecchio al mio grido;
 Psalmi	88	4	poiché l'anima mia è sazia di mali, e la mia vita è giunta presso al soggiorno dei morti.
 Psalmi	88	5	Io son contato fra quelli che scendon nella fossa; son come un uomo che non ha più forza.
@@ -15331,7 +15395,8 @@ Psalmi	88	16	Io sono afflitto, e morente fin da giovane; io porto il peso dei tu
 Psalmi	88	17	I tuoi furori mi son passati addosso; i tuoi terrori m'annientano,
 Psalmi	88	18	mi circondano come acque ogni giorno, mi attornian tutti assieme.
 Psalmi	88	19	Hai allontanato da me amici e compagni; i miei conoscenti sono le tenebre.
-Psalmi	89	2	Cantico di Etan l'Ezrahita.} Io canterò in perpetuo le benignità dell'Eterno; con la mia bocca farò nota la tua fedeltà d'età in età.
+Psalmi	89	1	Cantico di Etan l'Ezrahita.
+Psalmi	89	2	Io canterò in perpetuo le benignità dell'Eterno; con la mia bocca farò nota la tua fedeltà d'età in età.
 Psalmi	89	3	Poiché ho detto: La tua benignità sarà stabile in eterno; nei cieli stessi tu stabilisci la tua fedeltà.
 Psalmi	89	4	Io, dice l'Eterno, ho fatto un patto col mio eletto; ho fatto questo giuramento a Davide, mio servitore:
 Psalmi	89	5	Io stabilirò la tua progenie in eterno, ed edificherò il tuo trono per ogni età. Sela.
@@ -15416,7 +15481,8 @@ Psalmi	91	13	Tu camminerai sul leone e sull'aspide, calpesterai il leoncello e i
 Psalmi	91	14	Poich'egli ha posta in me la sua affezione, io lo libererò; lo leverò in alto, perché conosce il mio nome.
 Psalmi	91	15	Egli m'invocherà, ed io gli risponderò; sarò con lui nella distretta; lo libererò, e lo glorificherò.
 Psalmi	91	16	Lo sazierò di lunga vita, e gli farò vedere la mia salvezza.
-Psalmi	92	2	Salmo. Canto per il giorno del sabato.} Buona cosa è celebrare l'Eterno, e salmeggiare al tuo nome, o Altissimo;
+Psalmi	92	1	Salmo. Canto per il giorno del sabato.
+Psalmi	92	2	Buona cosa è celebrare l'Eterno, e salmeggiare al tuo nome, o Altissimo;
 Psalmi	92	3	proclamare la mattina la tua benignità, e la tua fedeltà ogni notte,
 Psalmi	92	4	sul decacordo e sul saltèro, con l'accordo solenne dell'arpa!
 Psalmi	92	5	Poiché, o Eterno, tu m'hai rallegrato col tuo operare; io celebro con giubilo le opere delle tue mani.
@@ -15526,7 +15592,8 @@ Psalmi	101	5	Io sterminerò chi sparla in segreto del suo prossimo; e chi ha l'o
 Psalmi	101	6	Avrò gli occhi sui fedeli del paese perché dimorino meco; chi cammina per la via dell'integrità, quello sarà mio servitore.
 Psalmi	101	7	Chi pratica la frode non abiterà nella mia casa; chi proferisce menzogna non sussisterà davanti agli occhi miei.
 Psalmi	101	8	Ogni mattina distruggerò tutti gli empi del paese per estirpare dalla città dell'Eterno tutti gli operatori d'iniquità.
-Psalmi	102	2	Preghiera dell'afflitto quand'è abbattuto e spande il suo lamento dinanzi all'Eterno. Deh ascolta la mia preghiera, o Eterno, e venga fino a te il mio grido!
+Psalmi	102	1	Preghiera dell'afflitto quand'è abbattuto e spande il suo lamento dinanzi all'Eterno.
+Psalmi	102	2	Deh ascolta la mia preghiera, o Eterno, e venga fino a te il mio grido!
 Psalmi	102	3	Non mi nasconder la tua faccia nel dì della mia distretta; inclina a me il tuo orecchio; nel giorno che io grido, affrettati a rispondermi.
 Psalmi	102	4	Poiché i miei giorni svaniscono come fumo, e le mie ossa si consumano come un tizzone.
 Psalmi	102	5	Colpito è il mio cuore come l'erba, e si è seccato; perché ho dimenticato perfino di mangiare il mio pane.
@@ -15747,7 +15814,8 @@ Psalmi	107	40	Egli spande lo sprezzo sui principi, e li fa errare per deserti se
 Psalmi	107	41	ma innalza il povero traendolo dall'afflizione, e fa moltiplicar le famiglie a guisa di gregge.
 Psalmi	107	42	Gli uomini retti lo vedono e si rallegrano, ed ogni iniquità ha la bocca chiusa.
 Psalmi	107	43	Chi è savio osservi queste cose, e consideri la benignità dell'Eterno.
-Psalmi	108	2	Canto. Salmo di Davide. Il mio cuore è ben disposto, o Dio, io canterò e salmeggerò, e la mia gloria pure.
+Psalmi	108	1	Canto. Salmo di Davide.
+Psalmi	108	2	Il mio cuore è ben disposto, o Dio, io canterò e salmeggerò, e la mia gloria pure.
 Psalmi	108	3	Destatevi, saltèro e cetra, io voglio risvegliare l'alba.
 Psalmi	108	4	Io ti celebrerò fra i popoli, o Eterno, e a te salmeggerò fra le nazioni.
 Psalmi	108	5	Perché grande al disopra de' cieli è la tua benignità e la tua fedeltà giunge fino alle nuvole.
@@ -16268,7 +16336,8 @@ Psalmi	139	21	O Eterno, non odio io quelli che t'odiano? E non aborro io quelli 
 Psalmi	139	22	Io li odio di un odio perfetto; li tengo per miei nemici.
 Psalmi	139	23	Investigami, o Dio, e conosci il mio cuore. Provami, e conosci i miei pensieri.
 Psalmi	139	24	E vedi se v'è in me qualche via iniqua, e guidami per la via eterna.
-Psalmi	140	2	Per il Capo de' musici. Salmo di Davide. Liberami, o Eterno, dall'uomo malvagio; guardami dall'uomo violento,
+Psalmi	140	1	Per il Capo de' musici. Salmo di Davide.
+Psalmi	140	2	Liberami, o Eterno, dall'uomo malvagio; guardami dall'uomo violento,
 Psalmi	140	3	i quali macchinano delle malvagità nel loro cuore, e continuamente muovono guerre.
 Psalmi	140	4	Aguzzano la loro lingua come il serpente, hanno un veleno d'aspide sotto le loro labbra. Sela.
 Psalmi	140	5	Preservami, o Eterno, dalle mani dell'empio, guardami dall'uomo violento, i quali han macchinato di farmi cadere.
@@ -16291,7 +16360,8 @@ Psalmi	141	7	Come quando si ara e si rompe la terra, le nostre ossa sono sparse 
 Psalmi	141	8	Poiché a te son vòlti gli occhi miei, o Eterno, o Signore; in te mi rifugio, non abbandonare l'anima mia.
 Psalmi	141	9	Guardami dal laccio che m'hanno teso, e dagli agguati degli operatori d'iniquità.
 Psalmi	141	10	Cadano gli empi nelle loro proprie reti, mentre io passerò oltre.
-Psalmi	142	2	Cantico di Davide, quand'era nella spelonca. Preghiera. Io grido con la mia voce all'Eterno; con la mia voce supplico l'Eterno.
+Psalmi	142	1	Cantico di Davide, quand'era nella spelonca. Preghiera.
+Psalmi	142	2	Io grido con la mia voce all'Eterno; con la mia voce supplico l'Eterno.
 Psalmi	142	3	Effondo il mio lamento dinanzi a lui, espongo dinanzi a lui la mia tribolazione.
 Psalmi	142	4	Quando lo spirito mio è abbattuto in me, tu conosci il mio sentiero. Sulla via per la quale io cammino, essi hanno nascosto un laccio per me.
 Psalmi	142	5	Guarda alla mia destra e vedi; non v'è alcuno che mi riconosca. Ogni rifugio m'è venuto a mancare: on v'è alcuno che abbia cura dell'anima mia.

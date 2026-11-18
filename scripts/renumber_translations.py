@@ -20,9 +20,10 @@ numérotation BHSA, sur le modèle de la renumérotation Torres Amat
 - **versets sans équivalent hébreu** (_ENGLISH_ABSENT) : trois versets
   KJV (Ésaïe 64:1, Néhémie 7:68, Psaume 13:6) sont fusionnés dans le
   verset hébreu précédent ; leurs lignes sont supprimées ;
-- **versets hébreux sans équivalent KJV** : 67 titres de psaumes restent
-  « en creux » (pas de ligne, l'application affiche « verset absent de
-  la traduction ») ;
+- **versets hébreux sans équivalent KJV** : les titres de psaumes sont
+  d'abord laissés fusionnés au premier verset du texte, puis détachés et
+  placés au verset 1 BHSA par `scripts/split_psalm_titles.py` (étape suivante
+  du pipeline, comme pour Rabbinat 1899 et Torres Amat 1823) ;
 - **livres** : les noms Segond français sont normalisés vers les noms
   BHSA (Osée -> Hosea, Cantique Des Cantiques -> Canticum,
   Lamentations De Jérémie -> Threni).
@@ -41,6 +42,7 @@ converties.
 
 Usage :
     python scripts/renumber_translations.py [fichier1 fichier2 ...]
+    python scripts/split_psalm_titles.py   # puis détacher les titres des psaumes (v1 BHSA)
 
 Sans argument, renumérote data/louis_segond_1910.txt, data/kjv_1611.txt
 et data/riveduta_1927.txt en place. À n'appliquer qu'une seule fois :
