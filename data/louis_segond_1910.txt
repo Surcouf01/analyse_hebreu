@@ -3,7 +3,10 @@
 # Format : nom_BHSA	chapitre	verset	texte_francais
 # Renuméroté vers la versification BHSA (massorétique) par scripts/renumber_translations.py
 # (tables TVTMS STEPBible.org, CC BY 4.0 ; Joël/Malachie 4 ch., psaumes décalés des titres,
-# Exode 7-8, Deut 28:69, Osée, etc.). Les 67 titres de psaumes restent en creux.
+# Exode 7-8, Deut 28:69, Osée, etc.).
+# Titres des psaumes (verset 1 BHSA) détachés du premier verset du texte
+# et placés au verset 1 par scripts/split_psalm_titles.py (comme Rabbinat
+# 1899 et Torres Amat 1823) : Psalmi 48:1 = titre, 48:2 = texte du verset.
 Genesis	1	1	Au commencement, Dieu créa les cieux et la terre.
 Genesis	1	2	La terre était informe et vide: il y avait des ténèbres à la surface de l'abîme, et l'esprit de Dieu se mouvait au-dessus des eaux.
 Genesis	1	3	Dieu dit: Que la lumière soit! Et la lumière fut.
@@ -13961,7 +13964,8 @@ Psalmi	2	9	Tu les briseras avec une verge de fer, Tu les briseras comme le vase 
 Psalmi	2	10	Et maintenant, rois, conduisez-vous avec sagesse! Juges de la terre, recevez instruction!
 Psalmi	2	11	Servez l'Éternel avec crainte, Et réjouissez-vous avec tremblement.
 Psalmi	2	12	Baisez le fils, de peur qu'il ne s'irrite, Et que vous ne périssiez dans votre voie, Car sa colère est prompte à s'enflammer. Heureux tous ceux qui se confient en lui!
-Psalmi	3	2	Psaume de David. A l'occasion de sa fuite devant Absalom, son fils. O Éternel, que mes ennemis sont nombreux! Quelle multitude se lève contre moi!
+Psalmi	3	1	Psaume de David. A l'occasion de sa fuite devant Absalom, son fils.
+Psalmi	3	2	O Éternel, que mes ennemis sont nombreux! Quelle multitude se lève contre moi!
 Psalmi	3	3	Combien qui disent à mon sujet: Plus de salut pour lui auprès de Dieu! -Pause.
 Psalmi	3	4	Mais toi, ô Éternel! tu es mon bouclier, Tu es ma gloire, et tu relèves ma tête.
 Psalmi	3	5	De ma voix je crie à l'Éternel, Et il me répond de sa montagne sainte. -Pause.
@@ -13969,7 +13973,8 @@ Psalmi	3	6	Je me couche, et je m'endors; Je me réveille, car l'Éternel est mon
 Psalmi	3	7	Je ne crains pas les myriades de peuples Qui m'assiègent de toutes parts.
 Psalmi	3	8	Lève-toi, Éternel! sauve-moi, mon Dieu! Car tu frappes à la joue tous mes ennemis, Tu brises les dents des méchants.
 Psalmi	3	9	Le salut est auprès de l'Éternel: Que ta bénédiction soit sur ton peuple! -Pause.
-Psalmi	4	2	Au chef des chantres. Avec instruments à cordes. Psaume de David. Quand je crie, réponds-moi, Dieu de ma justice! Quand je suis dans la détresse, sauve-moi! Aie pitié de moi, écoute ma prière!
+Psalmi	4	1	Au chef des chantres. Avec instruments à cordes. Psaume de David.
+Psalmi	4	2	Quand je crie, réponds-moi, Dieu de ma justice! Quand je suis dans la détresse, sauve-moi! Aie pitié de moi, écoute ma prière!
 Psalmi	4	3	Fils des hommes, jusques à quand ma gloire sera-t-elle outragée? Jusques à quand aimerez-vous la vanité, Chercherez-vous le mensonge? -Pause.
 Psalmi	4	4	Sachez que l'Éternel s'est choisi un homme pieux; L'Éternel entend, quand je crie à lui.
 Psalmi	4	5	Tremblez, et ne péchez point; Parlez en vos cœurs sur votre couche, puis taisez-vous. -Pause.
@@ -13977,7 +13982,8 @@ Psalmi	4	6	Offrez des sacrifices de justice, Et confiez-vous à l'Éternel.
 Psalmi	4	7	Plusieurs disent: Qui nous fera voir le bonheur? Fais lever sur nous la lumière de ta face, ô Éternel!
 Psalmi	4	8	Tu mets dans mon cœur plus de joie qu'ils n'en ont Quand abondent leur froment et leur moût.
 Psalmi	4	9	Je me couche et je m'endors en paix, Car toi seul, ô Éternel! tu me donnes la sécurité dans ma demeure.
-Psalmi	5	2	Au chef des chantres. Avec les flûtes. Psaume de David. Prête l'oreille à mes paroles, ô Éternel! Écoute mes gémissements!
+Psalmi	5	1	Au chef des chantres. Avec les flûtes. Psaume de David.
+Psalmi	5	2	Prête l'oreille à mes paroles, ô Éternel! Écoute mes gémissements!
 Psalmi	5	3	Sois attentif à mes cris, mon roi et mon Dieu! C'est à toi que j'adresse ma prière.
 Psalmi	5	4	Éternel! le matin tu entends ma voix; Le matin je me tourne vers toi, et je regarde.
 Psalmi	5	5	Car tu n'es point un Dieu qui prenne plaisir au mal; Le méchant n'a pas sa demeure auprès de toi.
@@ -13989,7 +13995,8 @@ Psalmi	5	10	Car il n'y a point de sincérité dans leur bouche; Leur cœur est r
 Psalmi	5	11	Frappe-les comme des coupables, ô Dieu! Que leurs desseins amènent leur chute! Précipite-les au milieu de leurs péchés sans nombre! Car ils se révoltent contre toi.
 Psalmi	5	12	Alors tous ceux qui se confient en toi se réjouiront, Ils auront de l'allégresse à toujours, et tu les protégeras; Tu seras un sujet de joie Pour ceux qui aiment ton nom.
 Psalmi	5	13	Car tu bénis le juste, ô Éternel! Tu l'entoures de ta grâce comme d'un bouclier.
-Psalmi	6	2	Au chef des chantres. Avec instruments à cordes. Sur la harpe à huit cordes. Psaume de David. Éternel! ne me punis pas dans ta colère, Et ne me châtie pas dans ta fureur.
+Psalmi	6	1	Au chef des chantres. Avec instruments à cordes. Sur la harpe à huit cordes. Psaume de David.
+Psalmi	6	2	Éternel! ne me punis pas dans ta colère, Et ne me châtie pas dans ta fureur.
 Psalmi	6	3	Aie pitié de moi, Éternel! car je suis sans force; Guéris-moi, Éternel! car mes os sont tremblants.
 Psalmi	6	4	Mon âme est toute troublée; Et toi, Éternel! jusques à quand?…
 Psalmi	6	5	Reviens, Éternel! délivre mon âme; Sauve-moi, à cause de ta miséricorde.
@@ -13999,7 +14006,8 @@ Psalmi	6	8	J'ai le visage usé par le chagrin; Tous ceux qui me persécutent le 
 Psalmi	6	9	Éloignez-vous de moi, vous tous qui faites le mal! Car l'Éternel entend la voix de mes larmes;
 Psalmi	6	10	L'Éternel exauce mes supplications, L'Éternel accueille ma prière.
 Psalmi	6	11	Tous mes ennemis sont confondus, saisis d'épouvante; Ils reculent, soudain couverts de honte.
-Psalmi	7	2	Complainte de David. Chantée à l'Éternel, au sujet de Cusch, Benjamite. Éternel, mon Dieu! je cherche en toi mon refuge; Sauve-moi de tous mes persécuteurs, et délivre-moi,
+Psalmi	7	1	Complainte de David. Chantée à l'Éternel, au sujet de Cusch, Benjamite.
+Psalmi	7	2	Éternel, mon Dieu! je cherche en toi mon refuge; Sauve-moi de tous mes persécuteurs, et délivre-moi,
 Psalmi	7	3	Afin qu'ils ne me déchirent pas, comme un lion Qui dévore sans que personne vienne au secours.
 Psalmi	7	4	Éternel, mon Dieu! si j'ai fait cela, S'il y a de l'iniquité dans mes mains,
 Psalmi	7	5	Si j'ai rendu le mal à celui qui était paisible envers moi, Si j'ai dépouillé celui qui m'opprimait sans cause,
@@ -14016,7 +14024,8 @@ Psalmi	7	15	Voici, le méchant prépare le mal, Il conçoit l'iniquité, et il e
 Psalmi	7	16	Il ouvre une fosse, il la creuse, Et il tombe dans la fosse qu'il a faite.
 Psalmi	7	17	Son iniquité retombe sur sa tête, Et sa violence redescend sur son front.
 Psalmi	7	18	Je louerai l'Éternel à cause de sa justice, Je chanterai le nom de l'Éternel, du Très-Haut.
-Psalmi	8	2	Au chef des chantres. Sur la guitthith. Psaume de David. Éternel, notre Seigneur! Que ton nom est magnifique sur toute la terre! Ta majesté s'élève au-dessus des cieux.
+Psalmi	8	1	Au chef des chantres. Sur la guitthith. Psaume de David.
+Psalmi	8	2	Éternel, notre Seigneur! Que ton nom est magnifique sur toute la terre! Ta majesté s'élève au-dessus des cieux.
 Psalmi	8	3	Par la bouche des enfants et de ceux qui sont à la mamelle Tu as fondé ta gloire, pour confondre tes adversaires, Pour imposer silence à l'ennemi et au vindicatif.
 Psalmi	8	4	Quand je contemple les cieux, ouvrage de tes mains, La lune et les étoiles que tu as créées:
 Psalmi	8	5	Qu'est-ce que l'homme, pour que tu te souviennes de lui? Et le fils de l'homme, pour que tu prennes garde à lui?
@@ -14025,7 +14034,8 @@ Psalmi	8	7	Tu lui as donné la domination sur les œuvres de tes mains, Tu as to
 Psalmi	8	8	Les brebis comme les bœufs, Et les animaux des champs,
 Psalmi	8	9	Les oiseaux du ciel et les poissons de la mer, Tout ce qui parcourt les sentiers des mers.
 Psalmi	8	10	Éternel, notre Seigneur! Que ton nom est magnifique sur toute la terre!
-Psalmi	9	2	Au chef des chantres. Sur «Meurs pour le fils». Psaume de David. Je louerai l'Éternel de tout mon cœur, Je raconterai toutes tes merveilles.
+Psalmi	9	1	Au chef des chantres. Sur «Meurs pour le fils». Psaume de David.
+Psalmi	9	2	Je louerai l'Éternel de tout mon cœur, Je raconterai toutes tes merveilles.
 Psalmi	9	3	Je ferai de toi le sujet de ma joie et de mon allégresse, Je chanterai ton nom, Dieu Très-Haut!
 Psalmi	9	4	Mes ennemis reculent, Ils chancellent, ils périssent devant ta face.
 Psalmi	9	5	Car tu soutiens mon droit et ma cause, Tu sièges sur ton trône en juste juge.
@@ -14070,7 +14080,8 @@ Psalmi	11	4	L'Éternel est dans son saint temple, L'Éternel a son trône dans l
 Psalmi	11	5	L'Éternel sonde le juste; Il hait le méchant et celui qui se plaît à la violence.
 Psalmi	11	6	Il fait pleuvoir sur les méchants Des charbons, du feu et du soufre; Un vent brûlant, c'est le calice qu'ils ont en partage.
 Psalmi	11	7	Car l'Éternel est juste, il aime la justice; Les hommes droits contemplent sa face.
-Psalmi	12	2	Au chef des chantres. Sur la harpe à huit cordes. Psaume de David. Sauve, Éternel! car les hommes pieux s'en vont, Les fidèles disparaissent parmi les fils de l'homme.
+Psalmi	12	1	Au chef des chantres. Sur la harpe à huit cordes. Psaume de David.
+Psalmi	12	2	Sauve, Éternel! car les hommes pieux s'en vont, Les fidèles disparaissent parmi les fils de l'homme.
 Psalmi	12	3	On se dit des faussetés les uns aux autres, On a sur les lèvres des choses flatteuses, On parle avec un cœur double.
 Psalmi	12	4	Que l'Éternel extermine toutes les lèvres flatteuses, La langue qui discourt avec arrogance,
 Psalmi	12	5	Ceux qui disent: Nous sommes puissants par notre langue, Nous avons nos lèvres avec nous; Qui serait notre maître? -
@@ -14078,7 +14089,8 @@ Psalmi	12	6	Parce que les malheureux sont opprimés et que les pauvres gémissen
 Psalmi	12	7	Les paroles de l'Éternel sont des paroles pures, Un argent éprouvé sur terre au creuset, Et sept fois épuré.
 Psalmi	12	8	Toi, Éternel! tu les garderas, Tu les préserveras de cette race à jamais.
 Psalmi	12	9	Les méchants se promènent de toutes parts, Quand la bassesse règne parmi les fils de l'homme.
-Psalmi	13	2	Au chef des chantres. Psaume de David. Jusques à quand, Éternel! m'oublieras-tu sans cesse? Jusques à quand me cacheras-tu ta face?
+Psalmi	13	1	Au chef des chantres. Psaume de David.
+Psalmi	13	2	Jusques à quand, Éternel! m'oublieras-tu sans cesse? Jusques à quand me cacheras-tu ta face?
 Psalmi	13	3	Jusques à quand aurai-je des soucis dans mon âme, Et chaque jour des chagrins dans mon cœur? Jusques à quand mon ennemi s'élèvera-t-il contre moi?
 Psalmi	13	4	Regarde, réponds-moi, Éternel, mon Dieu! Donne à mes yeux la clarté, Afin que je ne m'endorme pas du sommeil de la mort,
 Psalmi	13	5	Afin que mon ennemi ne dise pas: Je l'ai vaincu! Et que mes adversaires ne se réjouissent pas, si je chancelle.
@@ -14121,7 +14133,8 @@ Psalmi	17	12	On dirait un lion avide de déchirer, Un lionceau aux aguets dans s
 Psalmi	17	13	Lève-toi, Éternel, marche à sa rencontre, renverse-le! Délivre-moi du méchant par ton glaive!
 Psalmi	17	14	Délivre-moi des hommes par ta main, Éternel, des hommes de ce monde! Leur part est dans la vie, Et tu remplis leur ventre de tes biens; Leurs enfants sont rassasiés, Et ils laissent leur superflu à leurs petits-enfants.
 Psalmi	17	15	Pour moi, dans mon innocence, je verrai ta face; Dès le réveil, je me rassasierai de ton image.
-Psalmi	18	2	Au chef des chantres. Du serviteur de l'Éternel, de David, qui adressa à l'Éternel les paroles de ce cantique, lorsque l'Éternel l'eut délivré de la main de tous ses ennemis et de la main de Saül. Il dit: Je t'aime, ô Éternel, ma force!
+Psalmi	18	1	Au chef des chantres. Du serviteur de l'Éternel, de David, qui adressa à l'Éternel les paroles de ce cantique, lorsque l'Éternel l'eut délivré de la main de tous ses ennemis et de la main de Saül.
+Psalmi	18	2	Il dit: Je t'aime, ô Éternel, ma force!
 Psalmi	18	3	Éternel, mon rocher, ma forteresse, mon libérateur! Mon Dieu, mon rocher, où je trouve un abri! Mon bouclier, la force qui me sauve, ma haute retraite!
 Psalmi	18	4	Je m'écrie: Loué soit l'Éternel! Et je suis délivré de mes ennemis.
 Psalmi	18	5	Les liens de la mort m'avaient environné, Et les torrents de la destruction m'avaient épouvanté;
@@ -14171,7 +14184,8 @@ Psalmi	18	48	Le Dieu qui est mon vengeur, Qui m'assujettit les peuples,
 Psalmi	18	49	Qui me délivre de mes ennemis! Tu m'élèves au-dessus de mes adversaires, Tu me sauves de l'homme violent.
 Psalmi	18	50	C'est pourquoi je te louerai parmi les nations, ô Éternel! Et je chanterai à la gloire de ton nom.
 Psalmi	18	51	Il accorde de grandes délivrances à son roi, Et il fait miséricorde à son oint, A David, et à sa postérité, pour toujours.
-Psalmi	19	2	Au chef des chantres. Psaume de David. Les cieux racontent la gloire de Dieu, Et l'étendue manifeste l'œuvre de ses mains.
+Psalmi	19	1	Au chef des chantres. Psaume de David.
+Psalmi	19	2	Les cieux racontent la gloire de Dieu, Et l'étendue manifeste l'œuvre de ses mains.
 Psalmi	19	3	Le jour en instruit un autre jour, La nuit en donne connaissance à une autre nuit.
 Psalmi	19	4	Ce n'est pas un langage, ce ne sont pas des paroles Dont le son ne soit point entendu:
 Psalmi	19	5	Leur retentissement parcourt toute la terre, Leurs accents vont aux extrémités du monde, Où il a dressé une tente pour le soleil.
@@ -14185,7 +14199,8 @@ Psalmi	19	12	Ton serviteur aussi en reçoit instruction; Pour qui les observe la
 Psalmi	19	13	Qui connaît ses égarements? Pardonne-moi ceux que j'ignore.
 Psalmi	19	14	Préserve aussi ton serviteur des orgueilleux; Qu'ils ne dominent point sur moi! Alors je serai intègre, innocent de grands péchés.
 Psalmi	19	15	Reçois favorablement les paroles de ma bouche Et les sentiments de mon cœur, O Éternel, mon rocher et mon libérateur!
-Psalmi	20	2	Au chef des chantres. Psaume de David. Que l'Éternel t'exauce au jour de la détresse, Que le nom du Dieu de Jacob te protège!
+Psalmi	20	1	Au chef des chantres. Psaume de David.
+Psalmi	20	2	Que l'Éternel t'exauce au jour de la détresse, Que le nom du Dieu de Jacob te protège!
 Psalmi	20	3	Que du sanctuaire il t'envoie du secours, Que de Sion il te soutienne!
 Psalmi	20	4	Qu'il se souvienne de toutes tes offrandes, Et qu'il agrée tes holocaustes! -Pause.
 Psalmi	20	5	Qu'il te donne ce que ton cœur désire, Et qu'il accomplisse tous tes desseins!
@@ -14194,7 +14209,8 @@ Psalmi	20	7	Je sais déjà que l'Éternel sauve son oint; Il l'exaucera des cieu
 Psalmi	20	8	Ceux-ci s'appuient sur leurs chars, ceux-là sur leurs chevaux; Nous, nous invoquons le nom de l'Éternel, notre Dieu.
 Psalmi	20	9	Eux, ils plient, et ils tombent; Nous, nous tenons ferme, et restons debout.
 Psalmi	20	10	Éternel, sauve le roi! Qu'il nous exauce, quand nous l'invoquons!
-Psalmi	21	2	Au chef des chantres. Psaume de David. Éternel! le roi se réjouit de ta protection puissante. Oh! comme ton secours le remplit d'allégresse!
+Psalmi	21	1	Au chef des chantres. Psaume de David.
+Psalmi	21	2	Éternel! le roi se réjouit de ta protection puissante. Oh! comme ton secours le remplit d'allégresse!
 Psalmi	21	3	Tu lui as donné ce que désirait son cœur, Et tu n'as pas refusé ce que demandaient ses lèvres. -Pause.
 Psalmi	21	4	Car tu l'as prévenu par les bénédictions de ta grâce, Tu as mis sur sa tête une couronne d'or pur.
 Psalmi	21	5	Il te demandait la vie, tu la lui as donnée, Une vie longue pour toujours et à perpétuité.
@@ -14207,7 +14223,8 @@ Psalmi	21	11	Tu feras disparaître leur postérité de la terre, Et leur race du
 Psalmi	21	12	Ils ont projeté du mal contre toi, Ils ont conçu de mauvais desseins, mais ils seront impuissants.
 Psalmi	21	13	Car tu leur feras tourner le dos, Et avec ton arc tu tireras sur eux.
 Psalmi	21	14	Lève-toi, Éternel, avec ta force! Nous voulons chanter, célébrer ta puissance.
-Psalmi	22	2	Au chef des chantres. Sur «Biche de l'aurore». Psaume de David. Mon Dieu! mon Dieu! pourquoi m'as-tu abandonné, Et t'éloignes-tu sans me secourir, sans écouter mes plaintes?
+Psalmi	22	1	Au chef des chantres. Sur «Biche de l'aurore». Psaume de David.
+Psalmi	22	2	Mon Dieu! mon Dieu! pourquoi m'as-tu abandonné, Et t'éloignes-tu sans me secourir, sans écouter mes plaintes?
 Psalmi	22	3	Mon Dieu! je crie le jour, et tu ne réponds pas; La nuit, et je n'ai point de repos.
 Psalmi	22	4	Pourtant tu es le Saint, Tu sièges au milieu des louanges d'Israël.
 Psalmi	22	5	En toi se confiaient nos pères; Ils se confiaient, et tu les délivrais.
@@ -14322,7 +14339,8 @@ Psalmi	29	8	La voix de l'Éternel fait trembler le désert; L'Éternel fait trem
 Psalmi	29	9	La voix de l'Éternel fait enfanter les biches, Elle dépouille les forêts. Dans son palais tout s'écrie: Gloire!
 Psalmi	29	10	L'Éternel était sur son trône lors du déluge; L'Éternel sur son trône règne éternellement.
 Psalmi	29	11	L'Éternel donne la force à son peuple; L'Éternel bénit son peuple et le rend heureux.
-Psalmi	30	2	Psaume. Cantique pour la dédicace de la maison. De David. Je t'exalte, ô Éternel, car tu m'as relevé, Tu n'as pas voulu que mes ennemis se réjouissent à mon sujet.
+Psalmi	30	1	Psaume. Cantique pour la dédicace de la maison. De David.
+Psalmi	30	2	Je t'exalte, ô Éternel, car tu m'as relevé, Tu n'as pas voulu que mes ennemis se réjouissent à mon sujet.
 Psalmi	30	3	Éternel, mon Dieu! J'ai crié à toi, et tu m'as guéri.
 Psalmi	30	4	Éternel! tu as fait remonter mon âme du séjour des morts, Tu m'as fait revivre loin de ceux qui descendent dans la fosse.
 Psalmi	30	5	Chantez à l'Éternel, vous qui l'aimez, Célébrez par vos louanges sa sainteté!
@@ -14334,7 +14352,8 @@ Psalmi	30	10	Que gagnes-tu à verser mon sang, A me faire descendre dans la foss
 Psalmi	30	11	Écoute, Éternel, aie pitié de moi! Éternel, secours-moi! -
 Psalmi	30	12	Et tu as changé mes lamentations en allégresse, Tu as délié mon sac, et tu m'as ceint de joie,
 Psalmi	30	13	Afin que mon cœur te chante et ne soit pas muet. Éternel, mon Dieu! je te louerai toujours.
-Psalmi	31	2	Au chef des chantres. Psaume de David. Éternel! je cherche en toi mon refuge: Que jamais je ne sois confondu! Délivre-moi dans ta justice!
+Psalmi	31	1	Au chef des chantres. Psaume de David.
+Psalmi	31	2	Éternel! je cherche en toi mon refuge: Que jamais je ne sois confondu! Délivre-moi dans ta justice!
 Psalmi	31	3	Incline vers moi ton oreille, hâte-toi de me secourir! Sois pour moi un rocher protecteur, une forteresse, Où je trouve mon salut!
 Psalmi	31	4	Car tu es mon rocher, ma forteresse; Et à cause de ton nom tu me conduiras, tu me dirigeras.
 Psalmi	31	5	Tu me feras sortir du filet qu'ils m'ont tendu; Car tu es mon protecteur.
@@ -14391,7 +14410,8 @@ Psalmi	33	19	Afin d'arracher leur âme à la mort Et de les faire vivre au milie
 Psalmi	33	20	Notre âme espère en l'Éternel; Il est notre secours et notre bouclier.
 Psalmi	33	21	Car notre cœur met en lui sa joie, Car nous avons confiance en son saint nom.
 Psalmi	33	22	Éternel! que ta grâce soit sur nous, Comme nous espérons en toi!
-Psalmi	34	2	De David. Lorsqu'il contrefit l'insensé en présence d'Abimélec, et qu'il s'en alla chassé par lui. Je bénirai l'Éternel en tout temps; Sa louange sera toujours dans ma bouche.
+Psalmi	34	1	De David. Lorsqu'il contrefit l'insensé en présence d'Abimélec, et qu'il s'en alla chassé par lui.
+Psalmi	34	2	Je bénirai l'Éternel en tout temps; Sa louange sera toujours dans ma bouche.
 Psalmi	34	3	Que mon âme se glorifie en l'Éternel! Que les malheureux écoutent et se réjouissent!
 Psalmi	34	4	Exaltez avec moi l'Éternel! Célébrons tous son nom!
 Psalmi	34	5	J'ai cherché l'Éternel, et il m'a répondu; Il m'a délivré de toutes mes frayeurs.
@@ -14441,7 +14461,8 @@ Psalmi	35	25	Qu'ils ne disent pas dans leur cœur: Ah! voilà ce que nous voulio
 Psalmi	35	26	Que tous ensemble ils soient honteux et confus, Ceux qui se réjouissent de mon malheur! Qu'ils revêtent l'ignominie et l'opprobre, Ceux qui s'élèvent contre moi!
 Psalmi	35	27	Qu'ils aient de l'allégresse et de la joie, Ceux qui prennent plaisir à mon innocence, Et que sans cesse ils disent: Exalté soit l'Éternel, Qui veut la paix de son serviteur!
 Psalmi	35	28	Et ma langue célébrera ta justice, Elle dira tous les jours ta louange.
-Psalmi	36	2	Au chef des chantres. Du serviteur de l'Éternel, de David. La parole impie du méchant est au fond de son cœur; La crainte de Dieu n'est pas devant ses yeux.
+Psalmi	36	1	Au chef des chantres. Du serviteur de l'Éternel, de David.
+Psalmi	36	2	La parole impie du méchant est au fond de son cœur; La crainte de Dieu n'est pas devant ses yeux.
 Psalmi	36	3	Car il se flatte à ses propres yeux, Pour consommer son iniquité, pour assouvir sa haine.
 Psalmi	36	4	Les paroles de sa bouche sont fausses et trompeuses; Il renonce à agir avec sagesse, à faire le bien.
 Psalmi	36	5	Il médite l'injustice sur sa couche, Il se tient sur une voie qui n'est pas bonne, Il ne repousse pas le mal.
@@ -14493,7 +14514,8 @@ Psalmi	37	37	Observe celui qui est intègre, et regarde celui qui est droit; Car
 Psalmi	37	38	Mais les rebelles sont tous anéantis, La postérité des méchants est retranchée.
 Psalmi	37	39	Le salut des justes vient de l'Éternel; Il est leur protecteur au temps de la détresse.
 Psalmi	37	40	L'Éternel les secourt et les délivre; Il les délivre des méchants et les sauve, Parce qu'ils cherchent en lui leur refuge.
-Psalmi	38	2	Psaume de David. Pour souvenir. Éternel! ne me punis pas dans ta colère, Et ne me châtie pas dans ta fureur.
+Psalmi	38	1	Psaume de David. Pour souvenir.
+Psalmi	38	2	Éternel! ne me punis pas dans ta colère, Et ne me châtie pas dans ta fureur.
 Psalmi	38	3	Car tes flèches m'ont atteint, Et ta main s'est appesantie sur moi.
 Psalmi	38	4	Il n'y a rien de sain dans ma chair à cause de ta colère, Il n'y a plus de vigueur dans mes os à cause de mon péché.
 Psalmi	38	5	Car mes iniquités s'élèvent au-dessus de ma tête; Comme un lourd fardeau, elles sont trop pesantes pour moi.
@@ -14515,7 +14537,8 @@ Psalmi	38	20	Et mes ennemis sont pleins de vie, pleins de force; Ceux qui me ha�
 Psalmi	38	21	Ils me rendent le mal pour le bien; Ils sont mes adversaires, parce que je recherche le bien.
 Psalmi	38	22	Ne m'abandonne pas, Éternel! Mon Dieu, ne t'éloigne pas de moi!
 Psalmi	38	23	Viens en hâte à mon secours, Seigneur, mon salut!
-Psalmi	39	2	Au chef des chantres. A Jeduthun, Psaume de David. Je disais: Je veillerai sur mes voies, De peur de pécher par ma langue; Je mettrai un frein à ma bouche, Tant que le méchant sera devant moi.
+Psalmi	39	1	Au chef des chantres. A Jeduthun, Psaume de David.
+Psalmi	39	2	Je disais: Je veillerai sur mes voies, De peur de pécher par ma langue; Je mettrai un frein à ma bouche, Tant que le méchant sera devant moi.
 Psalmi	39	3	Je suis resté muet, dans le silence; Je me suis tu, quoique malheureux; Et ma douleur n'était pas moins vive.
 Psalmi	39	4	Mon cœur brûlait au dedans de moi, Un feu intérieur me consumait, Et la parole est venue sur ma langue.
 Psalmi	39	5	Éternel! dis-moi quel est le terme de ma vie, Quelle est la mesure de mes jours; Que je sache combien je suis fragile.
@@ -14528,7 +14551,8 @@ Psalmi	39	11	Détourne de moi tes coups! Je succombe sous les attaques de ta mai
 Psalmi	39	12	Tu châties l'homme en le punissant de son iniquité, Tu détruis comme la teigne ce qu'il a de plus cher. Oui, tout homme est un souffle. -Pause.
 Psalmi	39	13	Écoute ma prière, Éternel, et prête l'oreille à mes cris! Ne sois pas insensible à mes larmes! Car je suis un étranger chez toi, Un habitant, comme tous mes pères.
 Psalmi	39	14	Détourne de moi le regard, et laisse-moi respirer, Avant que je m'en aille et que ne sois plus!
-Psalmi	40	2	Au chef des chantres. De David. Psaume. J'avais mis en l'Éternel mon espérance; Et il s'est incliné vers moi, il a écouté mes cris.
+Psalmi	40	1	Au chef des chantres. De David. Psaume.
+Psalmi	40	2	J'avais mis en l'Éternel mon espérance; Et il s'est incliné vers moi, il a écouté mes cris.
 Psalmi	40	3	Il m'a retiré de la fosse de destruction, Du fond de la boue; Et il a dressé mes pieds sur le roc, Il a affermi mes pas.
 Psalmi	40	4	Il a mis dans ma bouche un cantique nouveau, Une louange à notre Dieu; Beaucoup l'ont vu, et ont eu de la crainte, Et ils se sont confiés en l'Éternel.
 Psalmi	40	5	Heureux l'homme qui place en l'Éternel sa confiance, Et qui ne se tourne pas vers les hautains et les menteurs!
@@ -14545,7 +14569,8 @@ Psalmi	40	15	Que tous ensemble ils soient honteux et confus, Ceux qui en veulent
 Psalmi	40	16	Qu'ils soient dans la stupeur par l'effet de leur honte, Ceux qui me disent: Ah! ah!
 Psalmi	40	17	Que tous ceux qui te cherchent Soient dans l'allégresse et se réjouissent en toi! Que ceux qui aiment ton salut Disent sans cesse: Exalté soit l'Éternel!
 Psalmi	40	18	Moi, je suis pauvre et indigent; Mais le Seigneur pense à moi. Tu es mon aide et mon libérateur: Mon Dieu, ne tarde pas!
-Psalmi	41	2	Au chef des chantres. Psaume de David. Heureux celui qui s'intéresse au pauvre! Au jour du malheur l'Éternel le délivre;
+Psalmi	41	1	Au chef des chantres. Psaume de David.
+Psalmi	41	2	Heureux celui qui s'intéresse au pauvre! Au jour du malheur l'Éternel le délivre;
 Psalmi	41	3	L'Éternel le garde et lui conserve la vie. Il est heureux sur la terre, Et tu ne le livres pas au bon plaisir de ses ennemis.
 Psalmi	41	4	L'Éternel le soutient sur son lit de douleur; Tu le soulages dans toutes ses maladies.
 Psalmi	41	5	Je dis: Éternel, aie pitié de moi! Guéris mon âme! car j'ai péché contre toi.
@@ -14558,7 +14583,8 @@ Psalmi	41	11	Toi, Éternel, aie pitié de moi et rétablis-moi! Et je leur rendr
 Psalmi	41	12	Je connaîtrai que tu m'aimes, Si mon ennemi ne triomphe pas de moi.
 Psalmi	41	13	Tu m'as soutenu à cause de mon intégrité, Et tu m'as placé pour toujours en ta présence.
 Psalmi	41	14	Béni soit l'Éternel, le Dieu d'Israël, d'éternité en éternité! Amen! Amen!
-Psalmi	42	2	Au chef des chantres. Cantique des fils de Koré. Comme une biche soupire après des courants d'eau, Ainsi mon âme soupire après toi, ô Dieu!
+Psalmi	42	1	Au chef des chantres. Cantique des fils de Koré.
+Psalmi	42	2	Comme une biche soupire après des courants d'eau, Ainsi mon âme soupire après toi, ô Dieu!
 Psalmi	42	3	Mon âme a soif de Dieu, du Dieu vivant: Quand irai-je et paraîtrai-je devant la face de Dieu?
 Psalmi	42	4	Mes larmes sont ma nourriture jour et nuit, Pendant qu'on me dit sans cesse: Où est ton Dieu?
 Psalmi	42	5	Je me rappelle avec effusion de cœur Quand je marchais entouré de la foule, Et que je m'avançais à sa tête vers la maison de Dieu, Au milieu des cris de joie et des actions de grâces D'une multitude en fête.
@@ -14574,7 +14600,8 @@ Psalmi	43	2	Toi, mon Dieu protecteur, pourquoi me repousses-tu? Pourquoi dois-je
 Psalmi	43	3	Envoie ta lumière et ta fidélité! Qu'elles me guident, Qu'elles me conduisent à ta montagne sainte et à tes demeures!
 Psalmi	43	4	J'irai vers l'autel de Dieu, de Dieu, ma joie et mon allégresse, Et je te célébrerai sur la harpe, ô Dieu, mon Dieu!
 Psalmi	43	5	Pourquoi t'abats-tu, mon âme, et gémis-tu au dedans de moi? Espère en Dieu, car je le louerai encore; Il est mon salut et mon Dieu.
-Psalmi	44	2	Au chef des chantres. Des fils de Koré. Cantique. O Dieu! nous avons entendu de nos oreilles, Nos pères nous ont raconté Les œuvres que tu as accomplies de leur temps, Aux jours d'autrefois.
+Psalmi	44	1	Au chef des chantres. Des fils de Koré. Cantique.
+Psalmi	44	2	O Dieu! nous avons entendu de nos oreilles, Nos pères nous ont raconté Les œuvres que tu as accomplies de leur temps, Aux jours d'autrefois.
 Psalmi	44	3	De ta main tu as chassé des nations pour les établir, Tu as frappé des peuples pour les étendre.
 Psalmi	44	4	Car ce n'est point par leur épée qu'ils se sont emparés du pays, Ce n'est point leur bras qui les a sauvés; Mais c'est ta droite, c'est ton bras, c'est la lumière de ta face, Parce que tu les aimais.
 Psalmi	44	5	O Dieu! tu es mon roi: Ordonne la délivrance de Jacob!
@@ -14600,7 +14627,8 @@ Psalmi	44	24	Réveille-toi! Pourquoi dors-tu, Seigneur? Réveille-toi! ne nous r
 Psalmi	44	25	Pourquoi caches-tu ta face? Pourquoi oublies-tu notre misère et notre oppression?
 Psalmi	44	26	Car notre âme est abattue dans la poussière, Notre corps est attaché à la terre.
 Psalmi	44	27	Lève-toi, pour nous secourir! Délivre-nous à cause de ta bonté!
-Psalmi	45	2	Au chef des chantres. Sur les lis. Des fils de Koré. Cantique. Chant d'amour. Des paroles pleines de charme bouillonnent dans mon cœur. Je dis: Mon œuvre est pour le roi! Que ma langue soit comme la plume d'un habile écrivain!
+Psalmi	45	1	Au chef des chantres. Sur les lis. Des fils de Koré. Cantique. Chant d'amour.
+Psalmi	45	2	Des paroles pleines de charme bouillonnent dans mon cœur. Je dis: Mon œuvre est pour le roi! Que ma langue soit comme la plume d'un habile écrivain!
 Psalmi	45	3	Tu es le plus beau des fils de l'homme, La grâce est répandue sur tes lèvres: C'est pourquoi Dieu t'a béni pour toujours.
 Psalmi	45	4	Vaillant guerrier, ceins ton épée, -Ta parure et ta gloire,
 Psalmi	45	5	Oui, ta gloire! -Sois vainqueur, monte sur ton char, Défends la vérité, la douceur et la justice, Et que ta droite se signale par de merveilleux exploits!
@@ -14617,7 +14645,8 @@ Psalmi	45	15	Elle est présentée au roi, vêtue de ses habits brodés, Et suivi
 Psalmi	45	16	On les introduit au milieu des réjouissances et de l'allégresse, Elles entrent dans le palais du roi.
 Psalmi	45	17	Tes enfants prendront la place de tes pères; Tu les établiras princes dans tout le pays.
 Psalmi	45	18	Je rappellerai ton nom dans tous les âges: Aussi les peuples te loueront éternellement et à jamais.
-Psalmi	46	2	Au chef des chantres. Des fils de Koré. Sur alamoth. Cantique. Dieu est pour nous un refuge et un appui, Un secours qui ne manque jamais dans la détresse.
+Psalmi	46	1	Au chef des chantres. Des fils de Koré. Sur alamoth. Cantique.
+Psalmi	46	2	Dieu est pour nous un refuge et un appui, Un secours qui ne manque jamais dans la détresse.
 Psalmi	46	3	C'est pourquoi nous sommes sans crainte quand la terre est bouleversée, Et que les montagnes chancellent au cœur des mers,
 Psalmi	46	4	Quand les flots de la mer mugissent, écument, Se soulèvent jusqu'à faire trembler les montagnes. -Pause.
 Psalmi	46	5	Il est un fleuve dont les courants réjouissent la cité de Dieu, Le sanctuaire des demeures du Très-Haut.
@@ -14628,7 +14657,8 @@ Psalmi	46	9	Venez, contemplez les œuvres de l'Éternel, Les ravages qu'il a op�
 Psalmi	46	10	C'est lui qui a fait cesser les combats jusqu'au bout de la terre; Il a brisé l'arc, et il a rompu la lance, Il a consumé par le feu les chars de guerre. -
 Psalmi	46	11	Arrêtez, et sachez que je suis Dieu: Je domine sur les nations, je domine sur la terre. -
 Psalmi	46	12	L'Éternel des armées est avec nous, Le Dieu de Jacob est pour nous une haute retraite. -Pause.
-Psalmi	47	2	Au chef des chantres. Des fils de Koré. Psaume. Vous tous, peuples, battez des mains! Poussez vers Dieu des cris de joie!
+Psalmi	47	1	Au chef des chantres. Des fils de Koré. Psaume.
+Psalmi	47	2	Vous tous, peuples, battez des mains! Poussez vers Dieu des cris de joie!
 Psalmi	47	3	Car l'Éternel, le Très-Haut, est redoutable, Il est un grand roi sur toute la terre.
 Psalmi	47	4	Il nous assujettit des peuples, Il met des nations sous nos pieds;
 Psalmi	47	5	Il nous choisit notre héritage, La gloire de Jacob qu'il aime. -Pause.
@@ -14637,7 +14667,8 @@ Psalmi	47	7	Chantez à Dieu, chantez! Chantez à notre roi, chantez!
 Psalmi	47	8	Car Dieu est roi de toute la terre: Chantez un cantique!
 Psalmi	47	9	Dieu règne sur les nations, Dieu a pour siège son saint trône.
 Psalmi	47	10	Les princes des peuples se réunissent Au peuple du Dieu d'Abraham; Car à Dieu sont les boucliers de la terre: Il est souverainement élevé.
-Psalmi	48	2	Cantique. Psaume des fils de Koré. L'Éternel est grand, il est l'objet de toutes les louanges, Dans la ville de notre Dieu, sur sa montagne sainte.
+Psalmi	48	1	Cantique. Psaume des fils de Koré.
+Psalmi	48	2	L'Éternel est grand, il est l'objet de toutes les louanges, Dans la ville de notre Dieu, sur sa montagne sainte.
 Psalmi	48	3	Belle est la colline, joie de toute la terre, la montagne de Sion; Le côté septentrional, c'est la ville du grand roi.
 Psalmi	48	4	Dieu, dans ses palais, est connu pour une haute retraite.
 Psalmi	48	5	Car voici, les rois s'étaient concertés: Ils n'ont fait que passer ensemble.
@@ -14651,7 +14682,8 @@ Psalmi	48	12	La montagne de Sion se réjouit, Les filles de Juda sont dans l'all
 Psalmi	48	13	Parcourez Sion, parcourez-en l'enceinte, Comptez ses tours,
 Psalmi	48	14	Observez son rempart, Examinez ses palais, Pour le raconter à la génération future.
 Psalmi	48	15	Voilà le Dieu qui est notre Dieu éternellement et à jamais; Il sera notre guide jusqu'à la mort.
-Psalmi	49	2	Au chef des chantres. Des fils de Koré. Psaume. Écoutez ceci, vous tous, peuples, Prêtez l'oreille, vous tous, habitants du monde,
+Psalmi	49	1	Au chef des chantres. Des fils de Koré. Psaume.
+Psalmi	49	2	Écoutez ceci, vous tous, peuples, Prêtez l'oreille, vous tous, habitants du monde,
 Psalmi	49	3	Petits et grands, Riches et pauvres!
 Psalmi	49	4	Ma bouche va faire entendre des paroles sages, Et mon cœur a des pensées pleines de sens.
 Psalmi	49	5	Je prête l'oreille aux sentences qui me sont inspirées, J'ouvre mon chant au son de la harpe.
@@ -14694,7 +14726,9 @@ Psalmi	50	20	Tu t'assieds, et tu parles contre ton frère, Tu diffames le fils d
 Psalmi	50	21	Voilà ce que tu as fait, et je me suis tu. Tu t'es imaginé que je te ressemblais; Mais je vais te reprendre, et tout mettre sous tes yeux.
 Psalmi	50	22	Prenez-y donc garde, vous qui oubliez Dieu, De peur que je ne déchire, sans que personne délivre.
 Psalmi	50	23	Celui qui offre pour sacrifice des actions de grâces me glorifie, Et à celui qui veille sur sa voie Je ferai voir le salut de Dieu.
-Psalmi	51	3	Au chef des chantres. Psaume de David. Lorsque Nathan, le prophète, vint à lui, après que David fut allé vers Bath-Schéba. O Dieu! aie pitié de moi dans ta bonté; Selon ta grande miséricorde, efface mes transgressions;
+Psalmi	51	1	Au chef des chantres. Psaume de David.
+Psalmi	51	2	Lorsque Nathan, le prophète, vint à lui, après que David fut allé vers Bath-Schéba.
+Psalmi	51	3	O Dieu! aie pitié de moi dans ta bonté; Selon ta grande miséricorde, efface mes transgressions;
 Psalmi	51	4	Lave-moi complètement de mon iniquité, Et purifie-moi de mon péché.
 Psalmi	51	5	Car je reconnais mes transgressions, Et mon péché est constamment devant moi.
 Psalmi	51	6	J'ai péché contre toi seul, Et j'ai fait ce qui est mal à tes yeux, En sorte que tu seras juste dans ta sentence, Sans reproche dans ton jugement.
@@ -14713,7 +14747,9 @@ Psalmi	51	18	Si tu eusses voulu des sacrifices, je t'en aurais offert; Mais tu n
 Psalmi	51	19	Les sacrifices qui sont agréables à Dieu, c'est un esprit brisé: O Dieu! tu ne dédaignes pas un cœur brisé et contrit.
 Psalmi	51	20	Répands par ta grâce tes bienfaits sur Sion, Bâtis les murs de Jérusalem!
 Psalmi	51	21	Alors tu agréeras des sacrifices de justice, Des holocaustes et des victimes tout entières; Alors on offrira des taureaux sur ton autel.
-Psalmi	52	3	Au chef des chantres. Cantique de David. A l'occasion du rapport que Doëg, l'Édomite, vint faire à Saül, en lui disant: David s'est rendu dans la maison d'Achimélec. Pourquoi te glorifies-tu de ta méchanceté, tyran? La bonté de Dieu subsiste toujours.
+Psalmi	52	1	Au chef des chantres. Cantique de David.
+Psalmi	52	2	A l'occasion du rapport que Doëg, l'Édomite, vint faire à Saül, en lui disant: David s'est rendu dans la maison d'Achimélec.
+Psalmi	52	3	Pourquoi te glorifies-tu de ta méchanceté, tyran? La bonté de Dieu subsiste toujours.
 Psalmi	52	4	Ta langue n'invente que malice, comme un rasoir affilé, fourbe que tu es!
 Psalmi	52	5	Tu aimes le mal plutôt que le bien, Le mensonge plutôt que la droiture. -Pause.
 Psalmi	52	6	Tu aimes toutes les paroles de destruction, Langue trompeuse!
@@ -14722,20 +14758,24 @@ Psalmi	52	8	Les justes le verront, et auront de la crainte, Et ils feront de lui
 Psalmi	52	9	Voilà l'homme qui ne prenait point Dieu pour protecteur, Mais qui se confiait en ses grandes richesses, Et qui triomphait dans sa malice!
 Psalmi	52	10	Et moi, je suis dans la maison de Dieu comme un olivier verdoyant, Je me confie dans la bonté de Dieu, éternellement et à jamais.
 Psalmi	52	11	Je te louerai toujours, parce que tu as agi; Et je veux espérer en ton nom, parce qu'il est favorable, En présence de tes fidèles.
-Psalmi	53	2	Au chef des chantres. Sur la flûte. Cantique de David. L'insensé dit en son cœur: Il n'y a point de Dieu! Ils se sont corrompus, ils ont commis des iniquités abominables; Il n'en est aucun qui fasse le bien.
+Psalmi	53	1	Au chef des chantres. Sur la flûte. Cantique de David.
+Psalmi	53	2	L'insensé dit en son cœur: Il n'y a point de Dieu! Ils se sont corrompus, ils ont commis des iniquités abominables; Il n'en est aucun qui fasse le bien.
 Psalmi	53	3	Dieu, du haut des cieux, regarde les fils de l'homme, Pour voir s'il y a quelqu'un qui soit intelligent, Qui cherche Dieu.
 Psalmi	53	4	Tous sont égarés, tous sont pervertis; Il n'en est aucun qui fasse le bien, Pas même un seul.
 Psalmi	53	5	Ceux qui commettent l'iniquité ont-ils perdu le sens? Ils dévorent mon peuple, ils le prennent pour nourriture; Ils n'invoquent point Dieu.
 Psalmi	53	6	Alors ils trembleront d'épouvante, Sans qu'il y ait sujet d'épouvante; Dieu dispersera les os de ceux qui campent contre toi; Tu les confondras, car Dieu les a rejetés.
 Psalmi	53	7	Oh! qui fera partir de Sion la délivrance d'Israël? Quand Dieu ramènera les captifs de son peuple, Jacob sera dans l'allégresse, Israël se réjouira.
-Psalmi	54	3	Au chef des chantres. Avec instruments à cordes. Cantique de David. Lorsque les Ziphiens vinrent dire à Saül: David n'est-il pas caché parmi nous? O Dieu! sauve-moi par ton nom, Et rends-moi justice par ta puissance!
+Psalmi	54	1	Au chef des chantres. Avec instruments à cordes. Cantique de David.
+Psalmi	54	2	Lorsque les Ziphiens vinrent dire à Saül: David n'est-il pas caché parmi nous?
+Psalmi	54	3	O Dieu! sauve-moi par ton nom, Et rends-moi justice par ta puissance!
 Psalmi	54	4	O Dieu! écoute ma prière, Prête l'oreille aux paroles de ma bouche!
 Psalmi	54	5	Car des étrangers se sont levés contre moi, Des hommes violents en veulent à ma vie; Ils ne portent pas leurs pensées sur Dieu. -Pause.
 Psalmi	54	6	Voici, Dieu est mon secours, Le Seigneur est le soutien de mon âme.
 Psalmi	54	7	Le mal retombera sur mes adversaires; Anéantis-les, dans ta fidélité!
 Psalmi	54	8	Je t'offrirai de bon cœur des sacrifices; Je louerai ton nom, ô Éternel! car il est favorable,
 Psalmi	54	9	Car il me délivre de toute détresse, Et mes yeux se réjouissent à la vue de mes ennemis.
-Psalmi	55	2	Au chef des chantres. Avec instruments à cordes. Cantique de David. O Dieu! prête l'oreille à ma prière, Et ne te dérobe pas à mes supplications!
+Psalmi	55	1	Au chef des chantres. Avec instruments à cordes. Cantique de David.
+Psalmi	55	2	O Dieu! prête l'oreille à ma prière, Et ne te dérobe pas à mes supplications!
 Psalmi	55	3	Écoute-moi, et réponds-moi! J'erre çà et là dans mon chagrin et je m'agite,
 Psalmi	55	4	A cause de la voix de l'ennemi et de l'oppression du méchant; Car ils font tomber sur moi le malheur, Et me poursuivent avec colère.
 Psalmi	55	5	Mon cœur tremble au dedans de moi, Et les terreurs de la mort me surprennent;
@@ -14758,7 +14798,8 @@ Psalmi	55	21	Il porte la main sur ceux qui étaient en paix avec lui, Il viole s
 Psalmi	55	22	Sa bouche est plus douce que la crème, Mais la guerre est dans son cœur; Ses paroles sont plus onctueuses que l'huile, Mais ce sont des épées nues.
 Psalmi	55	23	Remets ton sort à l'Éternel, et il te soutiendra, Il ne laissera jamais chanceler le juste.
 Psalmi	55	24	Et toi, ô Dieu! tu les feras descendre au fond de la fosse; Les hommes de sang et de fraude N'atteindront pas la moitié de leurs jours. C'est en toi que je me confie.
-Psalmi	56	2	Au chef des chantres. Sur «Colombe des térébinthes lointains». Hymne de David. Lorsque les Philistins le saisirent à Gath. Aie pitié de moi, ô Dieu! car des hommes me harcèlent; Tout le jour ils me font la guerre, ils me tourmentent.
+Psalmi	56	1	Au chef des chantres. Sur «Colombe des térébinthes lointains». Hymne de David. Lorsque les Philistins le saisirent à Gath.
+Psalmi	56	2	Aie pitié de moi, ô Dieu! car des hommes me harcèlent; Tout le jour ils me font la guerre, ils me tourmentent.
 Psalmi	56	3	Tout le jour mes adversaires me harcèlent; Ils sont nombreux, ils me font la guerre comme des hautains.
 Psalmi	56	4	Quand je suis dans la crainte, En toi je me confie.
 Psalmi	56	5	Je me glorifierai en Dieu, en sa parole; Je me confie en Dieu, je ne crains rien: Que peuvent me faire des hommes?
@@ -14771,7 +14812,8 @@ Psalmi	56	11	Je me glorifierai en Dieu, en sa parole; Je me glorifierai en l'Ét
 Psalmi	56	12	Je me confie en Dieu, je ne crains rien: Que peuvent me faire des hommes?
 Psalmi	56	13	O Dieu! je dois accomplir les vœux que je t'ai faits; Je t'offrirai des actions de grâces.
 Psalmi	56	14	Car tu as délivré mon âme de la mort, Tu as garanti mes pieds de la chute, Afin que je marche devant Dieu, à la lumière des vivants.
-Psalmi	57	2	Au chef des chantres. «Ne détruis pas». Hymne de David. Lorsqu'il se réfugia dans la caverne, poursuivi par Saül. Aie pitié de moi, ô Dieu, aie pitié de moi! Car en toi mon âme cherche un refuge; Je cherche un refuge à l'ombre de tes ailes, Jusqu'à ce que les calamités soient passées.
+Psalmi	57	1	Au chef des chantres. «Ne détruis pas». Hymne de David. Lorsqu'il se réfugia dans la caverne, poursuivi par Saül.
+Psalmi	57	2	Aie pitié de moi, ô Dieu, aie pitié de moi! Car en toi mon âme cherche un refuge; Je cherche un refuge à l'ombre de tes ailes, Jusqu'à ce que les calamités soient passées.
 Psalmi	57	3	Je crie au Dieu Très-Haut, Au Dieu qui agit en ma faveur.
 Psalmi	57	4	Il m'enverra du ciel le salut, Tandis que mon persécuteur se répand en outrages; -Pause. Dieu enverra sa bonté et sa fidélité.
 Psalmi	57	5	Mon âme est parmi des lions; Je suis couché au milieu de gens qui vomissent la flamme, Au milieu d'hommes qui ont pour dents la lance et les flèches, Et dont la langue est un glaive tranchant.
@@ -14782,7 +14824,8 @@ Psalmi	57	9	Réveille-toi, mon âme! réveillez-vous, mon luth et ma harpe! Je r
 Psalmi	57	10	Je te louerai parmi les peuples, Seigneur! Je te chanterai parmi les nations.
 Psalmi	57	11	Car ta bonté atteint jusqu'aux cieux, Et ta fidélité jusqu'aux nues.
 Psalmi	57	12	Élève-toi sur les cieux, ô Dieu! Que ta gloire soit sur toute la terre!
-Psalmi	58	2	Au chef des chantres. «Ne détruis pas». Hymne de David. Est-ce donc en vous taisant que vous rendez la justice? Est-ce ainsi que vous jugez avec droiture, fils de l'homme?
+Psalmi	58	1	Au chef des chantres. «Ne détruis pas». Hymne de David.
+Psalmi	58	2	Est-ce donc en vous taisant que vous rendez la justice? Est-ce ainsi que vous jugez avec droiture, fils de l'homme?
 Psalmi	58	3	Loin de là! Dans le cœur, vous consommez des iniquités; Dans le pays, c'est la violence de vos mains que vous placez sur la balance.
 Psalmi	58	4	Les méchants sont pervertis dès le sein maternel, Les menteurs s'égarent au sortir du ventre de leur mère.
 Psalmi	58	5	Ils ont un venin pareil au venin d'un serpent, D'un aspic sourd qui ferme son oreille,
@@ -14793,7 +14836,8 @@ Psalmi	58	9	Qu'ils périssent en se fondant, comme un limaçon; Sans voir le sol
 Psalmi	58	10	Avant que vos chaudières sentent l'épine, Verte ou enflammée, le tourbillon l'emportera.
 Psalmi	58	11	Le juste sera dans la joie, à la vue de la vengeance; Il baignera ses pieds dans le sang des méchants.
 Psalmi	58	12	Et les hommes diront: Oui, il est une récompense pour le juste; Oui, il est un Dieu qui juge sur la terre.
-Psalmi	59	2	Au chef des chantres. «Ne détruis pas». Hymne de David. Lorsque Saül envoya cerner la maison, pour le faire mourir. Mon Dieu! délivre-moi de mes ennemis, Protège-moi contre mes adversaires!
+Psalmi	59	1	Au chef des chantres. «Ne détruis pas». Hymne de David. Lorsque Saül envoya cerner la maison, pour le faire mourir.
+Psalmi	59	2	Mon Dieu! délivre-moi de mes ennemis, Protège-moi contre mes adversaires!
 Psalmi	59	3	Délivre-moi des malfaiteurs, Et sauve-moi des hommes de sang!
 Psalmi	59	4	Car voici, ils sont aux aguets pour m'ôter la vie; Des hommes violents complotent contre moi, Sans que je sois coupable, sans que j'aie péché, ô Éternel!
 Psalmi	59	5	Malgré mon innocence, ils courent, ils se préparent: Réveille-toi, viens à ma rencontre, et regarde!
@@ -14810,7 +14854,9 @@ Psalmi	59	15	Ils reviennent chaque soir, ils hurlent comme des chiens, Ils font 
 Psalmi	59	16	Ils errent çà et là, cherchant leur nourriture, Et ils passent la nuit sans être rassasiés.
 Psalmi	59	17	Et moi, je chanterai ta force; Dès le matin, je célébrerai ta bonté. Car tu es pour moi une haute retraite, Un refuge au jour de ma détresse.
 Psalmi	59	18	O ma force! c'est toi que je célébrerai, Car Dieu, mon Dieu tout bon, est ma haute retraite.
-Psalmi	60	3	Au chef des chantres. Sur le lis lyrique. Hymne de David, pour enseigner. Lorsqu'il fit la guerre aux Syriens de Mésopotamie et aux Syriens de Tsoba, et que Joab revint et battit dans la vallée du sel douze mille Édomites. O Dieu! tu nous as repoussés, dispersés, Tu t'es irrité: relève-nous!
+Psalmi	60	1	Au chef des chantres. Sur le lis lyrique. Hymne de David, pour enseigner.
+Psalmi	60	2	Lorsqu'il fit la guerre aux Syriens de Mésopotamie et aux Syriens de Tsoba, et que Joab revint et battit dans la vallée du sel douze mille Édomites.
+Psalmi	60	3	O Dieu! tu nous as repoussés, dispersés, Tu t'es irrité: relève-nous!
 Psalmi	60	4	Tu as ébranlé la terre, tu l'as déchirée: Répare ses brèches, car elle chancelle!
 Psalmi	60	5	Tu as fait voir à ton peuple des choses dures, Tu nous as abreuvés d'un vin d'étourdissement.
 Psalmi	60	6	Tu as donné à ceux qui te craignent une bannière, Pour qu'elle s'élève à cause de la vérité. -Pause.
@@ -14822,7 +14868,8 @@ Psalmi	60	11	Qui me mènera dans la ville forte? Qui me conduira à Édom?
 Psalmi	60	12	N'est-ce pas toi, ô Dieu, qui nous as repoussés, Et qui ne sortais plus, ô Dieu, avec nos armées?
 Psalmi	60	13	Donne-nous du secours contre la détresse! Le secours de l'homme n'est que vanité.
 Psalmi	60	14	Avec Dieu, nous ferons des exploits; Il écrasera nos ennemis.
-Psalmi	61	2	Au chef des chantres. Sur instruments à cordes. De David. O Dieu! écoute mes cris, Sois attentif à ma prière!
+Psalmi	61	1	Au chef des chantres. Sur instruments à cordes. De David.
+Psalmi	61	2	O Dieu! écoute mes cris, Sois attentif à ma prière!
 Psalmi	61	3	Du bout de la terre je crie à toi, le cœur abattu; Conduis-moi sur le rocher que je ne puis atteindre!
 Psalmi	61	4	Car tu es pour moi un refuge, Une tour forte, en face de l'ennemi.
 Psalmi	61	5	Je voudrais séjourner éternellement dans ta tente, Me réfugier à l'abri de tes ailes. -Pause.
@@ -14830,7 +14877,8 @@ Psalmi	61	6	Car toi, ô Dieu! tu exauces mes vœux, Tu me donnes l'héritage de 
 Psalmi	61	7	Ajoute des jours aux jours du roi; Que ses années se prolongent à jamais!
 Psalmi	61	8	Qu'il reste sur le trône éternellement devant Dieu! Fais que ta bonté et ta fidélité veillent sur lui!
 Psalmi	61	9	Alors je chanterai sans cesse ton nom, En accomplissant chaque jour mes vœux.
-Psalmi	62	2	Au chef des chantres. D'après Jeduthun. Psaume de David. Oui, c'est en Dieu que mon âme se confie; De lui vient mon salut.
+Psalmi	62	1	Au chef des chantres. D'après Jeduthun. Psaume de David.
+Psalmi	62	2	Oui, c'est en Dieu que mon âme se confie; De lui vient mon salut.
 Psalmi	62	3	Oui, c'est lui qui est mon rocher et mon salut; Ma haute retraite: je ne chancellerai guère.
 Psalmi	62	4	Jusqu'à quand vous jetterez-vous sur un homme, Chercherez-vous tous à l'abattre, Comme une muraille qui penche, Comme une clôture qu'on renverse?
 Psalmi	62	5	Ils conspirent pour le précipiter de son poste élevé; Ils prennent plaisir au mensonge; Ils bénissent de leur bouche, Et ils maudissent dans leur cœur. -Pause.
@@ -14842,7 +14890,8 @@ Psalmi	62	10	Oui, vanité, les fils de l'homme! Mensonge, les fils de l'homme! D
 Psalmi	62	11	Ne vous confiez pas dans la violence, Et ne mettez pas un vain espoir dans la rapine; Quand les richesses s'accroissent, N'y attachez pas votre cœur.
 Psalmi	62	12	Dieu a parlé une fois; Deux fois j'ai entendu ceci: C'est que la force est à Dieu.
 Psalmi	62	13	A toi aussi, Seigneur! la bonté; Car tu rends à chacun selon ses œuvres.
-Psalmi	63	2	Psaume de David. Lorsqu'il était dans le désert de Juda. O Dieu! tu es mon Dieu, je te cherche; Mon âme a soif de toi, mon corps soupire après toi, Dans une terre aride, desséchée, sans eau.
+Psalmi	63	1	Psaume de David. Lorsqu'il était dans le désert de Juda.
+Psalmi	63	2	O Dieu! tu es mon Dieu, je te cherche; Mon âme a soif de toi, mon corps soupire après toi, Dans une terre aride, desséchée, sans eau.
 Psalmi	63	3	Ainsi je te contemple dans le sanctuaire, Pour voir ta puissance et ta gloire.
 Psalmi	63	4	Car ta bonté vaut mieux que la vie: Mes lèvres célèbrent tes louanges.
 Psalmi	63	5	Je te bénirai donc toute ma vie, J'élèverai mes mains en ton nom.
@@ -14853,7 +14902,8 @@ Psalmi	63	9	Mon âme est attachée à toi; Ta droite me soutient.
 Psalmi	63	10	Mais ceux qui cherchent à m'ôter la vie Iront dans les profondeurs de la terre;
 Psalmi	63	11	Ils seront livrés au glaive, Ils seront la proie des chacals.
 Psalmi	63	12	Et le roi se réjouira en Dieu; Quiconque jure par lui s'en glorifiera, Car la bouche des menteurs sera fermée.
-Psalmi	64	2	Au chef des chantres. Psaume de David. O Dieu, écoute ma voix, quand je gémis! Protège ma vie contre l'ennemi que je crains!
+Psalmi	64	1	Au chef des chantres. Psaume de David.
+Psalmi	64	2	O Dieu, écoute ma voix, quand je gémis! Protège ma vie contre l'ennemi que je crains!
 Psalmi	64	3	Garantis-moi des complots des méchants, De la troupe bruyante des hommes iniques!
 Psalmi	64	4	Ils aiguisent leur langue comme un glaive, Ils lancent comme des traits leurs paroles amères,
 Psalmi	64	5	Pour tirer en cachette sur l'innocent; Ils tirent sur lui à l'improviste, et n'ont aucune crainte.
@@ -14863,7 +14913,8 @@ Psalmi	64	8	Dieu lance contre eux ses traits: Soudain les voilà frappés.
 Psalmi	64	9	Leur langue a causé leur chute; Tous ceux qui les voient secouent la tête.
 Psalmi	64	10	Tous les hommes sont saisis de crainte, Ils publient ce que Dieu fait, Et prennent garde à son œuvre.
 Psalmi	64	11	Le juste se réjouit en l'Éternel et cherche en lui son refuge, Tous ceux qui ont le cœur droit se glorifient.
-Psalmi	65	2	Au chef des chantres. Psaume de David. Cantique. Avec confiance, ô Dieu! on te louera dans Sion, Et l'on accomplira les vœux qu'on t'a faits.
+Psalmi	65	1	Au chef des chantres. Psaume de David. Cantique.
+Psalmi	65	2	Avec confiance, ô Dieu! on te louera dans Sion, Et l'on accomplira les vœux qu'on t'a faits.
 Psalmi	65	3	O toi, qui écoutes la prière! Tous les hommes viendront à toi.
 Psalmi	65	4	Les iniquités m'accablent: Tu pardonneras nos transgressions.
 Psalmi	65	5	Heureux celui que tu choisis et que tu admets en ta présence, Pour qu'il habite dans tes parvis! Nous nous rassasierons du bonheur de ta maison, De la sainteté de ton temple.
@@ -14896,14 +14947,16 @@ Psalmi	66	17	J'ai crié à lui de ma bouche, Et la louange a été sur ma langue
 Psalmi	66	18	Si j'avais conçu l'iniquité dans mon cœur, Le Seigneur ne m'aurait pas exaucé.
 Psalmi	66	19	Mais Dieu m'a exaucé, Il a été attentif à la voix de ma prière.
 Psalmi	66	20	Béni soit Dieu, Qui n'a pas rejeté ma prière, Et qui ne m'a pas retiré sa bonté!
-Psalmi	67	2	Au chef des chantres. Avec instruments à cordes. Psaume. Cantique. Que Dieu ait pitié de nous et qu'il nous bénisse, Qu'il fasse luire sur nous sa face, -Pause.
+Psalmi	67	1	Au chef des chantres. Avec instruments à cordes. Psaume. Cantique.
+Psalmi	67	2	Que Dieu ait pitié de nous et qu'il nous bénisse, Qu'il fasse luire sur nous sa face, -Pause.
 Psalmi	67	3	Afin que l'on connaisse sur la terre ta voie, Et parmi toutes les nations ton salut!
 Psalmi	67	4	Les peuples te louent, ô Dieu! Tous les peuples te louent.
 Psalmi	67	5	Les nations se réjouissent et sont dans l'allégresse; Car tu juges les peuples avec droiture, Et tu conduis les nations sur la terre. -Pause.
 Psalmi	67	6	Les peuples te louent, ô Dieu! Tous les peuples te louent.
 Psalmi	67	7	La terre donne ses produits; Dieu, notre Dieu, nous bénit.
 Psalmi	67	8	Dieu, nous bénit, Et toutes les extrémités de la terre le craignent.
-Psalmi	68	2	Au chef des chantres. De David. Psaume. Cantique. Dieu se lève, ses ennemis se dispersent, Et ses adversaires fuient devant sa face.
+Psalmi	68	1	Au chef des chantres. De David. Psaume. Cantique.
+Psalmi	68	2	Dieu se lève, ses ennemis se dispersent, Et ses adversaires fuient devant sa face.
 Psalmi	68	3	Comme la fumée se dissipe, tu les dissipes; Comme la cire se fond au feu, Les méchants disparaissent devant Dieu.
 Psalmi	68	4	Mais les justes se réjouissent, ils triomphent devant Dieu, Ils ont des transports d'allégresse.
 Psalmi	68	5	Chantez à Dieu, célébrez son nom! Frayez le chemin à celui qui s'avance à travers les plaines! L'Éternel est son nom: réjouissez-vous devant lui!
@@ -14938,7 +14991,8 @@ Psalmi	68	33	Royaumes de la terre, chantez à Dieu, Célébrez le Seigneur! -Pau
 Psalmi	68	34	Chantez à celui qui s'avance dans les cieux, les cieux éternels! Voici, il fait entendre sa voix, sa voix puissante.
 Psalmi	68	35	Rendez gloire à Dieu! Sa majesté est sur Israël, et sa force dans les cieux.
 Psalmi	68	36	De ton sanctuaire, ô Dieu! tu es redoutable. Le Dieu d'Israël donne à son peuple la force et la puissance. Béni soit Dieu!
-Psalmi	69	2	Au chef des chantres. Sur les lis. De David. Sauve-moi, ô Dieu! Car les eaux menacent ma vie.
+Psalmi	69	1	Au chef des chantres. Sur les lis. De David.
+Psalmi	69	2	Sauve-moi, ô Dieu! Car les eaux menacent ma vie.
 Psalmi	69	3	J'enfonce dans la boue, sans pouvoir me tenir; Je suis tombé dans un gouffre, et les eaux m'inondent.
 Psalmi	69	4	Je m'épuise à crier, mon gosier se dessèche, Mes yeux se consument, tandis que je regarde vers mon Dieu.
 Psalmi	69	5	Ils sont plus nombreux que les cheveux de ma tête, Ceux qui me haïssent sans cause; Ils sont puissants, ceux qui veulent me perdre, Qui sont à tort mes ennemis. Ce que je n'ai pas dérobé, il faut que je le restitue.
@@ -14974,7 +15028,8 @@ Psalmi	69	34	Car l'Éternel écoute les pauvres, Et il ne méprise point ses cap
 Psalmi	69	35	Que les cieux et la terre le célèbrent, Les mers et tout ce qui s'y meut!
 Psalmi	69	36	Car Dieu sauvera Sion, et bâtira les villes de Juda; On s'y établira, et l'on en prendra possession;
 Psalmi	69	37	La postérité de ses serviteurs en fera son héritage, Et ceux qui aiment son nom y auront leur demeure.
-Psalmi	70	2	Au chef des chantres. De David. Pour souvenir. O Dieu, hâte-toi de me délivrer! Éternel, hâte-toi de me secourir!
+Psalmi	70	1	Au chef des chantres. De David. Pour souvenir.
+Psalmi	70	2	O Dieu, hâte-toi de me délivrer! Éternel, hâte-toi de me secourir!
 Psalmi	70	3	Qu'ils soient honteux et confus, ceux qui en veulent à ma vie! Qu'ils reculent et rougissent, ceux qui désirent ma perte!
 Psalmi	70	4	Qu'ils retournent en arrière par l'effet de leur honte, Ceux qui disent: Ah! ah!
 Psalmi	70	5	Que tous ceux qui te cherchent Soient dans l'allégresse et se réjouissent en toi! Que ceux qui aiment ton salut Disent sans cesse: Exalté soit Dieu!
@@ -15074,7 +15129,8 @@ Psalmi	74	20	Aie égard à l'alliance! Car les lieux sombres du pays sont pleins
 Psalmi	74	21	Que l'opprimé ne retourne pas confus! Que le malheureux et le pauvre célèbrent ton nom!
 Psalmi	74	22	Lève-toi, ô Dieu! défends ta cause! Souviens-toi des outrages que te fait chaque jour l'insensé!
 Psalmi	74	23	N'oublie pas les clameurs de tes adversaires, Le tumulte sans cesse croissant de ceux qui s'élèvent contre toi!
-Psalmi	75	2	Au chef des chantres. «Ne détruis pas». Psaume d'Asaph. Cantique. Nous te louons, ô Dieu! nous te louons; Ton nom est dans nos bouches; Nous publions tes merveilles.
+Psalmi	75	1	Au chef des chantres. «Ne détruis pas». Psaume d'Asaph. Cantique.
+Psalmi	75	2	Nous te louons, ô Dieu! nous te louons; Ton nom est dans nos bouches; Nous publions tes merveilles.
 Psalmi	75	3	Au temps que j'aurai fixé, Je jugerai avec droiture.
 Psalmi	75	4	La terre tremble avec tous ceux qui l'habitent: Moi, j'affermis ses colonnes. -Pause.
 Psalmi	75	5	Je dis à ceux qui se glorifient: Ne vous glorifiez pas! Et aux méchants: N'élevez pas la tête!
@@ -15084,7 +15140,8 @@ Psalmi	75	8	Mais Dieu est celui qui juge: Il abaisse l'un, et il élève l'autre
 Psalmi	75	9	Il y a dans la main de l'Éternel une coupe, Où fermente un vin plein de mélange, Et il en verse: Tous les méchants de la terre sucent, boivent jusqu'à la lie.
 Psalmi	75	10	Je publierai ces choses à jamais; Je chanterai en l'honneur du Dieu de Jacob. -
 Psalmi	75	11	Et j'abattrai toutes les forces des méchants; Les forces du juste seront élevées.
-Psalmi	76	2	Au chef des chantres. Avec instruments à cordes. Psaume d'Asaph. Cantique. Dieu est connu en Juda, Son nom est grand en Israël.
+Psalmi	76	1	Au chef des chantres. Avec instruments à cordes. Psaume d'Asaph. Cantique.
+Psalmi	76	2	Dieu est connu en Juda, Son nom est grand en Israël.
 Psalmi	76	3	Sa tente est à Salem, Et sa demeure à Sion.
 Psalmi	76	4	C'est là qu'il a brisé les flèches, Le bouclier, l'épée et les armes de guerre. -Pause.
 Psalmi	76	5	Tu es plus majestueux, plus puissant Que les montagnes des ravisseurs.
@@ -15096,7 +15153,8 @@ Psalmi	76	10	Lorsque Dieu s'est levé pour faire justice, Pour sauver tous les m
 Psalmi	76	11	L'homme te célèbre même dans sa fureur, Quand tu te revêts de tout ton courroux.
 Psalmi	76	12	Faites des vœux à l'Éternel, votre Dieu, et accomplissez-les! Que tous ceux qui l'environnent apportent des dons au Dieu terrible!
 Psalmi	76	13	Il abat l'orgueil des princes, Il est redoutable aux rois de la terre.
-Psalmi	77	2	Au chef des chantres. D'après Jeduthun. Psaume d'Asaph. Ma voix s'élève à Dieu, et je crie; Ma voix s'élève à Dieu, et il m'écoutera.
+Psalmi	77	1	Au chef des chantres. D'après Jeduthun. Psaume d'Asaph.
+Psalmi	77	2	Ma voix s'élève à Dieu, et je crie; Ma voix s'élève à Dieu, et il m'écoutera.
 Psalmi	77	3	Au jour de ma détresse, je cherche le Seigneur; La nuit, mes mains sont étendues sans se lasser; Mon âme refuse toute consolation.
 Psalmi	77	4	Je me souviens de Dieu, et je gémis; Je médite, et mon esprit est abattu. -Pause.
 Psalmi	77	5	Tu tiens mes paupières en éveil; Et, dans mon trouble, je ne puis parler.
@@ -15201,7 +15259,8 @@ Psalmi	79	10	Pourquoi les nations diraient-elles: Où est leur Dieu? Qu'on sache
 Psalmi	79	11	Que les gémissements des captifs parviennent jusqu'à toi! Par ton bras puissant sauve ceux qui vont périr!
 Psalmi	79	12	Rends à nos voisins sept fois dans leur sein Les outrages qu'ils t'ont faits, Seigneur!
 Psalmi	79	13	Et nous, ton peuple, le troupeau de ton pâturage, Nous te célébrerons éternellement; De génération en génération nous publierons tes louanges.
-Psalmi	80	2	Au chef des chantres. Sur les lis lyriques. D'Asaph. Psaume. Prête l'oreille, berger d'Israël, Toi qui conduis Joseph comme un troupeau! Parais dans ta splendeur, Toi qui es assis sur les chérubins!
+Psalmi	80	1	Au chef des chantres. Sur les lis lyriques. D'Asaph. Psaume.
+Psalmi	80	2	Prête l'oreille, berger d'Israël, Toi qui conduis Joseph comme un troupeau! Parais dans ta splendeur, Toi qui es assis sur les chérubins!
 Psalmi	80	3	Devant Éphraïm, Benjamin et Manassé, réveille ta force, Et viens à notre secours!
 Psalmi	80	4	O Dieu, relève-nous! Fais briller ta face, et nous serons sauvés!
 Psalmi	80	5	Éternel, Dieu des armées! Jusques à quand t'irriteras-tu contre la prière de ton peuple?
@@ -15220,7 +15279,8 @@ Psalmi	80	17	Elle est brûlée par le feu, elle est coupée! Ils périssent deva
 Psalmi	80	18	Que ta main soit sur l'homme de ta droite, Sur le fils de l'homme que tu t'es choisi!
 Psalmi	80	19	Et nous ne nous éloignerons plus de toi. Fais-nous revivre, et nous invoquerons ton nom.
 Psalmi	80	20	Éternel, Dieu des armées, relève-nous! Fais briller ta face, et nous serons sauvés!
-Psalmi	81	2	Au chef des chantres. Sur la guitthith. D'Asaph. Chantez avec allégresse à Dieu, notre force! Poussez des cris de joie vers le Dieu de Jacob!
+Psalmi	81	1	Au chef des chantres. Sur la guitthith. D'Asaph.
+Psalmi	81	2	Chantez avec allégresse à Dieu, notre force! Poussez des cris de joie vers le Dieu de Jacob!
 Psalmi	81	3	Entonnez des cantiques, faites résonner le tambourin, La harpe mélodieuse et le luth!
 Psalmi	81	4	Sonnez de la trompette à la nouvelle lune, A la pleine lune, au jour de notre fête!
 Psalmi	81	5	Car c'est une loi pour Israël, Une ordonnance du Dieu de Jacob.
@@ -15244,7 +15304,8 @@ Psalmi	82	5	Ils n'ont ni savoir ni intelligence, Ils marchent dans les ténèbre
 Psalmi	82	6	J'avais dit: Vous êtes des dieux, Vous êtes tous des fils du Très-Haut.
 Psalmi	82	7	Cependant vous mourrez comme des hommes, Vous tomberez comme un prince quelconque.
 Psalmi	82	8	Lève-toi, ô Dieu, juge la terre! Car toutes les nations t'appartiennent.
-Psalmi	83	2	Cantique. Psaume d'Asaph. O Dieu, ne reste pas dans le silence! Ne te tais pas, et ne te repose pas, ô Dieu!
+Psalmi	83	1	Cantique. Psaume d'Asaph.
+Psalmi	83	2	O Dieu, ne reste pas dans le silence! Ne te tais pas, et ne te repose pas, ô Dieu!
 Psalmi	83	3	Car voici, tes ennemis s'agitent, Ceux qui te haïssent lèvent la tête.
 Psalmi	83	4	Ils forment contre ton peuple des projets pleins de ruse, Et ils délibèrent contre ceux que tu protèges.
 Psalmi	83	5	Venez, disent-ils, exterminons-les du milieu des nations, Et qu'on ne se souvienne plus du nom d'Israël!
@@ -15262,7 +15323,8 @@ Psalmi	83	16	Poursuis-les ainsi de ta tempête, Et fais-les trembler par ton our
 Psalmi	83	17	Couvre leur face d'ignominie, Afin qu'ils cherchent ton nom, ô Éternel!
 Psalmi	83	18	Qu'ils soient confus et épouvantés pour toujours, Qu'ils soient honteux et qu'ils périssent!
 Psalmi	83	19	Qu'ils sachent que toi seul, dont le nom est l'Éternel, Tu es le Très-Haut sur toute la terre!
-Psalmi	84	2	Au chef des chantres. Sur la guitthith. Des fils de Koré. Psaume. Que tes demeures sont aimables, Éternel des armées!
+Psalmi	84	1	Au chef des chantres. Sur la guitthith. Des fils de Koré. Psaume.
+Psalmi	84	2	Que tes demeures sont aimables, Éternel des armées!
 Psalmi	84	3	Mon âme soupire et languit après les parvis de l'Éternel, Mon cœur et ma chair poussent des cris vers le Dieu vivant.
 Psalmi	84	4	Le passereau même trouve une maison, Et l'hirondelle un nid où elle dépose ses petits… Tes autels, Éternel des armées! Mon roi et mon Dieu!
 Psalmi	84	5	Heureux ceux qui habitent ta maison! Ils peuvent te célébrer encore. Pause.
@@ -15274,7 +15336,8 @@ Psalmi	84	10	Toi qui es notre bouclier, vois, ô Dieu! Et regarde la face de ton
 Psalmi	84	11	Mieux vaut un jour dans tes parvis que mille ailleurs; Je préfère me tenir sur le seuil de la maison de mon Dieu, Plutôt que d'habiter sous les tentes de la méchanceté.
 Psalmi	84	12	Car l'Éternel Dieu est un soleil et un bouclier, L'Éternel donne la grâce et la gloire, Il ne refuse aucun bien à ceux qui marchent dans l'intégrité.
 Psalmi	84	13	Éternel des armées! Heureux l'homme qui se confie en toi!
-Psalmi	85	2	Au chef des chantres. Des fils de Koré. Psaume. Tu as été favorable à ton pays, ô Éternel! Tu as ramené les captifs de Jacob;
+Psalmi	85	1	Au chef des chantres. Des fils de Koré. Psaume.
+Psalmi	85	2	Tu as été favorable à ton pays, ô Éternel! Tu as ramené les captifs de Jacob;
 Psalmi	85	3	Tu as pardonné l'iniquité de ton peuple, Tu as couvert tous ses péchés; Pause.
 Psalmi	85	4	Tu as retiré toute ta fureur, Tu es revenu de l'ardeur de ta colère.
 Psalmi	85	5	Rétablis-nous, Dieu de notre salut! Cesse ton indignation contre nous!
@@ -15311,7 +15374,8 @@ Psalmi	87	4	Je proclame l'Égypte et Babylone parmi ceux qui me connaissent; Voi
 Psalmi	87	5	Et de Sion il est dit: Tous y sont nés, Et c'est le Très-Haut qui l'affermit.
 Psalmi	87	6	L'Éternel compte en inscrivant les peuples: C'est là qu'ils sont nés. Pause.
 Psalmi	87	7	Et ceux qui chantent et ceux qui dansent s'écrient: Toutes mes sources sont en toi.
-Psalmi	88	2	Cantique. Psaume des fils de Koré. Au chef des chantres. Pour chanter sur la flûte. Cantique d'Héman, l'Ézrachite. Éternel, Dieu de mon salut! Je crie jour et nuit devant toi.
+Psalmi	88	1	Cantique. Psaume des fils de Koré. Au chef des chantres. Pour chanter sur la flûte. Cantique d'Héman, l'Ézrachite.
+Psalmi	88	2	Éternel, Dieu de mon salut! Je crie jour et nuit devant toi.
 Psalmi	88	3	Que ma prière parvienne en ta présence! Prête l'oreille à mes supplications!
 Psalmi	88	4	Car mon âme est rassasiée de maux, Et ma vie s'approche du séjour des morts.
 Psalmi	88	5	Je suis mis au rang de ceux qui descendent dans la fosse, Je suis comme un homme qui n'a plus de force.
@@ -15329,7 +15393,8 @@ Psalmi	88	16	Je suis malheureux et moribond dès ma jeunesse, Je suis chargé de
 Psalmi	88	17	Tes fureurs passent sur moi, Tes terreurs m'anéantissent;
 Psalmi	88	18	Elles m'environnent tout le jour comme des eaux, Elles m'enveloppent toutes à la fois.
 Psalmi	88	19	Tu as éloigné de moi amis et compagnons; Mes intimes ont disparu.
-Psalmi	89	2	Cantique d'Éthan, l'Ézrachite. Je chanterai toujours les bontés de l'Éternel; Ma bouche fera connaître à jamais ta fidélité.
+Psalmi	89	1	Cantique d'Éthan, l'Ézrachite.
+Psalmi	89	2	Je chanterai toujours les bontés de l'Éternel; Ma bouche fera connaître à jamais ta fidélité.
 Psalmi	89	3	Car je dis: La bonté a des fondements éternels; Tu établis ta fidélité dans les cieux.
 Psalmi	89	4	J'ai fait alliance avec mon élu; Voici ce que j'ai juré à David, mon serviteur:
 Psalmi	89	5	J'affermirai ta postérité pour toujours, Et j'établirai ton trône à perpétuité. Pause.
@@ -15414,7 +15479,8 @@ Psalmi	91	13	Tu marcheras sur le lion et sur l'aspic, Tu fouleras le lionceau et
 Psalmi	91	14	Puisqu'il m'aime, je le délivrerai; Je le protégerai, puisqu'il connaît mon nom.
 Psalmi	91	15	Il m'invoquera, et je lui répondrai; Je serai avec lui dans la détresse, Je le délivrerai et je le glorifierai.
 Psalmi	91	16	Je le rassasierai de longs jours, Et je lui ferai voir mon salut.
-Psalmi	92	2	Psaume. Cantique pour le jour du sabbat. Il est beau de louer l'Éternel, Et de célébrer ton nom, ô Très-Haut!
+Psalmi	92	1	Psaume. Cantique pour le jour du sabbat.
+Psalmi	92	2	Il est beau de louer l'Éternel, Et de célébrer ton nom, ô Très-Haut!
 Psalmi	92	3	D'annoncer le matin ta bonté, Et ta fidélité pendant les nuits,
 Psalmi	92	4	Sur l'instrument à dix cordes et sur le luth, Aux sons de la harpe.
 Psalmi	92	5	Tu me réjouis par tes œuvres, ô Éternel! Et je chante avec allégresse l'ouvrage de tes mains.
@@ -15524,7 +15590,8 @@ Psalmi	101	5	Celui qui calomnie en secret son prochain, je l'anéantirai; Celui 
 Psalmi	101	6	J'aurai les yeux sur les fidèles du pays, Pour qu'ils demeurent auprès de moi; Celui qui marche dans une voie intègre sera mon serviteur.
 Psalmi	101	7	Celui qui se livre à la fraude n'habitera pas dans ma maison; Celui qui dit des mensonges ne subsistera pas en ma présence.
 Psalmi	101	8	Chaque matin j'anéantirai tous les méchants du pays, Afin d'exterminer de la ville de l'Éternel Tous ceux qui commettent l'iniquité.
-Psalmi	102	2	Prière d'un malheureux, lorsqu'il est abattu et qu'il répand sa plainte devant l'Éternel. Éternel, écoute ma prière, Et que mon cri parvienne jusqu'à toi!
+Psalmi	102	1	Prière d'un malheureux, lorsqu'il est abattu et qu'il répand sa plainte devant l'Éternel.
+Psalmi	102	2	Éternel, écoute ma prière, Et que mon cri parvienne jusqu'à toi!
 Psalmi	102	3	Ne me cache pas ta face au jour de ma détresse! Incline vers moi ton oreille quand je crie! Hâte-toi de m'exaucer!
 Psalmi	102	4	Car mes jours s'évanouissent en fumée, Et mes os sont enflammés comme un tison.
 Psalmi	102	5	Mon cœur est frappé et se dessèche comme l'herbe; J'oublie même de manger mon pain.
@@ -15745,7 +15812,8 @@ Psalmi	107	40	Verse-t-il le mépris sur les grands, Les fait-il errer dans des d
 Psalmi	107	41	Il relève l'indigent et le délivre de la misère, Il multiplie les familles comme des troupeaux.
 Psalmi	107	42	Les hommes droits le voient et se réjouissent, Mais toute iniquité ferme la bouche.
 Psalmi	107	43	Que celui qui est sage prenne garde à ces choses, Et qu'il soit attentif aux bontés de l'Éternel.
-Psalmi	108	2	Cantique. Psaume de David. Mon cœur est affermi, ô Dieu! Je chanterai, je ferai retentir mes instruments: c'est ma gloire!
+Psalmi	108	1	Cantique. Psaume de David.
+Psalmi	108	2	Mon cœur est affermi, ô Dieu! Je chanterai, je ferai retentir mes instruments: c'est ma gloire!
 Psalmi	108	3	Réveillez-vous, mon luth et ma harpe! Je réveillerai l'aurore.
 Psalmi	108	4	Je te louerai parmi les peuples, Éternel! Je te chanterai parmi les nations.
 Psalmi	108	5	Car ta bonté s'élève au-dessus des cieux, Et ta fidélité jusqu'aux nues.
@@ -16266,7 +16334,8 @@ Psalmi	139	21	Éternel, n'aurais-je pas de la haine pour ceux qui te haïssent, 
 Psalmi	139	22	Je les hais d'une parfaite haine; Ils sont pour moi des ennemis.
 Psalmi	139	23	Sonde-moi, ô Dieu, et connais mon cœur! Éprouve-moi, et connais mes pensées!
 Psalmi	139	24	Regarde si je suis sur une mauvaise voie, Et conduis-moi sur la voie de l'éternité!
-Psalmi	140	2	Au chef des chantres. Psaume de David. Éternel, délivre-moi des hommes méchants! Préserve-moi des hommes violents.
+Psalmi	140	1	Au chef des chantres. Psaume de David.
+Psalmi	140	2	Éternel, délivre-moi des hommes méchants! Préserve-moi des hommes violents.
 Psalmi	140	3	Qui méditent de mauvais desseins dans leur cœur, Et sont toujours prêts à faire la guerre!
 Psalmi	140	4	Ils aiguisent leur langue comme un serpent, Ils ont sous leurs lèvres un venin d'aspic. Pause.
 Psalmi	140	5	Éternel, garantis-moi des mains du méchant! Préserve-moi des hommes violents, Qui méditent de me faire tomber!
@@ -16289,7 +16358,8 @@ Psalmi	141	7	Comme quand on laboure et qu'on fend la terre, Ainsi nos os sont di
 Psalmi	141	8	C'est vers toi, Éternel, Seigneur! que se tournent mes yeux, C'est auprès de toi que je cherche un refuge: N'abandonne pas mon âme!
 Psalmi	141	9	Garantis-moi du piège qu'ils me tendent, Et des embûches de ceux qui font le mal!
 Psalmi	141	10	Que les méchants tombent dans leurs filets, Et que j'échappe en même temps!
-Psalmi	142	2	Cantique de David. Lorsqu'il était dans la caverne. Prière. De ma voix je crie à l'Éternel, De ma voix j'implore l'Éternel.
+Psalmi	142	1	Cantique de David. Lorsqu'il était dans la caverne. Prière.
+Psalmi	142	2	De ma voix je crie à l'Éternel, De ma voix j'implore l'Éternel.
 Psalmi	142	3	Je répands ma plainte devant lui, Je lui raconte ma détresse.
 Psalmi	142	4	Quand mon esprit est abattu au dedans de moi, Toi, tu connais mon sentier. Sur la route où je marche Ils m'ont tendu un piège.
 Psalmi	142	5	Jette les yeux à droite, et regarde! Personne ne me reconnaît, Tout refuge est perdu pour moi, Nul ne prend souci de mon âme.
